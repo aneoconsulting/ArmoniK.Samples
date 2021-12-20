@@ -24,7 +24,7 @@ namespace Armonik.Samples.Symphony.Client
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello Armonik Sample !");
+            Console.WriteLine("Hello Armonik SymphonyLike Sample !");
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Override("Microsoft",
