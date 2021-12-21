@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ArmoniK.HelloWorld.Client": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
