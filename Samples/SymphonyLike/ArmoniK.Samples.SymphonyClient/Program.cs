@@ -175,7 +175,7 @@ namespace Armonik.Samples.Symphony.Client
             N_Jobs_of_1_Task(client, payload, 10, outputMessages);
             N_Jobs_of_1_Task(client, payload, 100, outputMessages);
             N_Jobs_of_1_Task(client, payload, 200, outputMessages);
-            N_Jobs_of_1_Task(client, payload, 500, outputMessages);
+            // N_Jobs_of_1_Task(client, payload, 500, outputMessages);
 
             outputMessages.AppendLine("In this serie of samples we're creating 1 job of N tasks.");
 
