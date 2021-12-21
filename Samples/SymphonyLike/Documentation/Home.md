@@ -1,8 +1,10 @@
-# References
+# API References
 
-## [ArmoniK.DevelopmentKit.SymphonyApi](ArmoniK.DevelopmentKit.SymphonyApi)
+## [ArmoniK.DevelopmentKit.SymphonyApi.Client](ArmoniK.DevelopmentKit.SymphonyApi.Client.md)
+- [`ArmonikSymphonyClient`](ArmoniK.DevelopmentKit.SymphonyApi.Client.md#armoniksymphonyclient)
 
-- [`GridWorker`](ArmoniK.DevelopmentKit.SymphonyApi.md#gridworker)
+## [ArmoniK.DevelopmentKit.SymphonyApi Package](ArmoniK.DevelopmentKit.SymphonyApi.md)
+
 - [`ServiceContainerBase`](ArmoniK.DevelopmentKit.SymphonyApi.md#servicecontainerbase)
 - [`ServiceContainerBaseExt`](ArmoniK.DevelopmentKit.SymphonyApi.md#servicecontainerbaseext)
 - [`ServiceContext`](ArmoniK.DevelopmentKit.SymphonyApi.md#servicecontext)
