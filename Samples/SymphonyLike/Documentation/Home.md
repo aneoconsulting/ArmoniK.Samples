@@ -1,4 +1,6 @@
-# References
+# API References
+
+## [ArmoniK.DevelopmentKit.SymphonyApi.Client](ArmoniK.DevelopmentKit.SymphonyApi.Client)
 
 ## [ArmoniK.DevelopmentKit.SymphonyApi](ArmoniK.DevelopmentKit.SymphonyApi)
 
