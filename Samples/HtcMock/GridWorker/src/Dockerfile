@@ -7,12 +7,11 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["Samples/HtcMock/GridWorker/src/ArmoniK.Samples.HtcMock.GridWorker.csproj", "Samples/HtcMock/GridWorker/src/"]
-COPY ["DevelopmentKit/csharp/Generated/src/ArmoniK.Csharp.csproj", "DevelopmentKit/csharp/Generated/src/"]
-COPY ["Samples/HtcMock/Adapter/src/ArmoniK.Samples.HtcMock.Adapter.csproj", "Samples/HtcMock/Adapter/src/"]
-RUN dotnet restore "Samples/HtcMock/GridWorker/src/ArmoniK.Samples.HtcMock.GridWorker.csproj"
+COPY ["GridWorker/src/ArmoniK.Samples.HtcMock.GridWorker.csproj", "GridWorker/src/"]
+COPY ["Adapter/src/ArmoniK.Samples.HtcMock.Adapter.csproj", "Adapter/src/"]
+RUN dotnet restore "GridWorker/src/ArmoniK.Samples.HtcMock.GridWorker.csproj"
 COPY . .
-WORKDIR "/src/Samples/HtcMock/GridWorker/src"
+WORKDIR "/src/GridWorker/src"
 RUN dotnet build "ArmoniK.Samples.HtcMock.GridWorker.csproj" -c Release -o /app/build
 
 FROM build AS publish
