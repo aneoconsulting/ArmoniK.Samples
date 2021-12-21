@@ -5,8 +5,8 @@
 - [How to start with sample SymphonyLike](#how-to-start-with-sample-symphonylike)
     - [Configure applications](#configure-applications)
     - [Compile the full solution and publish Server package](#compile-the-full-solution-and-publish-server-package)
-    - [Deploy packages into mount filesystem](#deploy-packages-into-mount-filesystem)
-    - [Configure mount point for local application installation](#configure-mount-point-for-local-application-installation)
+    - [Publish package into mount filesystem](#publish-package-into-mount-filesystem)
+    - [Configure a mount point for local application installation](#configure-a-mount-point-for-local-application-installation)
     - [Deploy new package to WSL /data directory](#deploy-new-package-to-wsl-data-directory)
     - [Restart Compute pod](#restart-compute-pod)
     - [Execute Armonik.Samples.SymphonyClient](#execute-armoniksamplessymphonyclient)
@@ -54,11 +54,13 @@ Copy the result and replace the adress in Section Grpc -> EndPoint
 ```
 
 ### Compile the full solution and publish Server package
+From Visual Studio, Rebuild the solution
 
-### Deploy packages into mount filesystem
 
-### Configure mount point for local application installation
-Please create /data directory to deposit the package
+### Publish package into mount filesystem
+
+### Configure a mount point for local application installation
+Please create /data directory to the deposit the package
 ```bash
 sudo mkdir /data
 ```
@@ -76,7 +78,8 @@ kubectl delete -n armonik $(kubectl get pods -n armonik -l service=compute-plane
 
 ### Execute Armonik.Samples.SymphonyClient
 
-From Visual Studio, please execute the Client with Visual Studio
+From Visual Studio, execute the project ArmoniK.Samples.SymplhonyClient within Visual Studio 2019 or later
+
 
 ## How to debug your code remotely
 TODO explain how to connect to docker Compute-0 and attach the to the package
