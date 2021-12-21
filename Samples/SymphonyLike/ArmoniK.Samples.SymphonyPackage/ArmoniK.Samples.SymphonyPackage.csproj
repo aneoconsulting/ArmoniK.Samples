@@ -44,7 +44,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.0.2" />
+    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.0.3" />
 
   </ItemGroup>
 
