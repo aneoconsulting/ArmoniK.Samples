@@ -15,6 +15,7 @@
 # Introduction <a name="introduction"></a>
 
 You will find the Sample to execute tasks with Armonik with API Symphony like.
+All API References to develop your own application within Armonik can be found in this [API documentation](Documentation/Home.md)
 
 # Software prerequisites <a name="software-prerequisites"></a>
 
