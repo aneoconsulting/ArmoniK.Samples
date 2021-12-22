@@ -69,7 +69,12 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       taskFilter.IncludedTaskIds.Add(id);
       taskFilter.SessionId = SessionId.Session;
       taskFilter.SubSessionId = SessionId.SubSession;
-      client_.WaitForCompletion(taskFilter);
+      client_.WaitForCompletion(new()
+      {
+        Filter = taskFilter,
+        ThrowOnTaskCancellation = true,
+        ThrowOnTaskError = true,
+      });
     }
 
     public void WaitSubtasksCompletion(string id)
@@ -81,7 +86,12 @@ namespace ArmoniK.Samples.HtcMock.Adapter
         SubSessionId = SubSessionId is null ? SessionId.SubSession : SubSessionId.Session,
       };
       taskFilter.IncludedTaskIds.Add(id);
-      client_.WaitForSubTasksCompletion(taskFilter);
+      client_.WaitForSubTasksCompletion(new()
+      {
+        Filter = taskFilter,
+        ThrowOnTaskCancellation = true,
+        ThrowOnTaskError = true,
+      });
       Console.WriteLine(DateTime.Now);
     }
 
