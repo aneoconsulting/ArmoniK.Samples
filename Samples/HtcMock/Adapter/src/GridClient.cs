@@ -86,13 +86,13 @@ namespace ArmoniK.Samples.HtcMock.Adapter
         SubSessionId = SubSessionId is null ? SessionId.SubSession : SubSessionId.Session,
       };
       taskFilter.IncludedTaskIds.Add(id);
-      client_.WaitForSubTasksCompletion(new()
+      var count = client_.WaitForSubTasksCompletion(new()
       {
         Filter = taskFilter,
         ThrowOnTaskCancellation = true,
         ThrowOnTaskError = true,
       });
-      Console.WriteLine(DateTime.Now);
+      logger_.LogDebug(string.Join(", ", count.Values.Select(p => p.ToString())));
     }
 
     public IEnumerable<string> SubmitTasks(string session, IEnumerable<byte[]> payloads)
