@@ -173,8 +173,8 @@ namespace Armonik.Samples.Symphony.Client
         3 get associated payload");
             N_Jobs_of_1_Task(client, payload, 1, outputMessages);
             N_Jobs_of_1_Task(client, payload, 10, outputMessages);
-            N_Jobs_of_1_Task(client, payload, 100, outputMessages);
-            N_Jobs_of_1_Task(client, payload, 200, outputMessages);
+            // N_Jobs_of_1_Task(client, payload, 100, outputMessages);
+            // N_Jobs_of_1_Task(client, payload, 200, outputMessages);
             // N_Jobs_of_1_Task(client, payload, 500, outputMessages);
 
             outputMessages.AppendLine("In this serie of samples we're creating 1 job of N tasks.");
@@ -182,8 +182,8 @@ namespace Armonik.Samples.Symphony.Client
             _1_Job_of_N_Tasks(client, payload, 1, outputMessages);
             _1_Job_of_N_Tasks(client, payload, 10, outputMessages);
             _1_Job_of_N_Tasks(client, payload, 100, outputMessages);
-            _1_Job_of_N_Tasks(client, payload, 200, outputMessages);
-            _1_Job_of_N_Tasks(client, payload, 500, outputMessages);
+            // _1_Job_of_N_Tasks(client, payload, 200, outputMessages);
+            // _1_Job_of_N_Tasks(client, payload, 500, outputMessages);
 
             logger_.LogInformation(outputMessages.ToString());
         }
