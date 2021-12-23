@@ -45,20 +45,20 @@ namespace ArmoniK.Samples.HtcMock.Client
   {
     private static void Main()
     {
-      Log.Logger = new LoggerConfiguration()
-                   .MinimumLevel.Override("Microsoft",
-                                          LogEventLevel.Information)
-                   .Enrich.FromLogContext()
-                   .WriteTo.Console(new CompactJsonFormatter())
-                   .CreateBootstrapLogger();
 
-      var factory = new LoggerFactory().AddSerilog();
 
       Console.WriteLine("Hello Mock!");
 
       var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                                               .AddEnvironmentVariables();
       var configuration   = builder.Build();
+      Log.Logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(configuration)
+        .Enrich.FromLogContext()
+        .WriteTo.Console(new CompactJsonFormatter())
+        .CreateBootstrapLogger();
+
+      var factory = new LoggerFactory().AddSerilog();
       var serviceProvider = new ServiceCollection().AddLogging()
                                                    .AddComponents(configuration)
                                                    .AddSingleton(_ => factory.CreateLogger<GridClient>())
