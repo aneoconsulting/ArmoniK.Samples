@@ -59,7 +59,7 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       taskFilter.SessionId    = SessionId.Session;
       taskFilter.SubSessionId = SessionId.SubSession;
       var response   = client_.TryGetResult(taskFilter);
-      return response.Payloads.Single().Data.ToByteArray();
+      return response.Payloads.Single().Data.Data.ToByteArray();
     }
 
     public void WaitCompletion(string id)
