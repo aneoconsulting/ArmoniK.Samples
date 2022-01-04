@@ -24,10 +24,7 @@
 using System;
 using System.IO;
 
-using ArmoniK.Core.gRPC.V1;
 using ArmoniK.Samples.HtcMock.Adapter;
-
-using Grpc.Net.Client;
 
 using Htc.Mock.Core;
 
@@ -36,7 +33,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Serilog;
-using Serilog.Events;
 using Serilog.Formatting.Compact;
 
 namespace ArmoniK.Samples.HtcMock.Client
@@ -45,38 +41,43 @@ namespace ArmoniK.Samples.HtcMock.Client
   {
     private static void Main()
     {
-
-
-      Console.WriteLine("Hello Mock!");
+      Console.WriteLine("Hello Mock V3!");
 
       var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                                               .AddEnvironmentVariables();
-      var configuration   = builder.Build();
+      var configuration = builder.Build();
       Log.Logger = new LoggerConfiguration()
-        .ReadFrom.Configuration(configuration)
-        .Enrich.FromLogContext()
-        .WriteTo.Console(new CompactJsonFormatter())
-        .CreateBootstrapLogger();
+                   .ReadFrom.Configuration(configuration)
+                   .Enrich.FromLogContext()
+                   .WriteTo.Console(new CompactJsonFormatter())
+                   .CreateBootstrapLogger();
 
       var factory = new LoggerFactory().AddSerilog();
-      var serviceProvider = new ServiceCollection().AddLogging()
-                                                   .AddComponents(configuration)
-                                                   .AddSingleton(_ => factory.CreateLogger<GridClient>())
+      var serviceProvider = new ServiceCollection().AddComponents(configuration)
+                                                   .AddSingleton(factory)
                                                    .BuildServiceProvider();
 
 
-      var gridClient      = serviceProvider.GetRequiredService<GridClient>();
-      var redisDataClient = serviceProvider.GetRequiredService<RedisDataClient>();
+      var gridClient = serviceProvider.GetRequiredService<GridClient>();
 
       var client = new Htc.Mock.Client(gridClient,
-                                               redisDataClient);
+                                       factory.CreateLogger<Htc.Mock.Client>());
 
       // Timespan(heures, minutes, secondes)
       // RunConfiguration runConfiguration = RunConfiguration.XSmall; // result : Aggregate_1871498793_result
-      var runConfiguration = new RunConfiguration(new TimeSpan(0, 0, 0, 0, 100), 100, 1, 1, 4);
+      var runConfiguration = new RunConfiguration(new TimeSpan(0,
+                                                               0,
+                                                               0,
+                                                               0,
+                                                               100),
+                                                  100,
+                                                  1,
+                                                  1,
+                                                  4);
       // client.ParallelExec(RunConfiguration.XSmall, 5);
       // client.SeqExec(RunConfiguration.XSmall, 5);
-      client.SeqExec(runConfiguration, 1);
+      client.SeqExec(runConfiguration,
+                     1);
     }
   }
 }

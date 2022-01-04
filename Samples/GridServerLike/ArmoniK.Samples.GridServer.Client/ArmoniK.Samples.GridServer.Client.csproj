@@ -1,0 +1,66 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <PackageId>$(MSBuildProjectName)</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>ANEO</Authors>
+    <Company>ANEO</Company>
+    <!--<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
+    <AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
+    <OutputPath>bin</OutputPath>
+    <PublishDir>../publish/$(MSBuildProjectName)/$(Version)</PublishDir>
+    <PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <!--<IsPackable>true</IsPackable>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <_WebToolingArtifacts Remove="Properties\PublishProfiles\FolderProfile.pubxml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+    <PackageReference Include="Armonik.DevelopmentKit.GridServer.Client" Version="0.0.4" />
+    <PackageReference Include="Armonik.DevelopmentKit.GridServer" Version="0.0.4" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.41.0" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="4.2.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Armonik.DevelopmentKit.GridServer.Client" Version="0.0.4" />
+    <PackageReference Include="Armonik.DevelopmentKit.GridServer" Version="0.0.4" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArmoniK.Samples.GridServer.Common\ArmoniK.Samples.GridServer.Common.csproj" />
+  </ItemGroup>
+
+  <Target Name="CreateDirectories" AfterTargets="AfterPublish">
+    <MakeDir Directories="../packages" />
+  </Target>
+
+  <Target Name="ZipOutputPath" AfterTargets="CreateDirectories">
+    <ZipDirectory SourceDirectory="../publish/" DestinationFile="../packages/$(MSBuildProjectName)-v$(Version).zip" Overwrite="true" />
+  </Target>
+
+</Project>
