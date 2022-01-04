@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Version>1.0.0</Version>
+    <Authors>ANEO</Authors>
+    <Company>ANEO</Company>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <OutputPath>bin</OutputPath>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+    <PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
+ </PropertyGroup>
+
+
+</Project>
