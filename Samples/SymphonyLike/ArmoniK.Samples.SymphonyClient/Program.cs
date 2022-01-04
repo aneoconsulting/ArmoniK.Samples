@@ -13,6 +13,7 @@ using Armonik.Samples.Symphony.Common;
 using Google.Protobuf.WellKnownTypes;
 using Serilog;
 using Serilog.Events;
+using Serilog.Extensions.Logging;
 
 
 namespace Armonik.Samples.Symphony.Client
@@ -26,16 +27,6 @@ namespace Armonik.Samples.Symphony.Client
         {
             Console.WriteLine("Hello Armonik SymphonyLike Sample !");
 
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Override("Microsoft",
-                    LogEventLevel.Information)
-                .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .CreateBootstrapLogger();
-
-            var factory = new LoggerFactory().AddSerilog();
-
-            logger_ = factory.CreateLogger<Program>();
 
             var armonik_wait_client = Environment.GetEnvironmentVariable("ARMONIK_DEBUG_WAIT_CLIENT");
             if (!String.IsNullOrEmpty(armonik_wait_client))
@@ -54,7 +45,25 @@ namespace Armonik.Samples.Symphony.Client
                 .AddEnvironmentVariables();
 
             configuration_ = builder.Build();
-            
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Override("Microsoft",
+                    LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .CreateBootstrapLogger();
+
+
+            var factory = new LoggerFactory(new[]
+            {
+                new SerilogLoggerProvider(new LoggerConfiguration()
+                    .ReadFrom
+                    .Configuration(configuration_)
+                    .CreateLogger())
+            });
+
+            logger_ = factory.CreateLogger<Program>();
+
             ArmonikSymphonyClient client = new ArmonikSymphonyClient(configuration_);
 
             //get envirnoment variable
@@ -109,7 +118,7 @@ namespace Armonik.Samples.Symphony.Client
                 "ArmoniK.Samples.SymphonyPackage");
 
             taskOptions.Options.Add(AppsOptions.GridAppVersionKey,
-                "1.0.0");
+                "2.0.0");
 
             taskOptions.Options.Add(AppsOptions.GridAppNamespaceKey,
                 "ArmoniK.Samples.Symphony.Packages");
@@ -135,6 +144,7 @@ namespace Armonik.Samples.Symphony.Client
                 client.WaitSubtasksCompletion(result.SubTaskId);
                 taskResult = client.GetResult(result.SubTaskId);
             }
+
             return taskResult;
         }
 
@@ -144,7 +154,7 @@ namespace Armonik.Samples.Symphony.Client
         /// <param name="client"></param>
         public static void ClientStartup1(ArmonikSymphonyClient client)
         {
-            List<int> numbers = new List<int>() { 1, 2, 3};
+            List<int> numbers = new List<int>() { 1, 2, 3 };
             var clientPaylaod = new ClientPayload()
                 { IsRootTask = true, numbers = numbers, Type = ClientPayload.TaskType.ComputeSquare };
             string taskId = client.SubmitTask(clientPaylaod.serialize());
@@ -173,17 +183,17 @@ namespace Armonik.Samples.Symphony.Client
         3 get associated payload");
             N_Jobs_of_1_Task(client, payload, 1, outputMessages);
             N_Jobs_of_1_Task(client, payload, 10, outputMessages);
-            N_Jobs_of_1_Task(client, payload, 100, outputMessages);
-            N_Jobs_of_1_Task(client, payload, 200, outputMessages);
+            //N_Jobs_of_1_Task(client, payload, 100, outputMessages);
+            //N_Jobs_of_1_Task(client, payload, 200, outputMessages);
             // N_Jobs_of_1_Task(client, payload, 500, outputMessages);
 
             outputMessages.AppendLine("In this serie of samples we're creating 1 job of N tasks.");
 
             _1_Job_of_N_Tasks(client, payload, 1, outputMessages);
             _1_Job_of_N_Tasks(client, payload, 10, outputMessages);
-            _1_Job_of_N_Tasks(client, payload, 100, outputMessages);
-            _1_Job_of_N_Tasks(client, payload, 200, outputMessages);
-            _1_Job_of_N_Tasks(client, payload, 500, outputMessages);
+            //_1_Job_of_N_Tasks(client, payload, 100, outputMessages);
+            //_1_Job_of_N_Tasks(client, payload, 200, outputMessages);
+            //_1_Job_of_N_Tasks(client, payload, 500, outputMessages);
 
             logger_.LogInformation(outputMessages.ToString());
         }
