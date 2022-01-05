@@ -54,16 +54,15 @@ namespace ArmoniK.HelloWorld.Worker
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddGrpc(options => options.MaxReceiveMessageSize = null);
-      services.AddSingleton<ApplicationLifeTimeManager>();
-      services.AddLogging();
-      services.AddSingleton(sp =>
-      {
-        var conf        = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
-        var logProvider = new SerilogLoggerProvider(conf);
-        var factory = new LoggerFactory(new[] { logProvider });
-        return factory.CreateLogger<SampleComputerService>();
-      });
-      services.AddTransient<SampleComputerService>();
+      services.AddSingleton<ApplicationLifeTimeManager>()
+              .AddLogging()
+              .AddSingleton<ILoggerFactory>(sp =>
+              {
+                var conf        = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
+                var logProvider = new SerilogLoggerProvider(conf);
+                return new LoggerFactory(new[] { logProvider });
+              })
+              .AddSingleton<SampleComputerService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
