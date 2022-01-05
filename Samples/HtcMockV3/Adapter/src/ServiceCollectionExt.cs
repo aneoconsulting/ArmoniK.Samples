@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -21,10 +21,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using ArmoniK.Core.gRPC.V1;
-
-using Grpc.Core;
-using Grpc.Net.Client;
+using ArmoniK.Samples.HtcMock.Adapter.Options;
 
 using JetBrains.Annotations;
 
@@ -42,10 +39,10 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       IConfiguration          configuration
     )
     {
-      serviceCollection.Configure<Options.Grpc>(configuration.GetSection(Options.Grpc.SettingSection))
+      serviceCollection.Configure<Grpc>(configuration.GetSection(Grpc.SettingSection))
                        .AddSingleton(sp =>
                        {
-                         var options = sp.GetRequiredService<IOptions<Options.Grpc>>();
+                         var options = sp.GetRequiredService<IOptions<Grpc>>();
                          return GrpcChannel.ForAddress(options.Value.Endpoint);
                        })
                        .AddTransient(sp =>

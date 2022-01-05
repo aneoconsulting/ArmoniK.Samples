@@ -1,6 +1,6 @@
 // This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -62,15 +62,17 @@ namespace ArmoniK.HelloWorld.Worker
 
     // Additional configuration_ is required to successfully run gRPC on macOS.
     // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-      Host.CreateDefaultBuilder(args)
-          .UseSerilog((context, services, configuration) => configuration
-                                                           .ReadFrom.Configuration(context.Configuration)
-                                                           .ReadFrom.Services(services)
-                                                           .MinimumLevel
-                                                           .Override("Microsoft.AspNetCore",
-                                                                     LogEventLevel.Information)
-                                                           .Enrich.FromLogContext())
-          .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+    public static IHostBuilder CreateHostBuilder(string[] args)
+    {
+      return Host.CreateDefaultBuilder(args)
+                 .UseSerilog((context, services, configuration) => configuration
+                                                                   .ReadFrom.Configuration(context.Configuration)
+                                                                   .ReadFrom.Services(services)
+                                                                   .MinimumLevel
+                                                                   .Override("Microsoft.AspNetCore",
+                                                                             LogEventLevel.Information)
+                                                                   .Enrich.FromLogContext())
+                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+    }
   }
 }
