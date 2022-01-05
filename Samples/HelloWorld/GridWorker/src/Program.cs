@@ -79,12 +79,10 @@ namespace ArmoniK.HelloWorld.Worker
     public static IHostBuilder CreateHostBuilder(string[] args) =>
       Host.CreateDefaultBuilder(args)
           .UseSerilog((context, services, configuration) => configuration
-                                                           .ReadFrom.Configuration(context.Configuration)
-                                                           .ReadFrom.Services(services)
                                                            .ReadFrom.Configuration(configuration_)
                                                            .MinimumLevel
                                                            .Override("Microsoft.AspNetCore",
-                                                                     LogEventLevel.Debug)
+                                                                     LogEventLevel.Information)
                                                            .Enrich.FromLogContext())
           .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
   }
