@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -25,7 +25,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
-using ArmoniK.Core.gRPC.V1;
 using ArmoniK.Samples.HtcMock.Adapter;
 
 using Google.Protobuf;

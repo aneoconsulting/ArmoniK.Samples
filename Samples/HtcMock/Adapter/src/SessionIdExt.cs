@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -23,13 +23,14 @@
 
 using System;
 
-using ArmoniK.Core.gRPC.V1;
-
 namespace ArmoniK.Samples.HtcMock.Adapter
 {
   public static class SessionIdExt
   {
-    public static string ToHtcMockId(this SessionId sessionId) => $"{sessionId.Session}_{sessionId.SubSession}";
+    public static string ToHtcMockId(this SessionId sessionId)
+    {
+      return $"{sessionId.Session}_{sessionId.SubSession}";
+    }
 
     public static SessionId ToArmoniKId(this string id)
     {
@@ -37,7 +38,11 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       if (split.Length != 2)
         throw new ArgumentException("Id is not a valid SessionId",
                                     nameof(id));
-      return new SessionId { Session = split[0], SubSession = split[1] };
+      return new SessionId
+      {
+        Session    = split[0],
+        SubSession = split[1],
+      };
     }
   }
 }

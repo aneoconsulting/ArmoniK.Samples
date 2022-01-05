@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -42,7 +42,11 @@ namespace ArmoniK.Samples.HtcMock.Client
       Task.WhenAll(tasks).Wait();
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
       var stat = new SimpleStats
-                 { EllapsedTime = elapsedMilliseconds, Test = "AsyncExec", NRun = nRun };
+      {
+        EllapsedTime = elapsedMilliseconds,
+        Test         = "AsyncExec",
+        NRun         = nRun,
+      };
       Console.WriteLine("JSON Result : " + stat.ToJson());
     }
 
@@ -54,7 +58,11 @@ namespace ArmoniK.Samples.HtcMock.Client
 
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
       var stat = new SimpleStats
-                 { EllapsedTime = elapsedMilliseconds, Test = "SeqExec", NRun = nRun };
+      {
+        EllapsedTime = elapsedMilliseconds,
+        Test         = "SeqExec",
+        NRun         = nRun,
+      };
       Console.WriteLine("JSON Result : " + stat.ToJson());
     }
   }

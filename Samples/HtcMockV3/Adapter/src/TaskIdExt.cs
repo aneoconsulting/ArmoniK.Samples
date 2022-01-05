@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -23,8 +23,6 @@
 
 using System;
 using System.Linq;
-
-using ArmoniK.Core.gRPC.V1;
 
 namespace ArmoniK.Samples.HtcMock.Adapter
 {

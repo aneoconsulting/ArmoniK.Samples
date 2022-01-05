@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -33,7 +33,7 @@ namespace ArmoniK.HelloWorld.Worker
 
     public ApplicationLifeTimeManager(ILogger<ApplicationLifeTimeManager> logger, IHostApplicationLifetime lifetime)
     {
-      logger_    = logger;
+      logger_   = logger;
       lifetime_ = lifetime;
       lifetime_.ApplicationStopping.Register(GracefulTerminationStarted);
       lifetime_.ApplicationStopped.Register(GracefulTerminationFinished);

@@ -1,6 +1,6 @@
 // This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -39,11 +39,11 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
     public static int Main(string[] args)
     {
       Log.Logger = new LoggerConfiguration()
-                  .MinimumLevel.Override("Microsoft",
-                                         LogEventLevel.Information)
-                  .Enrich.FromLogContext()
-                  .WriteTo.Console()
-                  .CreateBootstrapLogger();
+                   .MinimumLevel.Override("Microsoft",
+                                          LogEventLevel.Information)
+                   .Enrich.FromLogContext()
+                   .WriteTo.Console()
+                   .CreateBootstrapLogger();
 
       try
       {
