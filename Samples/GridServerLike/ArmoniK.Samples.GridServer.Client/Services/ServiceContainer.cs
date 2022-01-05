@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.GridServer.Client.Services
 {
@@ -33,7 +34,8 @@ namespace ArmoniK.Samples.GridServer.Client.Services
                 .WriteTo.Console()
                 .CreateBootstrapLogger();
 
-            var factory = new LoggerFactory().AddSerilog();
+            var logProvider = new SerilogLoggerProvider(Log.Logger);
+            var factory = new LoggerFactory(new[] { logProvider });
 
             logger_ = factory.CreateLogger<ServiceContainer>();
         }
