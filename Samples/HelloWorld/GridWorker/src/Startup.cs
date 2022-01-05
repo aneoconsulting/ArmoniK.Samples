@@ -37,6 +37,7 @@ namespace ArmoniK.HelloWorld.Worker
       services.AddGrpc(options => options.MaxReceiveMessageSize = null);
       services.AddSingleton<ApplicationLifeTimeManager>();
       services.AddLogging();
+      services.AddTransient<SampleComputerService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
