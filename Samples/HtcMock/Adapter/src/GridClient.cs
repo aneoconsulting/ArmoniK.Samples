@@ -26,6 +26,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
 
+using ArmoniK.Core.gRPC.V1;
+
+using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
+
 using Htc.Mock;
 
 using Microsoft.Extensions.Logging;

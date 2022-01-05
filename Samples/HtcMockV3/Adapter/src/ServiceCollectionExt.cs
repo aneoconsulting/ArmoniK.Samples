@@ -21,7 +21,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using ArmoniK.Samples.HtcMock.Adapter.Options;
+using ArmoniK.Core.gRPC.V1;
+
+using Grpc.Core;
+using Grpc.Net.Client;
 
 using JetBrains.Annotations;
 
@@ -39,10 +42,10 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       IConfiguration          configuration
     )
     {
-      serviceCollection.Configure<Grpc>(configuration.GetSection(Grpc.SettingSection))
+      serviceCollection.Configure<Options.Grpc>(configuration.GetSection(Options.Grpc.SettingSection))
                        .AddSingleton(sp =>
                        {
-                         var options = sp.GetRequiredService<IOptions<Grpc>>();
+                         var options = sp.GetRequiredService<IOptions<Options.Grpc>>();
                          return GrpcChannel.ForAddress(options.Value.Endpoint);
                        })
                        .AddTransient(sp =>
