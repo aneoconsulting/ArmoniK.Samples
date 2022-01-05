@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -14,9 +15,20 @@ namespace ArmoniK.Samples.GridServer.Client.Services
 
         public ServiceContainer()
         {
-            Log.Logger = new LoggerConfiguration()
+          var builder = new ConfigurationBuilder()
+                 .SetBasePath(Directory.GetCurrentDirectory())
+                 .AddJsonFile("appsettings.json",
+                              true,
+                              true)
+                 .AddEnvironmentVariables();
+
+
+          var Configuration = builder.Build();
+
+          Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Override("Microsoft",
                     LogEventLevel.Information)
+                .ReadFrom.Configuration(Configuration)
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .CreateBootstrapLogger();
