@@ -69,10 +69,20 @@ namespace ArmoniK.HelloWorld.Client
                        .Single();
 
       Console.WriteLine("Wait for task");
-      client.WaitForCompletion(new TaskFilter
-                               {
-                                 SessionId = task.Session, SubSessionId = task.SubSession, IncludedTaskIds = { task.Task },
-                               });
+      client.WaitForCompletion(new WaitRequest
+      {
+        Filter = new TaskFilter
+        {
+          SessionId    = task.Session,
+          SubSessionId = task.SubSession,
+          IncludedTaskIds =
+          {
+            task.Task
+          },
+        },
+        ThrowOnTaskCancellation = true,
+        ThrowOnTaskError        = true,
+      });
     }
   }
 }
