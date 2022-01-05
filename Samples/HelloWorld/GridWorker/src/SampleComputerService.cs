@@ -43,9 +43,9 @@ namespace ArmoniK.HelloWorld.Worker
 
     private readonly ILogger<SampleComputerService> logger_;
 
-    public SampleComputerService(ILogger<SampleComputerService> logger, ApplicationLifeTimeManager applicationLifeTime)
+    public SampleComputerService(ILoggerFactory loggerFactory, ApplicationLifeTimeManager applicationLifeTime)
     {
-      logger_              = logger;
+      logger_              = loggerFactory.CreateLogger<SampleComputerService>();
       applicationLifeTime_ = applicationLifeTime;
     }
 
