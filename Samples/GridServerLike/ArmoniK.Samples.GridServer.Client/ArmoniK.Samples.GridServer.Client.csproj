@@ -29,10 +29,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
     <PackageReference Include="Armonik.DevelopmentKit.GridServer.Client" Version="0.0.4" />
     <PackageReference Include="Armonik.DevelopmentKit.GridServer" Version="0.0.4" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
@@ -45,13 +41,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.GridServer.Client" Version="0.0.4" />
-    <PackageReference Include="Armonik.DevelopmentKit.GridServer" Version="0.0.4" />
-  </ItemGroup>
-
-
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\ArmoniK.Samples.GridServer.Common\ArmoniK.Samples.GridServer.Common.csproj" />
   </ItemGroup>
 
