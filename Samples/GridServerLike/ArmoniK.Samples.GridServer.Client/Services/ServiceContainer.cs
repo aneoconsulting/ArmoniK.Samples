@@ -51,6 +51,7 @@ namespace ArmoniK.Samples.GridServer.Client.Services
 
         public int ComputeCube(int a)
         {
+            logger_.LogInformation($"Enter in function : ComputeCube");
             int value = a * a * a;
 
             return value;
@@ -58,6 +59,7 @@ namespace ArmoniK.Samples.GridServer.Client.Services
 
         public int ComputeDivideByZero(int a)
         {
+            logger_.LogInformation($"Enter in function : ComputeDivideByZero");
             int value = a / 0;
 
             return value;
@@ -65,6 +67,7 @@ namespace ArmoniK.Samples.GridServer.Client.Services
 
         public double Add(double value1, double value2)
         {
+            logger_.LogInformation($"Enter in function : Add");
             return value1 + value2;
         }
 
