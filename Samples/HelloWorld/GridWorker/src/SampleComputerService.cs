@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -23,8 +23,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-
-using ArmoniK.Core.gRPC.V1;
 
 using Google.Protobuf;
 
@@ -58,7 +56,10 @@ namespace ArmoniK.HelloWorld.Worker
       var output = "World";
       logger_.LogInformation("reply: {result}",
                              output);
-      return Task.FromResult(new ComputeReply { Result = ByteString.CopyFromUtf8(output) });
+      return Task.FromResult(new ComputeReply
+      {
+        Result = ByteString.CopyFromUtf8(output),
+      });
     }
   }
 }

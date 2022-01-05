@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -22,14 +22,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Linq;
-
-using ArmoniK.Core.gRPC.V1;
-
-using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
-
-using Grpc.Net.Client;
 
 namespace ArmoniK.HelloWorld.Client
 {
@@ -44,27 +36,30 @@ namespace ArmoniK.HelloWorld.Client
 
       Console.WriteLine("Create session");
       var session = client.CreateSession(new SessionOptions
-                                         {
-                                           DefaultTaskOption = new TaskOptions
-                                                               {
-                                                                 MaxDuration = Duration.FromTimeSpan(TimeSpan.FromMinutes(1)),
-                                                                 MaxRetries  = 2,
-                                                                 Priority    = 1,
-                                                               },
-                                         });
+      {
+        DefaultTaskOption = new TaskOptions
+        {
+          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromMinutes(1)),
+          MaxRetries  = 2,
+          Priority    = 1,
+        },
+      });
 
       Console.WriteLine("Create task");
       var task = client.CreateTask(new CreateTaskRequest
-                                   {
-                                     SessionId = session,
-                                     TaskRequests =
-                                     {
-                                       new TaskRequest
-                                       {
-                                         Payload = new Payload { Data = ByteString.CopyFromUtf8("Hello") },
-                                       },
-                                     },
-                                   })
+                       {
+                         SessionId = session,
+                         TaskRequests =
+                         {
+                           new TaskRequest
+                           {
+                             Payload = new Payload
+                             {
+                               Data = ByteString.CopyFromUtf8("Hello"),
+                             },
+                           },
+                         },
+                       })
                        .TaskIds
                        .Single();
 
@@ -77,7 +72,7 @@ namespace ArmoniK.HelloWorld.Client
           SubSessionId = task.SubSession,
           IncludedTaskIds =
           {
-            task.Task
+            task.Task,
           },
         },
         ThrowOnTaskCancellation = true,
