@@ -54,7 +54,7 @@ namespace ArmoniK.HelloWorld.Worker
     {
       logger_.LogInformation($"Processing Task {request.TaskId} of Session {request.Session}");
       logger_.LogInformation("request: {request}",
-                             request.Payload.ToString());
+                             request.Payload.ToStringUtf8());
       var output = "World";
       logger_.LogInformation("reply: {result}",
                              output);
