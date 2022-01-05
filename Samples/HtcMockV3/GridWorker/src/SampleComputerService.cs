@@ -25,6 +25,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
+using ArmoniK.Core.gRPC.V1;
 using ArmoniK.Samples.HtcMock.Adapter;
 
 using Google.Protobuf;

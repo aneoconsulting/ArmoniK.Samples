@@ -23,6 +23,8 @@
 
 using System;
 
+using ArmoniK.Core.gRPC.V1;
+
 using Google.Protobuf.WellKnownTypes;
 
 using Htc.Mock;

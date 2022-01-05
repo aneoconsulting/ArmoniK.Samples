@@ -21,7 +21,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using ArmoniK.Core.gRPC.V1;
 using ArmoniK.Samples.HtcMock.Adapter.Options;
+
+using Grpc.Core;
+using Grpc.Net.Client;
 
 using JetBrains.Annotations;
 
@@ -41,10 +45,10 @@ namespace ArmoniK.Samples.HtcMock.Adapter
     {
       serviceCollection.Configure<Redis>(configuration.GetSection(Redis.SettingSection))
                        .AddTransient<RedisDataClient>()
-                       .Configure<Grpc>(configuration.GetSection(Grpc.SettingSection))
+                       .Configure<Options.Grpc>(configuration.GetSection(Options.Grpc.SettingSection))
                        .AddSingleton(sp =>
                        {
-                         var options = sp.GetRequiredService<IOptions<Grpc>>();
+                         var options = sp.GetRequiredService<IOptions<Options.Grpc>>();
                          return GrpcChannel.ForAddress(options.Value.Endpoint);
                        })
                        .AddTransient(sp =>

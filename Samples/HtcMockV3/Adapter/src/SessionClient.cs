@@ -26,6 +26,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using ArmoniK.Core.gRPC.V1;
+
 using Google.Protobuf;
 
 using Htc.Mock;

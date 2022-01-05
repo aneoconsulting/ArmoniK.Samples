@@ -23,6 +23,8 @@
 
 using System;
 
+using ArmoniK.Core.gRPC.V1;
+
 namespace ArmoniK.Samples.HtcMock.Adapter
 {
   public static class SessionIdExt

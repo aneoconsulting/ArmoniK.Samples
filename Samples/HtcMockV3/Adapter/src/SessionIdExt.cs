@@ -24,6 +24,8 @@
 using System;
 using System.Linq;
 
+using ArmoniK.Core.gRPC.V1;
+
 namespace ArmoniK.Samples.HtcMock.Adapter
 {
   public static class SessionIdExt

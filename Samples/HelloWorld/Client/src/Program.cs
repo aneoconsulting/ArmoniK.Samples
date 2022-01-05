@@ -22,6 +22,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Linq;
+
+using ArmoniK.Core.gRPC.V1;
+
+using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
+
+using Grpc.Net.Client;
 
 namespace ArmoniK.HelloWorld.Client
 {
