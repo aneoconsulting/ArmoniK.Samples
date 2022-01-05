@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -25,11 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
-
-using ArmoniK.Core.gRPC.V1;
-
-using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
 
 using Htc.Mock;
 
@@ -58,7 +53,7 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       taskFilter.IncludedTaskIds.Add(id);
       taskFilter.SessionId    = SessionId.Session;
       taskFilter.SubSessionId = SessionId.SubSession;
-      var response   = client_.TryGetResult(taskFilter);
+      var response = client_.TryGetResult(taskFilter);
       return response.Payloads.Single().Data.Data.ToByteArray();
     }
 
@@ -67,13 +62,13 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       using var _          = logger_.LogFunction();
       var       taskFilter = new TaskFilter();
       taskFilter.IncludedTaskIds.Add(id);
-      taskFilter.SessionId = SessionId.Session;
+      taskFilter.SessionId    = SessionId.Session;
       taskFilter.SubSessionId = SessionId.SubSession;
       client_.WaitForCompletion(new()
       {
-        Filter = taskFilter,
+        Filter                  = taskFilter,
         ThrowOnTaskCancellation = true,
-        ThrowOnTaskError = true,
+        ThrowOnTaskError        = true,
       });
     }
 
@@ -82,24 +77,34 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       using var _ = logger_.LogFunction();
       var taskFilter = new TaskFilter
       {
-        SessionId = SessionId.Session,
+        SessionId    = SessionId.Session,
         SubSessionId = SubSessionId is null ? SessionId.SubSession : SubSessionId.Session,
       };
       taskFilter.IncludedTaskIds.Add(id);
       var count = client_.WaitForSubTasksCompletion(new()
       {
-        Filter = taskFilter,
+        Filter                  = taskFilter,
         ThrowOnTaskCancellation = true,
-        ThrowOnTaskError = true,
+        ThrowOnTaskError        = true,
       });
-      logger_.LogDebug(string.Join(", ", count.Values.Select(p => p.ToString())));
+      logger_.LogDebug(string.Join(", ",
+                                   count.Values.Select(p => p.ToString())));
     }
 
     public IEnumerable<string> SubmitTasks(string session, IEnumerable<byte[]> payloads)
     {
-      using var _                 = logger_.LogFunction();
-      var       taskRequests      = payloads.Select(p => new TaskRequest { Payload = new Payload { Data = ByteString.CopyFrom(p) } });
-      var       createTaskRequest = new CreateTaskRequest { SessionId = SessionId };
+      using var _ = logger_.LogFunction();
+      var taskRequests = payloads.Select(p => new TaskRequest
+      {
+        Payload = new Payload
+        {
+          Data = ByteString.CopyFrom(p),
+        },
+      });
+      var createTaskRequest = new CreateTaskRequest
+      {
+        SessionId = SessionId,
+      };
       createTaskRequest.TaskRequests.Add(taskRequests);
       var createTaskReply = client_.CreateTask(createTaskRequest);
       return createTaskReply.TaskIds.Select(id => id.Task);
@@ -110,8 +115,17 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       using var _ = logger_.LogFunction();
       if (SubSessionId is null)
         CreateSubSession(parentId);
-      var taskRequests      = payloads.Select(p => new TaskRequest { Payload = new Payload { Data = ByteString.CopyFrom(p) } });
-      var createTaskRequest = new CreateTaskRequest { SessionId = SubSessionId };
+      var taskRequests = payloads.Select(p => new TaskRequest
+      {
+        Payload = new Payload
+        {
+          Data = ByteString.CopyFrom(p),
+        },
+      });
+      var createTaskRequest = new CreateTaskRequest
+      {
+        SessionId = SubSessionId,
+      };
       createTaskRequest.TaskRequests.Add(taskRequests);
       var createTaskReply = client_.CreateTask(createTaskRequest);
       return createTaskReply.TaskIds.Select(id => id.Task);
@@ -131,15 +145,24 @@ namespace ArmoniK.Samples.HtcMock.Adapter
     {
       using var _ = logger_.LogFunction();
       var taskRequests = payloadWithDependencies.Select(p =>
-                                                        {
-                                                          var output = new TaskRequest { Payload = new Payload { Data = ByteString.CopyFrom(p.Item1) } };
-                                                          output.DependenciesTaskIds.Add(p.Item2);
-                                                          logger_.LogDebug("Dependencies : {dep}",
-                                                                           string.Join(", ",
-                                                                                       p.Item2.Select(item => item.ToString())));
-                                                          return output;
-                                                        });
-      var createTaskRequest = new CreateTaskRequest { SessionId = SessionId };
+      {
+        var output = new TaskRequest
+        {
+          Payload = new Payload
+          {
+            Data = ByteString.CopyFrom(p.Item1),
+          },
+        };
+        output.DependenciesTaskIds.Add(p.Item2);
+        logger_.LogDebug("Dependencies : {dep}",
+                         string.Join(", ",
+                                     p.Item2.Select(item => item.ToString())));
+        return output;
+      });
+      var createTaskRequest = new CreateTaskRequest
+      {
+        SessionId = SessionId,
+      };
       createTaskRequest.TaskRequests.Add(taskRequests);
       var createTaskReply = client_.CreateTask(createTaskRequest);
       logger_.LogDebug("Tasks created : {ids}",
@@ -165,15 +188,24 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       if (SubSessionId is null)
         CreateSubSession(parentId);
       var taskRequests = payloadWithDependencies.Select(p =>
-                                                        {
-                                                          var output = new TaskRequest { Payload = new Payload { Data = ByteString.CopyFrom(p.Item1) } };
-                                                          output.DependenciesTaskIds.Add(p.Item2);
-                                                          logger_.LogDebug("Dependencies : {dep}",
-                                                                           string.Join(", ",
-                                                                                       p.Item2.Select(item => item.ToString())));
-                                                          return output;
-                                                        });
-      var createTaskRequest = new CreateTaskRequest { SessionId = SubSessionId };
+      {
+        var output = new TaskRequest
+        {
+          Payload = new Payload
+          {
+            Data = ByteString.CopyFrom(p.Item1),
+          },
+        };
+        output.DependenciesTaskIds.Add(p.Item2);
+        logger_.LogDebug("Dependencies : {dep}",
+                         string.Join(", ",
+                                     p.Item2.Select(item => item.ToString())));
+        return output;
+      });
+      var createTaskRequest = new CreateTaskRequest
+      {
+        SessionId = SubSessionId,
+      };
       createTaskRequest.TaskRequests.Add(taskRequests);
       var createTaskReply = client_.CreateTask(createTaskRequest);
       logger_.LogDebug("Tasks created : {ids}",
@@ -186,38 +218,16 @@ namespace ArmoniK.Samples.HtcMock.Adapter
     {
       using var _ = logger_.LogFunction();
       var sessionOptions = new SessionOptions
-                           {
-                             DefaultTaskOption = new TaskOptions
-                                                 {
-                                                   MaxDuration = Duration.FromTimeSpan(TimeSpan.FromMinutes(20)),
-                                                   MaxRetries  = 2,
-                                                   Priority    = 1,
-                                                 },
-                           };
+      {
+        DefaultTaskOption = new TaskOptions
+        {
+          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromMinutes(20)),
+          MaxRetries  = 2,
+          Priority    = 1,
+        },
+      };
       SessionId = client_.CreateSession(sessionOptions);
       return SessionId.ToHtcMockId();
-    }
-
-    public void CreateSubSession(string parentId)
-    {
-      using var _ = logger_.LogFunction(parentId);
-      lock (this)
-      {
-        if (SubSessionId is null)
-        {
-          var sessionOptions = new SessionOptions
-          {
-            DefaultTaskOption = new TaskOptions
-            {
-              MaxDuration = Duration.FromTimeSpan(TimeSpan.FromMinutes(20)),
-              MaxRetries  = 2,
-              Priority    = 1,
-            },
-            ParentTask    = new TaskId { Session = SessionId.Session, SubSession = SessionId.SubSession, Task = parentId },
-          };
-          SubSessionId = client_.CreateSession(sessionOptions);
-        }
-      }
     }
 
 
@@ -240,6 +250,33 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       var       taskFilter = new TaskFilter();
       taskFilter.IncludedTaskIds.Add(taskId);
       client_.CancelTask(taskFilter);
+    }
+
+    public void CreateSubSession(string parentId)
+    {
+      using var _ = logger_.LogFunction(parentId);
+      lock (this)
+      {
+        if (SubSessionId is null)
+        {
+          var sessionOptions = new SessionOptions
+          {
+            DefaultTaskOption = new TaskOptions
+            {
+              MaxDuration = Duration.FromTimeSpan(TimeSpan.FromMinutes(20)),
+              MaxRetries  = 2,
+              Priority    = 1,
+            },
+            ParentTask = new TaskId
+            {
+              Session    = SessionId.Session,
+              SubSession = SessionId.SubSession,
+              Task       = parentId,
+            },
+          };
+          SubSessionId = client_.CreateSession(sessionOptions);
+        }
+      }
     }
   }
 }

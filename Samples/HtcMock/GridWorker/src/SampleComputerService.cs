@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -25,7 +25,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
-using ArmoniK.Core.gRPC.V1;
 using ArmoniK.Samples.HtcMock.Adapter;
 
 using Google.Protobuf;
@@ -58,31 +57,35 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
       applicationLifeTime_ = applicationLifeTime;
 
       gridWorker_ = new Htc.Mock.GridWorker(new DelegateRequestRunnerFactory((runConfiguration, session)
-                                                                                       => new DistributedRequestRunner(redisDataClient,
-                                                                                                                       gridClient,
-                                                                                                                       runConfiguration,
-                                                                                                                       session,
-                                                                                                                       false,
-                                                                                                                       false,
-                                                                                                                       false)));
+                                                                               => new DistributedRequestRunner(redisDataClient,
+                                                                                                               gridClient,
+                                                                                                               runConfiguration,
+                                                                                                               session)));
     }
 
     /// <inheritdoc />
     public override Task<ComputeReply> Execute(ComputeRequest request, ServerCallContext context)
     {
       using var scoledLog = logger_.BeginNamedScope("Execute task",
-                                                       ("Session", request.Session),
-                                                       ("SubSession", request.Subsession),
-                                                       ("taskId", request.TaskId));
+                                                    ("Session", request.Session),
+                                                    ("SubSession", request.Subsession),
+                                                    ("taskId", request.TaskId));
       logger_.LogDebug("Begin execution : payload size = {size}",
                        request.Payload.Length);
-      var sessionId = new SessionId { Session = request.Session, SubSession = request.Subsession };
+      var sessionId = new SessionId
+      {
+        Session    = request.Session,
+        SubSession = request.Subsession,
+      };
       try
       {
         var output = gridWorker_.Execute(sessionId.ToHtcMockId(),
-                            request.TaskId,
-                            request.Payload.ToByteArray());
-        return Task.FromResult(new ComputeReply { Result = ByteString.CopyFrom(output) });
+                                         request.TaskId,
+                                         request.Payload.ToByteArray());
+        return Task.FromResult(new ComputeReply
+        {
+          Result = ByteString.CopyFrom(output),
+        });
       }
       catch (Exception e)
       {

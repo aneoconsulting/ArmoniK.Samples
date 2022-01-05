@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -52,34 +52,33 @@ namespace ArmoniK.Samples.HtcMock.Adapter
     {
       var configurationOptions = new ConfigurationOptions
       {
-        EndPoints      = { endpointUrl },
+        EndPoints =
+        {
+          endpointUrl,
+        },
         Ssl            = true,
         SslHost        = sslHost,
         ConnectTimeout = timeout,
       };
       if (!File.Exists(caCertPath))
-      {
         throw new FileNotFoundException(caCertPath + " was not found !");
-      }
 
       if (!File.Exists(clientPfxPath))
-      {
         throw new FileNotFoundException(clientPfxPath + " was not found !");
-      }
 
       // method to validate the certificate
       // https://github.com/StackExchange/StackExchange.Redis/issues/1113
       configurationOptions.CertificateValidation += (sender, certificate, chain, sslPolicyErrors) =>
-                                                    {
-                                                      X509Certificate2 certificateAuthority = new(caCertPath);
-                                                      if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors)
-                                                      {
-                                                        var root = chain.ChainElements[^1].Certificate;
-                                                        return certificateAuthority.Equals(root);
-                                                      }
+      {
+        X509Certificate2 certificateAuthority = new(caCertPath);
+        if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors)
+        {
+          var root = chain.ChainElements[^1].Certificate;
+          return certificateAuthority.Equals(root);
+        }
 
-                                                      return sslPolicyErrors == SslPolicyErrors.None;
-                                                    };
+        return sslPolicyErrors == SslPolicyErrors.None;
+      };
 
       configurationOptions.CertificateSelection += delegate
       {
@@ -102,7 +101,7 @@ namespace ArmoniK.Samples.HtcMock.Adapter
     public void StoreData(string key, byte[] data)
     {
       var b = db_.StringSet(key,
-                    data);
+                            data);
       if (!b)
         throw new Exception($"Data not stored for key {key}");
     }

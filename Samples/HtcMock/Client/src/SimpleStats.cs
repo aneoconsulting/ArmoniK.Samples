@@ -1,6 +1,6 @@
 ﻿// This file is part of the ArmoniK project
 // 
-// Copyright (C) ANEO, 2021-2021. All rights reserved.
+// Copyright (C) ANEO, 2021-2022. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -27,10 +27,13 @@ namespace ArmoniK.Samples.HtcMock.Client
 {
   internal class SimpleStats
   {
-    public long   EllapsedTime { get; set; }
-    public string Test         { get; set; }
-    public int    NRun         { get; set; }
+    public long EllapsedTime { get; set; }
+    public string Test { get; set; }
+    public int NRun { get; set; }
 
-    public string ToJson() => JsonSerializer.Serialize(this);
+    public string ToJson()
+    {
+      return JsonSerializer.Serialize(this);
+    }
   }
 }
