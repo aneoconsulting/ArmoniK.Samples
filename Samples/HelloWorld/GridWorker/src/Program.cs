@@ -22,8 +22,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.IO;
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
@@ -33,14 +35,26 @@ namespace ArmoniK.HelloWorld.Worker
 {
   public class Program
   {
+    private static IConfigurationRoot configuration_;
+
     public static int Main(string[] args)
     {
+      var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json",
+                                 false,
+                                 true);
+
+
+      configuration_ = builder.Build();
+
       Log.Logger = new LoggerConfiguration()
-                  .MinimumLevel.Override("Microsoft",
-                                         LogEventLevel.Information)
-                  .Enrich.FromLogContext()
-                  .WriteTo.Console()
-                  .CreateBootstrapLogger();
+                   .MinimumLevel.Override("Microsoft",
+                                          LogEventLevel.Information)
+                   .ReadFrom.Configuration(configuration_)
+                   .Enrich.FromLogContext()
+                   .WriteTo.Console()
+                   .CreateBootstrapLogger();
 
       try
       {
@@ -60,13 +74,14 @@ namespace ArmoniK.HelloWorld.Worker
       }
     }
 
-    // Additional configuration is required to successfully run gRPC on macOS.
+    // Additional configuration_ is required to successfully run gRPC on macOS.
     // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
     public static IHostBuilder CreateHostBuilder(string[] args) =>
       Host.CreateDefaultBuilder(args)
           .UseSerilog((context, services, configuration) => configuration
                                                            .ReadFrom.Configuration(context.Configuration)
                                                            .ReadFrom.Services(services)
+                                                           .ReadFrom.Configuration(configuration_)
                                                            .MinimumLevel
                                                            .Override("Microsoft.AspNetCore",
                                                                      LogEventLevel.Debug)
