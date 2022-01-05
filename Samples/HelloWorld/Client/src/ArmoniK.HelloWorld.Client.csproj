@@ -25,10 +25,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\DevelopmentKit\csharp\Generated\src\ArmoniK.Csharp.csproj" />
+    <PackageReference Include="ArmoniK.Csharp" Version="0.0.4" />
   </ItemGroup>
 
 </Project>
