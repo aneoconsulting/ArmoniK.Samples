@@ -21,7 +21,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ArmoniK.Csharp" Version="0.0.4" />
+		<PackageReference Include="ArmoniK.Csharp" Version="0.0.5" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
 		<PackageReference Include="Htc.Mock" Version="3.0.0-alpha11" />
 		<PackageReference Include="StackExchange.Redis" Version="2.2.88" />
