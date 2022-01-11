@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<PackageId>$(MSBuildProjectName)</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>ANEO</Authors>
+		<Company>ANEO</Company>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>
+		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+		<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+		<OutputPath>bin</OutputPath>
+		<PublishDir>../publish/$(MSBuildProjectName)/$(Version)</PublishDir>
+		<PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
+		<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<DebugType>embedded</DebugType>
+		<IncludeSymbols>true</IncludeSymbols>
+		<!--<SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<PublishDir>../publish/$(MSBuildProjectName)/$(Version)</PublishDir>
+		<PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<RuntimeHostConfigurationOption Include="System.Globalization.Invariant" Value="true" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Serilog" Version="2.10.0" />
+		<PackageReference Include="Serilog.Extensions.Hosting" Version="4.2.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+		<PackageReference Include="Serilog.Formatting.Compact" Version="1.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+		<PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.1.0-CI-6825" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+		<PackageReference Include="Grpc.AspNetCore" Version="2.41.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="publish" CopyToPublishDirectory="Never" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Properties\PublishProfiles\" />
+	</ItemGroup>
+
+	<Target Name="CreateDirectories" AfterTargets="AfterPublish">
+		<MakeDir Directories="../packages" />
+	</Target>
+
+	<Target Name="ZipOutputPath" AfterTargets="CreateDirectories">
+		<ZipDirectory SourceDirectory="../publish/" DestinationFile="../packages/$(MSBuildProjectName)-v$(Version).zip" Overwrite="true" />
+	</Target>
+
+	<!--<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+    </ItemGroup>
+  </Target>-->
+
+</Project>
