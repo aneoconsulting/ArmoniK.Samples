@@ -6,7 +6,6 @@
     <Authors>ANEO</Authors>
     <Company>ANEO</Company>
     
-    <!--<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>-->
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <OutputPath>bin</OutputPath>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
@@ -14,10 +13,5 @@
     <IsPackable>true</IsPackable>
     <PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
  </PropertyGroup>
-
-
-  <!--<ItemGroup>
-    <Content Update="obj" CopyToPublishDirectory="Never" />
-  </ItemGroup>-->
 
 </Project>
