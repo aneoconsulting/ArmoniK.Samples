@@ -44,6 +44,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.EndToEndTests", "..\ArmoniK.Extensions.Csharp\SymphonyApi\ArmoniK.DevelopmentKit.SymphonyApi.Tests\EndToEnd.Tests\ArmoniK.Samples.EndToEndTests.csproj", "{FB4DD45C-CA14-4CA5-8232-F674C452487E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,6 +104,10 @@ Global
 		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB4DD45C-CA14-4CA5-8232-F674C452487E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB4DD45C-CA14-4CA5-8232-F674C452487E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB4DD45C-CA14-4CA5-8232-F674C452487E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB4DD45C-CA14-4CA5-8232-F674C452487E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +126,7 @@ Global
 		{D9072D4E-3D35-487C-B36D-483006B642F6} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
 		{58C6D29B-0A12-461F-9470-F1D6E29634D0} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
 		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
+		{FB4DD45C-CA14-4CA5-8232-F674C452487E} = {AE299B0C-CA72-4FE3-BCED-D1C6B26644BC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {296BECBB-EB87-4630-8EBD-A1837B12E5E6}

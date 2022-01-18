@@ -48,12 +48,12 @@ namespace ArmoniK.Samples.GridServer.Client.Services
                     .AddEnvironmentVariables();
 
 
-      var Configuration = builder.Build();
+      configuration_ = builder.Build();
 
       Log.Logger = new LoggerConfiguration()
                    .MinimumLevel.Override("Microsoft",
                                           LogEventLevel.Information)
-                   .ReadFrom.Configuration(Configuration)
+                   .ReadFrom.Configuration(configuration_)
                    .Enrich.FromLogContext()
                    .WriteTo.Console()
                    .CreateBootstrapLogger();
