@@ -91,7 +91,6 @@ jobs:
       run: |
         docker push dockerhubaneo/armonik_worker_htcmock_v3:$VERSION
 
-
   testInfraWorker:
     needs:
       - buildProjects
