@@ -14,7 +14,7 @@
 
 # Introduction <a name="introduction"></a>
 
-You will find the Sample to execute tasks with Armonik with API Symphony like.
+You will find the Sample to execute tasks with Armonik with API GridServer like.
 All API References to develop your own application within Armonik can be found in this [API documentation](Documentation/Home.md)
 
 # Software prerequisites <a name="software-prerequisites"></a>
@@ -46,7 +46,9 @@ To get the Ip adress, in a terminal get the ip adress with this command line
 ```bash
 ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1
 ```
+
 Copy the result and replace the adress in Section Grpc -> EndPoint
+
 ```json
 
   "Grpc": {
@@ -55,25 +57,31 @@ Copy the result and replace the adress in Section Grpc -> EndPoint
 ```
 
 ### Compile the full solution and publish Server package
+
 From Visual Studio, Rebuild the solution
 
 
 ### Publish package into mount filesystem
 
 ### Configure a mount point for local application installation
+
 Please create /data directory to the deposit the package
+
 ```bash
 sudo mkdir /data
 chown -R $USER:$USER /data
 ```
 
 ### Deploy new package to WSL /data directory
+
 From Armonik.Samples root directory :
+
 ```bash
-cp -v Samples/GridServerLike/packages/ArmoniK.Samples.SymphonyPackage-v1.0.0.zip /data/
+cp -v Samples/GridServerLike/packages/ArmoniK.Samples.GridServer.Client-v1.0.0.zip /data/
 ```
 
 ### Restart Compute pod
+
 ```bash
 kubectl delete -n armonik $(kubectl get pods -n armonik -l service=compute-plane --no-headers=true -o name)
 ```
@@ -82,7 +90,7 @@ kubectl delete -n armonik $(kubectl get pods -n armonik -l service=compute-plane
 
 From Visual Studio, execute the project ArmoniK.Samples.GridServer.Client within Visual Studio 2019 or later
 
-
 ## How to debug your code remotely
+
 TODO explain how to connect to docker Compute-0 and attach the to the package
 Need to configure the ssh in wsl
