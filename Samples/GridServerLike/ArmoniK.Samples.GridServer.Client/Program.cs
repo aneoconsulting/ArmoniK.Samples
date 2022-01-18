@@ -82,12 +82,16 @@ namespace ArmoniK.Samples.GridServer.Client
 
       taskOptions.Options.Add(AppsOptions.EngineTypeNameKey,
                               EngineType.DataSynapse.ToString());
+
       taskOptions.Options.Add(AppsOptions.GridAppNameKey,
                               "ArmoniK.Samples.GridServer.Client");
+
       taskOptions.Options.Add(AppsOptions.GridAppVersionKey,
                               "1.0.0");
+
       taskOptions.Options.Add(AppsOptions.GridAppNamespaceKey,
                               "ArmoniK.Samples.GridServer.Client.Services");
+
       taskOptions.Options.Add(AppsOptions.GridServiceNameKey,
                               "ServiceContainer");
 
