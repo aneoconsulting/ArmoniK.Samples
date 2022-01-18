@@ -1,15 +1,15 @@
-# ArmoniK SymphonyLike Samples
-- [ArmoniK SymphonyLike Samples](#armonik-symphonylike-samples)
+# ArmoniK GridServerLike Samples
+- [ArmoniK GridServerLike Samples](#armonik-gridserverlike-samples)
 - [Introduction <a name="introduction"></a>](#introduction-)
 - [Software prerequisites <a name="software-prerequisites"></a>](#software-prerequisites-)
-- [How to start with sample SymphonyLike](#how-to-start-with-sample-symphonylike)
+- [How to start with sample GridServerLike](#how-to-start-with-sample-gridserverlike)
     - [Configure applications](#configure-applications)
     - [Compile the full solution and publish Server package](#compile-the-full-solution-and-publish-server-package)
     - [Publish package into mount filesystem](#publish-package-into-mount-filesystem)
     - [Configure a mount point for local application installation](#configure-a-mount-point-for-local-application-installation)
     - [Deploy new package to WSL /data directory](#deploy-new-package-to-wsl-data-directory)
     - [Restart Compute pod](#restart-compute-pod)
-    - [Execute Armonik.Samples.SymphonyClient](#execute-armoniksamplessymphonyclient)
+    - [Execute Armonik.Samples.GridServer.Client(String ob , string[] otot)](#execute-armoniksamplesgridserverclientstring-ob--string-otot)
   - [How to debug your code remotely](#how-to-debug-your-code-remotely)
 
 # Introduction <a name="introduction"></a>
@@ -27,17 +27,17 @@ Before starting, it is important to have correctly deployed the ArmoniK solution
 kubectl get po -n armonik
 ```
 
-# How to start with sample SymphonyLike
+# How to start with sample GridServerLike
 
 
 ### Configure applications
-Go to folder of SymphonyLike
+Go to folder of GridServerLike
 ```bash
-cd Samples/SymphonyLike/
+cd Samples/GridServerLike/
 ```
 Open the solution ArmoniK.sln with Visual Studio 2019 or later
 
-In the project Armonik.Samples.SymphonyLikeClient
+In the project Armonik.Samples.GridServerLikeClient
 
 Open the file appsettings.json and change IP adress to your correct WSL address ip.
 
@@ -64,12 +64,13 @@ From Visual Studio, Rebuild the solution
 Please create /data directory to the deposit the package
 ```bash
 sudo mkdir /data
+chown -R $USER:$USER /data
 ```
 
 ### Deploy new package to WSL /data directory
 From Armonik.Samples root directory :
 ```bash
-cp -v Samples/SymphonyLike/packages/ArmoniK.Samples.SymphonyPackage-v1.0.0.zip /data/
+cp -v Samples/GridServerLike/packages/ArmoniK.Samples.SymphonyPackage-v1.0.0.zip /data/
 ```
 
 ### Restart Compute pod
@@ -77,9 +78,9 @@ cp -v Samples/SymphonyLike/packages/ArmoniK.Samples.SymphonyPackage-v1.0.0.zip /
 kubectl delete -n armonik $(kubectl get pods -n armonik -l service=compute-plane --no-headers=true -o name)
 ```
 
-### Execute Armonik.Samples.SymphonyClient
+### Execute Armonik.Samples.GridServer.Client(String ob , string[] otot)
 
-From Visual Studio, execute the project ArmoniK.Samples.SymplhonyClient within Visual Studio 2019 or later
+From Visual Studio, execute the project ArmoniK.Samples.GridServer.Client within Visual Studio 2019 or later
 
 
 ## How to debug your code remotely
