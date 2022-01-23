@@ -155,16 +155,14 @@ jobs:
       - name: Run Mock
         run: |
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-          export ReIP=$(kubectl get svc redis -n armonik-storage -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-          export RePort=$(kubectl get svc redis -n armonik-storage -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
           export Grpc__Endpoint=http://$CPIP:$CPPort
+
+          export ReIP=$(kubectl get svc redis -n armonik-storage -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
+          export RePort=$(kubectl get svc redis -n armonik-storage -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
           export Redis__EndpointUrl=$ReIP:$RePort
-          export Redis__SslHost="127.0.0.1"
           export Redis__Timeout=3000
-          
-          export Redis__CaCertPath=${{ steps.deploy-infra.outputs.credentials-ca-crt }}
-          export Redis__ClientPfxPath=${{ steps.deploy-infra.outputs.credentials-certificate-pfx }}
+          export Redis__CredentialsPath=${{ steps.deploy-infra.outputs.credentials-redis }}
           
           cd Samples/HtcMock/Client/src
           dotnet build "ArmoniK.Samples.HtcMock.Client.csproj" -c Release
@@ -191,16 +189,8 @@ jobs:
       - name: Run Mock
         run: |
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-          export ReIP=$(kubectl get svc redis -n armonik-storage -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-          export RePort=$(kubectl get svc redis -n armonik-storage -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
           export Grpc__Endpoint=http://$CPIP:$CPPort
-          export Redis__EndpointUrl=$ReIP:$RePort
-          export Redis__SslHost="127.0.0.1"
-          export Redis__Timeout=3000
-          
-          export Redis__CaCertPath=${{ steps.deploy-infra.outputs.credentials-ca-crt }}
-          export Redis__ClientPfxPath=${{ steps.deploy-infra.outputs.credentials-certificate-pfx }}
           
           cd Samples/HtcMockV3/Client/src
           dotnet build "ArmoniK.Samples.HtcMock.Client.csproj" -c Release
