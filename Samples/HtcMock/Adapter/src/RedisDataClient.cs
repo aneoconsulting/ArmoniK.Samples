@@ -43,15 +43,15 @@ namespace ArmoniK.Samples.HtcMock.Adapter
 
     public RedisDataClient(IOptions<Redis> options)
     {
-      var configurationRoot = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).
-                                                         AddJsonFile(options.Value.CredentialsPath).Build();
-      var credentials = configurationRoot.GetValue<RedisCredentials>(RedisCredentials.SettingSection);
+      var configurationRoot = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(options.Value.CredentialsPath).Build();
+      var credentials       = configurationRoot.GetValue<RedisCredentials>(RedisCredentials.SettingSection);
+
       con_ = this.CreateConnection(options.Value.EndpointUrl,
-                            credentials.SslHost,
-                            options.Value.Timeout,
-                            credentials.Ssl,
-                            credentials.User,
-                            credentials.Password);
+                                   configurationRoot["Redis:SslHost"],
+                                   options.Value.Timeout,
+                                   bool.Parse(configurationRoot["Redis:Ssl"]),
+                                   configurationRoot["Redis:User"],
+                                   configurationRoot["Redis:Password"]);
     }
 
     private ConnectionMultiplexer CreateConnection(string endpointUrl, string sslHost, int timeout, bool Ssl, string user, string password)
@@ -85,7 +85,7 @@ namespace ArmoniK.Samples.HtcMock.Adapter
     public void StoreData(string key, byte[] data)
     {
       var b = con_.GetDatabase().StringSet(key,
-                            data);
+                                           data);
       if (!b)
         throw new Exception($"Data not stored for key {key}");
     }
