@@ -30,25 +30,31 @@ using ArmoniK.Samples.HtcMock.Adapter.Options;
 
 using Htc.Mock;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 using StackExchange.Redis;
 
 namespace ArmoniK.Samples.HtcMock.Adapter
 {
-  public class RedisDataClient : IDataClient
+  public class RedisDataClient : IDataClient, IDisposable
   {
-    private readonly IDatabase db_;
+    private readonly ConnectionMultiplexer con_;
 
-    public RedisDataClient(IOptions<Redis> options) : this(options.Value.EndpointUrl,
-                                                           options.Value.SslHost,
-                                                           options.Value.Timeout,
-                                                           options.Value.CaCertPath,
-                                                           options.Value.ClientPfxPath)
+    public RedisDataClient(Redis options)
     {
+      var configurationRoot = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).
+                                                         AddJsonFile(options.CredentialsPath).Build();
+      var credentials = configurationRoot.GetValue<RedisCredentials>(RedisCredentials.SettingSection);
+      con_ = this.CreateConnection(options.EndpointUrl,
+                            credentials.SslHost,
+                            options.Timeout,
+                            credentials.Ssl,
+                            credentials.User,
+                            credentials.Password);
     }
 
-    public RedisDataClient(string endpointUrl, string sslHost, int timeout, string caCertPath, string clientPfxPath)
+    private ConnectionMultiplexer CreateConnection(string endpointUrl, string sslHost, int timeout, bool Ssl, string user, string password)
     {
       var configurationOptions = new ConfigurationOptions
       {
@@ -56,43 +62,21 @@ namespace ArmoniK.Samples.HtcMock.Adapter
         {
           endpointUrl,
         },
-        Ssl            = true,
+        Ssl            = Ssl,
         SslHost        = sslHost,
         ConnectTimeout = timeout,
-      };
-      if (!File.Exists(caCertPath))
-        throw new FileNotFoundException(caCertPath + " was not found !");
-
-      if (!File.Exists(clientPfxPath))
-        throw new FileNotFoundException(clientPfxPath + " was not found !");
-
-      // method to validate the certificate
-      // https://github.com/StackExchange/StackExchange.Redis/issues/1113
-      configurationOptions.CertificateValidation += (sender, certificate, chain, sslPolicyErrors) =>
-      {
-        X509Certificate2 certificateAuthority = new(caCertPath);
-        if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors)
-        {
-          var root = chain.ChainElements[^1].Certificate;
-          return certificateAuthority.Equals(root);
-        }
-
-        return sslPolicyErrors == SslPolicyErrors.None;
+        Password       = password,
+        User           = user,
       };
 
-      configurationOptions.CertificateSelection += delegate
-      {
-        var cert = new X509Certificate2(clientPfxPath);
-        return cert;
-      };
       var connection = ConnectionMultiplexer.Connect(configurationOptions);
-      db_ = connection.GetDatabase();
-      db_.Ping();
+      connection.GetDatabase().Ping();
+      return connection;
     }
 
     public byte[] GetData(string key)
     {
-      var data = db_.StringGet(key);
+      var data = con_.GetDatabase().StringGet(key);
       if (data.IsNullOrEmpty)
         throw new Exception($"Key {key} is not associated to values");
       return data;
@@ -100,10 +84,15 @@ namespace ArmoniK.Samples.HtcMock.Adapter
 
     public void StoreData(string key, byte[] data)
     {
-      var b = db_.StringSet(key,
+      var b = con_.GetDatabase().StringSet(key,
                             data);
       if (!b)
         throw new Exception($"Data not stored for key {key}");
+    }
+
+    public void Dispose()
+    {
+      con_.Close();
     }
   }
 }

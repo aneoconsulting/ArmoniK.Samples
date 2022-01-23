@@ -26,11 +26,12 @@ using JetBrains.Annotations;
 namespace ArmoniK.Samples.HtcMock.Adapter.Options
 {
   [PublicAPI]
-  public class Redis
+  public class RedisCredentials
   {
     public const string SettingSection = nameof(Redis);
-    public string EndpointUrl { get; set; }
-    public int Timeout { get; set; }
-    public string CredentialsPath { get; set; }
+    public string SslHost { get; set; }
+    public bool Ssl { get; set; }
+    public string User { get; set; }
+    public string Password { get; set; }
   }
 }
