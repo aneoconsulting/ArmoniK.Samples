@@ -43,19 +43,36 @@ namespace ArmoniK.Samples.HtcMock.Adapter
 
     public RedisDataClient(IOptions<Redis> options)
     {
-      var configurationRoot = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(options.Value.CredentialsPath).Build();
-      var credentials       = configurationRoot.GetValue<RedisCredentials>(RedisCredentials.SettingSection);
+      var configurationRoot = new ConfigurationBuilder().AddJsonFile(options.Value.CredentialsPath).AddEnvironmentVariables().Build();
 
       con_ = this.CreateConnection(options.Value.EndpointUrl,
                                    configurationRoot["Redis:SslHost"],
                                    options.Value.Timeout,
                                    bool.Parse(configurationRoot["Redis:Ssl"]),
                                    configurationRoot["Redis:User"],
-                                   configurationRoot["Redis:Password"]);
+                                   configurationRoot["Redis:Password"],
+                                   configurationRoot["Redis:CaPath"]);
     }
 
-    private ConnectionMultiplexer CreateConnection(string endpointUrl, string sslHost, int timeout, bool Ssl, string user, string password)
+    private ConnectionMultiplexer CreateConnection(string endpointUrl, string sslHost, int timeout, bool Ssl, string user, string password, string caPath)
     {
+      if (!string.IsNullOrEmpty(caPath))
+      {
+        X509Store                  localTrustStore       = new X509Store(StoreName.Root);
+        X509Certificate2Collection certificateCollection = new X509Certificate2Collection();
+        try
+        {
+          certificateCollection.Import(caPath);
+          localTrustStore.Open(OpenFlags.ReadWrite);
+          localTrustStore.AddRange(certificateCollection);
+          Console.WriteLine($"Imported mongodb certificate from file {caPath}");
+        }
+        finally
+        {
+          localTrustStore.Close();
+        }
+      }
+
       var configurationOptions = new ConfigurationOptions
       {
         EndPoints =
