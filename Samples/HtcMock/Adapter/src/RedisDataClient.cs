@@ -65,7 +65,7 @@ namespace ArmoniK.Samples.HtcMock.Adapter
           certificateCollection.Import(caPath);
           localTrustStore.Open(OpenFlags.ReadWrite);
           localTrustStore.AddRange(certificateCollection);
-          Console.WriteLine($"Imported mongodb certificate from file {caPath}");
+          Console.WriteLine($"Imported redis certificate from file {caPath}");
         }
         finally
         {
