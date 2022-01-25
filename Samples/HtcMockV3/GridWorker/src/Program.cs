@@ -22,8 +22,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.IO;
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
@@ -33,6 +35,8 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
 {
   public class Program
   {
+    private static readonly string SocketPath = "/cache/armonik.sock";
+
     public static int Main(string[] args)
     {
       Log.Logger = new LoggerConfiguration()
@@ -69,7 +73,20 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
                                                                    .Override("Microsoft.AspNetCore",
                                                                              LogEventLevel.Debug)
                                                                    .Enrich.FromLogContext())
-                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+                 .ConfigureWebHostDefaults(webBuilder =>
+                 {
+                   webBuilder.UseStartup<Startup>();
+                   webBuilder.ConfigureKestrel(options =>
+                   {
+                     if (File.Exists(SocketPath))
+                     {
+                       File.Delete(SocketPath);
+                     }
+
+                     options.ListenUnixSocket(SocketPath,
+                                              listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });
+                   });
+                 });
     }
   }
 }
