@@ -24,16 +24,22 @@
 using System;
 using System.IO;
 
+using ArmoniK.Samples.HtcMock.Adapter;
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 using Serilog;
-using Serilog.Events;
+using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.HtcMock.GridWorker
 {
-  public class Program
+  public static class Program
   {
     private static readonly string SocketPath = "/cache/armonik.sock";
 
@@ -43,10 +49,79 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
                    .Enrich.FromLogContext()
                    .WriteTo.Console()
                    .CreateBootstrapLogger();
+
       try
       {
         Log.Information("Starting web host");
-        CreateHostBuilder(args).Build().Run();
+
+
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Configuration
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json",
+                            true,
+                            true)
+               .AddEnvironmentVariables()
+               .AddCommandLine(args);
+
+        builder.Logging.AddSerilog();
+
+        var serilogLogger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration)
+                                                     .Enrich.FromLogContext()
+                                                     .CreateLogger();
+
+        var loggerFactory = LoggerFactory.Create(loggingBuilder => loggingBuilder.AddSerilog(serilogLogger));
+        var logger        = loggerFactory.CreateLogger("root");
+
+        builder.Host
+               .UseSerilog((context, services, config)
+                             => config.ReadFrom.Configuration(context.Configuration)
+                                      .ReadFrom.Services(services)
+                                      .Enrich.FromLogContext());
+
+        builder.WebHost.ConfigureKestrel(options =>
+        {
+          if (File.Exists(SocketPath))
+          {
+            File.Delete(SocketPath);
+          }
+
+          options.ListenUnixSocket(SocketPath,
+                                   listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });
+        });
+
+        builder.Services
+               .AddSingleton<ApplicationLifeTimeManager>()
+               .AddSingleton(sp => loggerFactory)
+               .AddComponents(builder.Configuration)
+               .AddLogging()
+               .AddGrpc(options => options.MaxReceiveMessageSize = null);
+
+
+        var app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
+          app.UseDeveloperExceptionPage();
+
+        app.UseSerilogRequestLogging();
+
+        app.UseRouting();
+
+
+        app.UseEndpoints(endpoints =>
+        {
+          endpoints.MapGrpcService<SampleComputerService>();
+
+          if (app.Environment.IsDevelopment())
+          {
+            endpoints.MapGrpcReflectionService();
+            logger.LogInformation("Grpc Reflection Activated");
+          }
+        });
+
+        app.Run();
+
         return 0;
       }
       catch (Exception ex)
@@ -59,34 +134,6 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
       {
         Log.CloseAndFlush();
       }
-    }
-
-    // Additional configuration is required to successfully run gRPC on macOS.
-    // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
-    public static IHostBuilder CreateHostBuilder(string[] args)
-    {
-      return Host.CreateDefaultBuilder(args)
-                 .UseSerilog((context, services, configuration) => configuration
-                                                                   .ReadFrom.Configuration(context.Configuration)
-                                                                   .ReadFrom.Services(services)
-                                                                   .MinimumLevel
-                                                                   .Override("Microsoft.AspNetCore",
-                                                                             LogEventLevel.Debug)
-                                                                   .Enrich.FromLogContext())
-                 .ConfigureWebHostDefaults(webBuilder =>
-                 {
-                   webBuilder.UseStartup<Startup>();
-                   webBuilder.ConfigureKestrel(options =>
-                   {
-                     if (File.Exists(SocketPath))
-                     {
-                       File.Delete(SocketPath);
-                     }
-
-                     options.ListenUnixSocket(SocketPath,
-                                              listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });
-                   });
-                 });
     }
   }
 }
