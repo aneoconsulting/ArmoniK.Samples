@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.GridServer.Client" Version="0.2.0-dduend2endtests.19.d9d24ab" />
+    <PackageReference Include="Armonik.DevelopmentKit.GridServer.Client" Version="0.2.1" />
   </ItemGroup>
 
   <ItemGroup>
