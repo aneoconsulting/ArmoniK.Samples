@@ -129,7 +129,26 @@ The method to submit several tasks with dependencies tasks. This task will wait 
 
 ---
 
-### [`void WaitForCompletion(String taskId)`](ServiceContainerBase.md#void-waitforcompletionstring-taskid)
+### [`IEnumerable<String> SubmitSubtasksWithDependencies(String parentId, IEnumerable<Tuple<Byte[], IList<String>>> payloadWithDependencies)`](ServiceContainerBase.md#ienumerablestring-submitsubtaskswithdependenciesstring-parentid-ienumerabletuplebyte-iliststring-payloadwithdependencies)
+
+#### Description
+
+The method to submit several tasks with dependencies tasks. This task will wait for  to start until all dependencies are completed successfully
+
+#### Parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| **parentId**|`String`||
+| **payloadWithDependencies**|`IEnumerable<Tuple<Byte[], IList<String>>>`|A list of Tuple(taskId, Payload) in dependence of those created Subtasks|
+
+#### Returns
+
+`IEnumerable<String>` : return a list of taskIds of the created subtasks
+
+---
+
+### [`void WaitForTaskCompletion(String taskId)`](ServiceContainerBase.md#void-waitfortaskcompletionstring-taskid)
 
 #### Description
 
@@ -140,6 +159,23 @@ User method to wait for only the parent task from the client
 | Name | Type | Description |
 | --- | --- | --- |
 | **taskId**|`String`|The task id of the task to wait for|
+
+#### Returns
+
+`void`
+
+---
+
+### [`void WaitForTasksCompletion(IEnumerable<String> taskIds)`](ServiceContainerBase.md#void-waitfortaskscompletionienumerablestring-taskids)
+
+#### Description
+
+No Description
+#### Parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| **taskIds**|`IEnumerable<String>`|List of tasks to wait for|
 
 #### Returns
 
@@ -195,6 +231,25 @@ The configure method is an internal call to prepare the ServiceContainer.  Its h
 | --- | --- | --- |
 | **configuration**|`IConfiguration`|The appSettings.json configuration prepared during the deployment|
 | **clientOptions**|`IDictionary<String, String>`|All data coming from Client within TaskOptions.Options|
+
+#### Returns
+
+`void`
+
+---
+
+### [`void ConfigureSession(SessionId sessionId, IDictionary<String, String> requestTaskOptions)`](ServiceContainerBase.md#void-configuresessionsessionid-sessionid-idictionarystring-string-requesttaskoptions)
+
+#### Description
+
+Prepare Session and create SessionService with the specific session
+
+#### Parameters
+
+| Name | Type | Description |
+| --- | --- | --- |
+| **sessionId**|`SessionId`||
+| **requestTaskOptions**|`IDictionary<String, String>`||
 
 #### Returns
 

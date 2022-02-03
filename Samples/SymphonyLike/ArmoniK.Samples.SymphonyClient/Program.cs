@@ -30,6 +30,7 @@ using System.Threading;
 
 using ArmoniK.Core.gRPC.V1;
 using ArmoniK.DevelopmentKit.SymphonyApi.Client;
+using ArmoniK.DevelopmentKit.SymphonyApi.Client.api;
 using ArmoniK.DevelopmentKit.WorkerApi.Common;
 
 using Armonik.Samples.Symphony.Common;
@@ -93,7 +94,8 @@ namespace Armonik.Samples.Symphony.Client
 
       logger_ = factory.CreateLogger<Program>();
 
-      var client = new ArmonikSymphonyClient(configuration_);
+      var client = new ArmonikSymphonyClient(configuration_,
+                                             factory);
 
       //get envirnoment variable
       var var_env = Environment.GetEnvironmentVariable("ARMONIK_DEBUG_WAIT_TASK");
@@ -102,15 +104,15 @@ namespace Armonik.Samples.Symphony.Client
       var taskOptions = InitializeSimpleTaskOptions();
 
 
-      var sessionId = client.CreateSession();
+      var sessionService = client.CreateSession();
 
-      logger_.LogInformation($"New session created : {sessionId}");
+      logger_.LogInformation($"New session created : {sessionService}");
 
       logger_.LogInformation("Running End to End test to compute Square value with SubTasking");
-      ClientStartup1(client);
+      ClientStartup1(sessionService);
 
       logger_.LogInformation("Running End to End test to check task average time per milliseconds");
-      ClientStartup2(client);
+      ClientStartup2(sessionService);
     }
 
     /// <summary>
@@ -156,19 +158,19 @@ namespace Armonik.Samples.Symphony.Client
     ///   Simple function to wait and get the result from subTasking and result delegation
     ///   to a subTask
     /// </summary>
-    /// <param name="client">The client API to connect to the Control plane Service</param>
+    /// <param name="sessionService">The sessionService API to connect to the Control plane Service</param>
     /// <param name="taskId">The task which is waiting for</param>
     /// <returns></returns>
-    private static byte[] WaitForSubTaskResult(ArmonikSymphonyClient client, string taskId)
+    private static byte[] WaitForSubTaskResult(SessionService sessionService, string taskId)
     {
-      client.WaitSubtasksCompletion(taskId);
-      var taskResult = client.GetResult(taskId);
+      sessionService.WaitSubtasksCompletion(taskId);
+      var taskResult = sessionService.GetResult(taskId);
       var result     = ClientPayload.deserialize(taskResult);
 
       if (!string.IsNullOrEmpty(result.SubTaskId))
       {
-        client.WaitSubtasksCompletion(result.SubTaskId);
-        taskResult = client.GetResult(result.SubTaskId);
+        sessionService.WaitSubtasksCompletion(result.SubTaskId);
+        taskResult = sessionService.GetResult(result.SubTaskId);
       }
 
       return taskResult;
@@ -177,8 +179,8 @@ namespace Armonik.Samples.Symphony.Client
     /// <summary>
     ///   The first test developed to validate dependencies subTasking
     /// </summary>
-    /// <param name="client"></param>
-    public static void ClientStartup1(ArmonikSymphonyClient client)
+    /// <param name="sessionService"></param>
+    public static void ClientStartup1(SessionService sessionService)
     {
       var numbers = new List<int>
       {
@@ -192,9 +194,9 @@ namespace Armonik.Samples.Symphony.Client
         numbers    = numbers,
         Type       = ClientPayload.TaskType.ComputeSquare,
       };
-      var taskId = client.SubmitTask(clientPaylaod.serialize());
+      var taskId = sessionService.SubmitTask(clientPaylaod.serialize());
 
-      var taskResult = WaitForSubTaskResult(client,
+      var taskResult = WaitForSubTaskResult(sessionService,
                                             taskId);
       var result = ClientPayload.deserialize(taskResult);
 
@@ -205,8 +207,8 @@ namespace Armonik.Samples.Symphony.Client
     ///   The ClientStartUp2 is used to check some execution performance
     ///   (Need to investigate performance with this test. Not yet investigate)
     /// </summary>
-    /// <param name="client"></param>
-    public static void ClientStartup2(ArmonikSymphonyClient client)
+    /// <param name="sessionService"></param>
+    public static void ClientStartup2(SessionService sessionService)
     {
       var numbers = new List<int>
       {
@@ -224,31 +226,31 @@ namespace Armonik.Samples.Symphony.Client
         1 sending job of one task
         2 wait for result
         3 get associated payload");
-      N_Jobs_of_1_Task(client,
+      N_Jobs_of_1_Task(sessionService,
                        payload,
                        1,
                        outputMessages);
-      N_Jobs_of_1_Task(client,
+      N_Jobs_of_1_Task(sessionService,
                        payload,
                        10,
                        outputMessages);
-      //N_Jobs_of_1_Task(client, payload, 100, outputMessages);
-      //N_Jobs_of_1_Task(client, payload, 200, outputMessages);
-      // N_Jobs_of_1_Task(client, payload, 500, outputMessages);
+      //N_Jobs_of_1_Task(sessionService, payload, 100, outputMessages);
+      //N_Jobs_of_1_Task(sessionService, payload, 200, outputMessages);
+      // N_Jobs_of_1_Task(sessionService, payload, 500, outputMessages);
 
       outputMessages.AppendLine("In this serie of samples we're creating 1 job of N tasks.");
 
-      _1_Job_of_N_Tasks(client,
+      _1_Job_of_N_Tasks(sessionService,
                         payload,
                         1,
                         outputMessages);
-      _1_Job_of_N_Tasks(client,
+      _1_Job_of_N_Tasks(sessionService,
                         payload,
                         10,
                         outputMessages);
-      //_1_Job_of_N_Tasks(client, payload, 100, outputMessages);
-      //_1_Job_of_N_Tasks(client, payload, 200, outputMessages);
-      //_1_Job_of_N_Tasks(client, payload, 500, outputMessages);
+      //_1_Job_of_N_Tasks(sessionService, payload, 100, outputMessages);
+      //_1_Job_of_N_Tasks(sessionService, payload, 200, outputMessages);
+      //_1_Job_of_N_Tasks(sessionService, payload, 500, outputMessages);
 
       logger_.LogInformation(outputMessages.ToString());
     }
@@ -256,21 +258,21 @@ namespace Armonik.Samples.Symphony.Client
     /// <summary>
     ///   A test to execute Several Job with 1 task by jub
     /// </summary>
-    /// <param name="client">The client to connect to the Control plane Service</param>
+    /// <param name="sessionService">The sessionService to connect to the Control plane Service</param>
     /// <param name="payload">A default payload to execute by each task</param>
     /// <param name="nbJobs">The Number of jobs</param>
     /// <param name="outputMessages">The print log stored in a StringBuilder object</param>
-    private static void N_Jobs_of_1_Task(ArmonikSymphonyClient client,
-                                         byte[]                payload,
-                                         int                   nbJobs,
-                                         StringBuilder         outputMessages)
+    private static void N_Jobs_of_1_Task(SessionService sessionService,
+                                         byte[]         payload,
+                                         int            nbJobs,
+                                         StringBuilder  outputMessages)
     {
       var sw          = Stopwatch.StartNew();
       var finalResult = 0;
       for (var i = 0; i < nbJobs; i++)
       {
-        var taskId = client.SubmitTask(payload);
-        var taskResult = WaitForSubTaskResult(client,
+        var taskId = sessionService.SubmitTask(payload);
+        var taskResult = WaitForSubTaskResult(sessionService,
                                               taskId);
         var result = ClientPayload.deserialize(taskResult);
         finalResult += result.result;
@@ -284,14 +286,14 @@ namespace Armonik.Samples.Symphony.Client
     /// <summary>
     ///   The function to execute 1 job with several tasks inside
     /// </summary>
-    /// <param name="client">The client to connect to the Control plane Service</param>
+    /// <param name="sessionService">The sessionService to connect to the Control plane Service</param>
     /// <param name="payload">A default payload to execute by each task</param>
     /// <param name="nbTasks">The Number of jobs</param>
     /// <param name="outputMessages">The print log stored in a StringBuilder object</param>
-    private static void _1_Job_of_N_Tasks(ArmonikSymphonyClient client,
-                                          byte[]                payload,
-                                          int                   nbTasks,
-                                          StringBuilder         outputMessages)
+    private static void _1_Job_of_N_Tasks(SessionService sessionService,
+                                          byte[]         payload,
+                                          int            nbTasks,
+                                          StringBuilder  outputMessages)
     {
       var payloads = new List<byte[]>(nbTasks);
       for (var i = 0; i < nbTasks; i++)
@@ -299,10 +301,10 @@ namespace Armonik.Samples.Symphony.Client
 
       var sw          = Stopwatch.StartNew();
       var finalResult = 0;
-      var taskIds     = client.SubmitTasks(payloads);
+      var taskIds     = sessionService.SubmitTasks(payloads);
       foreach (var taskId in taskIds)
       {
-        var taskResult = WaitForSubTaskResult(client,
+        var taskResult = WaitForSubTaskResult(sessionService,
                                               taskId);
         var result = ClientPayload.deserialize(taskResult);
 
