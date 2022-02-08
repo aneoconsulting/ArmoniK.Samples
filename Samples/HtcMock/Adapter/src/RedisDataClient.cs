@@ -43,15 +43,13 @@ namespace ArmoniK.Samples.HtcMock.Adapter
 
     public RedisDataClient(IOptions<Redis> options)
     {
-      var configurationRoot = new ConfigurationBuilder().AddJsonFile(options.Value.CredentialsPath).AddEnvironmentVariables().Build();
-
       con_ = this.CreateConnection(options.Value.EndpointUrl,
-                                   configurationRoot["Redis:SslHost"],
+                                   options.Value.SslHost,
                                    options.Value.Timeout,
-                                   bool.Parse(configurationRoot["Redis:Ssl"]),
-                                   configurationRoot["Redis:User"],
-                                   configurationRoot["Redis:Password"],
-                                   configurationRoot["Redis:CaPath"]);
+                                   options.Value.Ssl,
+                                   options.Value.User,
+                                   options.Value.Password,
+                                   options.Value.CaPath);
     }
 
     private ConnectionMultiplexer CreateConnection(string endpointUrl, string sslHost, int timeout, bool Ssl, string user, string password, string caPath)
