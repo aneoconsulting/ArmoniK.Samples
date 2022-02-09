@@ -60,7 +60,7 @@ namespace ArmoniK.Samples.HtcMock.Adapter
         X509Certificate2Collection certificateCollection = new X509Certificate2Collection();
         try
         {
-          certificateCollection.Import(caPath);
+          certificateCollection.ImportFromPem(caPath);
           localTrustStore.Open(OpenFlags.ReadWrite);
           localTrustStore.AddRange(certificateCollection);
           Console.WriteLine($"Imported redis certificate from file {caPath}");
