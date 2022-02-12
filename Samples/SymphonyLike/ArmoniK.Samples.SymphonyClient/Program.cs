@@ -31,7 +31,7 @@ using System.Threading;
 using ArmoniK.Core.gRPC.V1;
 using ArmoniK.DevelopmentKit.SymphonyApi.Client;
 using ArmoniK.DevelopmentKit.SymphonyApi.Client.api;
-using ArmoniK.DevelopmentKit.WorkerApi.Common;
+using ArmoniK.DevelopmentKit.Common;
 
 using Armonik.Samples.Symphony.Common;
 

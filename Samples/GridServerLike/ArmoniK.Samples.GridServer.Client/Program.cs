@@ -27,6 +27,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using ArmoniK.Core.gRPC.V1;
+using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.DevelopmentKit.GridServer.Client;
 using ArmoniK.DevelopmentKit.WorkerApi.Common;
 using ArmoniK.Samples.GridServer.Client.Services;
@@ -98,6 +99,7 @@ namespace ArmoniK.Samples.GridServer.Client
       var props = new Properties(configuration_,
                                  taskOptions);
 
+
       var cs = ServiceFactory.GetInstance().CreateService("ArmoniK.Samples.GridServer.Package",
                                                           props);
 
@@ -106,16 +108,18 @@ namespace ArmoniK.Samples.GridServer.Client
                                 "ComputeSquare",
                                 arguments);
 
-      logger_.LogInformation($"Result of computation : {(double) sum}");
+      logger_.LogInformation($"Result of computation : {(double)sum.Result}");
 
       var handler = new AdderHandler();
       for (var i = 0; i < 10; i++)
-        cs.Submit("Add",
-                  new object[] { (double) i, (double) i },
-                  handler);
-      cs.Submit("Add",
-                new object[] { (double) 2, (double) 4 },
-                handler);
+      {
+        var taskId = cs.Submit("Add",
+                               new object[] { (double)i, (double)i },
+                               handler);
+
+        logger_.LogInformation($"Running taskId {taskId}");
+      }
+
 
       Task.WaitAll(cs.TaskWarehouse.Values.ToArray());
     }
@@ -170,9 +174,9 @@ namespace ArmoniK.Samples.GridServer.Client
         Console.Out.WriteLine("Error from " + taskId + ": " + e);
       }
 
-      public void HandleResponse(object response, string id)
+      public void HandleResponse(object response, string taskId)
       {
-        Console.Out.WriteLine("Response from " + id + ": " + response);
+        Console.Out.WriteLine("Response from " + taskId + ": " + response);
       }
 
       public double getTotal()
@@ -180,113 +184,5 @@ namespace ArmoniK.Samples.GridServer.Client
         return _total;
       }
     }
-
-    ///// <summary>
-    ///// The first test developed to validate dependencies subTasking 
-    ///// </summary>
-    ///// <param name="client"></param>
-    //public static void ClientStartup1(ArmonikSymphonyClient client)
-    //{
-    //    List<int> numbers = new List<int>() { 1, 2, 3};
-    //    var clientPaylaod = new ClientPayload()
-    //        { IsRootTask = true, numbers = numbers, Type = ClientPayload.TaskType.ComputeSquare };
-    //    string taskId = client.SubmitTask(clientPaylaod.serialize());
-
-    //    byte[] taskResult = WaitForSubTaskResult(client, taskId);
-    //    ClientPayload result = ClientPayload.deserialize(taskResult);
-
-    //    logger_.LogInformation($"output result : {result.result}");
-    //}
-
-    ///// <summary>
-    ///// The ClientStartUp2 is used to check some execution performance
-    ///// (Need to investigate performance with this test. Not yet investigate)
-    ///// </summary>
-    ///// <param name="client"></param>
-    //public static void ClientStartup2(ArmonikSymphonyClient client)
-    //{
-    //    List<int> numbers = new List<int>() { 2 };
-    //    var clientPayload = new ClientPayload() { numbers = numbers, Type = ClientPayload.TaskType.ComputeCube };
-    //    byte[] payload = clientPayload.serialize();
-    //    StringBuilder outputMessages = new StringBuilder();
-    //    outputMessages.AppendLine("In this serie of samples we're creating N jobs of one task.");
-    //    outputMessages.AppendLine(@"In the loop we have :
-    //1 sending job of one task
-    //2 wait for result
-    //3 get associated payload");
-    //    N_Jobs_of_1_Task(client, payload, 1, outputMessages);
-    //    N_Jobs_of_1_Task(client, payload, 10, outputMessages);
-    //    N_Jobs_of_1_Task(client, payload, 100, outputMessages);
-    //    N_Jobs_of_1_Task(client, payload, 200, outputMessages);
-    //    // N_Jobs_of_1_Task(client, payload, 500, outputMessages);
-
-    //    outputMessages.AppendLine("In this serie of samples we're creating 1 job of N tasks.");
-
-    //    _1_Job_of_N_Tasks(client, payload, 1, outputMessages);
-    //    _1_Job_of_N_Tasks(client, payload, 10, outputMessages);
-    //    _1_Job_of_N_Tasks(client, payload, 100, outputMessages);
-    //    _1_Job_of_N_Tasks(client, payload, 200, outputMessages);
-    //    _1_Job_of_N_Tasks(client, payload, 500, outputMessages);
-
-    //    logger_.LogInformation(outputMessages.ToString());
-    //}
-
-    /// <summary>
-    /// A test to execute Several Job with 1 task by jub
-    /// </summary>
-    /// <param name="client">The client to connect to the Control plane Service</param>
-    /// <param name="payload">A default payload to execute by each task</param>
-    /// <param name="nbJobs">The Number of jobs</param>
-    /// <param name="outputMessages">The print log stored in a StringBuilder object</param>
-    //private static void N_Jobs_of_1_Task(ArmonikSymphonyClient client, byte[] payload, int nbJobs,
-    //    StringBuilder outputMessages)
-    //{
-    //    Stopwatch sw = Stopwatch.StartNew();
-    //    int finalResult = 0;
-    //    for (int i = 0; i < nbJobs; i++)
-    //    {
-    //        string taskId = client.SubmitTask(payload);
-    //        var taskResult = WaitForSubTaskResult(client, taskId);
-    //        ClientPayload result = ClientPayload.deserialize(taskResult);
-    //        finalResult += result.result;
-    //    }
-
-    //    long elapsedMilliseconds = sw.ElapsedMilliseconds;
-    //    outputMessages.AppendLine(
-    //        $"Client called {nbJobs} jobs of one task in {elapsedMilliseconds} ms agregated result = {finalResult}");
-    //}
-
-
-    /// <summary>
-    /// The function to execute 1 job with several tasks inside
-    /// </summary>
-    /// <param name="client">The client to connect to the Control plane Service</param>
-    /// <param name="payload">A default payload to execute by each task</param>
-    /// <param name="nbTasks">The Number of jobs</param>
-    /// <param name="outputMessages">The print log stored in a StringBuilder object</param>
-    //private static void _1_Job_of_N_Tasks(ArmonikSymphonyClient client, byte[] payload, int nbTasks,
-    //    StringBuilder outputMessages)
-    //{
-    //    List<byte[]> payloads = new List<byte[]>(nbTasks);
-    //    for (int i = 0; i < nbTasks; i++)
-    //    {
-    //        payloads.Add(payload);
-    //    }
-
-    //    Stopwatch sw = Stopwatch.StartNew();
-    //    int finalResult = 0;
-    //    var taskIds = client.SubmitTasks(payloads);
-    //    foreach (var taskId in taskIds)
-    //    {
-    //        var taskResult = WaitForSubTaskResult(client, taskId);
-    //        ClientPayload result = ClientPayload.deserialize(taskResult);
-
-    //        finalResult += result.result;
-    //    }
-
-    //    long elapsedMilliseconds = sw.ElapsedMilliseconds;
-    //    outputMessages.AppendLine(
-    //        $"Client called {nbTasks} tasks in {elapsedMilliseconds} ms agregated result = {finalResult}");
-    //}
   }
 }
