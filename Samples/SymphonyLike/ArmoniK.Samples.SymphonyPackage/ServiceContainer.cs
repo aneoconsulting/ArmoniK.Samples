@@ -21,22 +21,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using Armonik.Samples.Symphony.Common;
+using ArmoniK.DevelopmentKit.Common;
+using ArmoniK.DevelopmentKit.Common.Exceptions;
+using ArmoniK.DevelopmentKit.SymphonyApi;
+using ArmoniK.DevelopmentKit.SymphonyApi.api;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-
-using ArmoniK.DevelopmentKit.Common;
-using ArmoniK.DevelopmentKit.SymphonyApi;
-using ArmoniK.DevelopmentKit.SymphonyApi.api;
-using ArmoniK.DevelopmentKit.WorkerApi.Common;
-using ArmoniK.DevelopmentKit.WorkerApi.Common.Exceptions;
-
-using Armonik.Samples.Symphony.Common;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace ArmoniK.Samples.Symphony.Packages
 {
