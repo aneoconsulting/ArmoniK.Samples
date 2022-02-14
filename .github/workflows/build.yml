@@ -39,32 +39,6 @@ jobs:
       run: |
         dotnet build AllSamples.sln
 
-  buildMock:
-    runs-on: ubuntu-latest
-    needs:
-      - versionning
-      - buildProjects
-    env:
-      VERSION: ${{ needs.versionning.outputs.version }}
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ github.head_ref }}
-
-    - name: login
-      run: |
-        echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u dhaneo1 --password-stdin
-
-    - name: build
-      run: |
-        cd Samples/HtcMock
-        docker build -t dockerhubaneo/armonik_worker_htcmock:$VERSION -f GridWorker/src/Dockerfile .
-
-    - name: push
-      run: |
-        docker push dockerhubaneo/armonik_worker_htcmock:$VERSION
-
   buildMockV3:
     runs-on: ubuntu-latest
     needs:
@@ -134,40 +108,23 @@ jobs:
          cd ArmoniK.Samples.SymphonyClient/
          dotnet bin/Debug/net5.0/linux-x64/ArmoniK.Samples.SymphonyClient.dll
 
-  testInfraMock:
-    needs:
-      - versionning
-      - buildMock
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-
-      - uses: aneoconsulting/ArmoniK@main
-        name: Deploy ArmoniK Infra with Mock Image
-        id: deploy-infra
-        with:
-          worker-image: dockerhubaneo/armonik_worker_htcmock
-          worker-tag: ${{ needs.versionning.outputs.version }}
-
-      - name: Run Mock
+      - name: Copy logs
+        if: always()
+        shell: bash
         run: |
-          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-          export Grpc__Endpoint=http://$CPIP:$CPPort
+          set -e
+          mkdir -p /tmp/armoniklogs
+          sudo cp -rL /var/log/pods/armonik_* /tmp/armoniklogs
+          sudo chown $USER -R /tmp/armoniklogs
+          find /tmp/armoniklogs -name "*.log"
 
-          export ReIP=$(kubectl get svc redis -n armonik-storage -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-          export RePort=$(kubectl get svc redis -n armonik-storage -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-          export Redis__EndpointUrl=$ReIP:$RePort
-          export Redis__Timeout=3000
-          export Redis__CredentialsPath=${{ steps.deploy-infra.outputs.credentials-redis }}
-          export Redis__CaPath=${{ steps.deploy-infra.outputs.credentials-redis-ca-p7b }}
-          
-          cd Samples/HtcMock/Client/src
-          dotnet build "ArmoniK.Samples.HtcMock.Client.csproj" -c Release
-          dotnet bin/Release/net5.0/ArmoniK.Samples.HtcMock.Client.dll
+      - name: Store logs
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Logs Worker
+          path: /tmp/armoniklogs/**/*.log
+          retention-days: 5
 
   testInfraMockV3:
     needs:
@@ -196,3 +153,21 @@ jobs:
           cd Samples/HtcMockV3/Client/src
           dotnet build "ArmoniK.Samples.HtcMock.Client.csproj" -c Release
           dotnet bin/Release/net5.0/ArmoniK.Samples.HtcMock.Client.dll
+
+      - name: Copy logs
+        if: always()
+        shell: bash
+        run: |
+          set -e
+          mkdir -p /tmp/armoniklogs
+          sudo cp -rL /var/log/pods/armonik_* /tmp/armoniklogs
+          sudo chown $USER -R /tmp/armoniklogs
+          find /tmp/armoniklogs -name "*.log"
+
+      - name: Store logs
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Logs Mock v3
+          path: /tmp/armoniklogs/**/*.log
+          retention-days: 5
