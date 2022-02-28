@@ -23,7 +23,8 @@
 
 using System;
 
-using ArmoniK.Core.gRPC.V1;
+using ArmoniK.Api.gRPC.V1;
+using ArmoniK.Samples.HtcMock.Adapter;
 
 using Google.Protobuf.WellKnownTypes;
 
@@ -31,14 +32,14 @@ using Htc.Mock;
 
 using Microsoft.Extensions.Logging;
 
-namespace ArmoniK.Samples.HtcMock.Adapter
+namespace ArmoniK.Samples.HtcMock.Client
 {
   public class GridClient : IGridClient
   {
-    private readonly ClientService.ClientServiceClient client_;
-    private readonly ILogger<GridClient>               logger_;
+    private readonly Submitter.SubmitterClient client_;
+    private readonly ILogger<GridClient>       logger_;
 
-    public GridClient(ClientService.ClientServiceClient client, ILoggerFactory loggerFactory)
+    public GridClient(Submitter.SubmitterClient client, ILoggerFactory loggerFactory)
     {
       client_ = client;
       logger_ = loggerFactory.CreateLogger<GridClient>();
@@ -46,36 +47,35 @@ namespace ArmoniK.Samples.HtcMock.Adapter
 
     public ISessionClient CreateSubSession(string taskId)
     {
-      using var _ = logger_.LogFunction(taskId);
-      var sessionOptions = new SessionOptions
-      {
-        DefaultTaskOption = new TaskOptions
-        {
-          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromMinutes(20)),
-          MaxRetries  = 2,
-          Priority    = 1,
-        },
-        ParentTask = taskId.ToTaskId(),
-      };
-      var subSessionId = client_.CreateSession(sessionOptions);
-      return new SessionClient(client_,
-                               subSessionId,
-                               logger_);
+      return CreateSession();
     }
 
     public ISessionClient CreateSession()
     {
-      using var _ = logger_.LogFunction();
-      var sessionOptions = new SessionOptions
+      using var _         = logger_.LogFunction();
+      var       sessionId = Guid.NewGuid().ToString();
+      var createSessionRequest = new CreateSessionRequest
       {
         DefaultTaskOption = new TaskOptions
         {
-          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromMinutes(20)),
+          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
           MaxRetries  = 2,
           Priority    = 1,
         },
+        Id = sessionId,
       };
-      var sessionId = client_.CreateSession(sessionOptions);
+      var session = client_.CreateSession(createSessionRequest);
+      switch (session.ResultCase)
+      {
+        case CreateSessionReply.ResultOneofCase.Error:
+          throw new Exception("Error while creating session : " + session.Error);
+        case CreateSessionReply.ResultOneofCase.None:
+          throw new Exception("Issue with Server !");
+        case CreateSessionReply.ResultOneofCase.Ok:
+          break;
+        default:
+          throw new ArgumentOutOfRangeException();
+      }
       return new SessionClient(client_,
                                sessionId,
                                logger_);

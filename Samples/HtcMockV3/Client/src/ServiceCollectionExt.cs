@@ -21,7 +21,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using ArmoniK.Core.gRPC.V1;
+using ArmoniK.Api.gRPC.V1;
 
 using Grpc.Core;
 using Grpc.Net.Client;
@@ -32,7 +32,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace ArmoniK.Samples.HtcMock.Adapter
+namespace ArmoniK.Samples.HtcMock.Client
 {
   public static class ServiceCollectionExt
   {
@@ -42,18 +42,18 @@ namespace ArmoniK.Samples.HtcMock.Adapter
       IConfiguration          configuration
     )
     {
-      serviceCollection.Configure<Options.Grpc>(configuration.GetSection(Options.Grpc.SettingSection))
+      serviceCollection.Configure<Adapter.Options.Grpc>(configuration.GetSection(Adapter.Options.Grpc.SettingSection))
                        .AddSingleton(sp =>
                        {
-                         var options = sp.GetRequiredService<IOptions<Options.Grpc>>();
+                         var options = sp.GetRequiredService<IOptions<Adapter.Options.Grpc>>();
                          return GrpcChannel.ForAddress(options.Value.Endpoint);
                        })
                        .AddTransient(sp =>
                        {
                          ChannelBase channel = sp.GetRequiredService<GrpcChannel>();
-                         return new ClientService.ClientServiceClient(channel);
+                         return new Submitter.SubmitterClient(channel);
                        })
-                       .AddTransient<GridClient>();
+                       .AddSingleton<GridClient>();
 
       return serviceCollection;
     }
