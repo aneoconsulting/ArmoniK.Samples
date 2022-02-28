@@ -32,7 +32,7 @@ namespace ArmoniK.Samples.HtcMock.Client
 {
   public static class HtcMockClientExt
   {
-    public static void ParallelExec(this Htc.Mock.Client client, RunConfiguration runConfiguration, int nRun)
+    public static void ParallelExec(this HtcMockClient client, RunConfiguration runConfiguration, int nRun)
     {
       var sw = Stopwatch.StartNew();
       var tasks = Enumerable.Repeat(runConfiguration,
@@ -50,7 +50,7 @@ namespace ArmoniK.Samples.HtcMock.Client
       Console.WriteLine("JSON Result : " + stat.ToJson());
     }
 
-    public static void SeqExec(this Htc.Mock.Client client, RunConfiguration runConfiguration, int nRun)
+    public static void SeqExec(this HtcMockClient client, RunConfiguration runConfiguration, int nRun)
     {
       var sw = Stopwatch.StartNew();
       for (var i = 0; i < nRun; i++)

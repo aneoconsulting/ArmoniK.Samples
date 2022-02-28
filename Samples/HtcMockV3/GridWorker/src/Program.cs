@@ -94,7 +94,6 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
         builder.Services
                .AddSingleton<ApplicationLifeTimeManager>()
                .AddSingleton(sp => loggerFactory)
-               .AddComponents(builder.Configuration)
                .AddLogging()
                .AddGrpc(options => options.MaxReceiveMessageSize = null);
 

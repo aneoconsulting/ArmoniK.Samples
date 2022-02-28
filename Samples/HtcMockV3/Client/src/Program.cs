@@ -24,8 +24,6 @@
 using System;
 using System.IO;
 
-using ArmoniK.Samples.HtcMock.Adapter;
-
 using Htc.Mock.Core;
 
 using Microsoft.Extensions.Configuration;
@@ -60,7 +58,7 @@ namespace ArmoniK.Samples.HtcMock.Client
 
       var gridClient = serviceProvider.GetRequiredService<GridClient>();
 
-      var client = new Htc.Mock.Client(gridClient,
+      var client = new HtcMockClient(gridClient,
                                        factory.CreateLogger<Htc.Mock.Client>());
 
       // Timespan(heures, minutes, secondes)
