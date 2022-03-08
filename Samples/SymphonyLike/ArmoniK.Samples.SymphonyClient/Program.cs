@@ -28,7 +28,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-using ArmoniK.Core.gRPC.V1;
+using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.SymphonyApi.Client;
 using ArmoniK.DevelopmentKit.SymphonyApi.Client.api;
 using ArmoniK.DevelopmentKit.Common;
@@ -48,23 +48,23 @@ namespace Armonik.Samples.Symphony.Client
 {
   internal class Program
   {
-    private static IConfiguration   configuration_;
-    private static ILogger<Program> logger_;
+    private static IConfiguration   _configuration;
+    private static ILogger<Program> _logger;
 
     private static void Main(string[] args)
     {
       Console.WriteLine("Hello Armonik SymphonyLike Sample !");
 
 
-      var armonik_wait_client = Environment.GetEnvironmentVariable("ARMONIK_DEBUG_WAIT_CLIENT");
-      if (!string.IsNullOrEmpty(armonik_wait_client))
+      var armonikWaitClient = Environment.GetEnvironmentVariable("ARMONIK_DEBUG_WAIT_CLIENT");
+      if (!string.IsNullOrEmpty(armonikWaitClient))
       {
-        var arminik_debug_wait_client = int.Parse(armonik_wait_client);
+        var armonikDebugWaitClient = int.Parse(armonikWaitClient);
 
-        if (arminik_debug_wait_client > 0)
+        if (armonikDebugWaitClient > 0)
         {
-          Console.WriteLine($"Debug: Sleep {arminik_debug_wait_client} seconds");
-          Thread.Sleep(arminik_debug_wait_client * 1000);
+          Console.WriteLine($"Debug: Sleep {armonikDebugWaitClient} seconds");
+          Thread.Sleep(armonikDebugWaitClient * 1000);
         }
       }
 
@@ -74,7 +74,7 @@ namespace Armonik.Samples.Symphony.Client
                                                            true)
                                               .AddEnvironmentVariables();
 
-      configuration_ = builder.Build();
+      _configuration = builder.Build();
 
       Log.Logger = new LoggerConfiguration()
                    .MinimumLevel.Override("Microsoft",
@@ -88,30 +88,30 @@ namespace Armonik.Samples.Symphony.Client
       {
         new SerilogLoggerProvider(new LoggerConfiguration()
                                   .ReadFrom
-                                  .Configuration(configuration_)
+                                  .Configuration(_configuration)
                                   .CreateLogger()),
       });
 
-      logger_ = factory.CreateLogger<Program>();
+      _logger = factory.CreateLogger<Program>();
 
-      var client = new ArmonikSymphonyClient(configuration_,
+      var client = new ArmonikSymphonyClient(_configuration,
                                              factory);
 
-      //get envirnoment variable
-      var var_env = Environment.GetEnvironmentVariable("ARMONIK_DEBUG_WAIT_TASK");
+      //get environment variable
+      var _ = Environment.GetEnvironmentVariable("ARMONIK_DEBUG_WAIT_TASK");
 
-      logger_.LogInformation("Configure taskOptions");
+      _logger.LogInformation("Configure taskOptions");
       var taskOptions = InitializeSimpleTaskOptions();
 
 
-      var sessionService = client.CreateSession();
+      var sessionService = client.CreateSession(taskOptions);
 
-      logger_.LogInformation($"New session created : {sessionService}");
+      _logger.LogInformation($"New session created : {sessionService}");
 
-      logger_.LogInformation("Running End to End test to compute Square value with SubTasking");
+      _logger.LogInformation("Running End to End test to compute Square value with SubTasking");
       ClientStartup1(sessionService);
 
-      logger_.LogInformation("Running End to End test to check task average time per milliseconds");
+      _logger.LogInformation("Running End to End test to check task average time per milliseconds");
       ClientStartup2(sessionService);
     }
 
@@ -140,7 +140,6 @@ namespace Armonik.Samples.Symphony.Client
         },
         MaxRetries = 5,
         Priority   = 1,
-        IdTag      = "ArmonikTag",
       };
       taskOptions.Options.Add(AppsOptions.GridAppNameKey,
                               "ArmoniK.Samples.SymphonyPackage");
@@ -155,23 +154,15 @@ namespace Armonik.Samples.Symphony.Client
     }
 
     /// <summary>
-    ///   Simple function to wait and get the result from subTasking and result delegation
+    ///   Simple function to wait and get the Result from subTasking and Result delegation
     ///   to a subTask
     /// </summary>
     /// <param name="sessionService">The sessionService API to connect to the Control plane Service</param>
     /// <param name="taskId">The task which is waiting for</param>
     /// <returns></returns>
-    private static byte[] WaitForSubTaskResult(SessionService sessionService, string taskId)
+    private static byte[] WaitForTaskResult(SessionService sessionService, string taskId)
     {
-      sessionService.WaitSubtasksCompletion(taskId);
       var taskResult = sessionService.GetResult(taskId);
-      var result     = ClientPayload.deserialize(taskResult);
-
-      if (!string.IsNullOrEmpty(result.SubTaskId))
-      {
-        sessionService.WaitSubtasksCompletion(result.SubTaskId);
-        taskResult = sessionService.GetResult(result.SubTaskId);
-      }
 
       return taskResult;
     }
@@ -180,7 +171,7 @@ namespace Armonik.Samples.Symphony.Client
     ///   The first test developed to validate dependencies subTasking
     /// </summary>
     /// <param name="sessionService"></param>
-    public static void ClientStartup1(SessionService sessionService)
+    private static void ClientStartup1(SessionService sessionService)
     {
       var numbers = new List<int>
       {
@@ -188,19 +179,19 @@ namespace Armonik.Samples.Symphony.Client
         2,
         3,
       };
-      var clientPaylaod = new ClientPayload
+      var payload = new ClientPayload
       {
         IsRootTask = true,
         numbers    = numbers,
         Type       = ClientPayload.TaskType.ComputeSquare,
       };
-      var taskId = sessionService.SubmitTask(clientPaylaod.serialize());
+      var taskId = sessionService.SubmitTask(payload.Serialize());
 
-      var taskResult = WaitForSubTaskResult(sessionService,
-                                            taskId);
-      var result = ClientPayload.deserialize(taskResult);
+      var taskResult = WaitForTaskResult(sessionService,
+                                         taskId);
+      var result = ClientPayload.Deserialize(taskResult);
 
-      logger_.LogInformation($"output result : {result.result}");
+      _logger.LogInformation($"output Result : {result.Result}");
     }
 
     /// <summary>
@@ -208,7 +199,7 @@ namespace Armonik.Samples.Symphony.Client
     ///   (Need to investigate performance with this test. Not yet investigate)
     /// </summary>
     /// <param name="sessionService"></param>
-    public static void ClientStartup2(SessionService sessionService)
+    private static void ClientStartup2(SessionService sessionService)
     {
       var numbers = new List<int>
       {
@@ -219,12 +210,12 @@ namespace Armonik.Samples.Symphony.Client
         numbers = numbers,
         Type    = ClientPayload.TaskType.ComputeCube,
       };
-      var payload        = clientPayload.serialize();
+      var payload        = clientPayload.Serialize();
       var outputMessages = new StringBuilder();
-      outputMessages.AppendLine("In this serie of samples we're creating N jobs of one task.");
+      outputMessages.AppendLine("In this series of samples we're creating N jobs of one task.");
       outputMessages.AppendLine(@"In the loop we have :
         1 sending job of one task
-        2 wait for result
+        2 wait for Result
         3 get associated payload");
       N_Jobs_of_1_Task(sessionService,
                        payload,
@@ -238,7 +229,7 @@ namespace Armonik.Samples.Symphony.Client
       //N_Jobs_of_1_Task(sessionService, payload, 200, outputMessages);
       // N_Jobs_of_1_Task(sessionService, payload, 500, outputMessages);
 
-      outputMessages.AppendLine("In this serie of samples we're creating 1 job of N tasks.");
+      outputMessages.AppendLine("In this series of samples we're creating 1 job of N tasks.");
 
       _1_Job_of_N_Tasks(sessionService,
                         payload,
@@ -252,7 +243,7 @@ namespace Armonik.Samples.Symphony.Client
       //_1_Job_of_N_Tasks(sessionService, payload, 200, outputMessages);
       //_1_Job_of_N_Tasks(sessionService, payload, 500, outputMessages);
 
-      logger_.LogInformation(outputMessages.ToString());
+      _logger.LogInformation(outputMessages.ToString());
     }
 
     /// <summary>
@@ -272,14 +263,14 @@ namespace Armonik.Samples.Symphony.Client
       for (var i = 0; i < nbJobs; i++)
       {
         var taskId = sessionService.SubmitTask(payload);
-        var taskResult = WaitForSubTaskResult(sessionService,
-                                              taskId);
-        var result = ClientPayload.deserialize(taskResult);
-        finalResult += result.result;
+        var taskResult = WaitForTaskResult(sessionService,
+                                           taskId);
+        var result = ClientPayload.Deserialize(taskResult);
+        finalResult += result.Result;
       }
 
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
-      outputMessages.AppendLine($"Client called {nbJobs} jobs of one task in {elapsedMilliseconds} ms agregated result = {finalResult}");
+      outputMessages.AppendLine($"Client called {nbJobs} jobs of one task in {elapsedMilliseconds} ms agregated Result = {finalResult}");
     }
 
 
@@ -304,15 +295,15 @@ namespace Armonik.Samples.Symphony.Client
       var taskIds     = sessionService.SubmitTasks(payloads);
       foreach (var taskId in taskIds)
       {
-        var taskResult = WaitForSubTaskResult(sessionService,
-                                              taskId);
-        var result = ClientPayload.deserialize(taskResult);
+        var taskResult = WaitForTaskResult(sessionService,
+                                           taskId);
+        var result = ClientPayload.Deserialize(taskResult);
 
-        finalResult += result.result;
+        finalResult += result.Result;
       }
 
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
-      outputMessages.AppendLine($"Client called {nbTasks} tasks in {elapsedMilliseconds} ms agregated result = {finalResult}");
+      outputMessages.AppendLine($"Client called {nbTasks} tasks in {elapsedMilliseconds} ms aggregated Result = {finalResult}");
     }
   }
 }
