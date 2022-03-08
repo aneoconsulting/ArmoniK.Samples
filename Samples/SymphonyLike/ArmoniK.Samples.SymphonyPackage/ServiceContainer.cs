@@ -22,12 +22,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using Armonik.Samples.Symphony.Common;
+
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.DevelopmentKit.Common.Exceptions;
 using ArmoniK.DevelopmentKit.SymphonyApi;
 using ArmoniK.DevelopmentKit.SymphonyApi.api;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -52,27 +55,27 @@ namespace ArmoniK.Samples.Symphony.Packages
 
     public byte[] ComputeSquare(TaskContext taskContext, ClientPayload clientPayload)
     {
-      Log.LogInformation($"Enter in function : ComputeSquare with taskId {taskContext.TaskId}");
+      Logger.LogInformation($"Enter in function : ComputeSquare with taskId {taskContext.TaskId}");
 
       if (clientPayload.numbers.Count == 0)
         return new ClientPayload
           {
             Type   = ClientPayload.TaskType.Result,
-            result = 0,
+            Result = 0,
           }
-          .serialize(); // Nothing to do
+          .Serialize(); // Nothing to do
 
       if (clientPayload.numbers.Count == 1)
       {
         var value = clientPayload.numbers[0] * clientPayload.numbers[0];
-        Log.LogInformation($"Compute {value}             with taskId {taskContext.TaskId}");
+        Logger.LogInformation($"Compute {value}             with taskId {taskContext.TaskId}");
 
         return new ClientPayload
           {
             Type   = ClientPayload.TaskType.Result,
-            result = value,
+            Result = value,
           }
-          .serialize();
+          .Serialize();
       }
       else // if (clientPayload.numbers.Count > 1)
       {
@@ -83,31 +86,25 @@ namespace ArmoniK.Samples.Symphony.Packages
         clientPayload.numbers.RemoveAt(0);
         subTaskPaylaod.numbers = clientPayload.numbers;
         subTaskPaylaod.Type    = clientPayload.Type;
-        Log.LogInformation($"Compute {value} in                 {taskContext.TaskId}");
+        Logger.LogInformation($"Compute {value} in                 {taskContext.TaskId}");
 
-        Log.LogInformation($"Submitting subTask from task          : {taskContext.TaskId} from Session {SessionId.PackSessionId()}");
-        var subTaskId = this.SubmitSubTask(subTaskPaylaod.serialize(),
-                                           taskContext.TaskId);
-        Log.LogInformation($"Submitted  subTask                    : {subTaskId}");
+        Logger.LogInformation($"Submitting subTask from task          : {taskContext.TaskId} from Session {SessionId.PackSessionId()}");
+        var subTaskId = this.SubmitTask(subTaskPaylaod.Serialize());
+        Logger.LogInformation($"Submitted  subTask                    : {subTaskId}");
 
         ClientPayload aggPayload = new()
         {
           Type   = ClientPayload.TaskType.Aggregation,
-          result = square,
+          Result = square,
         };
 
-        Log.LogInformation($"Submitting aggregate task             : {taskContext.TaskId} from Session {SessionId.PackSessionId()}");
+        Logger.LogInformation($"Submitting aggregate task             : {taskContext.TaskId} from Session {SessionId.PackSessionId()}");
 
-        var aggTaskId = this.SubmitTaskWithDependencies(aggPayload.serialize(),
-                                                        new[] { subTaskId });
-        Log.LogInformation($"Submitted  SubmitTaskWithDependencies : {aggTaskId} with task dependencies      {subTaskId}");
+        var aggTaskId = this.SubmitTaskWithDependencies(aggPayload.Serialize(),
+                                                        new[] { subTaskId }, true);
+        Logger.LogInformation($"Submitted  SubmitTaskWithDependencies : {aggTaskId} with task dependencies      {subTaskId}");
 
-        return new ClientPayload
-          {
-            Type      = ClientPayload.TaskType.Aggregation,
-            SubTaskId = aggTaskId,
-          }
-          .serialize(); //nothing to do
+        return null; //nothing to do
       }
     }
 
@@ -117,19 +114,39 @@ namespace ArmoniK.Samples.Symphony.Packages
       for (var i = 0; i < nbTasks; i++)
         payloads.Add(payload);
 
-      var sw          = Stopwatch.StartNew();
-      var finalResult = 0;
-      var taskIds = SubmitSubTasks(payloads,
-                                   taskContext.TaskId);
+      var sw      = Stopwatch.StartNew();
+      var taskIds = SubmitTasks(payloads);
 
-      foreach (var taskId in taskIds)
+      ClientPayload aggPayload = new()
       {
-        var taskResult = GetResult(taskId);
-        finalResult += BitConverter.ToInt32(taskResult);
-      }
+        Type = ClientPayload.TaskType.AggregationNTask,
+      };
+      ;
+      this.SubmitTaskWithDependencies(aggPayload.Serialize(),
+                                      taskIds.ToList());
 
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
-      Log.LogInformation($"Server called {nbTasks} tasks in {elapsedMilliseconds} ms agregated result = {finalResult}");
+      Logger.LogInformation($"Server called {nbTasks} tasks in {elapsedMilliseconds} ms");
+    }
+
+    private byte[] AggregateValuesNTasks(TaskContext taskContext, ClientPayload clientPayload)
+    {
+      var finalResult = 0;
+
+      foreach (var pair in taskContext.DataDependencies)
+      {
+        var taskResult = pair.Value;
+        finalResult += BitConverter.ToInt32(taskResult,
+                                            0);
+      }
+
+      ClientPayload childResult = new()
+      {
+        Type   = ClientPayload.TaskType.Result,
+        Result = finalResult,
+      };
+
+      return childResult.Serialize();
     }
 
     public byte[] ComputeCube(TaskContext taskContext, ClientPayload clientPayload)
@@ -138,14 +155,14 @@ namespace ArmoniK.Samples.Symphony.Packages
       return new ClientPayload
         {
           Type   = ClientPayload.TaskType.Result,
-          result = value,
+          Result = value,
         }
-        .serialize(); //nothing to do
+        .Serialize(); //nothing to do
     }
 
     public override byte[] OnInvoke(SessionContext sessionContext, TaskContext taskContext)
     {
-      var clientPayload = ClientPayload.deserialize(taskContext.TaskInput);
+      var clientPayload = ClientPayload.Deserialize(taskContext.TaskInput);
 
       if (clientPayload.Type == ClientPayload.TaskType.ComputeSquare)
         return ComputeSquare(taskContext,
@@ -159,7 +176,7 @@ namespace ArmoniK.Samples.Symphony.Packages
 
       if (clientPayload.Type == ClientPayload.TaskType.Sleep)
       {
-        Log.LogInformation($"Empty task, sessionId : {sessionContext.SessionId}, taskId : {taskContext.TaskId}, sessionId from task : {taskContext.SessionId}");
+        Logger.LogInformation($"Empty task, sessionId : {sessionContext.SessionId}, taskId : {taskContext.TaskId}, sessionId from task : {taskContext.SessionId}");
         Thread.Sleep(clientPayload.sleep * 1000);
       }
       else if (clientPayload.Type == ClientPayload.TaskType.JobOfNTasks)
@@ -170,7 +187,7 @@ namespace ArmoniK.Samples.Symphony.Packages
           sleep = clientPayload.sleep,
         };
 
-        var bytePayload = newPayload.serialize();
+        var bytePayload = newPayload.Serialize();
 
         _1_Job_of_N_Tasks(taskContext,
                           bytePayload,
@@ -179,9 +196,14 @@ namespace ArmoniK.Samples.Symphony.Packages
         return new ClientPayload
           {
             Type   = ClientPayload.TaskType.Result,
-            result = 42,
+            Result = 42,
           }
-          .serialize(); //nothing to do
+          .Serialize(); //nothing to do
+      }
+      else if (clientPayload.Type == ClientPayload.TaskType.AggregationNTask)
+      {
+        return AggregateValuesNTasks(taskContext,
+                                     clientPayload);
       }
       else if (clientPayload.Type == ClientPayload.TaskType.Aggregation)
       {
@@ -190,42 +212,37 @@ namespace ArmoniK.Samples.Symphony.Packages
       }
       else
       {
-        Log.LogInformation($"Task type is unManaged {clientPayload.Type}");
+        Logger.LogInformation($"Task type is unManaged {clientPayload.Type}");
         throw new WorkerApiException($"Task type is unManaged {clientPayload.Type}");
       }
 
       return new ClientPayload
         {
           Type   = ClientPayload.TaskType.Result,
-          result = 42,
+          Result = 42,
         }
-        .serialize(); //nothing to do
+        .Serialize(); //nothing to do
     }
 
     private byte[] AggregateValues(TaskContext taskContext, ClientPayload clientPayload)
     {
-      Log.LogInformation($"Aggregate Task request result from Dependencies TaskIds : [{string.Join(", ", taskContext.DependenciesTaskIds)}]");
-      var parentResult = GetResult(taskContext.DependenciesTaskIds?.Single());
+      Logger.LogInformation($"Aggregate Task {taskContext.TaskId} request result from Dependencies TaskIds : [{string.Join(", ", taskContext.DependenciesTaskIds)}]");
+      var parentResult = taskContext.DataDependencies?.Single().Value;
 
       if (parentResult == null || parentResult.Length == 0)
         throw new WorkerApiException($"Cannot retrieve Result from taskId {taskContext.DependenciesTaskIds?.Single()}");
 
-      var parentResultPayload = ClientPayload.deserialize(parentResult);
-      if (parentResultPayload.SubTaskId != null)
-      {
-        parentResult        = GetResult(parentResultPayload.SubTaskId);
-        parentResultPayload = ClientPayload.deserialize(parentResult);
-      }
+      var parentResultPayload = ClientPayload.Deserialize(parentResult);
 
-      var value = clientPayload.result + parentResultPayload.result;
+      var value = clientPayload.Result + parentResultPayload.Result;
 
       ClientPayload childResult = new()
       {
         Type   = ClientPayload.TaskType.Result,
-        result = value,
+        Result = value,
       };
 
-      return childResult.serialize();
+      return childResult.Serialize();
     }
 
     public override void OnSessionLeave(SessionContext sessionContext)

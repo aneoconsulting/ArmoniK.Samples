@@ -41,29 +41,30 @@ namespace Armonik.Samples.Symphony.Common
       Aggregation,
       SubTask,
       Undefined,
+      AggregationNTask,
     }
 
     public bool IsRootTask { get; set; }
     public TaskType Type { get; set; }
     public List<int> numbers { get; set; }
-    public int result { get; set; }
+    public int Result { get; set; }
     public string SubTaskId { get; set; }
     public int sleep { get; set; }
 
-    public byte[] serialize()
+    public byte[] Serialize()
     {
       var jsonString = JsonSerializer.Serialize(this);
       return Encoding.ASCII.GetBytes(stringToBase64(jsonString));
     }
 
-    public static ClientPayload deserialize(byte[] payload)
+    public static ClientPayload Deserialize(byte[] payload)
     {
       if (payload == null || payload.Length == 0)
         return new ClientPayload
         {
           Type    = TaskType.Undefined,
           numbers = new List<int>(),
-          result  = 0,
+          Result  = 0,
         };
 
       var str = Encoding.ASCII.GetString(payload);

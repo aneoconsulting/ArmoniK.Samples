@@ -26,7 +26,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-using ArmoniK.Core.gRPC.V1;
+using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.DevelopmentKit.GridServer.Client;
 using ArmoniK.DevelopmentKit.WorkerApi.Common;
@@ -70,31 +70,7 @@ namespace ArmoniK.Samples.GridServer.Client
 
       configuration_ = builder.Build();
 
-      var taskOptions = new TaskOptions
-      {
-        MaxDuration = new Duration
-        {
-          Seconds = 300,
-        },
-        MaxRetries = 3,
-        Priority   = 1,
-        IdTag      = "ArmonikTag",
-      };
-
-      taskOptions.Options.Add(AppsOptions.EngineTypeNameKey,
-                              EngineType.DataSynapse.ToString());
-
-      taskOptions.Options.Add(AppsOptions.GridAppNameKey,
-                              "ArmoniK.Samples.GridServer.Client");
-
-      taskOptions.Options.Add(AppsOptions.GridAppVersionKey,
-                              "1.0.0");
-
-      taskOptions.Options.Add(AppsOptions.GridAppNamespaceKey,
-                              "ArmoniK.Samples.GridServer.Client.Services");
-
-      taskOptions.Options.Add(AppsOptions.GridServiceNameKey,
-                              "ServiceContainer");
+      var taskOptions = InitializeSimpleTaskOptions();
 
       var props = new Properties(configuration_,
                                  taskOptions);
@@ -141,24 +117,30 @@ namespace ArmoniK.Samples.GridServer.Client
     /// <returns></returns>
     private static TaskOptions InitializeSimpleTaskOptions()
     {
-      TaskOptions taskOptions = new()
+      TaskOptions taskOptions = new TaskOptions
       {
         MaxDuration = new Duration
         {
           Seconds = 300,
         },
-        MaxRetries = 5,
+        MaxRetries = 3,
         Priority   = 1,
-        IdTag      = "ArmonikTag",
       };
+
+      taskOptions.Options.Add(AppsOptions.EngineTypeNameKey,
+                              EngineType.DataSynapse.ToString());
+
       taskOptions.Options.Add(AppsOptions.GridAppNameKey,
-                              "ArmoniK.Samples.SymphonyPackage");
+                              "ArmoniK.Samples.GridServer.Client");
 
       taskOptions.Options.Add(AppsOptions.GridAppVersionKey,
-                              "1.0.0");
+                              "1.0.0-700");
 
       taskOptions.Options.Add(AppsOptions.GridAppNamespaceKey,
-                              "ArmoniK.Samples.Symphony.Packages");
+                              "ArmoniK.Samples.GridServer.Client.Services");
+
+      taskOptions.Options.Add(AppsOptions.GridServiceNameKey,
+                              "ServiceContainer");
 
       return taskOptions;
     }
