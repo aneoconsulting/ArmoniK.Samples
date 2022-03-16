@@ -20,3 +20,7 @@ Before you start using the Samples, please follow the Armonik installation that 
 
 Go to documentation of [SymphonyLike](./Samples/SymphonyLike/README.md)
 
+
+# How to start with sample DataSynapseLike
+
+Go to documentation of [DataSynapseLike](./Samples/DataSynapseLike/README.md)
