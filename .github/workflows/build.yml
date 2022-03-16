@@ -89,7 +89,7 @@ jobs:
          sudo mkdir -p /data
          sudo chown -R $USER:$USER /data
 
-         cp packages/ArmoniK.Samples.GridServer.Client-v1.0.0.zip /data
+         cp packages/ArmoniK.Samples.GridServer.Client-v1.0.0-700.zip /data
 
          cd ArmoniK.Samples.GridServer.Client/
          dotnet bin/net5.0/linux-x64/ArmoniK.Samples.GridServer.Client.dll
@@ -103,7 +103,7 @@ jobs:
          cd Samples/SymphonyLike/
          dotnet publish --self-contained -r linux-x64 SymphonyLike.sln
 
-         cp packages/ArmoniK.Samples.SymphonyPackage-v1.0.0.zip /data
+         cp packages/ArmoniK.Samples.SymphonyPackage-v2.0.0.zip /data
 
          cd ArmoniK.Samples.SymphonyClient/
          dotnet bin/Debug/net5.0/linux-x64/ArmoniK.Samples.SymphonyClient.dll
