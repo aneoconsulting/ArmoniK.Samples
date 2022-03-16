@@ -91,7 +91,7 @@ namespace ArmoniK.Samples.GridServer.Client
         3.0,
       }.ToArray();
 
-      var handler = new ResultHandler();
+      var handler = new ResultHandler(logger_);
 
       sessionService.Submit("ComputeBasicArrayCube",
                             ParamsHelper(numbers),
@@ -171,23 +171,45 @@ namespace ArmoniK.Samples.GridServer.Client
 
 
     // Handler for Service Clients
-    public class ResultHandler : IServiceInvocationHandler
+    private class ResultHandler : IServiceInvocationHandler
     {
-      private readonly double _total = 0;
+      private readonly double           _total = 0;
+      private          ILogger<Program> logger_;
+      public ResultHandler(ILogger<Program> logger)
+      {
+        logger_ = logger;
+      }
+
 
       public void HandleError(ServiceInvocationException e, string taskId)
       {
-        Console.Out.WriteLine("Error from " + taskId + ": " + e);
+        logger_.LogError($"Error from {taskId} : " + e.Message);
+        throw new ApplicationException($"Error from {taskId}",
+                                       e);
       }
 
       public void HandleResponse(object response, string taskId)
       {
-        Console.Out.WriteLine("Response from " + taskId + ": " + response);
-      }
+        switch (response)
+        {
+          case null:
+            logger_.LogInformation("Task finished but nothing returned in Result");
+            break;
+          case double value:
+            logger_.LogInformation($"Task finished with result {value}");
+            break;
+          case double[] doubles:
+            logger_.LogInformation("Result is " +
+                                   string.Join(", ",
+                                               doubles));
+            break;
+          case byte[] values:
+            logger_.LogInformation("Result is " +
+                                   string.Join(", ",
+                                               values.ConvertToArray()));
+            break;
+        }
 
-      public double getTotal()
-      {
-        return _total;
       }
     }
   }
