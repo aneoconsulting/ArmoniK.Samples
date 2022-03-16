@@ -266,6 +266,9 @@ namespace Armonik.Samples.Symphony.Client
         var taskResult = WaitForTaskResult(sessionService,
                                            taskId);
         var result = ClientPayload.Deserialize(taskResult);
+        if (result.Result == 0)
+          Log.Error($"The taskId {taskId} returns [{result.Result}]");
+
         finalResult += result.Result;
       }
 
