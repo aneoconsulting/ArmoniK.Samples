@@ -239,9 +239,9 @@ namespace Armonik.Samples.Symphony.Client
                         payload,
                         10,
                         outputMessages);
-      //_1_Job_of_N_Tasks(sessionService, payload, 100, outputMessages);
-      //_1_Job_of_N_Tasks(sessionService, payload, 200, outputMessages);
-      //_1_Job_of_N_Tasks(sessionService, payload, 500, outputMessages);
+      _1_Job_of_N_Tasks(sessionService, payload, 100, outputMessages);
+      _1_Job_of_N_Tasks(sessionService, payload, 200, outputMessages);
+      _1_Job_of_N_Tasks(sessionService, payload, 500, outputMessages);
 
       _logger.LogInformation(outputMessages.ToString());
     }
@@ -266,6 +266,9 @@ namespace Armonik.Samples.Symphony.Client
         var taskResult = WaitForTaskResult(sessionService,
                                            taskId);
         var result = ClientPayload.Deserialize(taskResult);
+        if (result.Result == 0)
+          Log.Error($"The taskId {taskId} returns [{result.Result}]");
+
         finalResult += result.Result;
       }
 

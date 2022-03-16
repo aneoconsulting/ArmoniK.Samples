@@ -22,7 +22,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -33,6 +35,23 @@ using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.GridServer.Client.Services
 {
+
+  public static class SelectExtensions
+  {
+    public static IEnumerable<double> ConvertToArray(this IEnumerable<byte> arr)
+    {
+      var bytes = arr as byte[] ?? arr.ToArray();
+
+      var values = new double[bytes.Count() / sizeof(double)];
+
+      var i = 0;
+      for (; i < values.Length; i++)
+        values[i] = BitConverter.ToDouble(bytes.ToArray(),
+                                          i * 8);
+      return values;
+    }
+  }
+
   public class ServiceContainer
   {
     private readonly IConfiguration            configuration_;
@@ -64,40 +83,40 @@ namespace ArmoniK.Samples.GridServer.Client.Services
       logger_ = factory.CreateLogger<ServiceContainer>();
     }
 
-    public double ComputeSquare(double a)
+    public static double[] ComputeBasicArrayCube(double[] inputs)
     {
-      logger_.LogInformation("Enter in function : ComputeSquare");
-
-      var res = a * a;
-
-      return res;
+      return inputs.Select(x => x * x * x).ToArray();
     }
 
-    public int ComputeCube(int a)
+    public static double ComputeReduceCube(double[] inputs)
     {
-      logger_.LogInformation("Enter in function : ComputeCube");
-      var value = a * a * a;
-
-      return value;
+      return inputs.Select(x => x * x * x).Sum();
     }
 
-    public int ComputeDivideByZero(int a)
+    public static double ComputeReduceCube(byte[] inputs)
     {
-      logger_.LogInformation("Enter in function : ComputeDivideByZero");
-      var value = a / 0;
+      var doubles = inputs.ConvertToArray();
 
-      return value;
+      return doubles.Select(x => x * x * x).Sum();
     }
 
-    public double Add(double value1, double value2)
+    public static double[] ComputeMadd(byte[] inputs1, byte[] inputs2, double k)
     {
-      logger_.LogInformation("Enter in function : Add");
-      return value1 + value2;
+      var doubles1 = inputs1.ConvertToArray().ToArray();
+      var doubles2 = inputs2.ConvertToArray().ToArray();
+
+
+      return doubles1.Select((x, idx) => k * x * doubles2[idx]).ToArray();
     }
 
-    public double AddGenerateException(double value1, double value2)
+    public double[] NonStaticComputeMadd(byte[] inputs1, byte[] inputs2, double k)
     {
-      throw new NotImplementedException("Fake Method to generate an NotYetImplementedException");
+      var doubles1 = inputs1.ConvertToArray().ToArray();
+      var doubles2 = inputs2.ConvertToArray().ToArray();
+
+
+      return doubles1.Select((x, idx) => k * x * doubles2[idx]).ToArray();
     }
+
   }
 }
