@@ -22,6 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -75,29 +76,52 @@ namespace ArmoniK.Samples.GridServer.Client
       var props = new Properties(configuration_,
                                  taskOptions);
 
+      using var sessionService = ServiceFactory.GetInstance().CreateService("ArmoniK.Samples.GridServer.Package",
+                                                                            props);
 
-      var cs = ServiceFactory.GetInstance().CreateService("ArmoniK.Samples.GridServer.Package",
-                                                          props);
-
-      object[] arguments = { 5.0 };
-      var sum = cs.LocalExecute(new ServiceContainer(),
-                                "ComputeSquare",
-                                arguments);
-
-      logger_.LogInformation($"Result of computation : {(double)sum.Result}");
-
-      var handler = new AdderHandler();
-      for (var i = 0; i < 10; i++)
+      var numbers = new List<double>
       {
-        var taskId = cs.Submit("Add",
-                               new object[] { (double)i, (double)i },
-                               handler);
+        1.0,
+        2.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+      }.ToArray();
 
-        logger_.LogInformation($"Running taskId {taskId}");
-      }
+      var handler = new ResultHandler(logger_);
+
+      sessionService.Submit("ComputeBasicArrayCube",
+                            ParamsHelper(numbers),
+                            handler);
+
+      sessionService.Submit("ComputeReduceCube",
+                            ParamsHelper(numbers),
+                            handler);
+
+      sessionService.Submit("ComputeReduceCube",
+                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes).ToArray()),
+                            handler);
+
+      sessionService.Submit("ComputeMadd",
+                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes).ToArray(),
+                                         numbers.SelectMany(BitConverter.GetBytes).ToArray(),
+                                         4.0),
+                            handler);
+
+      sessionService.Submit("NonStaticComputeMadd",
+                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes).ToArray(),
+                                         numbers.SelectMany(BitConverter.GetBytes).ToArray(),
+                                         4.0),
+                            handler);
+    }
 
 
-      Task.WaitAll(cs.TaskWarehouse.Values.ToArray());
+    private static object[] ParamsHelper(params object[] elements)
+    {
+      return elements;
     }
 
     /// <summary>
@@ -121,7 +145,7 @@ namespace ArmoniK.Samples.GridServer.Client
       {
         MaxDuration = new Duration
         {
-          Seconds = 300,
+          Seconds = 600,
         },
         MaxRetries = 3,
         Priority   = 1,
@@ -147,23 +171,45 @@ namespace ArmoniK.Samples.GridServer.Client
 
 
     // Handler for Service Clients
-    public class AdderHandler : IServiceInvocationHandler
+    private class ResultHandler : IServiceInvocationHandler
     {
-      private readonly double _total = 0;
+      private readonly double           _total = 0;
+      private          ILogger<Program> logger_;
+      public ResultHandler(ILogger<Program> logger)
+      {
+        logger_ = logger;
+      }
+
 
       public void HandleError(ServiceInvocationException e, string taskId)
       {
-        Console.Out.WriteLine("Error from " + taskId + ": " + e);
+        logger_.LogError($"Error from {taskId} : " + e.Message);
+        throw new ApplicationException($"Error from {taskId}",
+                                       e);
       }
 
       public void HandleResponse(object response, string taskId)
       {
-        Console.Out.WriteLine("Response from " + taskId + ": " + response);
-      }
+        switch (response)
+        {
+          case null:
+            logger_.LogInformation("Task finished but nothing returned in Result");
+            break;
+          case double value:
+            logger_.LogInformation($"Task finished with result {value}");
+            break;
+          case double[] doubles:
+            logger_.LogInformation("Result is " +
+                                   string.Join(", ",
+                                               doubles));
+            break;
+          case byte[] values:
+            logger_.LogInformation("Result is " +
+                                   string.Join(", ",
+                                               values.ConvertToArray()));
+            break;
+        }
 
-      public double getTotal()
-      {
-        return _total;
       }
     }
   }
