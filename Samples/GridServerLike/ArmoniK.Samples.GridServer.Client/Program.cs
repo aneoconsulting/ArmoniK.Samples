@@ -22,6 +22,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -75,29 +76,52 @@ namespace ArmoniK.Samples.GridServer.Client
       var props = new Properties(configuration_,
                                  taskOptions);
 
+      using var sessionService = ServiceFactory.GetInstance().CreateService("ArmoniK.Samples.GridServer.Package",
+                                                                            props);
 
-      var cs = ServiceFactory.GetInstance().CreateService("ArmoniK.Samples.GridServer.Package",
-                                                          props);
-
-      object[] arguments = { 5.0 };
-      var sum = cs.LocalExecute(new ServiceContainer(),
-                                "ComputeSquare",
-                                arguments);
-
-      logger_.LogInformation($"Result of computation : {(double)sum.Result}");
-
-      var handler = new AdderHandler();
-      for (var i = 0; i < 10; i++)
+      var numbers = new List<double>
       {
-        var taskId = cs.Submit("Add",
-                               new object[] { (double)i, (double)i },
-                               handler);
+        1.0,
+        2.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+      }.ToArray();
 
-        logger_.LogInformation($"Running taskId {taskId}");
-      }
+      var handler = new ResultHandler();
+
+      sessionService.Submit("ComputeBasicArrayCube",
+                            ParamsHelper(numbers),
+                            handler);
+
+      sessionService.Submit("ComputeReduceCube",
+                            ParamsHelper(numbers),
+                            handler);
+
+      sessionService.Submit("ComputeReduceCube",
+                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes).ToArray()),
+                            handler);
+
+      sessionService.Submit("ComputeMadd",
+                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes).ToArray(),
+                                         numbers.SelectMany(BitConverter.GetBytes).ToArray(),
+                                         4.0),
+                            handler);
+
+      sessionService.Submit("NonStaticComputeMadd",
+                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes).ToArray(),
+                                         numbers.SelectMany(BitConverter.GetBytes).ToArray(),
+                                         4.0),
+                            handler);
+    }
 
 
-      Task.WaitAll(cs.TaskWarehouse.Values.ToArray());
+    private static object[] ParamsHelper(params object[] elements)
+    {
+      return elements;
     }
 
     /// <summary>
@@ -121,7 +145,7 @@ namespace ArmoniK.Samples.GridServer.Client
       {
         MaxDuration = new Duration
         {
-          Seconds = 300,
+          Seconds = 600,
         },
         MaxRetries = 3,
         Priority   = 1,
@@ -147,7 +171,7 @@ namespace ArmoniK.Samples.GridServer.Client
 
 
     // Handler for Service Clients
-    public class AdderHandler : IServiceInvocationHandler
+    public class ResultHandler : IServiceInvocationHandler
     {
       private readonly double _total = 0;
 
