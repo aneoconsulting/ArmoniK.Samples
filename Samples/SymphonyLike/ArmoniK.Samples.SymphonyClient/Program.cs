@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Linq;
 
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.SymphonyApi.Client;
@@ -243,6 +244,12 @@ namespace Armonik.Samples.Symphony.Client
       _1_Job_of_N_Tasks(sessionService, payload, 200, outputMessages);
       _1_Job_of_N_Tasks(sessionService, payload, 500, outputMessages);
 
+      outputMessages.AppendLine("In this series of samples we're creating N batchs of M jobs of 1 task.");
+
+      N_Jobs_of_1_Task_With_Results_At_The_End(sessionService, payload, 1, 1, outputMessages);
+      N_Jobs_of_1_Task_With_Results_At_The_End(sessionService, payload, 1, 10, outputMessages);
+      N_Jobs_of_1_Task_With_Results_At_The_End(sessionService, payload, 1, 1000, outputMessages);
+
       _logger.LogInformation(outputMessages.ToString());
     }
 
@@ -276,7 +283,6 @@ namespace Armonik.Samples.Symphony.Client
       outputMessages.AppendLine($"Client called {nbJobs} jobs of one task in {elapsedMilliseconds} ms agregated Result = {finalResult}");
     }
 
-
     /// <summary>
     ///   The function to execute 1 job with several tasks inside
     /// </summary>
@@ -307,6 +313,59 @@ namespace Armonik.Samples.Symphony.Client
 
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
       outputMessages.AppendLine($"Client called {nbTasks} tasks in {elapsedMilliseconds} ms aggregated Result = {finalResult}");
+    }
+
+    /// <summary>
+    ///   The function to execute batchs of several jobs with 1 task each
+    /// </summary>
+    /// <param name="sessionService">The sessionService to connect to the Control plane Service</param>
+    /// <param name="payload">A default payload to execute by each task</param>
+    /// <param name="nbBatchs">The Number of batchs of jobs</param>
+    /// <param name="totalNbJobs">The total number of jobs (in all batchs)</param>
+    /// <param name="outputMessages">The print log stored in a StringBuilder object</param>
+    private static void N_Jobs_of_1_Task_With_Results_At_The_End(SessionService sessionService, byte[] payload, int nbBatchs, int totalNbJobs, StringBuilder outputMessages)
+    {
+        var sw = Stopwatch.StartNew();
+        var batchSize = totalNbJobs / nbBatchs;
+        var restJobs = totalNbJobs % batchSize;
+        List<string> taskIds = new List<string>(totalNbJobs);
+
+        // submit nbBatchs batchs of batchSize jobs of 1 task
+        for (var i = 0; i < nbBatchs; i++)
+        {
+            List<byte[]> payloads = new List<byte[]>(batchSize);
+            for(var j = 0; j < batchSize; j++)
+            {
+                payloads.Add(payload);
+            }
+            taskIds.AddRange(sessionService.SubmitTasks(payloads));
+            payloads.Clear();
+        }
+
+        // submit restJobs jobs of 1 task
+        for (var i = 0; i < restJobs; i++)
+        {
+            string taskId = sessionService.SubmitTask(payload);
+            taskIds.Add(taskId);
+        }
+
+        outputMessages.AppendLine($"Client called (Results_At_The_End) {nbBatchs} batchs of {batchSize} jobs of one task in {sw.ElapsedMilliseconds / 1000} sec (only job creation time)");
+
+        var finalResult = 0;
+        sw.Restart();
+        List<Tuple<string, byte[]>> results = sessionService.TryGetResults(taskIds).ToList();
+        var requestedTaskCount = taskIds.Count;
+        foreach (Tuple<string, byte[]> resultItem in results)
+        {
+            ClientPayload result = ClientPayload.Deserialize(resultItem.Item2);
+            if (result.Result == 0)
+                Log.Error($"The taskId {resultItem.Item1} returns [{result.Result}]");
+            finalResult += result.Result;
+        }
+
+        outputMessages.AppendLine($"  => requested/received {requestedTaskCount}/{results.Count} in {sw.ElapsedMilliseconds / 1000} sec (only job creation time)");
+        var elapsedMilliseconds = sw.ElapsedMilliseconds;
+        outputMessages.AppendLine($"Client called (Results_At_The_End) {nbBatchs} batchs of {batchSize} jobs of one task in {elapsedMilliseconds / 1000} sec agregated Result = {finalResult}");
     }
   }
 }
