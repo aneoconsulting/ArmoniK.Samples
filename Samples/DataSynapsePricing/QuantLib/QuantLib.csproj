@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;net6.0;net5.0</TargetFrameworks>
+    <PackageId>$(MSBuildProjectName)</PackageId>
+    <Version>1.0.0-700</Version>
+    <Authors>ANEO</Authors>
+    <Company>ANEO</Company>
+    <AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <OutputPath>bin/$(Configuration)/</OutputPath>
+    <PublishDir>../publish/$(MSBuildProjectName)/$(Version)</PublishDir>
+    <PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SlimSerializer" Version="2.0.0" />
+  </ItemGroup>
+
+</Project>

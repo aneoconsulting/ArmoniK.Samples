@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;net6.0;net5.0</TargetFrameworks>
+    <PackageId>$(MSBuildProjectName)</PackageId>
+    <Version>1.0.0-700</Version>
+    <Authors>ANEO</Authors>
+    <Company>ANEO</Company>
+    <AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <OutputPath>bin/$(Configuration)/</OutputPath>
+    <PublishDir>../publish/$(MSBuildProjectName)/$(Version)</PublishDir>
+    <PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
+    <LangVersion>latest</LangVersion>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ArmoniK.DevelopmentKit.Common" Version="0.5.2" />
+    <PackageReference Include="ArmoniK.DevelopmentKit.GridServer.Client" Version="0.5.2" />
+    <PackageReference Include="ArmoniK.DevelopmentKit.WorkerApi.Common" Version="0.5.2" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>embedded</DebugType>
+    <IncludeSymbols>true</IncludeSymbols>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PublishDir>../publish/$(MSBuildProjectName)/$(Version)</PublishDir>
+    <PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuantLib\QuantLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <RuntimeHostConfigurationOption Include="System.Globalization.Invariant" Value="true" />
+  </ItemGroup>
+
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'net6.0'">
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.41.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net472'">
+    <PackageReference Include="Grpc.Core" Version="2.41.0" />
+  </ItemGroup>
+
+</Project>
