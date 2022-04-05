@@ -25,28 +25,29 @@
 	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/ProtobufCodeFormatting/INDENT_SIZE/@EntryValue">2</s:Int64>
 	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/ProtobufCodeFormatting/TAB_WIDTH/@EntryValue">2</s:Int64>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/ProtobufCodeFormatting/USE_INDENT_FROM_VS/@EntryValue">False</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeStyle/EditorConfig/SyncToVisualStudio/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/FileHeader/FileHeaderText/@EntryValue">This file is part of the ArmoniK project&#xD;
 &#xD;
-Copyright (C) ANEO, 2021-$CURRENT_YEAR$. All rights reserved.&#xD;
+Copyright (C) ANEO, 2021-$CURRENT_YEAR$.&#xD;
   W. Kirschenmann   &lt;wkirschenmann@aneo.fr&gt;&#xD;
   J. Gurhem         &lt;jgurhem@aneo.fr&gt;&#xD;
   D. Dubuc          &lt;ddubuc@aneo.fr&gt;&#xD;
   L. Ziane Khodja   &lt;lzianekhodja@aneo.fr&gt;&#xD;
   F. Lemaitre       &lt;flemaitre@aneo.fr&gt;&#xD;
   S. Djebbar        &lt;sdjebbar@aneo.fr&gt;&#xD;
+  J. Fonseca        &lt;jfonseca@aneo.fr&gt;&#xD;
 &#xD;
-This program is free software: you can redistribute it and/or modify&#xD;
-it under the terms of the GNU Affero General Public License as published&#xD;
-by the Free Software Foundation, either version 3 of the License, or&#xD;
-(at your option) any later version.&#xD;
+Licensed under the Apache License, Version 2.0 (the "License");&#xD;
+you may not use this file except in compliance with the License.&#xD;
+You may obtain a copy of the License at&#xD;
 &#xD;
-This program is distributed in the hope that it will be useful,&#xD;
-but WITHOUT ANY WARRANTY; without even the implied warranty of&#xD;
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&#xD;
-GNU Affero General Public License for more details.&#xD;
+    http://www.apache.org/licenses/LICENSE-2.0&#xD;
 &#xD;
-You should have received a copy of the GNU Affero General Public License&#xD;
-along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</s:String>
+Unless required by applicable law or agreed to in writing, software&#xD;
+distributed under the License is distributed on an "AS IS" BASIS,&#xD;
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.&#xD;
+See the License for the specific language governing permissions and&#xD;
+limitations under the License.</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=DB/@EntryIndexedValue">DB</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/PredefinedNamingRules/=PrivateInstanceFields/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="_" Style="aaBb" /&gt;</s:String>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ECSharpKeepExistingMigration/@EntryIndexedValue">True</s:Boolean>
@@ -64,12 +65,17 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</s:S
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=gridlib/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Grpc/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Gurhem/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Initializable/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Khodja/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Kirschenmann/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Liveness/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Mongo/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=prefetching/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=qmdm/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=redispatched/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=requeued/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=serilog/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=subtask/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=subtasking/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=subtasks/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Ziane/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
