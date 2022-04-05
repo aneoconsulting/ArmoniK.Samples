@@ -353,7 +353,7 @@ namespace Armonik.Samples.Symphony.Client
 
         var finalResult = 0;
         sw.Restart();
-        List<Tuple<string, byte[]>> results = sessionService.TryGetResults(taskIds).ToList();
+        List<Tuple<string, byte[]>> results = sessionService.GetResults(taskIds).ToList();
         var requestedTaskCount = taskIds.Count;
         foreach (Tuple<string, byte[]> resultItem in results)
         {
