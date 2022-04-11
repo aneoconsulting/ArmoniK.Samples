@@ -62,7 +62,7 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
             {
               _logger.LogInformation("Looking for result for Id {id}",
                 id);
-              var armonik_id = taskContext.SessionId + "%" + id;
+              var armonik_id = id;
               var isOkay = taskContext.DataDependencies.TryGetValue(armonik_id,
                 out var data);
               if (!isOkay)
@@ -103,16 +103,21 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
           payloads.Add(DataAdapter.BuildPayload(runConfiguration, readyRequest));
         }
 
-        SubmitTasks(payloads);
+        var taskIds = SubmitTasks(payloads);
         // code à adapter pour créer le bon type de request
         //sessionClient.SubmitTasks(readyRequests.Select(r => DataAdapter.BuildPayload(runConfiguration, r)));
         var req = requests[false].Single();
+        req.Dependencies.Clear();
+        foreach (var t in taskIds)
+        {
+          req.Dependencies.Add(t);
+        }
         SubmitTasksWithDependencies(new List<Tuple<byte[], IList<string>>>(
           new List<Tuple<byte[], IList<string>>>
           {
             new(
               DataAdapter.BuildPayload(runConfiguration, req),
-              req.Dependencies.Select(s => taskContext.SessionId + "%" + s).ToList()
+              req.Dependencies
             )
           }), true);
         // code à adapter pour créer le bon type de request
