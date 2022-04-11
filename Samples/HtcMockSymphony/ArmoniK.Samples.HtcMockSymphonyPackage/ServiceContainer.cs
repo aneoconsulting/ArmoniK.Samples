@@ -97,15 +97,13 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
         _logger.LogDebug("Will submit {count} new tasks", requestsCount);
 
 
-        var payloadsAndDeps = new List<Tuple<byte[], IList<string>>>(requestsCount);
+        var payloads = new List<byte[]>(requestsCount);
         foreach (var readyRequest in readyRequests)
         {
-          payloadsAndDeps.Add(new Tuple<byte[], IList<string>>(
-            DataAdapter.BuildPayload(runConfiguration, readyRequest),
-            readyRequest.Dependencies.Select(s => taskContext.SessionId + "%" + s).ToList()));
+          payloads.Add(DataAdapter.BuildPayload(runConfiguration, readyRequest));
         }
 
-        SubmitTasksWithDependencies(payloadsAndDeps, true);
+        SubmitTasks(payloads);
         // code à adapter pour créer le bon type de request
         //sessionClient.SubmitTasks(readyRequests.Select(r => DataAdapter.BuildPayload(runConfiguration, r)));
         var req = requests[false].Single();
