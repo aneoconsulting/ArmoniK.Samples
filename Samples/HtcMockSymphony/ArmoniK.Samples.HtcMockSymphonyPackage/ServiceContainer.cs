@@ -62,12 +62,10 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
             {
               _logger.LogInformation("Looking for result for Id {id}",
                 id);
-              var armonik_id = id;
-              var isOkay = taskContext.DataDependencies.TryGetValue(armonik_id,
-                out var data);
+              var isOkay = taskContext.DataDependencies.TryGetValue(id, out var data);
               if (!isOkay)
               {
-                throw new KeyNotFoundException(armonik_id);
+                throw new KeyNotFoundException(id);
               }
 
               return Encoding.Default.GetString(data);
@@ -78,8 +76,7 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
           true,
           runConfiguration,
           _logger);
-        var res = requestProcessor.GetResult(request,
-          inputs);
+        var res = requestProcessor.GetResult(request, inputs);
         _logger.LogDebug("Result for processing request is HasResult={hasResult}, Value={value}",
           res.Result.HasResult,
           res.Result.Value);
@@ -98,10 +95,8 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
 
 
         var payloads = new List<byte[]>(requestsCount);
-        foreach (var readyRequest in readyRequests)
-        {
-          payloads.Add(DataAdapter.BuildPayload(runConfiguration, readyRequest));
-        }
+        payloads.AddRange(readyRequests.Select(readyRequest => DataAdapter.BuildPayload(runConfiguration,
+                                                                                        readyRequest)));
 
         var taskIds = SubmitTasks(payloads);
         // code à adapter pour créer le bon type de request
@@ -118,7 +113,7 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
             new(
               DataAdapter.BuildPayload(runConfiguration, req),
               req.Dependencies
-            )
+            ),
           }), true);
         // code à adapter pour créer le bon type de request
         // ici, le ExpectedDependency doit être celui de la tâche en cours
