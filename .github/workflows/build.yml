@@ -124,7 +124,7 @@ jobs:
          cp -v packages/ArmoniK.Samples.HtcMockSymphonyPackage-v2.0.0.zip ${{ steps.deploy-infra.outputs.host-path }}
 
          cd ArmoniK.Samples.HtcMockSymphonyClient/
-         dotnet bin/net5.0/linux-x64/ArmoniK.Samples.HtcMockSymphonyClient.dll
+         dotnet bin/Debug/net5.0/linux-x64/ArmoniK.Samples.HtcMockSymphonyClient.dll
 
       - name: Copy logs
         if: always()
