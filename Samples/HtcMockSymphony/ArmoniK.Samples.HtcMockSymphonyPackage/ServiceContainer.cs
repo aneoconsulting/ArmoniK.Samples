@@ -38,7 +38,6 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
 {
   public class ServiceContainer : ServiceContainerBase
   {
-    private readonly IConfiguration configuration_;
     private ILogger<ServiceContainer> _logger;
 
     public override void OnCreateService(ServiceContext serviceContext)
