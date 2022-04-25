@@ -1,5 +1,5 @@
-# ArmoniK SymphonyLike Samples
-- [ArmoniK SymphonyLike Samples](#armonik-symphonylike-samples)
+# ArmoniK HtcMock SymphonyLike Samples
+- [ArmoniK HtcMock SymphonyLike Samples](#armonik-htcmock-symphonylike-samples)
 - [Introduction <a name="introduction"></a>](#introduction-)
 - [Software prerequisites <a name="software-prerequisites"></a>](#software-prerequisites-)
 - [How to start with sample SymphonyLike](#how-to-start-with-sample-symphonylike)
@@ -14,7 +14,7 @@
 
 # Introduction <a name="introduction"></a>
 
-You will find the Sample to execute tasks with Armonik with API Symphony like.
+You will find the Sample to execute tasks with Armonik with API Symphony like. It uses the HtcMock Sample as task.
 All API References to develop your own application within Armonik can be found in this [API documentation](Documentation/Home.md)
 
 # Software prerequisites <a name="software-prerequisites"></a>
@@ -27,17 +27,17 @@ Before starting, it is important to have correctly deployed the ArmoniK solution
 kubectl get po -n armonik
 ```
 
-# How to start with sample SymphonyLike
+# How to start with sample HtcMockSymphony
 
 
 ### Configure applications
-Go to folder of SymphonyLike
+Go to folder of HtcMockSymphony
 ```bash
-cd Samples/SymphonyLike/
+cd Samples/HtcMockSymphony/
 ```
-Open the solution ArmoniK.sln with Visual Studio 2019 or later
+Open the solution HtcMockSymphony.sln with Visual Studio 2019 or later
 
-In the project Armonik.Samples.SymphonyLikeClient
+In the project Armonik.Samples.HtcMockSymphonyClient
 
 Open the file appsettings.json and change IP adress to your correct WSL address ip.
 
@@ -69,7 +69,7 @@ sudo mkdir /data
 ### Deploy new package to WSL /data directory
 From Armonik.Samples root directory :
 ```bash
-cp -v Samples/SymphonyLike/packages/ArmoniK.Samples.SymphonyPackage-v1.0.0.zip /data/
+cp -v Samples/HtcMockSymphony/packages/ArmoniK.Samples.HtcMockSymphonyPackage-v1.0.0.zip /data/
 ```
 
 ### Restart Compute pod
@@ -79,7 +79,7 @@ kubectl delete -n armonik $(kubectl get pods -n armonik -l service=compute-plane
 
 ### Execute Armonik.Samples.SymphonyClient
 
-From Visual Studio, execute the project ArmoniK.Samples.SymplhonyClient within Visual Studio 2019 or later
+From Visual Studio, execute the project ArmoniK.Samples.HtcMockSymphonyClient within Visual Studio 2019 or later
 
 
 ## How to debug your code remotely

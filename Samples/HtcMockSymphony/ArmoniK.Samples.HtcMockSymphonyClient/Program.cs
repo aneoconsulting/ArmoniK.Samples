@@ -22,12 +22,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading;
-using System.Linq;
 
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.SymphonyApi.Client;
@@ -113,7 +110,7 @@ namespace Armonik.Samples.HtcMockSymphony.Client
 
       var htcClient = new HtcMockSymphonyClient(sessionService, factory.CreateLogger<Htc.Mock.Client>());
 
-      _logger.LogInformation("Running Small HtcMock test, 1 execution");
+      _logger.LogInformation("Running Small HtcMock SymphonyLike test, 1 execution");
       ClientSeqExec(htcClient, runConfiguration, 1);
     }
 

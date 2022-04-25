@@ -99,8 +99,6 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
                                                                                         readyRequest)));
 
         var taskIds = SubmitTasks(payloads);
-        // code à adapter pour créer le bon type de request
-        //sessionClient.SubmitTasks(readyRequests.Select(r => DataAdapter.BuildPayload(runConfiguration, r)));
         var req = requests[false].Single();
         req.Dependencies.Clear();
         foreach (var t in taskIds)
@@ -115,9 +113,6 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
               req.Dependencies
             ),
           }), true);
-        // code à adapter pour créer le bon type de request
-        // ici, le ExpectedDependency doit être celui de la tâche en cours
-        //sessionClient.SubmitTaskWithDependencies(readyRequests.Select(r => DataAdapter.BuildPayload(runConfiguration, req), req.Dependencies));
 
         return null;
       }
