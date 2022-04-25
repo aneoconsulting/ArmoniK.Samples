@@ -23,11 +23,11 @@
 
 using System.Text.Json;
 
-namespace ArmoniK.Samples.HtcMock.Client
+namespace ArmoniK.Samples.HtcMockSymphonyLike.Client
 {
   internal class SimpleStats
   {
-    public long EllapsedTime { get; set; }
+    public long ElapsedTime { get; set; }
     public string Test { get; set; }
     public int NRun { get; set; }
 

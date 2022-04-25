@@ -8,6 +8,7 @@
 //   F. Lemaitre       <flemaitre@aneo.fr>
 //   S. Djebbar        <sdjebbar@aneo.fr>
 //   J. Fonseca        <jfonseca@aneo.fr>
+//   D. Brasseur       <dbrasseur@aneo.fr>
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,9 +29,8 @@ using System.Threading;
 
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.SymphonyApi.Client;
-using ArmoniK.DevelopmentKit.SymphonyApi.Client.api;
 using ArmoniK.DevelopmentKit.Common;
-using ArmoniK.Samples.HtcMock.Client;
+using ArmoniK.Samples.HtcMockSymphonyLike.Client;
 using ArmoniK.Samples.HtcMockSymphonyClient;
 using Google.Protobuf.WellKnownTypes;
 using Htc.Mock.Core;
@@ -153,23 +153,11 @@ namespace Armonik.Samples.HtcMockSymphony.Client
     }
 
     /// <summary>
-    ///   Simple function to wait and get the Result from subTasking and Result delegation
-    ///   to a subTask
+    /// First test to run nRun times sequentially with the given runConfiguration 
     /// </summary>
-    /// <param name="sessionService">The sessionService API to connect to the Control plane Service</param>
-    /// <param name="taskId">The task which is waiting for</param>
-    /// <returns></returns>
-    private static byte[] WaitForTaskResult(SessionService sessionService, string taskId)
-    {
-      var taskResult = sessionService.GetResult(taskId);
-
-      return taskResult;
-    }
-
-    /// <summary>
-    ///   The first test developed to validate dependencies subTasking
-    /// </summary>
-    /// <param name="sessionService"></param>
+    /// <param name="client">Symphony Like Client</param>
+    /// <param name="runConfiguration"> Configuration for the run</param>
+    /// <param name="nRun"> Number of runs</param>
     private static void ClientSeqExec(HtcMockSymphonyClient client, RunConfiguration runConfiguration, int nRun)
     {
       var sw = Stopwatch.StartNew();
@@ -180,7 +168,7 @@ namespace Armonik.Samples.HtcMockSymphony.Client
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
       var stat = new SimpleStats
       {
-        EllapsedTime = elapsedMilliseconds,
+        ElapsedTime = elapsedMilliseconds,
         Test         = "SeqExec",
         NRun         = nRun,
       };

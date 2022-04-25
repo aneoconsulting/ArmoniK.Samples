@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Text;
-using System.Threading.Tasks;
+
 using ArmoniK.DevelopmentKit.SymphonyApi.Client.api;
 using Htc.Mock.Core;
 using Microsoft.Extensions.Logging;
@@ -13,8 +10,8 @@ namespace ArmoniK.Samples.HtcMockSymphonyClient
   public class HtcMockSymphonyClient
   {
 
-    private SessionService _sessionService;
-    private ILogger<Htc.Mock.Client> _logger;
+    private readonly SessionService _sessionService;
+    private readonly ILogger<Htc.Mock.Client> _logger;
     public HtcMockSymphonyClient(SessionService sessionService, ILogger<Htc.Mock.Client> logger)
     {
       _sessionService = sessionService;

@@ -8,6 +8,7 @@
 //   F. Lemaitre       <flemaitre@aneo.fr>
 //   S. Djebbar        <sdjebbar@aneo.fr>
 //   J. Fonseca        <jfonseca@aneo.fr>
+//   D. Brasseur       <dbrasseur@aneo.fr>
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +26,6 @@ using ArmoniK.DevelopmentKit.Common.Exceptions;
 using ArmoniK.DevelopmentKit.SymphonyApi;
 using ArmoniK.DevelopmentKit.SymphonyApi.api;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using System;
