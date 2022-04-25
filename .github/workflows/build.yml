@@ -109,6 +109,22 @@ jobs:
 
          cd ArmoniK.Samples.SymphonyClient/
          dotnet bin/Debug/net5.0/linux-x64/ArmoniK.Samples.SymphonyClient.dll
+      
+      - name: Run HtcMock SymphonyLike
+        run: |
+         export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
+         export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
+         export Grpc__Endpoint=http://$CPIP:$CPPort
+
+         cd Samples/HtcMockSymphony/
+         dotnet publish --self-contained -r linux-x64 HtcMockSymphony.sln
+
+         mkdir -p ${{ steps.deploy-infra.outputs.host-path }}
+         
+         cp -v packages/ArmoniK.Samples.HtcMockSymphonyPackage-v2.0.0.zip ${{ steps.deploy-infra.outputs.host-path }}
+
+         cd ArmoniK.Samples.HtcMockSymphonyClient/
+         dotnet bin/net5.0/linux-x64/ArmoniK.Samples.HtcMockSymphonyClient.dll
 
       - name: Copy logs
         if: always()
