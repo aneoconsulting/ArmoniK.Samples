@@ -36,6 +36,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.HtcMockSymphonyClient", "Samples\HtcMockSymphony\ArmoniK.Samples.HtcMockSymphonyClient\ArmoniK.Samples.HtcMockSymphonyClient.csproj", "{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.HtcMockSymphonyPackage", "Samples\HtcMockSymphony\ArmoniK.Samples.HtcMockSymphonyPackage\ArmoniK.Samples.HtcMockSymphonyPackage.csproj", "{084D60CD-805D-400F-983F-6D859639A189}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HtcMockSymphonyLike", "HtcMockSymphonyLike", "{520D6737-D634-4C00-8F60-242DCD12A5C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +88,14 @@ Global
 		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}.Release|Any CPU.Build.0 = Release|Any CPU
+		{084D60CD-805D-400F-983F-6D859639A189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{084D60CD-805D-400F-983F-6D859639A189}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{084D60CD-805D-400F-983F-6D859639A189}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{084D60CD-805D-400F-983F-6D859639A189}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +111,8 @@ Global
 		{D9072D4E-3D35-487C-B36D-483006B642F6} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
 		{58C6D29B-0A12-461F-9470-F1D6E29634D0} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
 		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
+		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604} = {520D6737-D634-4C00-8F60-242DCD12A5C5}
+		{084D60CD-805D-400F-983F-6D859639A189} = {520D6737-D634-4C00-8F60-242DCD12A5C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {296BECBB-EB87-4630-8EBD-A1837B12E5E6}
