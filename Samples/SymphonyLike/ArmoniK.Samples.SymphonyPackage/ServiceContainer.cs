@@ -88,7 +88,7 @@ namespace ArmoniK.Samples.Symphony.Packages
         subTaskPaylaod.Type    = clientPayload.Type;
         Logger.LogInformation($"Compute {value} in                 {taskContext.TaskId}");
 
-        Logger.LogInformation($"Submitting subTask from task          : {taskContext.TaskId} from Session {SessionId.PackSessionId()}");
+        Logger.LogInformation($"Submitting subTask from task          : {taskContext.TaskId} from Session {SessionId.Id}");
         var subTaskId = this.SubmitTask(subTaskPaylaod.Serialize());
         Logger.LogInformation($"Submitted  subTask                    : {subTaskId}");
 
@@ -98,7 +98,7 @@ namespace ArmoniK.Samples.Symphony.Packages
           Result = square,
         };
 
-        Logger.LogInformation($"Submitting aggregate task             : {taskContext.TaskId} from Session {SessionId.PackSessionId()}");
+        Logger.LogInformation($"Submitting aggregate task             : {taskContext.TaskId} from Session {SessionId.Id}");
 
         var aggTaskId = this.SubmitTaskWithDependencies(aggPayload.Serialize(),
                                                         new[] { subTaskId }, true);

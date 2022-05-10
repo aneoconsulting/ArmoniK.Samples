@@ -9,8 +9,8 @@
     <AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>
     <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
     <OutputPath>bin/$(Configuration)/</OutputPath>
-    <PublishDir>../publish/$(MSBuildProjectName)/$(Version)</PublishDir>
-    <PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
+    <PublishDir>../publish/Services/$(Version)</PublishDir>
+    <PublishUrl>../publish/Services/$(Version)</PublishUrl>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

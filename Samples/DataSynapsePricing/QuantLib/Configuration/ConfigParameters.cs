@@ -11,7 +11,7 @@ public class PricingParameters
 
 public class ConfigParameters
 {
-  public float DefaultValue;
+  public double DefaultValue;
 
   public enum PricingState
   {
