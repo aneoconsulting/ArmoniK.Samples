@@ -22,14 +22,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using JetBrains.Annotations;
+using System.Text.Json;
 
-namespace ArmoniK.Samples.HtcMock.Adapter.Options
+namespace ArmoniK.Samples.HtcMockSymphonyLike.Client
 {
-  [PublicAPI]
-  public class Grpc
+  internal class SimpleStats
   {
-    public const string SettingSection = nameof(Grpc);
-    public string Endpoint { get; set; }
+    public long ElapsedTime { get; set; }
+    public string Test { get; set; }
+    public int NRun { get; set; }
+
+    public string ToJson()
+    {
+      return JsonSerializer.Serialize(this);
+    }
   }
 }
