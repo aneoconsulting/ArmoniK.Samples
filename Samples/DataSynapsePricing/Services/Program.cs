@@ -21,6 +21,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.IO;
+using System.Reflection;
+using System.Runtime.Loader;
 
 using QuantLib.Serialization;
 
@@ -32,9 +36,18 @@ namespace Services
     public static double[] ComputePricing(object inputs)
     {
       var localConfigParameters = new ConfigParameters();
-      var assemblyLocalCfgParams = localConfigParameters.GetType().Assembly;
+      
+      string currentAssemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+      //var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath( Path.Combine(currentAssemblyDirectory, "QuantLibUtils.dll"));
+      var assembly = Assembly.LoadFile( Path.Combine(currentAssemblyDirectory, "QuantLibUtils.dll"));
+      //var assembly = Assembly.LoadFrom(Path.Combine(currentAssemblyDirectory, "QuantLibUtils.dll"));
 
-      var configParameters = Compressor.DeSerializeObject<ConfigParameters>((byte[])inputs);
+      var instance = assembly.CreateInstance("QuantLibUtils.MatrixConvertor");
+
+      var methodInfo = instance?.GetType().GetMethod("Deserialize");
+
+      var configParameters = (ConfigParameters)methodInfo?.Invoke(instance, new object[] { inputs });
+      configParameters ??= localConfigParameters;
 
       return new double[] { configParameters.DefaultValue, configParameters.PricingParameters.Spot, 0.0 };
     }

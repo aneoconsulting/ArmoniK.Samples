@@ -145,7 +145,7 @@ namespace ArmoniK.Samples.GridServer.Client
       {
         MaxDuration = new Duration
         {
-          Seconds = 600,
+          Seconds = 3600 * 24,
         },
         MaxRetries = 3,
         Priority   = 1,
