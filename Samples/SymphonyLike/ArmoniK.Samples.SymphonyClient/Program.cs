@@ -1,5 +1,5 @@
 // This file is part of the ArmoniK project
-// 
+//
 // Copyright (C) ANEO, 2021-2022.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
@@ -9,13 +9,13 @@
 //   S. Djebbar        <sdjebbar@aneo.fr>
 //   J. Fonseca        <jfonseca@aneo.fr>
 //   D. Brasseur       <dbrasseur@aneo.fr>
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +29,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.SymphonyApi.Client;
@@ -316,6 +317,83 @@ namespace Armonik.Samples.Symphony.Client
       outputMessages.AppendLine($"Client called {nbTasks} tasks in {elapsedMilliseconds} ms aggregated Result = {finalResult}");
     }
 
+    private static void PeriodicInfo(Action action, int seconds, CancellationToken token = default)
+    {
+      if (action == null)
+        return;
+      Task.Run(async () =>
+               {
+                 while (!token.IsCancellationRequested)
+                 {
+                   action();
+                   await Task.Delay(TimeSpan.FromSeconds(seconds),
+                                    token);
+                 }
+               },
+               token);
+    }
+
+
+
+    private static IEnumerable<Tuple<string, byte[]>> GetTryResults(SessionService sessionService, IEnumerable<string> taskIds)
+    {
+      var ids       = taskIds.ToList();
+      var missing   = ids;
+      var results   = new List<Tuple<string, byte[]>>();
+      var cts       = new CancellationTokenSource();
+      var holdPrev = 0;
+      var waitInSeconds = new List<int>
+      {
+        1000,
+        5000,
+        10000,
+        20000,
+        30000
+      };
+      var idx = 0;
+
+      PeriodicInfo(() => { _logger.LogInformation($"Got {results.Count} / {ids.Count} result(s) "); },
+                   20,
+                   cts.Token);
+
+      while (missing.Count != 0)
+      {
+        missing.Batch(100).ToList().ForEach(bucket =>
+        {
+          var partialResults = sessionService.TryGetResults(bucket);
+
+          var listPartialResults = partialResults.ToList();
+
+          if (listPartialResults.Count() != 0)
+          {
+            results.AddRange(listPartialResults);
+          }
+
+          missing = missing.Where(x => listPartialResults.ToList().All(rId => rId.Item1 != x)).ToList();
+
+
+
+          if (holdPrev == results.Count)
+          {
+            idx = idx >= waitInSeconds.Count - 1 ? waitInSeconds.Count - 1 : idx + 1;
+          }
+          else
+          {
+            idx = 0;
+          }
+
+          holdPrev = results.Count;
+
+          Thread.Sleep(waitInSeconds[idx]);
+
+        });
+      }
+
+      cts.Cancel();
+
+      return results;
+    }
+
     /// <summary>
     ///   The function to execute batchs of several jobs with 1 task each
     /// </summary>
@@ -354,13 +432,13 @@ namespace Armonik.Samples.Symphony.Client
 
         var finalResult = 0;
         sw.Restart();
-        List<Tuple<string, byte[]>> results = sessionService.GetResults(taskIds).ToList();
+        List<Tuple<string, byte[]>> results = GetTryResults(sessionService, taskIds).ToList();
         var requestedTaskCount = taskIds.Count;
         foreach (Tuple<string, byte[]> resultItem in results)
         {
             ClientPayload result = ClientPayload.Deserialize(resultItem.Item2);
             if (result.Result == 0)
-                Log.Error($"The taskId {resultItem.Item1} returns [{result.Result}]");
+                _logger.LogError($"The taskId {resultItem.Item1} returns [{result.Result}]");
             finalResult += result.Result;
         }
 

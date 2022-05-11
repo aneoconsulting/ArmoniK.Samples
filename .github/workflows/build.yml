@@ -18,7 +18,7 @@ jobs:
     - name: Generate Version
       id: genver
       run: |
-        VERSION=$(docker run --rm -v $(pwd):/repo codacy/git-version /bin/git-version --folder=/repo --release-branch=release --dev-branch=master) 
+        VERSION=$(docker run --rm -v $(pwd):/repo codacy/git-version /bin/git-version --folder=/repo --release-branch=release --dev-branch=master)
         echo "::set-output name=version::$VERSION"
         echo $VERSION
 
@@ -75,7 +75,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - uses: aneoconsulting/ArmoniK@main
+      - uses: aneoconsulting/ArmoniK@v2.7.x
         id: deploy-infra
 
       - name: Run GridServerLike
@@ -88,7 +88,7 @@ jobs:
          dotnet publish --self-contained -r linux-x64 DataSynapseLike.sln
 
          mkdir -p ${{ steps.deploy-infra.outputs.host-path }}
-         
+
          cp -v packages/ArmoniK.Samples.GridServer.Client-v1.0.0-700.zip ${{ steps.deploy-infra.outputs.host-path }}
 
          cd ArmoniK.Samples.GridServer.Client/
@@ -109,7 +109,7 @@ jobs:
 
          cd ArmoniK.Samples.SymphonyClient/
          dotnet bin/Debug/net5.0/linux-x64/ArmoniK.Samples.SymphonyClient.dll
-      
+
       - name: Run HtcMock SymphonyLike
         run: |
          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
@@ -120,7 +120,7 @@ jobs:
          dotnet publish --self-contained -r linux-x64 HtcMockSymphony.sln
 
          mkdir -p ${{ steps.deploy-infra.outputs.host-path }}
-         
+
          cp -v packages/ArmoniK.Samples.HtcMockSymphonyPackage-v2.0.0.zip ${{ steps.deploy-infra.outputs.host-path }}
 
          cd ArmoniK.Samples.HtcMockSymphonyClient/
@@ -155,7 +155,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - uses: aneoconsulting/ArmoniK@main
+      - uses: aneoconsulting/ArmoniK@v2.7.x
         name: Deploy ArmoniK Infra with Mock Image
         id: deploy-infra
         with:
@@ -167,7 +167,7 @@ jobs:
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
           export Grpc__Endpoint=http://$CPIP:$CPPort
-          
+
           cd Samples/HtcMockV3/Client/src
           dotnet build "ArmoniK.Samples.HtcMock.Client.csproj" -c Release
           dotnet bin/Release/net5.0/ArmoniK.Samples.HtcMock.Client.dll
