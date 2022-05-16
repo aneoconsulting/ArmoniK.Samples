@@ -31,9 +31,7 @@ using System.Threading.Tasks;
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.DevelopmentKit.GridServer.Client;
-using ArmoniK.DevelopmentKit.WorkerApi.Common;
-using ArmoniK.Samples.GridServer.Client.Services;
-
+using ArmoniK.Samples.GridServer.Common;
 using Google.Protobuf.WellKnownTypes;
 
 using Microsoft.Extensions.Configuration;
@@ -58,16 +56,18 @@ namespace ArmoniK.Samples.GridServer.Client
                                           LogEventLevel.Information)
                    .Enrich.FromLogContext()
                    .WriteTo.Console()
-                   .CreateBootstrapLogger();
+                   .CreateLogger();
 
-      var factory = new LoggerFactory().AddSerilog();
+      var factory = new LoggerFactory(Array.Empty<ILoggerProvider>(),
+        new LoggerFilterOptions().AddFilter("Grpc",
+          LogLevel.Error)).AddSerilog();
 
       logger_ = factory.CreateLogger<Program>();
 
       var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                                               .AddJsonFile("appsettings.json",
                                                            true,
-                                                           true)
+                                                           false)
                                               .AddEnvironmentVariables();
 
       configuration_ = builder.Build();
