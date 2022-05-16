@@ -98,10 +98,13 @@ namespace Armonik.Samples.Symphony.Client
                                   .ReadFrom
                                   .Configuration(_configuration)
                                   .CreateLogger()),
-      });
+      },
+                                      new LoggerFilterOptions().AddFilter("Grpc",
+                                                                          LogLevel.Error));
+      
 
       _logger = factory.CreateLogger<Program>();
-
+      
       var client = new ArmonikSymphonyClient(_configuration,
                                              factory);
 
@@ -123,7 +126,7 @@ namespace Armonik.Samples.Symphony.Client
 
     private static void ModeExecutor(string[] argv, SessionService sessionService)
     {
-      var usage = $"Usage : ./ArmoniK.Samples.SymphonyClient [subTask nbTask_Avg nbVectorElements | pTask nbParallel_task]";
+      var usage = $"Usage : ./ArmoniK.Samples.SymphonyClient [subTask nbRun nbVectorElements | pTask nbParallel_task]";
 
       if (argv is not { Length: >= 1 })
       {
@@ -219,6 +222,7 @@ namespace Armonik.Samples.Symphony.Client
     /// <returns></returns>
     private static byte[] WaitForTaskResult(SessionService sessionService, string taskId)
     {
+      sessionService.WaitForTaskCompletion(taskId);
       var taskResult = sessionService.GetResult(taskId);
 
       return taskResult;
