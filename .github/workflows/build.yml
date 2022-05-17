@@ -85,7 +85,7 @@ jobs:
          export Grpc__Endpoint=http://$CPIP:$CPPort
 
          cd Samples/GridServerLike/
-         dotnet publish --self-contained -r linux-x64 DataSynapseLike.sln
+         dotnet publish --self-contained -r linux-x64  -f net6.0 DataSynapseLike.sln
 
          mkdir -p ${{ steps.deploy-infra.outputs.host-path }}
 
@@ -103,7 +103,7 @@ jobs:
          mkdir -p ${{ steps.deploy-infra.outputs.host-path }}
 
          cd Samples/SymphonyLike/
-         dotnet publish --self-contained -r linux-x64 SymphonyLike.sln
+         dotnet publish --self-contained -r linux-x64 -f net6.0 SymphonyLike.sln
 
          cp -v packages/ArmoniK.Samples.SymphonyPackage-v2.0.0.zip ${{ steps.deploy-infra.outputs.host-path }}
 
@@ -117,7 +117,7 @@ jobs:
          export Grpc__Endpoint=http://$CPIP:$CPPort
 
          cd Samples/HtcMockSymphony/
-         dotnet publish --self-contained -r linux-x64 HtcMockSymphony.sln
+         dotnet publish --self-contained -r linux-x64  -f net6.0 HtcMockSymphony.sln
 
          mkdir -p ${{ steps.deploy-infra.outputs.host-path }}
 
