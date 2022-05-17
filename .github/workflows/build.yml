@@ -89,7 +89,7 @@ jobs:
 
          mkdir -p ${{ steps.deploy-infra.outputs.host-path }}
 
-         cp -v packages/ArmoniK.Samples.GridServer.Client-v1.0.0-700.zip ${{ steps.deploy-infra.outputs.host-path }}
+         cp -v packages/ArmoniK.Samples.GridServer.Services-v1.0.0-700.zip ${{ steps.deploy-infra.outputs.host-path }}
 
          cd ArmoniK.Samples.GridServer.Client/
          dotnet bin/net5.0/linux-x64/ArmoniK.Samples.GridServer.Client.dll
