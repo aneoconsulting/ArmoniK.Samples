@@ -92,7 +92,7 @@ jobs:
          cp -v packages/ArmoniK.Samples.GridServer.Services-v1.0.0-700.zip ${{ steps.deploy-infra.outputs.host-path }}
 
          cd ArmoniK.Samples.GridServer.Client/
-         dotnet bin/net5.0/linux-x64/ArmoniK.Samples.GridServer.Client.dll
+         dotnet bin/net6.0/linux-x64/ArmoniK.Samples.GridServer.Client.dll
 
       - name: Run SymphonyLike
         run: |
@@ -108,7 +108,7 @@ jobs:
          cp -v packages/ArmoniK.Samples.SymphonyPackage-v2.0.0.zip ${{ steps.deploy-infra.outputs.host-path }}
 
          cd ArmoniK.Samples.SymphonyClient/
-         dotnet bin/Debug/net5.0/linux-x64/ArmoniK.Samples.SymphonyClient.dll
+         dotnet bin/Debug/net6.0/linux-x64/ArmoniK.Samples.SymphonyClient.dll
 
       - name: Run HtcMock SymphonyLike
         run: |
@@ -124,7 +124,7 @@ jobs:
          cp -v packages/ArmoniK.Samples.HtcMockSymphonyPackage-v2.0.0.zip ${{ steps.deploy-infra.outputs.host-path }}
 
          cd ArmoniK.Samples.HtcMockSymphonyClient/
-         dotnet bin/Debug/net5.0/linux-x64/ArmoniK.Samples.HtcMockSymphonyClient.dll
+         dotnet bin/Debug/net6.0/linux-x64/ArmoniK.Samples.HtcMockSymphonyClient.dll
 
       - name: Copy logs
         if: always()
