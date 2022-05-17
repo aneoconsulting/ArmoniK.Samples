@@ -1,5 +1,5 @@
 // This file is part of the ArmoniK project
-// 
+//
 // Copyright (C) ANEO, 2021-2022.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
@@ -9,13 +9,13 @@
 //   S. Djebbar        <sdjebbar@aneo.fr>
 //   J. Fonseca        <jfonseca@aneo.fr>
 //   D. Brasseur       <dbrasseur@aneo.fr>
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,9 +31,7 @@ using System.Threading.Tasks;
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.DevelopmentKit.GridServer.Client;
-using ArmoniK.DevelopmentKit.WorkerApi.Common;
-using ArmoniK.Samples.GridServer.Client.Services;
-
+using ArmoniK.Samples.GridServer.Common;
 using Google.Protobuf.WellKnownTypes;
 
 using Microsoft.Extensions.Configuration;
@@ -58,16 +56,18 @@ namespace ArmoniK.Samples.GridServer.Client
                                           LogEventLevel.Information)
                    .Enrich.FromLogContext()
                    .WriteTo.Console()
-                   .CreateBootstrapLogger();
+                   .CreateLogger();
 
-      var factory = new LoggerFactory().AddSerilog();
+      var factory = new LoggerFactory(Array.Empty<ILoggerProvider>(),
+        new LoggerFilterOptions().AddFilter("Grpc",
+          LogLevel.Error)).AddSerilog();
 
       logger_ = factory.CreateLogger<Program>();
 
       var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                                               .AddJsonFile("appsettings.json",
                                                            true,
-                                                           true)
+                                                           false)
                                               .AddEnvironmentVariables();
 
       configuration_ = builder.Build();
@@ -156,7 +156,7 @@ namespace ArmoniK.Samples.GridServer.Client
                               EngineType.DataSynapse.ToString());
 
       taskOptions.Options.Add(AppsOptions.GridAppNameKey,
-                              "ArmoniK.Samples.GridServer.Client");
+                              "ArmoniK.Samples.GridServer.Services");
 
       taskOptions.Options.Add(AppsOptions.GridAppVersionKey,
                               "1.0.0-700");

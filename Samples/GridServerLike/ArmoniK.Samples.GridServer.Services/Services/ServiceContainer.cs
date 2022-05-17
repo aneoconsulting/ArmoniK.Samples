@@ -26,7 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using ArmoniK.Samples.GridServer.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -36,22 +36,6 @@ using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.GridServer.Client.Services
 {
-
-  public static class SelectExtensions
-  {
-    public static IEnumerable<double> ConvertToArray(this IEnumerable<byte> arr)
-    {
-      var bytes = arr as byte[] ?? arr.ToArray();
-
-      var values = new double[bytes.Count() / sizeof(double)];
-
-      var i = 0;
-      for (; i < values.Length; i++)
-        values[i] = BitConverter.ToDouble(bytes.ToArray(),
-                                          i * 8);
-      return values;
-    }
-  }
 
   public class ServiceContainer
   {

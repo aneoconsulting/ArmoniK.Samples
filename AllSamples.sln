@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.HelloWorld.Client",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.HelloWorld.Worker", "Samples\HelloWorld\GridWorker\src\ArmoniK.HelloWorld.Worker.csproj", "{2EC056E6-3276-45F0-93D9-0F310334523E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.GridServer.Client", "Samples\GridServerLike\ArmoniK.Samples.GridServer.Client\ArmoniK.Samples.GridServer.Client.csproj", "{A282F18C-D22F-46E2-B2CD-954BCED65C2E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.GridServer.Common", "Samples\GridServerLike\ArmoniK.Samples.GridServer.Common\ArmoniK.Samples.GridServer.Common.csproj", "{55CC0688-95DD-4D95-B612-2D81C75BC3E6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.HtcMock.Adapter", "Samples\HtcMockV3\Adapter\src\ArmoniK.Samples.HtcMock.Adapter.csproj", "{D9072D4E-3D35-487C-B36D-483006B642F6}"
@@ -41,6 +39,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.HtcMockSymphonyPackage", "Samples\HtcMockSymphony\ArmoniK.Samples.HtcMockSymphonyPackage\ArmoniK.Samples.HtcMockSymphonyPackage.csproj", "{084D60CD-805D-400F-983F-6D859639A189}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HtcMockSymphonyLike", "HtcMockSymphonyLike", "{520D6737-D634-4C00-8F60-242DCD12A5C5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.GridServer.Services", "Samples\GridServerLike\ArmoniK.Samples.GridServer.Services\ArmoniK.Samples.GridServer.Services.csproj", "{484B53D2-C85D-489F-957B-B2935BAA5004}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.GridServer.Client", "Samples\GridServerLike\ArmoniK.Samples.GridServer.Client\ArmoniK.Samples.GridServer.Client.csproj", "{228C33EA-EC14-4B74-903E-37FBE2D8B1C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,10 +70,6 @@ Global
 		{2EC056E6-3276-45F0-93D9-0F310334523E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EC056E6-3276-45F0-93D9-0F310334523E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EC056E6-3276-45F0-93D9-0F310334523E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A282F18C-D22F-46E2-B2CD-954BCED65C2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A282F18C-D22F-46E2-B2CD-954BCED65C2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A282F18C-D22F-46E2-B2CD-954BCED65C2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A282F18C-D22F-46E2-B2CD-954BCED65C2E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{55CC0688-95DD-4D95-B612-2D81C75BC3E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{55CC0688-95DD-4D95-B612-2D81C75BC3E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55CC0688-95DD-4D95-B612-2D81C75BC3E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -96,6 +94,14 @@ Global
 		{084D60CD-805D-400F-983F-6D859639A189}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{084D60CD-805D-400F-983F-6D859639A189}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{084D60CD-805D-400F-983F-6D859639A189}.Release|Any CPU.Build.0 = Release|Any CPU
+		{484B53D2-C85D-489F-957B-B2935BAA5004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{484B53D2-C85D-489F-957B-B2935BAA5004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{484B53D2-C85D-489F-957B-B2935BAA5004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{484B53D2-C85D-489F-957B-B2935BAA5004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{228C33EA-EC14-4B74-903E-37FBE2D8B1C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{228C33EA-EC14-4B74-903E-37FBE2D8B1C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{228C33EA-EC14-4B74-903E-37FBE2D8B1C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{228C33EA-EC14-4B74-903E-37FBE2D8B1C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,13 +112,14 @@ Global
 		{E89DB7A5-43D4-43EA-B6B5-3C21B8EB8617} = {AE299B0C-CA72-4FE3-BCED-D1C6B26644BC}
 		{1B85C27B-91BF-4BAB-9824-185A7372B305} = {78533F2E-077E-439C-B2FE-C75B32D7AA40}
 		{2EC056E6-3276-45F0-93D9-0F310334523E} = {78533F2E-077E-439C-B2FE-C75B32D7AA40}
-		{A282F18C-D22F-46E2-B2CD-954BCED65C2E} = {9EC4B800-E36D-42EA-9C3E-404C2C25DB8E}
 		{55CC0688-95DD-4D95-B612-2D81C75BC3E6} = {9EC4B800-E36D-42EA-9C3E-404C2C25DB8E}
 		{D9072D4E-3D35-487C-B36D-483006B642F6} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
 		{58C6D29B-0A12-461F-9470-F1D6E29634D0} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
 		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
 		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604} = {520D6737-D634-4C00-8F60-242DCD12A5C5}
 		{084D60CD-805D-400F-983F-6D859639A189} = {520D6737-D634-4C00-8F60-242DCD12A5C5}
+		{484B53D2-C85D-489F-957B-B2935BAA5004} = {9EC4B800-E36D-42EA-9C3E-404C2C25DB8E}
+		{228C33EA-EC14-4B74-903E-37FBE2D8B1C8} = {9EC4B800-E36D-42EA-9C3E-404C2C25DB8E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {296BECBB-EB87-4630-8EBD-A1837B12E5E6}
