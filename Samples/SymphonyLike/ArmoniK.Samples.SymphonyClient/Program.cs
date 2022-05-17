@@ -47,20 +47,25 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;
 
+using static System.String;
+
 namespace Armonik.Samples.Symphony.Client
 {
   internal class Program
   {
     private static IConfiguration   _configuration;
     private static ILogger<Program> _logger;
+    private static string[]         arguments;
 
     private static void Main(string[] args)
     {
+      arguments = args;
+
       Console.WriteLine("Hello Armonik SymphonyLike Sample !");
 
 
       var armonikWaitClient = Environment.GetEnvironmentVariable("ARMONIK_DEBUG_WAIT_CLIENT");
-      if (!string.IsNullOrEmpty(armonikWaitClient))
+      if (!IsNullOrEmpty(armonikWaitClient))
       {
         var armonikDebugWaitClient = int.Parse(armonikWaitClient);
 
@@ -93,10 +98,13 @@ namespace Armonik.Samples.Symphony.Client
                                   .ReadFrom
                                   .Configuration(_configuration)
                                   .CreateLogger()),
-      });
+      },
+                                      new LoggerFilterOptions().AddFilter("Grpc",
+                                                                          LogLevel.Error));
+      
 
       _logger = factory.CreateLogger<Program>();
-
+      
       var client = new ArmonikSymphonyClient(_configuration,
                                              factory);
 
@@ -111,11 +119,60 @@ namespace Armonik.Samples.Symphony.Client
 
       _logger.LogInformation($"New session created : {sessionService}");
 
-      _logger.LogInformation("Running End to End test to compute Square value with SubTasking");
-      ClientStartup1(sessionService);
 
-      _logger.LogInformation("Running End to End test to check task average time per milliseconds");
-      ClientStartup2(sessionService);
+      ModeExecutor(arguments,
+                   sessionService);
+    }
+
+    private static void ModeExecutor(string[] argv, SessionService sessionService)
+    {
+      var usage = $"Usage : ./ArmoniK.Samples.SymphonyClient [subTask nbRun nbVectorElements | pTask nbParallel_task]";
+
+      if (argv is not { Length: >= 1 })
+      {
+        ExecuteVectorSubtasking(sessionService,
+                                1,
+                                3);
+
+        ExecuteLargeSubmissionSquare(sessionService,
+                                     0);
+        return;
+      }
+
+
+      if (argv[0].ToLower() == "subtask")
+      {
+        if (argv.Length <= 2)
+        {
+          ExecuteVectorSubtasking(sessionService,
+                                  1,
+                                  3);
+        }
+        else
+        {
+          ExecuteVectorSubtasking(sessionService,
+                                  int.Parse(argv[1]),
+                                  int.Parse(argv[2]));
+        }
+      }
+      else if (string.Equals(argv[0],
+                             "pTask",
+                             StringComparison.CurrentCultureIgnoreCase))
+      {
+        ExecuteLargeSubmissionSquare(sessionService,
+                                     argv.Length < 2 ? 0 : int.Parse(argv[1]));
+      }
+      else if (string.Equals(argv[0],
+                             "-h",
+                             StringComparison.CurrentCultureIgnoreCase))
+      {
+        Console.WriteLine(usage);
+        System.Environment.Exit(0);
+      }
+      else
+      {
+        throw new ArgumentException($"Unknown arguments ${argv[0]} \n {usage}");
+      }
     }
 
     /// <summary>
@@ -165,6 +222,7 @@ namespace Armonik.Samples.Symphony.Client
     /// <returns></returns>
     private static byte[] WaitForTaskResult(SessionService sessionService, string taskId)
     {
+      sessionService.WaitForTaskCompletion(taskId);
       var taskResult = sessionService.GetResult(taskId);
 
       return taskResult;
@@ -174,27 +232,45 @@ namespace Armonik.Samples.Symphony.Client
     ///   The first test developed to validate dependencies subTasking
     /// </summary>
     /// <param name="sessionService"></param>
-    private static void ClientStartup1(SessionService sessionService)
+    /// <param name="nbRun">The number of execution to produce a average time spent</param>
+    /// <param name="nbElements">The number of element in the vector to compute</param>
+    private static void ExecuteVectorSubtasking(SessionService sessionService, int nbRun = 1, int nbElements = 3)
     {
-      var numbers = new List<int>
-      {
-        1,
-        2,
-        3,
-      };
-      var payload = new ClientPayload
-      {
-        IsRootTask = true,
-        numbers    = numbers,
-        Type       = ClientPayload.TaskType.ComputeSquare,
-      };
-      var taskId = sessionService.SubmitTask(payload.Serialize());
+      _logger.LogInformation("Running End to End test to compute Square value with SubTasking");
 
-      var taskResult = WaitForTaskResult(sessionService,
-                                         taskId);
-      var result = ClientPayload.Deserialize(taskResult);
+      var numbers = Enumerable.Range(1,
+                                     nbElements).ToList();
 
-      _logger.LogInformation($"output Result : {result.Result}");
+      var timeSpans = new List<TimeSpan>();
+
+      Enumerable.Range(1,
+                       nbRun).ToList().ForEach(nRun =>
+      {
+        //Start Submission tasks
+        var stopWatch = new Stopwatch();
+        stopWatch.Start();
+        var payload = new ClientPayload
+        {
+          IsRootTask = true,
+          numbers    = numbers,
+          Type       = ClientPayload.TaskType.ComputeSquare,
+        };
+        var taskId = sessionService.SubmitTask(payload.Serialize());
+
+        var taskResult = WaitForTaskResult(sessionService,
+                                           taskId);
+        var result = ClientPayload.Deserialize(taskResult);
+
+        stopWatch.Stop();
+
+        _logger.LogInformation($"Run: {nRun} output Result : {result.Result}");
+        var ts = stopWatch.Elapsed;
+        timeSpans.Add(ts);
+      });
+      var tsm = timeSpans.Average();
+      // Format and display the TimeSpan value.
+      var elapsedTime = $"{tsm.Hours:00}:{tsm.Minutes:00}:{tsm.Seconds:00}.{tsm.Milliseconds / 10:00}";
+      _logger.LogInformation($"Time elapsed average for {nbRun} Runs " + elapsedTime);
     }
 
     /// <summary>
@@ -202,8 +278,11 @@ namespace Armonik.Samples.Symphony.Client
     ///   (Need to investigate performance with this test. Not yet investigate)
     /// </summary>
     /// <param name="sessionService"></param>
-    private static void ClientStartup2(SessionService sessionService)
+    /// <param name="nbTasks">The number of task to submit</param>
+    private static void ExecuteLargeSubmissionSquare(SessionService sessionService, int nbTasks = 0)
     {
+      _logger.LogInformation("Running End to End test to check task average time per milliseconds");
+
       var numbers = new List<int>
       {
         2,
@@ -215,42 +294,76 @@ namespace Armonik.Samples.Symphony.Client
       };
       var payload        = clientPayload.Serialize();
       var outputMessages = new StringBuilder();
-      outputMessages.AppendLine("In this series of samples we're creating N jobs of one task.");
-      outputMessages.AppendLine(@"In the loop we have :
+
+      if (nbTasks <= 0)
+      {
+        outputMessages.AppendLine("In this series of samples we're creating N jobs of one task.");
+        outputMessages.AppendLine(@"In the loop we have :
         1 sending job of one task
         2 wait for Result
         3 get associated payload");
-      N_Jobs_of_1_Task(sessionService,
-                       payload,
-                       1,
-                       outputMessages);
-      N_Jobs_of_1_Task(sessionService,
-                       payload,
-                       10,
-                       outputMessages);
-      //N_Jobs_of_1_Task(sessionService, payload, 100, outputMessages);
-      //N_Jobs_of_1_Task(sessionService, payload, 200, outputMessages);
-      // N_Jobs_of_1_Task(sessionService, payload, 500, outputMessages);
+        N_Jobs_of_1_Task(sessionService,
+                         payload,
+                         1,
+                         outputMessages);
+        N_Jobs_of_1_Task(sessionService,
+                         payload,
+                         10,
+                         outputMessages);
+        //N_Jobs_of_1_Task(sessionService, payload, 100, outputMessages);
+        //N_Jobs_of_1_Task(sessionService, payload, 200, outputMessages);
+        // N_Jobs_of_1_Task(sessionService, payload, 500, outputMessages);
 
-      outputMessages.AppendLine("In this series of samples we're creating 1 job of N tasks.");
+        outputMessages.AppendLine("In this series of samples we're creating 1 job of N tasks.");
 
-      _1_Job_of_N_Tasks(sessionService,
-                        payload,
-                        1,
-                        outputMessages);
-      _1_Job_of_N_Tasks(sessionService,
-                        payload,
-                        10,
-                        outputMessages);
-      _1_Job_of_N_Tasks(sessionService, payload, 100, outputMessages);
-      _1_Job_of_N_Tasks(sessionService, payload, 200, outputMessages);
-      _1_Job_of_N_Tasks(sessionService, payload, 500, outputMessages);
+        _1_Job_of_N_Tasks(sessionService,
+                          payload,
+                          1,
+                          outputMessages);
+        _1_Job_of_N_Tasks(sessionService,
+                          payload,
+                          10,
+                          outputMessages);
+        _1_Job_of_N_Tasks(sessionService,
+                          payload,
+                          100,
+                          outputMessages);
+        _1_Job_of_N_Tasks(sessionService,
+                          payload,
+                          200,
+                          outputMessages);
+        _1_Job_of_N_Tasks(sessionService,
+                          payload,
+                          500,
+                          outputMessages);
 
-      outputMessages.AppendLine("In this series of samples we're creating N batchs of M jobs of 1 task.");
+        outputMessages.AppendLine("In this series of samples we're creating N batchs of M jobs of 1 task.");
 
-      N_Jobs_of_1_Task_With_Results_At_The_End(sessionService, payload, 1, 1, outputMessages);
-      N_Jobs_of_1_Task_With_Results_At_The_End(sessionService, payload, 1, 10, outputMessages);
-      N_Jobs_of_1_Task_With_Results_At_The_End(sessionService, payload, 1, 1000, outputMessages);
+        N_Jobs_of_1_Task_With_Results_At_The_End(sessionService,
+                                                 payload,
+                                                 1,
+                                                 1,
+                                                 outputMessages);
+        N_Jobs_of_1_Task_With_Results_At_The_End(sessionService,
+                                                 payload,
+                                                 1,
+                                                 10,
+                                                 outputMessages);
+        N_Jobs_of_1_Task_With_Results_At_The_End(sessionService,
+                                                 payload,
+                                                 1,
+                                                 1000,
+                                                 outputMessages);
+      }
+      else
+      {
+        outputMessages.AppendLine($"In this series of samples we're creating 1 batch of {nbTasks} jobs of 1 task.");
+        N_Jobs_of_1_Task_With_Results_At_The_End(sessionService,
+                                                 payload,
+                                                 1,
+                                                 nbTasks,
+                                                 outputMessages);
+      }
 
       _logger.LogInformation(outputMessages.ToString());
     }
@@ -268,7 +381,7 @@ namespace Armonik.Samples.Symphony.Client
                                          StringBuilder  outputMessages)
     {
       var sw          = Stopwatch.StartNew();
-      var finalResult = 0;
+      var finalResult = 0L;
       for (var i = 0; i < nbJobs; i++)
       {
         var taskId = sessionService.SubmitTask(payload);
@@ -282,7 +395,7 @@ namespace Armonik.Samples.Symphony.Client
       }
 
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
-      outputMessages.AppendLine($"Client called {nbJobs} jobs of one task in {elapsedMilliseconds} ms agregated Result = {finalResult}");
+      outputMessages.AppendLine($"Client called {nbJobs} jobs of one task in {elapsedMilliseconds} ms aggregated Result = {finalResult}");
     }
 
     /// <summary>
@@ -302,7 +415,7 @@ namespace Armonik.Samples.Symphony.Client
         payloads.Add(payload);
 
       var sw          = Stopwatch.StartNew();
-      var finalResult = 0;
+      var finalResult = 0L;
       var taskIds     = sessionService.SubmitTasks(payloads);
       foreach (var taskId in taskIds)
       {
@@ -334,13 +447,12 @@ namespace Armonik.Samples.Symphony.Client
     }
 
 
-
     private static IEnumerable<Tuple<string, byte[]>> GetTryResults(SessionService sessionService, IEnumerable<string> taskIds)
     {
-      var ids       = taskIds.ToList();
-      var missing   = ids;
-      var results   = new List<Tuple<string, byte[]>>();
-      var cts       = new CancellationTokenSource();
+      var ids      = taskIds.ToList();
+      var missing  = ids;
+      var results  = new List<Tuple<string, byte[]>>();
+      var cts      = new CancellationTokenSource();
       var holdPrev = 0;
       var waitInSeconds = new List<int>
       {
@@ -372,7 +484,6 @@ namespace Armonik.Samples.Symphony.Client
           missing = missing.Where(x => listPartialResults.ToList().All(rId => rId.Item1 != x)).ToList();
 
 
-
           if (holdPrev == results.Count)
           {
             idx = idx >= waitInSeconds.Count - 1 ? waitInSeconds.Count - 1 : idx + 1;
@@ -385,7 +496,6 @@ namespace Armonik.Samples.Symphony.Client
           holdPrev = results.Count;
 
           Thread.Sleep(waitInSeconds[idx]);
-
         });
       }
 
@@ -402,49 +512,74 @@ namespace Armonik.Samples.Symphony.Client
     /// <param name="nbBatchs">The Number of batchs of jobs</param>
     /// <param name="totalNbJobs">The total number of jobs (in all batchs)</param>
     /// <param name="outputMessages">The print log stored in a StringBuilder object</param>
-    private static void N_Jobs_of_1_Task_With_Results_At_The_End(SessionService sessionService, byte[] payload, int nbBatchs, int totalNbJobs, StringBuilder outputMessages)
+    private static void N_Jobs_of_1_Task_With_Results_At_The_End(SessionService sessionService,
+                                                                 byte[]         payload,
+                                                                 int            nbBatchs,
+                                                                 int            totalNbJobs,
+                                                                 StringBuilder  outputMessages)
     {
-        var sw = Stopwatch.StartNew();
-        var batchSize = totalNbJobs / nbBatchs;
-        var restJobs = totalNbJobs % batchSize;
-        List<string> taskIds = new List<string>(totalNbJobs);
+      var sw        = Stopwatch.StartNew();
+      var batchSize = totalNbJobs / nbBatchs;
+      var restJobs  = totalNbJobs % batchSize;
+      var taskIds   = new List<string>(totalNbJobs);
 
-        // submit nbBatchs batchs of batchSize jobs of 1 task
-        for (var i = 0; i < nbBatchs; i++)
+      // submit nbBatchs batchs of batchSize jobs of 1 task
+      for (var i = 0; i < nbBatchs; i++)
+      {
+        var payloads = new List<byte[]>(batchSize);
+        for (var j = 0; j < batchSize; j++)
         {
-            List<byte[]> payloads = new List<byte[]>(batchSize);
-            for(var j = 0; j < batchSize; j++)
-            {
-                payloads.Add(payload);
-            }
-            taskIds.AddRange(sessionService.SubmitTasks(payloads));
-            payloads.Clear();
+          payloads.Add(payload);
         }
 
-        // submit restJobs jobs of 1 task
-        for (var i = 0; i < restJobs; i++)
-        {
-            string taskId = sessionService.SubmitTask(payload);
-            taskIds.Add(taskId);
-        }
+        taskIds.AddRange(sessionService.SubmitTasks(payloads));
+        payloads.Clear();
+      }
 
-        outputMessages.AppendLine($"Client called (Results_At_The_End) {nbBatchs} batchs of {batchSize} jobs of one task in {sw.ElapsedMilliseconds / 1000} sec (only job creation time)");
+      // submit restJobs jobs of 1 task
+      for (var i = 0; i < restJobs; i++)
+      {
+        string taskId = sessionService.SubmitTask(payload);
+        taskIds.Add(taskId);
+      }
 
-        var finalResult = 0;
-        sw.Restart();
-        List<Tuple<string, byte[]>> results = GetTryResults(sessionService, taskIds).ToList();
-        var requestedTaskCount = taskIds.Count;
-        foreach (Tuple<string, byte[]> resultItem in results)
-        {
-            ClientPayload result = ClientPayload.Deserialize(resultItem.Item2);
-            if (result.Result == 0)
-                _logger.LogError($"The taskId {resultItem.Item1} returns [{result.Result}]");
-            finalResult += result.Result;
-        }
+      outputMessages.AppendLine(
+        $"Client called (Results_At_The_End) {nbBatchs} batchs of {batchSize} jobs of one task in {sw.ElapsedMilliseconds / 1000} sec (only job creation time)");
 
-        outputMessages.AppendLine($"  => requested/received {requestedTaskCount}/{results.Count} in {sw.ElapsedMilliseconds / 1000} sec (only job creation time)");
-        var elapsedMilliseconds = sw.ElapsedMilliseconds;
-        outputMessages.AppendLine($"Client called (Results_At_The_End) {nbBatchs} batchs of {batchSize} jobs of one task in {elapsedMilliseconds / 1000} sec agregated Result = {finalResult}");
+      var finalResult = 0L;
+      sw.Restart();
+      var results = GetTryResults(sessionService,
+                                  taskIds).ToList();
+      var requestedTaskCount = taskIds.Count;
+      foreach (var resultItem in results)
+      {
+        var result = ClientPayload.Deserialize(resultItem.Item2);
+        if (result.Result == 0)
+          _logger.LogError($"The taskId {resultItem.Item1} returns [{result.Result}]");
+        finalResult += result.Result;
+      }
+
+      outputMessages.AppendLine($"  => requested/received {requestedTaskCount}/{results.Count} in {sw.ElapsedMilliseconds / 1000} sec (only job creation time)");
+      var elapsedMilliseconds = sw.ElapsedMilliseconds;
+      outputMessages.AppendLine(
+        $"Client called (Results_At_The_End) {nbBatchs} batchs of {batchSize} jobs of one task in {elapsedMilliseconds / 1000} sec agregated Result = {finalResult}");
     }
+  }
+}
+
+public static class TimeSpanExt
+{
+  /// <summary>
+  /// Calculates the average of the given timeSpans.
+  /// </summary>
+  public static TimeSpan Average(this IEnumerable<TimeSpan> timeSpans)
+  {
+    IEnumerable<long> ticksPerTimeSpan = timeSpans.Select(t => t.Ticks);
+    double            averageTicks     = ticksPerTimeSpan.Average();
+    long              averageTicksLong = Convert.ToInt64(averageTicks);
+
+    TimeSpan averageTimeSpan = TimeSpan.FromTicks(averageTicksLong);
+
+    return averageTimeSpan;
   }
 }

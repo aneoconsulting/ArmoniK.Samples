@@ -48,7 +48,7 @@ namespace Armonik.Samples.Symphony.Common
     public bool IsRootTask { get; set; }
     public TaskType Type { get; set; }
     public List<int> numbers { get; set; }
-    public int Result { get; set; }
+    public long Result { get; set; }
     public string SubTaskId { get; set; }
     public int sleep { get; set; }
 

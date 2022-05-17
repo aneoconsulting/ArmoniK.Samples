@@ -191,7 +191,7 @@ namespace ArmoniK.Samples.Symphony.Packages
 
         _1_Job_of_N_Tasks(taskContext,
                           bytePayload,
-                          clientPayload.numbers[0] - 1);
+                          (int)clientPayload.numbers[0] - 1);
 
         return new ClientPayload
           {
