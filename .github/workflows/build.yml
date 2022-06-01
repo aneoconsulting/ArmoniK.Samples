@@ -75,7 +75,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - uses: aneoconsulting/ArmoniK@v2.7.x
+      - uses: aneoconsulting/ArmoniK@main
         id: deploy-infra
 
       - name: Run GridServerLike
@@ -136,7 +136,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - uses: aneoconsulting/ArmoniK@v2.7.x
+      - uses: aneoconsulting/ArmoniK@main
         name: Deploy ArmoniK Infra with Mock Image
         id: deploy-infra
         with:
