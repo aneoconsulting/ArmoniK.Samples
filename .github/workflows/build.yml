@@ -77,6 +77,8 @@ jobs:
 
       - uses: aneoconsulting/ArmoniK@main
         id: deploy-infra
+        with:
+          ingress: 'None'
 
       - name: Run GridServerLike
         run: |
@@ -142,6 +144,7 @@ jobs:
         with:
           worker-image: dockerhubaneo/armonik_worker_htcmock_v3
           worker-tag: ${{ needs.versionning.outputs.version }}
+          ingress: 'None'
 
       - name: Run Mock
         run: |
