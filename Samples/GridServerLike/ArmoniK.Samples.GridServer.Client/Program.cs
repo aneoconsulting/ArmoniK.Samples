@@ -74,8 +74,7 @@ namespace ArmoniK.Samples.GridServer.Client
 
       var taskOptions = InitializeSimpleTaskOptions();
 
-      var props = new Properties(configuration_,
-                                 taskOptions);
+      var props = new Properties(taskOptions, configuration_.GetSection("Grpc")["EndPoint"], 5001);
 
       using var sessionService = ServiceFactory.GetInstance().CreateService("ArmoniK.Samples.GridServer.Package",
                                                                             props);
