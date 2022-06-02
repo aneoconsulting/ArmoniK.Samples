@@ -75,40 +75,23 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - uses: aneoconsulting/ArmoniK@v2.7.x
+      - uses: aneoconsulting/ArmoniK@main
         id: deploy-infra
+        with:
+          ingress: 'None'
 
       - name: Run GridServerLike
         run: |
-         export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-         export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-         export Grpc__Endpoint=http://$CPIP:$CPPort
-
-         cd Samples/GridServerLike/
-         dotnet publish --self-contained -r linux-x64  -f net6.0 DataSynapseLike.sln
-
-         mkdir -p ${{ steps.deploy-infra.outputs.host-path }}
-
-         cp -v packages/ArmoniK.Samples.GridServer.Services-v1.0.0-700.zip ${{ steps.deploy-infra.outputs.host-path }}
-
-         cd ArmoniK.Samples.GridServer.Client/
-         dotnet bin/net6.0/linux-x64/ArmoniK.Samples.GridServer.Client.dll
+         cd tools/tests
+         mkdir -p ${HOME}/data
+         bash -x ./gridserver_like.sh
 
       - name: Run SymphonyLike
         run: |
-         export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-         export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-         export Grpc__Endpoint=http://$CPIP:$CPPort
-
-         mkdir -p ${{ steps.deploy-infra.outputs.host-path }}
-
-         cd Samples/SymphonyLike/
-         dotnet publish --self-contained -r linux-x64 -f net6.0 SymphonyLike.sln
-
-         cp -v packages/ArmoniK.Samples.SymphonyPackage-v2.0.0.zip ${{ steps.deploy-infra.outputs.host-path }}
-
-         cd ArmoniK.Samples.SymphonyClient/
-         dotnet bin/Debug/net6.0/linux-x64/ArmoniK.Samples.SymphonyClient.dll
+         cd tools/tests
+         echo "WorkingDirectory : [$(pwd -P)]"
+         mkdir -p ${HOME}/data
+         bash -x ./symphony_like.sh
 
       - name: Run HtcMock SymphonyLike
         run: |
@@ -155,12 +138,13 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - uses: aneoconsulting/ArmoniK@v2.7.x
+      - uses: aneoconsulting/ArmoniK@main
         name: Deploy ArmoniK Infra with Mock Image
         id: deploy-infra
         with:
           worker-image: dockerhubaneo/armonik_worker_htcmock_v3
           worker-tag: ${{ needs.versionning.outputs.version }}
+          ingress: 'None'
 
       - name: Run Mock
         run: |

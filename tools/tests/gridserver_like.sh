@@ -1,14 +1,23 @@
 #!/bin/bash
 set -e
 
+export MODE=""
+export SERVER_NFS_IP=""
+export STORAGE_TYPE="HostPath"
+configuration=Debug
+FRAMEWORK=net6.0
+OUTPUT_JSON="nofile"
+TO_BUCKET=false
+PACKAGE_NAME="ArmoniK.Samples.GridServer.Services-v1.0.0-700.zip"
+RELATIVE_PROJECT="../../Samples/GridServerLike"
+RELATIVE_CLIENT="ArmoniK.Samples.GridServer.Client"
+
+
+
 BASEDIR=$(dirname "$0")
 pushd $BASEDIR
 BASEDIR=$(pwd -P)
 popd
-
-export MODE=""
-export SERVER_NFS_IP=""
-export STORAGE_TYPE="HostPath"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -19,22 +28,24 @@ pushd $(dirname $0) >/dev/null 2>&1
 BASEDIR=$(pwd -P)
 popd >/dev/null 2>&1
 
-configuration=Debug
-FRAMEWORK=net6.0
 
-TestDir=${BASEDIR}/../../Samples/GridServerLike/
-
-OUTPUT_JSON="nofile"
-
+TestDir=${BASEDIR}/$RELATIVE_PROJECT
 cd ${TestDir}
 
 export CPIP=$(kubectl get svc ingress -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
 export CPPort=$(kubectl get svc ingress -n armonik -o custom-columns="PORT:.spec.ports[1].port" --no-headers=true)
 export Grpc__Endpoint=http://$CPIP:$CPPort
+export Grpc__SSLValidation="true"
+export Grpc__CaCert=""
+export Grpc__ClientCert=""
+export Grpc__ClientKey=""
+export Grpc__mTLS="false"
+
 nuget_cache=$(dotnet nuget locals global-packages --list | awk '{ print $2 }')
 
 function SSLConnection()
 {
+    export Grpc__mTLS="true"
     export Grpc__Endpoint=https://$CPIP:$CPPort
     export Grpc__SSLValidation="disable"
     export Grpc__CaCert=${BASEDIR}/../../../../infrastructure/quick-deploy/localhost/armonik/generated/certificates/ingress/ca.crt
@@ -55,10 +66,7 @@ function GetGrpcEndPointFromFile()
         exit 1
       fi
     fi
-  else
-    export CPIP=$(kubectl get svc ingress -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-    export CPPort=$(kubectl get svc ingress -n armonik -o custom-columns="PORT:.spec.ports[1].port" --no-headers=true)
-    export Grpc__Endpoint=http://$CPIP:$CPPort
+    export Grpc__Endpoint=$link
   fi
   echo "Running with endPoint ${Grpc__Endpoint} from output.json"
 }
@@ -78,20 +86,26 @@ function build() {
   echo rm -rf ${nuget_cache}/armonik.*
   rm -rf $(dotnet nuget locals global-packages --list | awk '{ print $2 }')/armonik.*
   find \( -iname obj -o -iname bin \) -exec rm -rf {} +
-  dotnet publish --self-contained -c Debug -r linux-x64 -f ${FRAMEWORK} .
+  dotnet publish --self-contained -c ${configuration} -r linux-x64 -f ${FRAMEWORK} .
 }
 
 function deploy() {
   cd ${TestDir}
-  cp packages/ArmoniK.Samples.GridServer.Services-v1.0.0-700.zip ${HOME}/data
+  if [[ ${TO_BUCKET} == true ]]; then
+    export S3_BUCKET=$(aws s3api list-buckets --output json | jq -r '.Buckets[0].Name')
+    echo "Copy of S3 Bucket ${TO_BUCKET}"
+    echo aws s3 cp packages/${PACKAGE_NAME} s3://$S3_BUCKET
+  else
+    cp -v packages/${PACKAGE_NAME} ${HOME}/data
+  fi
   kubectl delete -n armonik $(kubectl get pods -n armonik -l service=compute-plane --no-headers=true -o name) || true
 }
 
 function execute() {
-  echo "cd ${TestDir}/ArmoniK.Samples.GridServer.Client/"
-  cd ${TestDir}/ArmoniK.Samples.GridServer.Client/
-  echo dotnet run -r linux-x64 -f net6.0 -c Debug $@
-  dotnet run -r linux-x64 -f net6.0 -c Debug $@
+  echo "cd ${TestDir}/${RELATIVE_CLIENT}/"
+  cd ${TestDir}/${RELATIVE_CLIENT}/
+  echo dotnet run -r linux-x64 -f net6.0 -c ${configuration} $@
+  dotnet run -r linux-x64 -f net6.0 -c ${configuration} $@
 }
 
 function usage() {
@@ -99,12 +113,14 @@ function usage() {
   echo
   cat <<-EOF
         no option           : To build and Run tests
-        -s                  : To run in SSL mode
+        -ssl                : To run in SSL mode
         -e http://endPoint  : change GRPC endpoint
         -f output_path.json : Load EndPoint from Armonik/generated/output.json
         -b | --build        : To build only test and package
+        -d | --deploy       : Only Deploy package
         -r | --run          : To run only deploy package and test
         -a                  : To run only deploy package and test
+        -s3                 : Need S3 copy with aws cp
 EOF
   echo
   exit 0
@@ -129,11 +145,14 @@ while [ $# -ne 0 ]; do
   echo "NB Arguments : $#"
 
     case "$1" in
-    -s)
+    -ssl)
       shift
       SSLConnection
       ;;
-
+    -s3)
+      shift
+      TO_BUCKET=true
+      ;;
     -e | --endpoint)
       shift
       GetGrpcEndPoint "$1"
@@ -186,7 +205,12 @@ echo "List of args : ${args[*]}"
       build
       break
       ;;
-
+    -d | --deploy)
+      args=("${args[@]:1}") # past argument=value
+      echo "Only deploy package'${args[@]}'"
+      deploy
+      break
+      ;;
     -a)
       # all build and execute
 	    args=("${args[@]:1}") # past argument=value
