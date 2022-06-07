@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-export MODE=""
+export MODE="All"
 export SERVER_NFS_IP=""
 export STORAGE_TYPE="HostPath"
 configuration=Debug
@@ -11,7 +11,8 @@ TO_BUCKET=false
 PACKAGE_NAME="ArmoniK.Samples.SymphonyPackage-v2.0.0.zip"
 RELATIVE_PROJECT="../../Samples/SymphonyLike"
 RELATIVE_CLIENT="ArmoniK.Samples.SymphonyClient"
-
+DEFAULT=FALSE
+args=""
 
 BASEDIR=$(dirname "$0")
 pushd $BASEDIR
@@ -27,20 +28,26 @@ pushd $(dirname $0) >/dev/null 2>&1
 BASEDIR=$(pwd -P)
 popd >/dev/null 2>&1
 
-
 TestDir=${BASEDIR}/$RELATIVE_PROJECT
 cd ${TestDir}
 
 export CPIP=$(kubectl get svc ingress -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
 export CPPort=$(kubectl get svc ingress -n armonik -o custom-columns="PORT:.spec.ports[1].port" --no-headers=true)
 export Grpc__Endpoint=http://$CPIP:$CPPort
-export Grpc__SSLValidation="true"
+export Grpc__SSLValidation="false"
 export Grpc__CaCert=""
 export Grpc__ClientCert=""
 export Grpc__ClientKey=""
 export Grpc__mTLS="false"
 
 nuget_cache=$(dotnet nuget locals global-packages --list | awk '{ print $2 }')
+
+function createLocalDirectory() {
+    if [[ ${TO_BUCKET} == false ]]; then
+      echo "Need to create Data folder \"${HOME}/data\" for application"
+      mkdir -p ${HOME}/data
+    fi
+}
 
 function SSLConnection()
 {
@@ -75,10 +82,6 @@ function GetGrpcEndPoint()
     export Grpc__Endpoint=$1
     echo "Running with endPoint ${Grpc__Endpoint}"
 }
-
-
-echo "Need to create Data folder for application"
-mkdir -p ${HOME}/data
 
 function build() {
   cd ${TestDir}/
@@ -133,10 +136,6 @@ function printConfiguration() {
   echo
 }
 
-DEFAULT=FALSE
-MODE=All
-args=""
-
 function main() {
 args=()
 
@@ -177,6 +176,7 @@ while [ $# -ne 0 ]; do
     esac
   done
 
+  createLocalDirectory
   printConfiguration
 
 echo "List of args : ${args[*]}"
