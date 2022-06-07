@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-export MODE=""
+export MODE="All"
 export SERVER_NFS_IP=""
 export STORAGE_TYPE="HostPath"
 configuration=Debug
@@ -11,8 +11,8 @@ TO_BUCKET=false
 PACKAGE_NAME="ArmoniK.Samples.GridServer.Services-v1.0.0-700.zip"
 RELATIVE_PROJECT="../../Samples/GridServerLike"
 RELATIVE_CLIENT="ArmoniK.Samples.GridServer.Client"
-
-
+DEFAULT=FALSE
+args=""
 
 BASEDIR=$(dirname "$0")
 pushd $BASEDIR
@@ -28,20 +28,26 @@ pushd $(dirname $0) >/dev/null 2>&1
 BASEDIR=$(pwd -P)
 popd >/dev/null 2>&1
 
-
 TestDir=${BASEDIR}/$RELATIVE_PROJECT
 cd ${TestDir}
 
 export CPIP=$(kubectl get svc ingress -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
 export CPPort=$(kubectl get svc ingress -n armonik -o custom-columns="PORT:.spec.ports[1].port" --no-headers=true)
 export Grpc__Endpoint=http://$CPIP:$CPPort
-export Grpc__SSLValidation="true"
+export Grpc__SSLValidation="false"
 export Grpc__CaCert=""
 export Grpc__ClientCert=""
 export Grpc__ClientKey=""
 export Grpc__mTLS="false"
 
 nuget_cache=$(dotnet nuget locals global-packages --list | awk '{ print $2 }')
+
+function createLocalDirectory() {
+    if [[ ${TO_BUCKET} == false ]]; then
+      echo "Need to create Data folder \"${HOME}/data\" for application"
+      mkdir -p ${HOME}/data
+    fi
+}
 
 function SSLConnection()
 {
@@ -58,9 +64,9 @@ function GetGrpcEndPointFromFile()
   OUTPUT_JSON=$1
   if [ -f ${OUTPUT_JSON} ]; then
     #Test if ingress exists
-    link=`cat ${OUTPUT_JSON} | jq -e '.armonik.ingress.control_plane'`
+    link=`cat ${OUTPUT_JSON} | jq -r -e '.armonik.ingress.control_plane'`
     if [ "$?" == "1" ]; then
-      link=`cat ${OUTPUT_JSON} | jq -e '.armonik.control_plane_url'`
+      link=`cat ${OUTPUT_JSON} | jq -r -e '.armonik.control_plane_url'`
       if [ "$?" == "1" ]; then
         echo "Error : cannot read Endpoint from file ${OUTPUT_JSON}"
         exit 1
@@ -76,10 +82,6 @@ function GetGrpcEndPoint()
     export Grpc__Endpoint=$1
     echo "Running with endPoint ${Grpc__Endpoint}"
 }
-
-
-echo "Need to create Data folder for application"
-mkdir -p ${HOME}/data
 
 function build() {
   cd ${TestDir}/
@@ -134,10 +136,6 @@ function printConfiguration() {
   echo
 }
 
-DEFAULT=FALSE
-MODE=All
-args=""
-
 function main() {
 args=()
 
@@ -178,6 +176,7 @@ while [ $# -ne 0 ]; do
     esac
   done
 
+  createLocalDirectory
   printConfiguration
 
 echo "List of args : ${args[*]}"
