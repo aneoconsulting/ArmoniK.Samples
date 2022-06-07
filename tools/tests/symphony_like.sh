@@ -152,13 +152,13 @@ while [ $# -ne 0 ]; do
       TO_BUCKET=true
       ;;
     -e | --endpoint)
-      shift
+      #shift
       GetGrpcEndPoint "$1"
       shift
       ;;
 
     -f | --file)
-      shift
+      #shift
       GetGrpcEndPointFromFile "$1"
       shift
       ;;
