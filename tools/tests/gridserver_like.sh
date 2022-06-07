@@ -144,22 +144,22 @@ while [ $# -ne 0 ]; do
 
     case "$1" in
     -ssl)
-      shift
       SSLConnection
+      shift
       ;;
     -s3)
-      shift
       TO_BUCKET=true
+      shift
       ;;
     -e | --endpoint)
-      #shift
-      GetGrpcEndPoint "$1"
+      GetGrpcEndPoint "$2"
+      shift
       shift
       ;;
 
     -f | --file)
-      #shift
-      GetGrpcEndPointFromFile "$1"
+      GetGrpcEndPointFromFile "$2"
+      shift
       shift
       ;;
 
