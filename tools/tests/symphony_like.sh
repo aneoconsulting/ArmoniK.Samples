@@ -65,10 +65,13 @@ function GetGrpcEndPointFromFile()
   if [ -f ${OUTPUT_JSON} ]; then
     #Test if ingress exists
     echo "Input file: ${OUTPUT_JSON}"
-    link=`cat ${OUTPUT_JSON} | jq -r -e '.armonik.control_plane_url'`
+    link=`cat ${OUTPUT_JSON} | jq -r -e '.armonik.ingress.control_plane_url'`
     if [ "$?" == "1" ]; then
-      echo "Error : cannot read Endpoint from file ${OUTPUT_JSON}"
-      exit 1
+      link=`cat ${OUTPUT_JSON} | jq -r -e '.armonik.control_plane_url'`
+      if [ "$?" == "1" ]; then
+        echo "Error : cannot read Endpoint from file ${OUTPUT_JSON}"
+        exit 1
+      fi
     fi
     export Grpc__Endpoint=$link
   fi
