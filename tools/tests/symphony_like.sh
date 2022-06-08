@@ -92,7 +92,7 @@ function build() {
 function deploy() {
   cd ${TestDir}
   if [[ ${TO_BUCKET} == true ]]; then
-    export S3_BUCKET=$(aws s3api list-buckets --output json | jq -r '.Buckets[0].Name')
+    export S3_BUCKET=$(aws s3api list-buckets --output json | jq -r '.Buckets[].Name' | grep "s3fs")
     echo "Copy of S3 Bucket ${TO_BUCKET}"
     echo aws s3 cp packages/${PACKAGE_NAME} s3://$S3_BUCKET
   else
