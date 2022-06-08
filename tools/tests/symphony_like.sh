@@ -97,9 +97,9 @@ function deploy() {
   if [[ ${TO_BUCKET} == true ]]; then
     export S3_BUCKET=$(aws s3api list-buckets --output json | jq -r '.Buckets[].Name' | grep "s3fs")
     echo "Copy of S3 Bucket ${TO_BUCKET}"
-    echo aws s3 cp packages/${PACKAGE_NAME} s3://$S3_BUCKET
+    aws s3 cp "packages/${PACKAGE_NAME}" "s3://${S3_BUCKET}"
   else
-    cp -v packages/${PACKAGE_NAME} ${HOME}/data
+    cp -v "packages/${PACKAGE_NAME}" "${HOME}/data"
   fi
   kubectl delete -n armonik $(kubectl get pods -n armonik -l service=compute-plane --no-headers=true -o name) || true
 }
