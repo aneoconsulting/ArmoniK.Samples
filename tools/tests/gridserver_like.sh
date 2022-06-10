@@ -156,6 +156,7 @@ while [ $# -ne 0 ]; do
 
     -no-copy-dll)
       TO_DIRECTORY=false
+      TO_BUCKET=false
       shift
       ;;
 
