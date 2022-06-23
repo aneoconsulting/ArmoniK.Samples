@@ -226,23 +226,25 @@ namespace ArmoniK.Samples.Symphony.Packages
 
     private byte[] AggregateValues(TaskContext taskContext, ClientPayload clientPayload)
     {
-      Logger.LogInformation($"Aggregate Task {taskContext.TaskId} request result from Dependencies TaskIds : [{string.Join(", ", taskContext.DependenciesTaskIds)}]");
-      var parentResult = taskContext.DataDependencies?.Single().Value;
+        Logger.LogInformation($"Aggregate Task {taskContext.TaskId} request result from {taskContext.DependenciesTaskIds.Count()} Dependencies TaskIds : [{string.Join(", ", taskContext.DependenciesTaskIds.Take(10))}, ...]");
+        long agregatedValuesSum = 0;
+        foreach (var taskDependency in taskContext.DataDependencies)
+        {
+            if (taskDependency.Value == null || taskDependency.Value.Length == 0)
+                throw new WorkerApiException($"Cannot retrieve Result from taskId {taskContext.DependenciesTaskIds?.Single()}");
+            var dependencyResultPayload = ClientPayload.Deserialize(taskDependency.Value);
+            agregatedValuesSum += dependencyResultPayload.Result;
+        }
+        Logger.LogDebug($"Aggregation taskId {taskContext.TaskId} has summed brothers results = {agregatedValuesSum}");
+        agregatedValuesSum += clientPayload.Result;
 
-      if (parentResult == null || parentResult.Length == 0)
-        throw new WorkerApiException($"Cannot retrieve Result from taskId {taskContext.DependenciesTaskIds?.Single()}");
+        ClientPayload agregationResults = new()
+        {
+            Type = ClientPayload.TaskType.Result,
+            Result = agregatedValuesSum,
+        };
 
-      var parentResultPayload = ClientPayload.Deserialize(parentResult);
-
-      var value = clientPayload.Result + parentResultPayload.Result;
-
-      ClientPayload childResult = new()
-      {
-        Type   = ClientPayload.TaskType.Result,
-        Result = value,
-      };
-
-      return childResult.Serialize();
+        return agregationResults.Serialize();
     }
 
     public override void OnSessionLeave(SessionContext sessionContext)
