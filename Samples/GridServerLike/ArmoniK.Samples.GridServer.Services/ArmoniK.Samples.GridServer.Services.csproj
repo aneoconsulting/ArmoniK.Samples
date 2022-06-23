@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.GridServer" Version="0.5.8" />
+    <PackageReference Include="Armonik.DevelopmentKit.GridServer" Version="0.6.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,9 +42,6 @@
     <PackageReference Include="Grpc.AspNetCore" Version="2.41.0" />
   </ItemGroup>
 
-  <!--<ItemGroup Condition=" '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48'">
-    <PackageReference Include="Grpc.Core" Version="2.41.0" />
-  </ItemGroup>-->
 
 	<ItemGroup>
     <ProjectReference Include="..\ArmoniK.Samples.GridServer.Common\ArmoniK.Samples.GridServer.Common.csproj" />
