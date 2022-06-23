@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{DF492EEF-172B-4070-937A-C74211ED57E0}"
+	ProjectSection(SolutionItems) = preProject
+		nuget.config = nuget.config
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.Common", "ArmoniK.Samples.Common\ArmoniK.Samples.Common.csproj", "{E66C68DE-7F7A-45EB-B458-C9EFADCDDE6F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.Client", "ArmoniK.Samples.Client\ArmoniK.Samples.Client.csproj", "{6DBB7439-9950-41E5-8434-95FF67C6C7AC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.Unified.Worker", "ArmoniK.Samples.Worker\ArmoniK.Samples.Unified.Worker.csproj", "{53245BDE-A00D-4005-963B-BB744C642398}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E66C68DE-7F7A-45EB-B458-C9EFADCDDE6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E66C68DE-7F7A-45EB-B458-C9EFADCDDE6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E66C68DE-7F7A-45EB-B458-C9EFADCDDE6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E66C68DE-7F7A-45EB-B458-C9EFADCDDE6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DBB7439-9950-41E5-8434-95FF67C6C7AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DBB7439-9950-41E5-8434-95FF67C6C7AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DBB7439-9950-41E5-8434-95FF67C6C7AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DBB7439-9950-41E5-8434-95FF67C6C7AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53245BDE-A00D-4005-963B-BB744C642398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53245BDE-A00D-4005-963B-BB744C642398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53245BDE-A00D-4005-963B-BB744C642398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53245BDE-A00D-4005-963B-BB744C642398}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E66C68DE-7F7A-45EB-B458-C9EFADCDDE6F} = {DF492EEF-172B-4070-937A-C74211ED57E0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AB7FEA5B-DC6A-4691-B463-F39ED86E2807}
+	EndGlobalSection
+EndGlobal
