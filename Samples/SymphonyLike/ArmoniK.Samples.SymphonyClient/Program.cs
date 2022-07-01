@@ -258,7 +258,7 @@ namespace Armonik.Samples.Symphony.Client
         {
           Seconds = 300,
         },
-        MaxRetries = 5,
+        MaxRetries = 2,
         Priority   = 1,
       };
       taskOptions.Options.Add(AppsOptions.GridAppNameKey,
@@ -421,6 +421,7 @@ namespace Armonik.Samples.Symphony.Client
       {
         outputMessages.AppendLine($"In this series of samples we're creating 1 batch of {nbTasks} jobs of 1 task.");
         clientPayload.Type = ClientPayload.TaskType.ParallelTask;
+        payload = clientPayload.Serialize();
         N_Jobs_of_1_Task_With_Results_At_The_End(sessionService,
                                                  payload,
                                                  1,
