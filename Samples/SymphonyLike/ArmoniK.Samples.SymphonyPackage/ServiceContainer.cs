@@ -42,10 +42,12 @@ namespace ArmoniK.Samples.Symphony.Packages
   public class ServiceContainer : ServiceContainerBase
   {
     private readonly IConfiguration configuration_;
+    private          Random         rd;
 
     public override void OnCreateService(ServiceContext serviceContext)
     {
       //END USER PLEASE FIXME
+      rd = new Random();
     }
 
     public override void OnSessionEnter(SessionContext sessionContext)
@@ -57,7 +59,7 @@ namespace ArmoniK.Samples.Symphony.Packages
     {
       Logger.LogInformation($"Enter in function : ComputeSquare with taskId {taskContext.TaskId}");
 
-      if (clientPayload.numbers.Count == 0)
+      if (clientPayload.Numbers.Count == 0)
         return new ClientPayload
           {
             Type   = ClientPayload.TaskType.Result,
@@ -65,9 +67,9 @@ namespace ArmoniK.Samples.Symphony.Packages
           }
           .Serialize(); // Nothing to do
 
-      if (clientPayload.numbers.Count == 1)
+      if (clientPayload.Numbers.Count == 1)
       {
-        var value = clientPayload.numbers[0] * clientPayload.numbers[0];
+        var value = clientPayload.Numbers[0] * clientPayload.Numbers[0];
         Logger.LogInformation($"Compute {value}             with taskId {taskContext.TaskId}");
 
         return new ClientPayload
@@ -79,12 +81,12 @@ namespace ArmoniK.Samples.Symphony.Packages
       }
       else // if (clientPayload.numbers.Count > 1)
       {
-        var value  = clientPayload.numbers[0];
+        var value  = clientPayload.Numbers[0];
         var square = value * value;
 
         var subTaskPaylaod = new ClientPayload();
-        clientPayload.numbers.RemoveAt(0);
-        subTaskPaylaod.numbers = clientPayload.numbers;
+        clientPayload.Numbers.RemoveAt(0);
+        subTaskPaylaod.Numbers = clientPayload.Numbers;
         subTaskPaylaod.Type    = clientPayload.Type;
         Logger.LogInformation($"Compute {value} in                 {taskContext.TaskId}");
 
@@ -101,7 +103,8 @@ namespace ArmoniK.Samples.Symphony.Packages
         Logger.LogInformation($"Submitting aggregate task             : {taskContext.TaskId} from Session {SessionId.Id}");
 
         var aggTaskId = this.SubmitTaskWithDependencies(aggPayload.Serialize(),
-                                                        new[] { subTaskId }, true);
+                                                        new[] { subTaskId },
+                                                        true);
         Logger.LogInformation($"Submitted  SubmitTaskWithDependencies : {aggTaskId} with task dependencies      {subTaskId}");
 
         return null; //nothing to do
@@ -151,7 +154,7 @@ namespace ArmoniK.Samples.Symphony.Packages
 
     public byte[] ComputeCube(TaskContext taskContext, ClientPayload clientPayload)
     {
-      var value = clientPayload.numbers[0] * clientPayload.numbers[0] * clientPayload.numbers[0];
+      var value = clientPayload.Numbers[0] * clientPayload.Numbers[0] * clientPayload.Numbers[0];
       return new ClientPayload
         {
           Type   = ClientPayload.TaskType.Result,
@@ -174,24 +177,36 @@ namespace ArmoniK.Samples.Symphony.Packages
                            clientPayload);
       }
 
+      if (clientPayload.Type == ClientPayload.TaskType.RandomFailure)
+      {
+        return GenerateRandomFailure(taskContext,
+                                     clientPayload);
+      }
+
+      if (clientPayload.Type == ClientPayload.TaskType.ParallelTask)
+      {
+        return SimulateWorkload(taskContext,
+                                clientPayload);
+      }
+
       if (clientPayload.Type == ClientPayload.TaskType.Sleep)
       {
         Logger.LogInformation($"Empty task, sessionId : {sessionContext.SessionId}, taskId : {taskContext.TaskId}, sessionId from task : {taskContext.SessionId}");
-        Thread.Sleep(clientPayload.sleep * 1000);
+        Thread.Sleep(clientPayload.Sleep * 1000);
       }
       else if (clientPayload.Type == ClientPayload.TaskType.JobOfNTasks)
       {
         var newPayload = new ClientPayload
         {
           Type  = ClientPayload.TaskType.Sleep,
-          sleep = clientPayload.sleep,
+          Sleep = clientPayload.Sleep,
         };
 
         var bytePayload = newPayload.Serialize();
 
         _1_Job_of_N_Tasks(taskContext,
                           bytePayload,
-                          (int)clientPayload.numbers[0] - 1);
+                          (int)clientPayload.Numbers[0] - 1);
 
         return new ClientPayload
           {
@@ -215,6 +230,33 @@ namespace ArmoniK.Samples.Symphony.Packages
         Logger.LogInformation($"Task type is unManaged {clientPayload.Type}");
         throw new WorkerApiException($"Task type is unManaged {clientPayload.Type}");
       }
+
+      return new ClientPayload
+        {
+          Type   = ClientPayload.TaskType.Result,
+          Result = 42,
+        }
+        .Serialize(); //nothing to do
+    }
+
+    private byte[] SimulateWorkload(TaskContext taskContext, ClientPayload clientPayload)
+    {
+      if (clientPayload.Sleep > 0)
+        Thread.Sleep(clientPayload.Sleep);
+
+      return new ClientPayload
+        {
+          Type   = ClientPayload.TaskType.Result,
+          Result = 42,
+        }
+        .Serialize(); //nothing to do
+    }
+
+    private byte[] GenerateRandomFailure(TaskContext taskContext, ClientPayload clientPayload)
+    {
+      var randNum = rd.NextDouble();
+      if (randNum < clientPayload.NbRandomFailure / 100.0)
+        throw new WorkerApiException("An expected failure in this random call");
 
       return new ClientPayload
         {
