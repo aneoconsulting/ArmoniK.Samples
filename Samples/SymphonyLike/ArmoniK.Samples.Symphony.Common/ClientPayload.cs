@@ -43,14 +43,18 @@ namespace Armonik.Samples.Symphony.Common
       SubTask,
       Undefined,
       AggregationNTask,
+      RandomFailure,
+      ParallelTask
     }
 
     public bool IsRootTask { get; set; }
     public TaskType Type { get; set; }
-    public List<int> numbers { get; set; }
+    public List<int> Numbers { get; set; }
     public long Result { get; set; }
     public string SubTaskId { get; set; }
-    public int sleep { get; set; }
+    public int Sleep { get; set; }
+
+    public double NbRandomFailure { get; set; }
 
     public byte[] Serialize()
     {
@@ -64,7 +68,7 @@ namespace Armonik.Samples.Symphony.Common
         return new ClientPayload
         {
           Type    = TaskType.Undefined,
-          numbers = new List<int>(),
+          Numbers = new List<int>(),
           Result  = 0,
         };
 

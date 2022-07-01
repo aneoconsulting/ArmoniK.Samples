@@ -79,8 +79,8 @@ namespace ArmoniK.Samples.Client
 
       var props = new Properties(taskOptions, configuration_.GetSection("Grpc")["EndPoint"], 5001);
 
-      using var sessionService = ServiceFactory.GetInstance().CreateService(props);
-      using var sessionServiceAdmin = ServiceFactory.GetInstance().GetServiceAdmin(props);
+      using var sessionService = ServiceFactory.CreateService(props);
+      using var sessionServiceAdmin = ServiceFactory.GetServiceAdmin(props);
       var handler = new ResultHandler(logger_);
 
       logger_.LogInformation($"Running Simple execution test with UnifiedApi");
