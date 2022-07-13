@@ -1,0 +1,656 @@
+{
+  "homepages": [],
+  "source_base_path": "/home/runner/work/ArmoniK.Samples/ArmoniK.Samples/Documentation",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.html",
+          "hash": "ktmqskSG/7hM8HHm6he5BFLp0O+YaAxXUf0L3iMuh5A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.HelloWorld.Worker.Program.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.HelloWorld.Worker.Program.html",
+          "hash": "o+Wh+QUIlMYKt/i3pi2aPkSo2Kiq3GXQz6bu9bd80Rk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.HelloWorld.Worker.SampleComputerService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.HelloWorld.Worker.SampleComputerService.html",
+          "hash": "haRcPY8APViUjuxdy9fEfk73xt/m3qkSbuqafGjb4Pw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.HelloWorld.Worker.Startup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.HelloWorld.Worker.Startup.html",
+          "hash": "FuDCjNO3iCJZe43hanhNBSrKqdIdcTVH8DU5tTqAPnk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.HelloWorld.Worker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.HelloWorld.Worker.html",
+          "hash": "D0BzmlDa+Xhi+auIsl4ndIjWZtfUD5tvzK/qUCiWn2s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.Common.ClientPayload.TaskType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.Common.ClientPayload.TaskType.html",
+          "hash": "2MC9fIAZMFVa/6ai4OXWmdklgxHNO78XpK1GoULZn3s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.Common.ClientPayload.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.Common.ClientPayload.html",
+          "hash": "r4JXcf/iDkl/d/G/vKMKEATUJ0YrStgRpbodo9gcMhQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.Common.SelectExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.Common.SelectExtensions.html",
+          "hash": "70TevxA1cyx9vmJM5KiX7vtEJHFY5wiTzsAzim/yZug="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.Common.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.Common.html",
+          "hash": "OUSHu0sDFmI0i6RpDHMb56lRgzI406YIGSbT3EV2NkI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.SelectExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.GridServer.Client.SelectExtensions.html",
+          "hash": "LluKc/bC6TzqwNHpp1vcEnXAjriok3M7xipztQxh6HQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html",
+          "hash": "kmJeidOd6Sgj58Duad7LpiXQk7DK6l+7TkUAEtd4wfc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.Services.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.GridServer.Client.Services.html",
+          "hash": "z4wgpFmIC3hpRqZYb/VaMUzOvqcjwSi2a0jdCwiJHCI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.GridServer.Client.html",
+          "hash": "ElYtRmSQj7cvlIzExpzRZ51cel+5rVcGfSQyyX3tlvo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.GridServer.Common.SelectExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.GridServer.Common.SelectExtensions.html",
+          "hash": "JPw2FJHYLpDM+QGg1ceGyD/c/NdZ2RUNdwpzC4tLOgY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.GridServer.Common.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.GridServer.Common.html",
+          "hash": "bJW6KWQEV4vDxaXrz6EMt96YlfhiFDUWVIo4l0XGL/0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.LoggerExt.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.LoggerExt.html",
+          "hash": "+AiyxFBBY5hakqnhvWMsvBHpSL/M8gsJEehXkDrYzDw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.Options.Grpc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.Options.Grpc.html",
+          "hash": "ggHi3wjJmzYYLVfio2GJz0QEdVO54v0naFpIpE635hc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.Options.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.Options.html",
+          "hash": "wUsmHocRAInM6TGoMExSeWBM8dYJVdMzidJ5BnfJrHY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.html",
+          "hash": "Ml7Vdx9OkO4RxwftpTowmEO6qX8o2VfSRRaX9AumoSQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.GridClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.GridClient.html",
+          "hash": "IJwxSmgSF1Kkyj3BR/FumukeRR77cMIbKtDLxIjj7UU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.HtcMockClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.HtcMockClient.html",
+          "hash": "2KlBAKWJpx4KN1yP4KjVBTye39HUWO/pZeAw75YVjXU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.HtcMockClientExt.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.HtcMockClientExt.html",
+          "hash": "+PJCT7XHNV2zvCJBN0ip3Q4ckGHQJXUT/DJfALyn1io="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.ServiceCollectionExt.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.ServiceCollectionExt.html",
+          "hash": "DErZz/X5gdCRkKkgkT20LhG+K41PTy1aFhFeRNmdVu4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.SessionClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.SessionClient.html",
+          "hash": "42yOYlEg+oYS6wchmtXBAhXmlyf0uK8kaX/kb94g5e8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.html",
+          "hash": "+fQmRNbjbQrv4Ikfaoj7SBcnDONLz0/7faGnjLNx5lc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.ApplicationLifeTimeManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.ApplicationLifeTimeManager.html",
+          "hash": "p+5YpOBjIJ+KNyqiaD7qccFog/tAE0rwcNtdwFB4j1I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.Program.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.Program.html",
+          "hash": "T1ZaQp1Y5n9UWvRBaZGbX5F9YmcsEjo7DQoKdQk0ZSo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.SampleComputerService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.SampleComputerService.html",
+          "hash": "gHYryeZDcKFjtcQAxza6XtF7BShfELtyRMa8G8WVzZc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.html",
+          "hash": "9L/8tFd4CTDdKQIblM7TEF6YEz+XhcxLaVenaHOXiYE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html",
+          "hash": "OPTeb256EkI1DyvC7Q15HWIOeYnAFetsnI3TLg12QH8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMockSymphony.Packages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMockSymphony.Packages.html",
+          "hash": "s9WcScCsmIwHHeJ8gGSZlt04RC4Qrde+ada1CJ6gV8Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html",
+          "hash": "Yag4LgVSCqgZWjMi3Rw6PskSLA7VzFHuKwavGgaSH1Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.HtcMockSymphonyClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.HtcMockSymphonyClient.html",
+          "hash": "Q9a4B7Xms5bmnHmZ4CAapsq1gl2U6/snOfm01R2yrrk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html",
+          "hash": "/XNbPYPWXjWvVSjewfGNpB6SwWYtt05REQ4k0BkflNc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.Symphony.Packages.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.Symphony.Packages.html",
+          "hash": "rVrnukiA5CfibtSwfRMVZt507Ar8FnDW2ILJgBi4cBo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html",
+          "hash": "oFpy4jdNrxe0hH86Wf1/oG8x94oO7kI3+tAuldCaKnw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.Unified.Worker.Services.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.Unified.Worker.Services.html",
+          "hash": "M6hx9mmVWfFP8e+gPKRK9ZBDb2Mi6wSHWrMXvOLDXCw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Armonik.Samples.Symphony.Common.ClientPayload.TaskType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Armonik.Samples.Symphony.Common.ClientPayload.TaskType.html",
+          "hash": "cUAuW6e4QRz4LiMUaHFNuy80Odwoa4kQM3xCksw496w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Armonik.Samples.Symphony.Common.ClientPayload.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Armonik.Samples.Symphony.Common.ClientPayload.html",
+          "hash": "nGKRBn6uQElHitovlfUlZbWkFAT3oiyjPexHbly2JNA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Armonik.Samples.Symphony.Common.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Armonik.Samples.Symphony.Common.html",
+          "hash": "okBqen80mmzEWnTA8tWrv7Wrk/MMd+kUiMgaHiJgl9c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/QuantLib.Serialization.Compressor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/QuantLib.Serialization.Compressor.html",
+          "hash": "1EdeuMgUjU6TysYh5idszGP5JodsIkBmU97annlxoFI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/QuantLib.Serialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/QuantLib.Serialization.html",
+          "hash": "sD9fBr2xIhy/J2SMvMb0r6/UIYY2/EVHGn5zla+SE0k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Services.SimpleServiceContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Services.SimpleServiceContainer.html",
+          "hash": "+YAU7VXREZXY88X64rjelS99Ak7VAHoB5EnOOkkgO7s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Services.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Services.html",
+          "hash": "TxIw19FRmLcnkruV4N7uk16skn1Y01pmnk080CTcnkU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "bdwYJidUzI4JupRJ2kqH4QFLHXQ3VgJpj3v0rf9u3X8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "POdACATV5vmoGawi4BvejRzFhirKSMFHs8elzzmvoCA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html",
+          "hash": "anALipbztGYjkDLNP25qqTqdMQmiby88X1SkQMkBKJQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "BlPxk5mtl2kgfcZUgkEguqiSAR/EUyUTT4EdebwkQvs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "3sMvwDf74nZMDW1sv923aBRNjh5wC3jOKcs2S1987wA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "WSuRrYiGwKKMbtdG9z8W9fXmLoCyTnGg9AxbPKLXm2Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 3,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 44,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
