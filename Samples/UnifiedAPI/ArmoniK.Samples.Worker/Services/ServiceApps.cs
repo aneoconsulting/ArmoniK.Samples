@@ -24,6 +24,7 @@
 
 using System.IO;
 using System.Linq;
+using ArmoniK.DevelopmentKit.Worker.Grid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -33,7 +34,7 @@ using Serilog.Extensions.Logging;
 namespace ArmoniK.Samples.Unified.Worker.Services
 {
 
-  public class ServiceApps
+  public class ServiceApps : BaseService<ServiceApps>
   {
     private readonly IConfiguration            configuration_;
     private readonly ILogger<ServiceApps> logger_;
