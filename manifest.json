@@ -125,6 +125,18 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.html",
+          "hash": "px2QDx8aLu0+aUzfl0T1UVgqabFnQq/Muq/LMMySTJg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.yml",
       "output": {
         ".html": {
@@ -153,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ArmoniK.Samples.GridServer.Client.html",
-          "hash": "ElYtRmSQj7cvlIzExpzRZ51cel+5rVcGfSQyyX3tlvo="
+          "hash": "2PS2uFxnFoVLQRA22WYGmWcnK3lcjVwdluqsD3VpYgc="
         }
       },
       "is_incremental": false,
@@ -429,7 +441,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html",
-          "hash": "oFpy4jdNrxe0hH86Wf1/oG8x94oO7kI3+tAuldCaKnw="
+          "hash": "qcEgkCsxgR3869V/JgKLECdMekyu6HLvik/poVH7yQI="
         }
       },
       "is_incremental": false,
@@ -549,7 +561,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "POdACATV5vmoGawi4BvejRzFhirKSMFHs8elzzmvoCA="
+          "hash": "DWW1oRvO+hM7NhI4rV4Qz9ws19IWSWnyZC0sWEInuHs="
         }
       },
       "is_incremental": false,
@@ -624,7 +636,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 44,
+          "total_file_count": 45,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
