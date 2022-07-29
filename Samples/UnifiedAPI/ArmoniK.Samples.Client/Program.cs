@@ -215,16 +215,16 @@ namespace ArmoniK.Samples.Client
         EngineType.DataSynapse.ToString());
 
       taskOptions.Options.Add(AppsOptions.GridAppNameKey,
-        "ArmoniK.Samples.GridServer.Services");
+        "ArmoniK.Samples.Unified.Worker");
 
       taskOptions.Options.Add(AppsOptions.GridAppVersionKey,
         "1.0.0-700");
 
       taskOptions.Options.Add(AppsOptions.GridAppNamespaceKey,
-        "ArmoniK.Samples.GridServer.Client.Services");
+        "ArmoniK.Samples.Unified.Worker.Services");
 
       taskOptions.Options.Add(AppsOptions.GridServiceNameKey,
-        "ServiceContainer");
+        "ServiceApps");
 
       return taskOptions;
     }

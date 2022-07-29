@@ -39,6 +39,7 @@ using Microsoft.Extensions.Logging;
 
 using Serilog;
 using Serilog.Events;
+using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.GridServer.Client
 {
@@ -49,35 +50,37 @@ namespace ArmoniK.Samples.GridServer.Client
 
     private static void Main(string[] args)
     {
-      Console.WriteLine("Hello Armonik SymphonyLike Sample !");
-
-      Log.Logger = new LoggerConfiguration()
-                   .MinimumLevel.Override("Microsoft",
-                                          LogEventLevel.Information)
-                   .Enrich.FromLogContext()
-                   .WriteTo.Console()
-                   .CreateLogger();
-
-      var factory = new LoggerFactory(Array.Empty<ILoggerProvider>(),
-        new LoggerFilterOptions().AddFilter("Grpc",
-          LogLevel.Error)).AddSerilog();
-
-      logger_ = factory.CreateLogger<Program>();
+      Console.WriteLine("Hello Armonik GridServerLike Sample !");
 
       var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
-                                              .AddJsonFile("appsettings.json",
-                                                           true,
-                                                           false)
-                                              .AddEnvironmentVariables();
+        .AddJsonFile("appsettings.json",
+          true,
+          false)
+        .AddEnvironmentVariables();
 
       configuration_ = builder.Build();
 
+      //var factory = new LoggerFactory(Array.Empty<ILoggerProvider>()).AddSerilog();
+      var factory = new LoggerFactory(new[]
+      {
+        new SerilogLoggerProvider(new LoggerConfiguration()
+                                  .ReadFrom
+                                  .Configuration(configuration_)
+                                  .CreateLogger())
+      },
+        new LoggerFilterOptions().AddFilter("Grpc",
+          LogLevel.Error));
+      logger_ = factory.CreateLogger<Program>();
+      logger_.LogInformation("Starting to execute gridServer");
+
+      
+
       var taskOptions = InitializeSimpleTaskOptions();
 
-      var props = new Properties(taskOptions, configuration_.GetSection("Grpc")["EndPoint"], 5001);
+      var props = new Properties(taskOptions, configuration_.GetSection("Grpc")["EndPoint"], 5001, sslValidation: false);
 
       using var sessionService = ServiceFactory.GetInstance().CreateService("ArmoniK.Samples.GridServer.Package",
-                                                                            props);
+                                                                            props, factory);
 
       var numbers = new List<double>
       {
@@ -211,6 +214,30 @@ namespace ArmoniK.Samples.GridServer.Client
         }
 
       }
+    }
+  }
+
+  public static class ServiceFactoryExt
+  {
+    /// <summary>
+    /// The method to create new Service
+    /// </summary>
+    /// <param name="serviceFactory"></param>
+    /// <param name="serviceType">Future value no usage for now.
+    /// This is the Service type reflection for method</param>
+    /// <param name="props">Properties for the service containing IConfiguration and TaskOptions</param>
+    /// <param name="factory"></param>
+    /// <returns>returns the new instantiated service</returns>
+    public static Service CreateService(this ServiceFactory serviceFactory, string serviceType, Properties props, ILoggerFactory factory = null)
+    {
+
+      factory ??= new LoggerFactory(Array.Empty<ILoggerProvider>(),
+        new LoggerFilterOptions().AddFilter("Grpc",
+          LogLevel.Debug)).AddSerilog();
+
+      return new Service(serviceType,
+        factory,
+        props);
     }
   }
 }
