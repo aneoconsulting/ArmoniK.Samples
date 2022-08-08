@@ -1356,6 +1356,31 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeBasicArrayCube
   nameWithType: ServiceApps.ComputeBasicArrayCube
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd(System.Byte[],System.Byte[],System.Double)
+  name: ComputeMadd(Byte[], Byte[], Double)
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeMadd_System_Byte___System_Byte___System_Double_
+  commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd(System.Byte[],System.Byte[],System.Double)
+  name.vb: ComputeMadd(Byte(), Byte(), Double)
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd(System.Byte[], System.Byte[], System.Double)
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd(System.Byte(), System.Byte(), System.Double)
+  nameWithType: ServiceApps.ComputeMadd(Byte[], Byte[], Double)
+  nameWithType.vb: ServiceApps.ComputeMadd(Byte(), Byte(), Double)
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd*
+  name: ComputeMadd
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeMadd_
+  commentId: Overload:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd
+  isSpec: "True"
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd
+  nameWithType: ServiceApps.ComputeMadd
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Byte[])
+  name: ComputeReduceCube(Byte[])
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeReduceCube_System_Byte___
+  commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Byte[])
+  name.vb: ComputeReduceCube(Byte())
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Byte[])
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Byte())
+  nameWithType: ServiceApps.ComputeReduceCube(Byte[])
+  nameWithType.vb: ServiceApps.ComputeReduceCube(Byte())
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Double[])
   name: ComputeReduceCube(Double[])
   href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeReduceCube_System_Double___
@@ -1372,6 +1397,22 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube
   nameWithType: ServiceApps.ComputeReduceCube
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd(System.Byte[],System.Byte[],System.Double)
+  name: NonStaticComputeMadd(Byte[], Byte[], Double)
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_NonStaticComputeMadd_System_Byte___System_Byte___System_Double_
+  commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd(System.Byte[],System.Byte[],System.Double)
+  name.vb: NonStaticComputeMadd(Byte(), Byte(), Double)
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd(System.Byte[], System.Byte[], System.Double)
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd(System.Byte(), System.Byte(), System.Double)
+  nameWithType: ServiceApps.NonStaticComputeMadd(Byte[], Byte[], Double)
+  nameWithType.vb: ServiceApps.NonStaticComputeMadd(Byte(), Byte(), Double)
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd*
+  name: NonStaticComputeMadd
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_NonStaticComputeMadd_
+  commentId: Overload:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd
+  isSpec: "True"
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd
+  nameWithType: ServiceApps.NonStaticComputeMadd
 - uid: armonik_api_samples
   name: Armonik.Samples API
   href: api/index.html
