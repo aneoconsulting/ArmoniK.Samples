@@ -93,6 +93,12 @@ jobs:
          mkdir -p ${HOME}/data
          bash -x ./symphony_like.sh
 
+      - name: Run UnifiedAPI
+        run: |
+         cd tools/tests
+         mkdir -p ${HOME}/data
+         bash -x ./unified_api.sh
+
       - name: Run HtcMock SymphonyLike
         run: |
          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
