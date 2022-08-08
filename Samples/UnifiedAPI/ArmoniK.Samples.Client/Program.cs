@@ -212,7 +212,7 @@ namespace ArmoniK.Samples.Client
       };
 
       taskOptions.Options.Add(AppsOptions.EngineTypeNameKey,
-        EngineType.DataSynapse.ToString());
+        EngineType.Unified.ToString());
 
       taskOptions.Options.Add(AppsOptions.GridAppNameKey,
         "ArmoniK.Samples.Unified.Worker");

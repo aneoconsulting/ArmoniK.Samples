@@ -25,6 +25,8 @@
 using System.IO;
 using System.Linq;
 using ArmoniK.DevelopmentKit.Worker.Grid;
+using ArmoniK.Samples.Common;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -74,8 +76,30 @@ namespace ArmoniK.Samples.Unified.Worker.Services
     {
       return inputs.Select(x => x * x * x).Sum();
     }
-    
-    
 
+    public static double ComputeReduceCube(byte[] inputs)
+    {
+      var doubles = inputs.ConvertToArray();
+
+      return doubles.Select(x => x * x * x).Sum();
+    }
+
+    public static double[] ComputeMadd(byte[] inputs1, byte[] inputs2, double k)
+    {
+      var doubles1 = inputs1.ConvertToArray().ToArray();
+      var doubles2 = inputs2.ConvertToArray().ToArray();
+
+
+      return doubles1.Select((x, idx) => k * x * doubles2[idx]).ToArray();
+    }
+
+    public double[] NonStaticComputeMadd(byte[] inputs1, byte[] inputs2, double k)
+    {
+      var doubles1 = inputs1.ConvertToArray().ToArray();
+      var doubles2 = inputs2.ConvertToArray().ToArray();
+
+
+      return doubles1.Select((x, idx) => k * x * doubles2[idx]).ToArray();
+    }
   }
 }
