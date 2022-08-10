@@ -75,7 +75,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - uses: aneoconsulting/ArmoniK@main
+      - uses: aneoconsulting/ArmoniK@2.8.3-pre
         id: deploy-infra
         with:
           ingress: 'None'
@@ -144,7 +144,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - uses: aneoconsulting/ArmoniK@main
+      - uses: aneoconsulting/ArmoniK@2.8.3-pre
         name: Deploy ArmoniK Infra with Mock Image
         id: deploy-infra
         with:
