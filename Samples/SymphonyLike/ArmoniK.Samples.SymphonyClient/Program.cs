@@ -63,7 +63,6 @@ namespace Armonik.Samples.Symphony.Client
 
       Console.WriteLine("Hello Armonik SymphonyLike Sample !");
 
-
       var armonikWaitClient = Environment.GetEnvironmentVariable("ARMONIK_DEBUG_WAIT_CLIENT");
       if (!IsNullOrEmpty(armonikWaitClient))
       {
@@ -84,19 +83,15 @@ namespace Armonik.Samples.Symphony.Client
 
       _configuration = builder.Build();
 
-      Log.Logger = new LoggerConfiguration()
-                   .MinimumLevel.Override("Microsoft",
-                                          LogEventLevel.Information)
-                   .Enrich.FromLogContext()
-                   .WriteTo.Console()
-                   .CreateBootstrapLogger();
-
-
       var factory = new LoggerFactory(new[]
                                       {
                                         new SerilogLoggerProvider(new LoggerConfiguration()
                                                                   .ReadFrom
-                                                                  .Configuration(_configuration)
+                                                                  .KeyValuePairs(_configuration.AsEnumerable())
+                                                                  .MinimumLevel.Override("Microsoft",
+                                                                                         LogEventLevel.Information)
+                                                                  .Enrich.FromLogContext()
+                                                                  .WriteTo.Console()
                                                                   .CreateLogger()),
                                       },
                                       new LoggerFilterOptions().AddFilter("Grpc",
@@ -129,7 +124,8 @@ namespace Armonik.Samples.Symphony.Client
       var usage = $"Usage : ./ArmoniK.Samples.SymphonyClient \n" + 
                   "or subTask nbRun nbVectorElements\n" + 
                   "or pTask nbParallel_task [workload_Time_In_Ms]\n" + 
-                  "or randomFailure [[nbTasks] | [nbTasks percentageOfFailure]]]";
+                  "or randomFailure [[nbTasks] | [nbTasks percentageOfFailure]]\n" +
+                  "or largePayloads [[nbTasks] | [nbTasks payloadSize]]";
 
       if (argv is not { Length: >= 1 })
       {
@@ -141,7 +137,6 @@ namespace Armonik.Samples.Symphony.Client
                                      0);
         return;
       }
-
 
       if (string.Equals(argv[0],
                         "subtask",
@@ -176,6 +171,22 @@ namespace Armonik.Samples.Symphony.Client
                                   argv.Length < 2 ? 0 : int.Parse(argv[1]),
                                   argv.Length < 3 ? 0 : int.Parse(argv[2]));
       }
+      else if (string.Equals(argv[0].ToLower(),
+                             "largePayloads",
+                             StringComparison.CurrentCultureIgnoreCase))
+      {
+        if (argv.Length == 2)
+        {
+          ExecuteLargePayloads(sessionService,
+                               int.Parse(argv[1]));
+        }
+        else
+        {
+          ExecuteLargePayloads(sessionService,
+                               int.Parse(argv[1]),
+                               int.Parse(argv[2]));
+        }
+      }
       else if (string.Equals(argv[0],
                              "-h",
                              StringComparison.CurrentCultureIgnoreCase))
@@ -187,6 +198,43 @@ namespace Armonik.Samples.Symphony.Client
       {
         throw new ArgumentException($"Unknown arguments ${argv[0]} \n {usage}");
       }
+    }
+
+
+    private static void ExecuteLargePayloads(SessionService sessionService, int nbTasks = 100, int payloadSizeByte = 1)
+    {
+      _logger.LogInformation("Running Large Payload test");
+
+      var rnd       = new Random();
+      var dataBytes = new byte[payloadSizeByte * 1024 * 10];
+      rnd.NextBytes(dataBytes);
+
+      var clientPayload = new ClientPayload
+      {
+        Type  = ClientPayload.TaskType.LargePayload,
+        Sleep = 0,
+        Data  = dataBytes,
+      };
+      var payload = clientPayload.Serialize();
+
+      var sw = Stopwatch.StartNew();
+
+      var taskIds  = new List<string>(nbTasks);
+      var payloads = new List<byte[]>(nbTasks);
+
+      // submit 1 jobs of nbTasks  (default 100)
+      for (var i = 0; i < nbTasks; i++)
+      {
+        payloads.Add(payload);
+      }
+
+      taskIds.AddRange(sessionService.SubmitTasks(payloads));
+
+      var elapsedMilliseconds = sw.ElapsedMilliseconds;
+      _logger.LogInformation("Client submitted {nbTasks} with payloads of size {payloadSizeByte} KBytes tasks in {elapsedSeconds} s",
+                             nbTasks,
+                             payloadSizeByte * 10,
+                             elapsedMilliseconds/1000);
     }
 
     private static void ExecuteRandomTasksFailure(SessionService sessionService, int nbTasks = 100, double nbFailure = 0.25)
