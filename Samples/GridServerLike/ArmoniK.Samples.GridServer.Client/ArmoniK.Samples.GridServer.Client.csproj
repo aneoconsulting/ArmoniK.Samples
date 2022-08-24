@@ -12,11 +12,8 @@
     <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
     <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
     <OutputPath>bin</OutputPath>
-    <PublishDir>../publish/$(MSBuildProjectName)/$(Version)</PublishDir>
-    <PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <LangVersion>latest</LangVersion>
-    <!--<IsPackable>true</IsPackable>-->
   </PropertyGroup>
 
   <ItemGroup>

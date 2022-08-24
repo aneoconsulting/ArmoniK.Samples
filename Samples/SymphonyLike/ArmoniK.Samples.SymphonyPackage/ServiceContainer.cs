@@ -23,7 +23,6 @@
 
 using Armonik.Samples.Symphony.Common;
 
-using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.DevelopmentKit.Common.Exceptions;
 using ArmoniK.DevelopmentKit.SymphonyApi;
 using ArmoniK.DevelopmentKit.SymphonyApi.api;
@@ -37,8 +36,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
+using JetBrains.Annotations;
+
 namespace ArmoniK.Samples.Symphony.Packages
 {
+  [UsedImplicitly]
   public class ServiceContainer : ServiceContainerBase
   {
     private readonly IConfiguration configuration_;
@@ -168,8 +170,15 @@ namespace ArmoniK.Samples.Symphony.Packages
       var clientPayload = ClientPayload.Deserialize(taskContext.TaskInput);
 
       if (clientPayload.Type == ClientPayload.TaskType.ComputeSquare)
+      {
         return ComputeSquare(taskContext,
                              clientPayload);
+      }
+
+      if (clientPayload.Type == ClientPayload.TaskType.LargePayload)
+      {
+        return Array.Empty<byte>();
+      }
 
       if (clientPayload.Type == ClientPayload.TaskType.ComputeCube)
       {
