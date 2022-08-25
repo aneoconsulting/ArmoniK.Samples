@@ -34,7 +34,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.6.6-jgcleanup28.10.21f44ae" />
+    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.6.6-jgcleanup28.11.ab66224" />
   </ItemGroup>
 
   <ItemGroup>
