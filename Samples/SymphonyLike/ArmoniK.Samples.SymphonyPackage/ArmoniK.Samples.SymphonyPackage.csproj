@@ -34,10 +34,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.5.10" />
+    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.6.6-jgcleanup28.9.1c89cee" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,11 +56,4 @@
   <Target Name="ZipOutputPath" AfterTargets="CreateDirectories">
     <ZipDirectory SourceDirectory="../publish/" DestinationFile="../packages/$(MSBuildProjectName)-v$(Version).zip" Overwrite="true" />
   </Target>
-
-  <!--<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
-    <ItemGroup>
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
-    </ItemGroup>
-  </Target>-->
-
 </Project>

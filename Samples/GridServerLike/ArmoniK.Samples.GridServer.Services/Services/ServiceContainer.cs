@@ -57,7 +57,7 @@ namespace ArmoniK.Samples.GridServer.Client.Services
       Log.Logger = new LoggerConfiguration()
                    .MinimumLevel.Override("Microsoft",
                                           LogEventLevel.Information)
-                   .ReadFrom.Configuration(configuration_)
+                   .ReadFrom.KeyValuePairs(configuration_.AsEnumerable())
                    .Enrich.FromLogContext()
                    .WriteTo.Console()
                    .CreateBootstrapLogger();

@@ -78,14 +78,14 @@ namespace Armonik.Samples.HtcMockSymphony.Client
                                           LogEventLevel.Information)
                    .Enrich.FromLogContext()
                    .WriteTo.Console()
-                   .CreateBootstrapLogger();
+                   .CreateLogger();
 
 
       var factory = new LoggerFactory(new[]
       {
         new SerilogLoggerProvider(new LoggerConfiguration()
                                   .ReadFrom
-                                  .Configuration(_configuration)
+                                  .KeyValuePairs(_configuration.AsEnumerable())
                                   .CreateLogger()),
       });
 
