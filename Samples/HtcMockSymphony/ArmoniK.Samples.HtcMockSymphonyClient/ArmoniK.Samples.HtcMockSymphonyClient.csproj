@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Htc.Mock" Version="3.0.0-alpha11" />
-    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi.Client" Version="0.6.6-jgcleanup28.9.1c89cee" />
+    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi.Client" Version="0.6.6-jgcleanup28.10.21f44ae" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
     <PackageReference Include="Serilog" Version="2.11.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
