@@ -87,7 +87,7 @@ namespace Armonik.Samples.Symphony.Client
                                       {
                                         new SerilogLoggerProvider(new LoggerConfiguration()
                                                                   .ReadFrom
-                                                                  .KeyValuePairs(_configuration.AsEnumerable())
+                                                                  .Configuration(_configuration)
                                                                   .MinimumLevel.Override("Microsoft",
                                                                                          LogEventLevel.Information)
                                                                   .Enrich.FromLogContext()

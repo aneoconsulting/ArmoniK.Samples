@@ -65,7 +65,7 @@ namespace ArmoniK.Samples.GridServer.Client
       {
         new SerilogLoggerProvider(new LoggerConfiguration()
                                   .ReadFrom
-                                  .KeyValuePairs(configuration_.AsEnumerable())
+                                  .Configuration(configuration_)
                                   .CreateLogger())
       },
         new LoggerFilterOptions().AddFilter("Grpc",
