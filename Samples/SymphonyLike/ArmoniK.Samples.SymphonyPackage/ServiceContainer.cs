@@ -177,7 +177,7 @@ namespace ArmoniK.Samples.Symphony.Packages
 
       if (clientPayload.Type == ClientPayload.TaskType.LargePayload)
       {
-        return Array.Empty<byte>();
+        return new[] { (byte)0, (byte)1 };
       }
 
       if (clientPayload.Type == ClientPayload.TaskType.ComputeCube)

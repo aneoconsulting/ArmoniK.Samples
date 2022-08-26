@@ -84,8 +84,7 @@ namespace Armonik.Samples.HtcMockSymphony.Client
       var factory = new LoggerFactory(new[]
       {
         new SerilogLoggerProvider(new LoggerConfiguration()
-                                  .ReadFrom
-                                  .KeyValuePairs(_configuration.AsEnumerable())
+                                  .ReadFrom.Configuration(_configuration)
                                   .CreateLogger()),
       });
 
