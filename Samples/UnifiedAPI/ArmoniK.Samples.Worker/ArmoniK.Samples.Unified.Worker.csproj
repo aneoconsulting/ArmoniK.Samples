@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.Worker" Version="0.6.6-jgcleanup28.15.cea2903" />
+    <PackageReference Include="Armonik.DevelopmentKit.Worker" Version="0.6.6" />
   </ItemGroup>
 
   <ItemGroup>
