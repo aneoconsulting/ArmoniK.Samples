@@ -44,7 +44,8 @@ namespace Armonik.Samples.Symphony.Common
       Undefined,
       AggregationNTask,
       RandomFailure,
-      ParallelTask
+      ParallelTask,
+      LargePayload,
     }
 
     public bool IsRootTask { get; set; }
@@ -53,6 +54,7 @@ namespace Armonik.Samples.Symphony.Common
     public long Result { get; set; }
     public string SubTaskId { get; set; }
     public int Sleep { get; set; }
+    public byte [] Data { get; set; }
 
     public double NbRandomFailure { get; set; }
 

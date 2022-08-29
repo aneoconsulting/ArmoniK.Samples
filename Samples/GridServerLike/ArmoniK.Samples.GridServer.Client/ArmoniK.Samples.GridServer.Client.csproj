@@ -12,11 +12,8 @@
     <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
     <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
     <OutputPath>bin</OutputPath>
-    <PublishDir>../publish/$(MSBuildProjectName)/$(Version)</PublishDir>
-    <PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <LangVersion>latest</LangVersion>
-    <!--<IsPackable>true</IsPackable>-->
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,29 +21,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.GridServer.Client" Version="0.6.5" />
+    <PackageReference Include="Armonik.DevelopmentKit.GridServer.Client" Version="0.6.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="Grpc.AspNetCore" Version="2.41.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48'">
-    <PackageReference Include="Grpc.Core" Version="2.41.0" />
-  </ItemGroup>
-
-	<ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ArmoniK.Samples.GridServer.Common\ArmoniK.Samples.GridServer.Common.csproj" />
   </ItemGroup>
 
