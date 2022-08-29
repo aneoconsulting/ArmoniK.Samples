@@ -52,6 +52,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.Common", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.Unified.Worker", "Samples\UnifiedAPI\ArmoniK.Samples.Worker\ArmoniK.Samples.Unified.Worker.csproj", "{7BD32AA7-C56B-4999-B81D-04BE0475B656}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LargePayloads", "LargePayloads", "{7CFE4D94-FB61-48EC-A902-FDC30FDCBA1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmoniK.Samples.LargePayloads", "Samples\LargePayloads\ArmoniK.Samples.LargePayloads\ArmoniK.Samples.LargePayloads.csproj", "{F35D1AB5-FB5F-423D-9D75-0591104BD567}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -122,6 +126,10 @@ Global
 		{7BD32AA7-C56B-4999-B81D-04BE0475B656}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BD32AA7-C56B-4999-B81D-04BE0475B656}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BD32AA7-C56B-4999-B81D-04BE0475B656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F35D1AB5-FB5F-423D-9D75-0591104BD567}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F35D1AB5-FB5F-423D-9D75-0591104BD567}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F35D1AB5-FB5F-423D-9D75-0591104BD567}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F35D1AB5-FB5F-423D-9D75-0591104BD567}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,6 +151,7 @@ Global
 		{D3581C3A-C6F9-476E-AEEF-A057CBB78411} = {1F9CEB6C-F49B-482B-9588-820CF5EB99C2}
 		{82C18CD4-1B67-4DE0-AA3A-BDDC72BAD1DF} = {1F9CEB6C-F49B-482B-9588-820CF5EB99C2}
 		{7BD32AA7-C56B-4999-B81D-04BE0475B656} = {1F9CEB6C-F49B-482B-9588-820CF5EB99C2}
+		{F35D1AB5-FB5F-423D-9D75-0591104BD567} = {7CFE4D94-FB61-48EC-A902-FDC30FDCBA1C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {296BECBB-EB87-4630-8EBD-A1837B12E5E6}
