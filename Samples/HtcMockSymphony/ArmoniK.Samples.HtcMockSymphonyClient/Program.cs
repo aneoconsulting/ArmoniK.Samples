@@ -28,12 +28,15 @@ using System.IO;
 using System.Threading;
 
 using ArmoniK.Api.gRPC.V1;
-using ArmoniK.DevelopmentKit.SymphonyApi.Client;
 using ArmoniK.DevelopmentKit.Common;
-using ArmoniK.Samples.HtcMockSymphonyLike.Client;
+using ArmoniK.DevelopmentKit.SymphonyApi.Client;
 using ArmoniK.Samples.HtcMockSymphonyClient;
+using ArmoniK.Samples.HtcMockSymphonyLike.Client;
+
 using Google.Protobuf.WellKnownTypes;
+
 using Htc.Mock.Core;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -73,20 +76,18 @@ namespace Armonik.Samples.HtcMockSymphony.Client
 
       _configuration = builder.Build();
 
-      Log.Logger = new LoggerConfiguration()
-                   .MinimumLevel.Override("Microsoft",
-                                          LogEventLevel.Information)
-                   .Enrich.FromLogContext()
-                   .WriteTo.Console()
-                   .CreateLogger();
+      Log.Logger = new LoggerConfiguration().MinimumLevel.Override("Microsoft",
+                                                                   LogEventLevel.Information)
+                                            .Enrich.FromLogContext()
+                                            .WriteTo.Console()
+                                            .CreateLogger();
 
 
       var factory = new LoggerFactory(new[]
-      {
-        new SerilogLoggerProvider(new LoggerConfiguration()
-                                  .ReadFrom.Configuration(_configuration)
-                                  .CreateLogger()),
-      });
+                                      {
+                                        new SerilogLoggerProvider(new LoggerConfiguration().ReadFrom.Configuration(_configuration)
+                                                                                           .CreateLogger()),
+                                      });
 
       _logger = factory.CreateLogger<Program>();
 
@@ -104,13 +105,23 @@ namespace Armonik.Samples.HtcMockSymphony.Client
 
       _logger.LogInformation($"New session created : {sessionService}");
 
-      var runConfiguration = new RunConfiguration(
-        new TimeSpan(0, 0, 0, 0, 100), 100, 1, 1, 4);
+      var runConfiguration = new RunConfiguration(new TimeSpan(0,
+                                                               0,
+                                                               0,
+                                                               0,
+                                                               100),
+                                                  100,
+                                                  1,
+                                                  1,
+                                                  4);
 
-      var htcClient = new HtcMockSymphonyClient(sessionService, factory.CreateLogger<Htc.Mock.Client>());
+      var htcClient = new HtcMockSymphonyClient(sessionService,
+                                                factory.CreateLogger<Htc.Mock.Client>());
 
       _logger.LogInformation("Running Small HtcMock SymphonyLike test, 1 execution");
-      ClientSeqExec(htcClient, runConfiguration, 1);
+      ClientSeqExec(htcClient,
+                    runConfiguration,
+                    1);
     }
 
     /// <summary>
@@ -131,14 +142,14 @@ namespace Armonik.Samples.HtcMockSymphony.Client
     private static TaskOptions InitializeSimpleTaskOptions()
     {
       TaskOptions taskOptions = new()
-      {
-        MaxDuration = new Duration
-        {
-          Seconds = 300,
-        },
-        MaxRetries = 5,
-        Priority   = 1,
-      };
+                                {
+                                  MaxDuration = new Duration
+                                                {
+                                                  Seconds = 300,
+                                                },
+                                  MaxRetries = 5,
+                                  Priority   = 1,
+                                };
       taskOptions.Options.Add(AppsOptions.GridAppNameKey,
                               "ArmoniK.Samples.HtcMockSymphonyPackage");
 
@@ -152,25 +163,28 @@ namespace Armonik.Samples.HtcMockSymphony.Client
     }
 
     /// <summary>
-    /// First test to run nRun times sequentially with the given runConfiguration 
+    ///   First test to run nRun times sequentially with the given runConfiguration
     /// </summary>
     /// <param name="client">Symphony Like Client</param>
     /// <param name="runConfiguration"> Configuration for the run</param>
     /// <param name="nRun"> Number of runs</param>
-    private static void ClientSeqExec(HtcMockSymphonyClient client, RunConfiguration runConfiguration, int nRun)
+    private static void ClientSeqExec(HtcMockSymphonyClient client,
+                                      RunConfiguration      runConfiguration,
+                                      int                   nRun)
     {
       var sw = Stopwatch.StartNew();
       for (var i = 0; i < nRun; i++)
       {
         client.Start(runConfiguration);
       }
+
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
       var stat = new SimpleStats
-      {
-        ElapsedTime = elapsedMilliseconds,
-        Test         = "SeqExec",
-        NRun         = nRun,
-      };
+                 {
+                   ElapsedTime = elapsedMilliseconds,
+                   Test        = "SeqExec",
+                   NRun        = nRun,
+                 };
       Console.WriteLine("JSON Result : " + stat.ToJson());
     }
   }

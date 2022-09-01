@@ -22,11 +22,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using ArmoniK.Samples.GridServer.Common;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -36,7 +36,6 @@ using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.GridServer.Client.Services
 {
-
   public class ServiceContainer
   {
     private readonly IConfiguration            configuration_;
@@ -44,64 +43,75 @@ namespace ArmoniK.Samples.GridServer.Client.Services
 
     public ServiceContainer()
     {
-      var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json",
-                                 true,
-                                 true)
-                    .AddEnvironmentVariables();
+      var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+                                              .AddJsonFile("appsettings.json",
+                                                           true,
+                                                           true)
+                                              .AddEnvironmentVariables();
 
 
       configuration_ = builder.Build();
 
-      Log.Logger = new LoggerConfiguration()
-                   .MinimumLevel.Override("Microsoft",
-                                          LogEventLevel.Information)
-                   .ReadFrom.Configuration(configuration_)
-                   .Enrich.FromLogContext()
-                   .WriteTo.Console()
-                   .CreateBootstrapLogger();
+      Log.Logger = new LoggerConfiguration().MinimumLevel.Override("Microsoft",
+                                                                   LogEventLevel.Information)
+                                            .ReadFrom.Configuration(configuration_)
+                                            .Enrich.FromLogContext()
+                                            .WriteTo.Console()
+                                            .CreateBootstrapLogger();
 
       var logProvider = new SerilogLoggerProvider(Log.Logger);
-      var factory     = new LoggerFactory(new[] { logProvider });
+      var factory = new LoggerFactory(new[]
+                                      {
+                                        logProvider,
+                                      });
 
       logger_ = factory.CreateLogger<ServiceContainer>();
     }
 
     public static double[] ComputeBasicArrayCube(double[] inputs)
-    {
-      return inputs.Select(x => x * x * x).ToArray();
-    }
+      => inputs.Select(x => x * x * x)
+               .ToArray();
 
     public static double ComputeReduceCube(double[] inputs)
-    {
-      return inputs.Select(x => x * x * x).Sum();
-    }
+      => inputs.Select(x => x * x * x)
+               .Sum();
 
     public static double ComputeReduceCube(byte[] inputs)
     {
       var doubles = inputs.ConvertToArray();
 
-      return doubles.Select(x => x * x * x).Sum();
+      return doubles.Select(x => x * x * x)
+                    .Sum();
     }
 
-    public static double[] ComputeMadd(byte[] inputs1, byte[] inputs2, double k)
+    public static double[] ComputeMadd(byte[] inputs1,
+                                       byte[] inputs2,
+                                       double k)
     {
-      var doubles1 = inputs1.ConvertToArray().ToArray();
-      var doubles2 = inputs2.ConvertToArray().ToArray();
+      var doubles1 = inputs1.ConvertToArray()
+                            .ToArray();
+      var doubles2 = inputs2.ConvertToArray()
+                            .ToArray();
 
 
-      return doubles1.Select((x, idx) => k * x * doubles2[idx]).ToArray();
+      return doubles1.Select((x,
+                              idx) => k * x * doubles2[idx])
+                     .ToArray();
     }
 
-    public double[] NonStaticComputeMadd(byte[] inputs1, byte[] inputs2, double k)
+    public double[] NonStaticComputeMadd(byte[] inputs1,
+                                         byte[] inputs2,
+                                         double k)
     {
-      var doubles1 = inputs1.ConvertToArray().ToArray();
-      var doubles2 = inputs2.ConvertToArray().ToArray();
+      var doubles1 = inputs1.ConvertToArray()
+                            .ToArray();
+      var doubles2 = inputs2.ConvertToArray()
+                            .ToArray();
 
 
-      return doubles1.Select((x, idx) => k * x * doubles2[idx]).ToArray();
+      return doubles1.Select((x,
+                              idx) => k * x * doubles2[idx])
+                     .ToArray();
     }
-
   }
 }

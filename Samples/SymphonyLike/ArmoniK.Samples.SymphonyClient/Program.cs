@@ -26,15 +26,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Linq;
 using System.Threading.Tasks;
 
 using ArmoniK.Api.gRPC.V1;
+using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.DevelopmentKit.SymphonyApi.Client;
 using ArmoniK.DevelopmentKit.SymphonyApi.Client.api;
-using ArmoniK.DevelopmentKit.Common;
 
 using Armonik.Samples.Symphony.Common;
 
@@ -85,14 +85,12 @@ namespace Armonik.Samples.Symphony.Client
 
       var factory = new LoggerFactory(new[]
                                       {
-                                        new SerilogLoggerProvider(new LoggerConfiguration()
-                                                                  .ReadFrom
-                                                                  .Configuration(_configuration)
-                                                                  .MinimumLevel.Override("Microsoft",
-                                                                                         LogEventLevel.Information)
-                                                                  .Enrich.FromLogContext()
-                                                                  .WriteTo.Console()
-                                                                  .CreateLogger()),
+                                        new SerilogLoggerProvider(new LoggerConfiguration().ReadFrom.Configuration(_configuration)
+                                                                                           .MinimumLevel.Override("Microsoft",
+                                                                                                                  LogEventLevel.Information)
+                                                                                           .Enrich.FromLogContext()
+                                                                                           .WriteTo.Console()
+                                                                                           .CreateLogger()),
                                       },
                                       new LoggerFilterOptions().AddFilter("Grpc",
                                                                           LogLevel.Error));
@@ -119,22 +117,20 @@ namespace Armonik.Samples.Symphony.Client
                    sessionService);
     }
 
-    private static void ModeExecutor(string[] argv, SessionService sessionService)
+    private static void ModeExecutor(string[]       argv,
+                                     SessionService sessionService)
     {
-      var usage = $"Usage : ./ArmoniK.Samples.SymphonyClient \n" + 
-                  "or subTask nbRun nbVectorElements\n" + 
-                  "or pTask nbParallel_task [workload_Time_In_Ms]\n" + 
-                  "or randomFailure [[nbTasks] | [nbTasks percentageOfFailure]]\n" +
-                  "or largePayloads [[nbTasks] | [nbTasks payloadSize]]";
+      var usage = "Usage : ./ArmoniK.Samples.SymphonyClient \n" + "or subTask nbRun nbVectorElements\n" + "or pTask nbParallel_task [workload_Time_In_Ms]\n" +
+                  "or randomFailure [[nbTasks] | [nbTasks percentageOfFailure]]\n" + "or largePayloads [[nbTasks] | [nbTasks payloadSize]]";
 
-      if (argv is not { Length: >= 1 })
+      if (argv is not
+          {
+            Length: >= 1,
+          })
       {
-        ExecuteVectorSubtasking(sessionService,
-                                1,
-                                3);
+        ExecuteVectorSubtasking(sessionService);
 
-        ExecuteLargeSubmissionSquare(sessionService,
-                                     0);
+        ExecuteLargeSubmissionSquare(sessionService);
         return;
       }
 
@@ -144,9 +140,7 @@ namespace Armonik.Samples.Symphony.Client
       {
         if (argv.Length <= 2)
         {
-          ExecuteVectorSubtasking(sessionService,
-                                  1,
-                                  3);
+          ExecuteVectorSubtasking(sessionService);
         }
         else
         {
@@ -160,18 +154,28 @@ namespace Armonik.Samples.Symphony.Client
                              StringComparison.CurrentCultureIgnoreCase))
       {
         ExecuteLargeSubmissionSquare(sessionService,
-                                     argv.Length < 2 ? 0 : int.Parse(argv[1]),
-                                     argv.Length < 3 ? 0 : int.Parse(argv[2]));
+                                     argv.Length < 2
+                                       ? 0
+                                       : int.Parse(argv[1]),
+                                     argv.Length < 3
+                                       ? 0
+                                       : int.Parse(argv[2]));
       }
-      else if (string.Equals(argv[0].ToLower(),
+      else if (string.Equals(argv[0]
+                               .ToLower(),
                              "randomFailure",
                              StringComparison.CurrentCultureIgnoreCase))
       {
         ExecuteRandomTasksFailure(sessionService,
-                                  argv.Length < 2 ? 0 : int.Parse(argv[1]),
-                                  argv.Length < 3 ? 0 : int.Parse(argv[2]));
+                                  argv.Length < 2
+                                    ? 0
+                                    : int.Parse(argv[1]),
+                                  argv.Length < 3
+                                    ? 0
+                                    : int.Parse(argv[2]));
       }
-      else if (string.Equals(argv[0].ToLower(),
+      else if (string.Equals(argv[0]
+                               .ToLower(),
                              "largePayloads",
                              StringComparison.CurrentCultureIgnoreCase))
       {
@@ -192,7 +196,7 @@ namespace Armonik.Samples.Symphony.Client
                              StringComparison.CurrentCultureIgnoreCase))
       {
         Console.WriteLine(usage);
-        System.Environment.Exit(0);
+        Environment.Exit(0);
       }
       else
       {
@@ -201,7 +205,9 @@ namespace Armonik.Samples.Symphony.Client
     }
 
 
-    private static void ExecuteLargePayloads(SessionService sessionService, int nbTasks = 100, int payloadSizeByte = 1)
+    private static void ExecuteLargePayloads(SessionService sessionService,
+                                             int            nbTasks         = 100,
+                                             int            payloadSizeByte = 1)
     {
       _logger.LogInformation("Running Large Payload test");
 
@@ -210,11 +216,11 @@ namespace Armonik.Samples.Symphony.Client
       rnd.NextBytes(dataBytes);
 
       var clientPayload = new ClientPayload
-      {
-        Type  = ClientPayload.TaskType.LargePayload,
-        Sleep = 0,
-        Data  = dataBytes,
-      };
+                          {
+                            Type  = ClientPayload.TaskType.LargePayload,
+                            Sleep = 0,
+                            Data  = dataBytes,
+                          };
       var payload = clientPayload.Serialize();
 
       var sw = Stopwatch.StartNew();
@@ -233,25 +239,27 @@ namespace Armonik.Samples.Symphony.Client
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
       _logger.LogInformation("Client submitted {nbTasks} with payloads of size {payloadSizeByte} KBytes tasks in {elapsedSeconds} s",
                              nbTasks,
-                             payloadSizeByte * 10,
-                             elapsedMilliseconds/1000);
+                             payloadSizeByte     * 10,
+                             elapsedMilliseconds / 1000);
     }
 
-    private static void ExecuteRandomTasksFailure(SessionService sessionService, int nbTasks = 100, double nbFailure = 0.25)
+    private static void ExecuteRandomTasksFailure(SessionService sessionService,
+                                                  int            nbTasks   = 100,
+                                                  double         nbFailure = 0.25)
     {
       _logger.LogInformation("Running End to End test to check error management");
 
       var numbers = new List<int>
-      {
-        2,
-      };
+                    {
+                      2,
+                    };
       var clientPayload = new ClientPayload
-      {
-        Numbers = numbers,
-        Type    = ClientPayload.TaskType.RandomFailure,
-        Sleep   = 0,
-        NbRandomFailure = nbFailure
-      };
+                          {
+                            Numbers         = numbers,
+                            Type            = ClientPayload.TaskType.RandomFailure,
+                            Sleep           = 0,
+                            NbRandomFailure = nbFailure,
+                          };
       var payload = clientPayload.Serialize();
 
       var sw = Stopwatch.StartNew();
@@ -301,14 +309,14 @@ namespace Armonik.Samples.Symphony.Client
     private static TaskOptions InitializeSimpleTaskOptions()
     {
       TaskOptions taskOptions = new()
-      {
-        MaxDuration = new Duration
-        {
-          Seconds = 300,
-        },
-        MaxRetries = 2,
-        Priority   = 1,
-      };
+                                {
+                                  MaxDuration = new Duration
+                                                {
+                                                  Seconds = 300,
+                                                },
+                                  MaxRetries = 2,
+                                  Priority   = 1,
+                                };
       taskOptions.Options.Add(AppsOptions.GridAppNameKey,
                               "ArmoniK.Samples.SymphonyPackage");
 
@@ -328,7 +336,8 @@ namespace Armonik.Samples.Symphony.Client
     /// <param name="sessionService">The sessionService API to connect to the Control plane Service</param>
     /// <param name="taskId">The task which is waiting for</param>
     /// <returns></returns>
-    private static byte[] WaitForTaskResult(SessionService sessionService, string taskId)
+    private static byte[] WaitForTaskResult(SessionService sessionService,
+                                            string         taskId)
     {
       sessionService.WaitForTaskCompletion(taskId);
       var taskResult = sessionService.GetResult(taskId);
@@ -342,39 +351,44 @@ namespace Armonik.Samples.Symphony.Client
     /// <param name="sessionService"></param>
     /// <param name="nbRun">The number of execution to produce a average time spent</param>
     /// <param name="nbElements">The number of element in the vector to compute</param>
-    private static void ExecuteVectorSubtasking(SessionService sessionService, int nbRun = 1, int nbElements = 3)
+    private static void ExecuteVectorSubtasking(SessionService sessionService,
+                                                int            nbRun      = 1,
+                                                int            nbElements = 3)
     {
       _logger.LogInformation("Running End to End test to compute Square value with SubTasking");
 
       var numbers = Enumerable.Range(1,
-                                     nbElements).ToList();
+                                     nbElements)
+                              .ToList();
 
       var timeSpans = new List<TimeSpan>();
 
       Enumerable.Range(1,
-                       nbRun).ToList().ForEach(nRun =>
-      {
-        //Start Submission tasks
-        var stopWatch = new Stopwatch();
-        stopWatch.Start();
-        var payload = new ClientPayload
-        {
-          IsRootTask = true,
-          Numbers    = numbers,
-          Type       = ClientPayload.TaskType.ComputeSquare,
-        };
-        var taskId = sessionService.SubmitTask(payload.Serialize());
+                       nbRun)
+                .ToList()
+                .ForEach(nRun =>
+                         {
+                           //Start Submission tasks
+                           var stopWatch = new Stopwatch();
+                           stopWatch.Start();
+                           var payload = new ClientPayload
+                                         {
+                                           IsRootTask = true,
+                                           Numbers    = numbers,
+                                           Type       = ClientPayload.TaskType.ComputeSquare,
+                                         };
+                           var taskId = sessionService.SubmitTask(payload.Serialize());
 
-        var taskResult = WaitForTaskResult(sessionService,
-                                           taskId);
-        var result = ClientPayload.Deserialize(taskResult);
+                           var taskResult = WaitForTaskResult(sessionService,
+                                                              taskId);
+                           var result = ClientPayload.Deserialize(taskResult);
 
-        stopWatch.Stop();
+                           stopWatch.Stop();
 
-        _logger.LogInformation($"Run: {nRun} output Result : {result.Result}");
-        var ts = stopWatch.Elapsed;
-        timeSpans.Add(ts);
-      });
+                           _logger.LogInformation($"Run: {nRun} output Result : {result.Result}");
+                           var ts = stopWatch.Elapsed;
+                           timeSpans.Add(ts);
+                         });
       var tsm = timeSpans.Average();
       // Format and display the TimeSpan value.
       var elapsedTime = $"{tsm.Hours:00}:{tsm.Minutes:00}:{tsm.Seconds:00}.{tsm.Milliseconds / 10:00}";
@@ -388,20 +402,22 @@ namespace Armonik.Samples.Symphony.Client
     /// <param name="sessionService"></param>
     /// <param name="nbTasks">The number of task to submit</param>
     /// <param name="workLoadTimeInMs"></param>
-    private static void ExecuteLargeSubmissionSquare(SessionService sessionService, int nbTasks = 0, int workLoadTimeInMs = 10)
+    private static void ExecuteLargeSubmissionSquare(SessionService sessionService,
+                                                     int            nbTasks          = 0,
+                                                     int            workLoadTimeInMs = 10)
     {
       _logger.LogInformation("Running End to End test to check task average time per milliseconds");
 
       var numbers = new List<int>
-      {
-        2,
-      };
+                    {
+                      2,
+                    };
       var clientPayload = new ClientPayload
-      {
-        Numbers = numbers,
-        Type    = ClientPayload.TaskType.ComputeCube,
-        Sleep   = workLoadTimeInMs,
-      };
+                          {
+                            Numbers = numbers,
+                            Type    = ClientPayload.TaskType.ComputeCube,
+                            Sleep   = workLoadTimeInMs,
+                          };
       var payload        = clientPayload.Serialize();
       var outputMessages = new StringBuilder();
 
@@ -469,7 +485,7 @@ namespace Armonik.Samples.Symphony.Client
       {
         outputMessages.AppendLine($"In this series of samples we're creating 1 batch of {nbTasks} jobs of 1 task.");
         clientPayload.Type = ClientPayload.TaskType.ParallelTask;
-        payload = clientPayload.Serialize();
+        payload            = clientPayload.Serialize();
         N_Jobs_of_1_Task_With_Results_At_The_End(sessionService,
                                                  payload,
                                                  1,
@@ -501,7 +517,9 @@ namespace Armonik.Samples.Symphony.Client
                                            taskId);
         var result = ClientPayload.Deserialize(taskResult);
         if (result.Result == 0)
+        {
           Log.Error($"The taskId {taskId} returns [{result.Result}]");
+        }
 
         finalResult += result.Result;
       }
@@ -524,7 +542,9 @@ namespace Armonik.Samples.Symphony.Client
     {
       var payloads = new List<byte[]>(nbTasks);
       for (var i = 0; i < nbTasks; i++)
+      {
         payloads.Add(payload);
+      }
 
       var sw          = Stopwatch.StartNew();
       var finalResult = 0L;
@@ -542,10 +562,15 @@ namespace Armonik.Samples.Symphony.Client
       outputMessages.AppendLine($"Client called {nbTasks} tasks in {elapsedMilliseconds} ms aggregated Result = {finalResult}");
     }
 
-    private static void PeriodicInfo(Action action, int seconds, CancellationToken token = default)
+    private static void PeriodicInfo(Action            action,
+                                     int               seconds,
+                                     CancellationToken token = default)
     {
       if (action == null)
+      {
         return;
+      }
+
       Task.Run(async () =>
                {
                  while (!token.IsCancellationRequested)
@@ -559,7 +584,8 @@ namespace Armonik.Samples.Symphony.Client
     }
 
 
-    private static IEnumerable<Tuple<string, byte[]>> GetTryResults(SessionService sessionService, IEnumerable<string> taskIds)
+    private static IEnumerable<Tuple<string, byte[]>> GetTryResults(SessionService      sessionService,
+                                                                    IEnumerable<string> taskIds)
     {
       var ids      = taskIds.ToList();
       var missing  = ids;
@@ -567,48 +593,57 @@ namespace Armonik.Samples.Symphony.Client
       var cts      = new CancellationTokenSource();
       var holdPrev = 0;
       var waitInSeconds = new List<int>
-      {
-        1000,
-        5000,
-        10000,
-        20000,
-        30000
-      };
+                          {
+                            1000,
+                            5000,
+                            10000,
+                            20000,
+                            30000,
+                          };
       var idx = 0;
 
-      PeriodicInfo(() => { _logger.LogInformation($"Got {results.Count} / {ids.Count} result(s) "); },
+      PeriodicInfo(() =>
+                   {
+                     _logger.LogInformation($"Got {results.Count} / {ids.Count} result(s) ");
+                   },
                    20,
                    cts.Token);
 
       while (missing.Count != 0)
       {
-        missing.Batch(10000).ToList().ForEach(bucket =>
-        {
-          var partialResults = sessionService.TryGetResults(bucket);
+        missing.Batch(10000)
+               .ToList()
+               .ForEach(bucket =>
+                        {
+                          var partialResults = sessionService.TryGetResults(bucket);
 
-          var listPartialResults = partialResults.ToList();
+                          var listPartialResults = partialResults.ToList();
 
-          if (listPartialResults.Count() != 0)
-          {
-            results.AddRange(listPartialResults);
-          }
+                          if (listPartialResults.Count() != 0)
+                          {
+                            results.AddRange(listPartialResults);
+                          }
 
-          missing = missing.Where(x => listPartialResults.ToList().All(rId => rId.Item1 != x)).ToList();
+                          missing = missing.Where(x => listPartialResults.ToList()
+                                                                         .All(rId => rId.Item1 != x))
+                                           .ToList();
 
 
-          if (holdPrev == results.Count)
-          {
-            idx = idx >= waitInSeconds.Count - 1 ? waitInSeconds.Count - 1 : idx + 1;
-          }
-          else
-          {
-            idx = 0;
-          }
+                          if (holdPrev == results.Count)
+                          {
+                            idx = idx >= waitInSeconds.Count - 1
+                                    ? waitInSeconds.Count - 1
+                                    : idx                 + 1;
+                          }
+                          else
+                          {
+                            idx = 0;
+                          }
 
-          holdPrev = results.Count;
+                          holdPrev = results.Count;
 
-          Thread.Sleep(waitInSeconds[idx]);
-        });
+                          Thread.Sleep(waitInSeconds[idx]);
+                        });
       }
 
       cts.Cancel();
@@ -652,30 +687,32 @@ namespace Armonik.Samples.Symphony.Client
       // submit restJobs jobs of 1 task
       for (var i = 0; i < restJobs; i++)
       {
-        string taskId = sessionService.SubmitTask(payload);
+        var taskId = sessionService.SubmitTask(payload);
         taskIds.Add(taskId);
       }
 
-      outputMessages.AppendLine(
-        $"Client called (Results_At_The_End) {nbBatchs} batchs of {batchSize} jobs of one task in {sw.ElapsedMilliseconds / 1000} sec (only job creation time)");
+      outputMessages.AppendLine($"Client called (Results_At_The_End) {nbBatchs} batchs of {batchSize} jobs of one task in {sw.ElapsedMilliseconds / 1000} sec (only job creation time)");
 
       var finalResult = 0L;
       sw.Restart();
       var results = GetTryResults(sessionService,
-                                  taskIds).ToList();
+                                  taskIds)
+        .ToList();
       var requestedTaskCount = taskIds.Count;
       foreach (var resultItem in results)
       {
         var result = ClientPayload.Deserialize(resultItem.Item2);
         if (result.Result == 0)
+        {
           _logger.LogError($"The taskId {resultItem.Item1} returns [{result.Result}]");
+        }
+
         finalResult += result.Result;
       }
 
       outputMessages.AppendLine($"  => requested/received {requestedTaskCount}/{results.Count} in {sw.ElapsedMilliseconds / 1000} sec (only job creation time)");
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
-      outputMessages.AppendLine(
-        $"Client called (Results_At_The_End) {nbBatchs} batchs of {batchSize} jobs of one task in {elapsedMilliseconds / 1000} sec agregated Result = {finalResult}");
+      outputMessages.AppendLine($"Client called (Results_At_The_End) {nbBatchs} batchs of {batchSize} jobs of one task in {elapsedMilliseconds / 1000} sec agregated Result = {finalResult}");
     }
   }
 }
@@ -683,15 +720,15 @@ namespace Armonik.Samples.Symphony.Client
 public static class TimeSpanExt
 {
   /// <summary>
-  /// Calculates the average of the given timeSpans.
+  ///   Calculates the average of the given timeSpans.
   /// </summary>
   public static TimeSpan Average(this IEnumerable<TimeSpan> timeSpans)
   {
-    IEnumerable<long> ticksPerTimeSpan = timeSpans.Select(t => t.Ticks);
-    double            averageTicks     = ticksPerTimeSpan.Average();
-    long              averageTicksLong = Convert.ToInt64(averageTicks);
+    var ticksPerTimeSpan = timeSpans.Select(t => t.Ticks);
+    var averageTicks     = ticksPerTimeSpan.Average();
+    var averageTicksLong = Convert.ToInt64(averageTicks);
 
-    TimeSpan averageTimeSpan = TimeSpan.FromTicks(averageTicksLong);
+    var averageTimeSpan = TimeSpan.FromTicks(averageTicksLong);
 
     return averageTimeSpan;
   }

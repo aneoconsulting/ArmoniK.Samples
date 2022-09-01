@@ -24,82 +24,95 @@
 
 using System.IO;
 using System.Linq;
+
 using ArmoniK.DevelopmentKit.Worker.Grid;
 using ArmoniK.Samples.Common;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.Unified.Worker.Services
 {
-
   public class ServiceApps : BaseService<ServiceApps>
   {
-    private readonly IConfiguration            configuration_;
+    private readonly IConfiguration       configuration_;
     private readonly ILogger<ServiceApps> logger_;
 
     public ServiceApps()
     {
-      var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json",
-                                 true,
-                                 true)
-                    .AddEnvironmentVariables();
+      var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+                                              .AddJsonFile("appsettings.json",
+                                                           true,
+                                                           true)
+                                              .AddEnvironmentVariables();
 
 
       configuration_ = builder.Build();
 
-      Log.Logger = new LoggerConfiguration()
-                   .MinimumLevel.Override("Microsoft",
-                                          LogEventLevel.Information)
-                   .ReadFrom.Configuration(configuration_)
-                   .Enrich.FromLogContext()
-                   .WriteTo.Console()
-                   .CreateBootstrapLogger();
+      Log.Logger = new LoggerConfiguration().MinimumLevel.Override("Microsoft",
+                                                                   LogEventLevel.Information)
+                                            .ReadFrom.Configuration(configuration_)
+                                            .Enrich.FromLogContext()
+                                            .WriteTo.Console()
+                                            .CreateBootstrapLogger();
 
       var logProvider = new SerilogLoggerProvider(Log.Logger);
-      var factory     = new LoggerFactory(new[] { logProvider });
+      var factory = new LoggerFactory(new[]
+                                      {
+                                        logProvider,
+                                      });
 
       logger_ = factory.CreateLogger<ServiceApps>();
     }
 
     public static double[] ComputeBasicArrayCube(double[] inputs)
-    {
-      return inputs.Select(x => x * x * x).ToArray();
-    }
+      => inputs.Select(x => x * x * x)
+               .ToArray();
 
     public static double ComputeReduceCube(double[] inputs)
-    {
-      return inputs.Select(x => x * x * x).Sum();
-    }
+      => inputs.Select(x => x * x * x)
+               .Sum();
 
     public static double ComputeReduceCube(byte[] inputs)
     {
       var doubles = inputs.ConvertToArray();
 
-      return doubles.Select(x => x * x * x).Sum();
+      return doubles.Select(x => x * x * x)
+                    .Sum();
     }
 
-    public static double[] ComputeMadd(byte[] inputs1, byte[] inputs2, double k)
+    public static double[] ComputeMadd(byte[] inputs1,
+                                       byte[] inputs2,
+                                       double k)
     {
-      var doubles1 = inputs1.ConvertToArray().ToArray();
-      var doubles2 = inputs2.ConvertToArray().ToArray();
+      var doubles1 = inputs1.ConvertToArray()
+                            .ToArray();
+      var doubles2 = inputs2.ConvertToArray()
+                            .ToArray();
 
 
-      return doubles1.Select((x, idx) => k * x * doubles2[idx]).ToArray();
+      return doubles1.Select((x,
+                              idx) => k * x * doubles2[idx])
+                     .ToArray();
     }
 
-    public double[] NonStaticComputeMadd(byte[] inputs1, byte[] inputs2, double k)
+    public double[] NonStaticComputeMadd(byte[] inputs1,
+                                         byte[] inputs2,
+                                         double k)
     {
-      var doubles1 = inputs1.ConvertToArray().ToArray();
-      var doubles2 = inputs2.ConvertToArray().ToArray();
+      var doubles1 = inputs1.ConvertToArray()
+                            .ToArray();
+      var doubles2 = inputs2.ConvertToArray()
+                            .ToArray();
 
 
-      return doubles1.Select((x, idx) => k * x * doubles2[idx]).ToArray();
+      return doubles1.Select((x,
+                              idx) => k * x * doubles2[idx])
+                     .ToArray();
     }
   }
 }

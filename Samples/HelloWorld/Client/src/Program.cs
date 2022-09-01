@@ -45,48 +45,47 @@ namespace ArmoniK.HelloWorld.Client
 
       Console.WriteLine("Create session");
       var session = client.CreateSession(new SessionOptions
-      {
-        DefaultTaskOption = new TaskOptions
-        {
-          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromMinutes(1)),
-          MaxRetries  = 2,
-          Priority    = 1,
-        },
-      });
+                                         {
+                                           DefaultTaskOption = new TaskOptions
+                                                               {
+                                                                 MaxDuration = Duration.FromTimeSpan(TimeSpan.FromMinutes(1)),
+                                                                 MaxRetries  = 2,
+                                                                 Priority    = 1,
+                                                               },
+                                         });
 
       Console.WriteLine("Create task");
       var task = client.CreateTask(new CreateTaskRequest
-                       {
-                         SessionId = session,
-                         TaskRequests =
-                         {
-                           new TaskRequest
-                           {
-                             Payload = new Payload
-                             {
-                               Data = ByteString.CopyFromUtf8("Hello"),
-                             },
-                           },
-                         },
-                       })
-                       .TaskIds
-                       .Single();
+                                   {
+                                     SessionId = session,
+                                     TaskRequests =
+                                     {
+                                       new TaskRequest
+                                       {
+                                         Payload = new Payload
+                                                   {
+                                                     Data = ByteString.CopyFromUtf8("Hello"),
+                                                   },
+                                       },
+                                     },
+                                   })
+                       .TaskIds.Single();
 
       Console.WriteLine("Wait for task");
       client.WaitForCompletion(new WaitRequest
-      {
-        Filter = new TaskFilter
-        {
-          SessionId    = task.Session,
-          SubSessionId = task.SubSession,
-          IncludedTaskIds =
-          {
-            task.Task,
-          },
-        },
-        ThrowOnTaskCancellation = true,
-        ThrowOnTaskError        = true,
-      });
+                               {
+                                 Filter = new TaskFilter
+                                          {
+                                            SessionId    = task.Session,
+                                            SubSessionId = task.SubSession,
+                                            IncludedTaskIds =
+                                            {
+                                              task.Task,
+                                            },
+                                          },
+                                 ThrowOnTaskCancellation = true,
+                                 ThrowOnTaskError        = true,
+                               });
     }
   }
 }

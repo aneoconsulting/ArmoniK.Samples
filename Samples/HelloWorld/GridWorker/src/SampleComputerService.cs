@@ -44,14 +44,16 @@ namespace ArmoniK.HelloWorld.Worker
 
     private readonly ILogger<SampleComputerService> logger_;
 
-    public SampleComputerService(ILoggerFactory loggerFactory, ApplicationLifeTimeManager applicationLifeTime)
+    public SampleComputerService(ILoggerFactory             loggerFactory,
+                                 ApplicationLifeTimeManager applicationLifeTime)
     {
       logger_              = loggerFactory.CreateLogger<SampleComputerService>();
       applicationLifeTime_ = applicationLifeTime;
     }
 
     /// <inheritdoc />
-    public override Task<ComputeReply> Execute(ComputeRequest request, ServerCallContext context)
+    public override Task<ComputeReply> Execute(ComputeRequest    request,
+                                               ServerCallContext context)
     {
       logger_.LogInformation($"Processing Task {request.TaskId} of Session {request.Session}");
       logger_.LogInformation("request: {request}",
@@ -60,9 +62,9 @@ namespace ArmoniK.HelloWorld.Worker
       logger_.LogInformation("reply: {result}",
                              output);
       return Task.FromResult(new ComputeReply
-      {
-        Result = ByteString.CopyFromUtf8(output),
-      });
+                             {
+                               Result = ByteString.CopyFromUtf8(output),
+                             });
     }
   }
 }

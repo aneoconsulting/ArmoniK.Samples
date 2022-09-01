@@ -33,37 +33,44 @@ namespace ArmoniK.Samples.HtcMock.Client
 {
   public static class HtcMockClientExt
   {
-    public static void ParallelExec(this HtcMockClient client, RunConfiguration runConfiguration, int nRun)
+    public static void ParallelExec(this HtcMockClient client,
+                                    RunConfiguration   runConfiguration,
+                                    int                nRun)
     {
       var sw = Stopwatch.StartNew();
       var tasks = Enumerable.Repeat(runConfiguration,
                                     nRun)
                             .Select(configuration => Task.Run(() => client.Start(configuration)))
                             .ToList();
-      Task.WhenAll(tasks).Wait();
+      Task.WhenAll(tasks)
+          .Wait();
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
       var stat = new SimpleStats
-      {
-        EllapsedTime = elapsedMilliseconds,
-        Test         = "AsyncExec",
-        NRun         = nRun,
-      };
+                 {
+                   EllapsedTime = elapsedMilliseconds,
+                   Test         = "AsyncExec",
+                   NRun         = nRun,
+                 };
       Console.WriteLine("JSON Result : " + stat.ToJson());
     }
 
-    public static void SeqExec(this HtcMockClient client, RunConfiguration runConfiguration, int nRun)
+    public static void SeqExec(this HtcMockClient client,
+                               RunConfiguration   runConfiguration,
+                               int                nRun)
     {
       var sw = Stopwatch.StartNew();
       for (var i = 0; i < nRun; i++)
+      {
         client.Start(runConfiguration);
+      }
 
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
       var stat = new SimpleStats
-      {
-        EllapsedTime = elapsedMilliseconds,
-        Test         = "SeqExec",
-        NRun         = nRun,
-      };
+                 {
+                   EllapsedTime = elapsedMilliseconds,
+                   Test         = "SeqExec",
+                   NRun         = nRun,
+                 };
       Console.WriteLine("JSON Result : " + stat.ToJson());
     }
   }

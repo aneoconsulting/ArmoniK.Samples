@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArmoniK.Samples.GridServer.Common
 {
@@ -16,8 +14,11 @@ namespace ArmoniK.Samples.GridServer.Common
 
       var i = 0;
       for (; i < values.Length; i++)
+      {
         values[i] = BitConverter.ToDouble(bytes.ToArray(),
-          i * 8);
+                                          i * 8);
+      }
+
       return values;
     }
   }
