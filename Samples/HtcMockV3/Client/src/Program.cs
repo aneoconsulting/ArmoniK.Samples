@@ -45,11 +45,10 @@ namespace ArmoniK.Samples.HtcMock.Client
       var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                                               .AddEnvironmentVariables();
       var configuration = builder.Build();
-      Log.Logger = new LoggerConfiguration()
-                   .ReadFrom.Configuration(configuration)
-                   .Enrich.FromLogContext()
-                   .WriteTo.Console(new CompactJsonFormatter())
-                   .CreateBootstrapLogger();
+      Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration)
+                                            .Enrich.FromLogContext()
+                                            .WriteTo.Console(new CompactJsonFormatter())
+                                            .CreateBootstrapLogger();
 
       var factory = new LoggerFactory().AddSerilog();
       var serviceProvider = new ServiceCollection().AddComponents(configuration)
@@ -60,7 +59,7 @@ namespace ArmoniK.Samples.HtcMock.Client
       var gridClient = serviceProvider.GetRequiredService<GridClient>();
 
       var client = new HtcMockClient(gridClient,
-                                       factory.CreateLogger<Htc.Mock.Client>());
+                                     factory.CreateLogger<Htc.Mock.Client>());
 
       // Timespan(heures, minutes, secondes)
       // RunConfiguration runConfiguration = RunConfiguration.XSmall; // result : Aggregate_1871498793_result

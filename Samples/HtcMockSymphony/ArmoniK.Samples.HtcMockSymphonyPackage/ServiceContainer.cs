@@ -22,17 +22,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using ArmoniK.DevelopmentKit.Common.Exceptions;
-using ArmoniK.DevelopmentKit.SymphonyApi;
-using ArmoniK.DevelopmentKit.SymphonyApi.api;
-
-using Microsoft.Extensions.Logging;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using ArmoniK.DevelopmentKit.Common.Exceptions;
+using ArmoniK.DevelopmentKit.SymphonyApi;
+using ArmoniK.DevelopmentKit.SymphonyApi.api;
+
 using Htc.Mock.Core;
+
+using Microsoft.Extensions.Logging;
 
 namespace ArmoniK.Samples.HtcMockSymphony.Packages
 {
@@ -41,44 +42,44 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
     private ILogger<ServiceContainer> _logger;
 
     public override void OnCreateService(ServiceContext serviceContext)
-    {
-      _logger = LoggerFactory.CreateLogger<ServiceContainer>();
-    }
+      => _logger = LoggerFactory.CreateLogger<ServiceContainer>();
 
     public override void OnSessionEnter(SessionContext sessionContext)
     {
       //END USER PLEASE FIXME
     }
 
-    public override byte[] OnInvoke(SessionContext sessionContext, TaskContext taskContext)
+    public override byte[] OnInvoke(SessionContext sessionContext,
+                                    TaskContext    taskContext)
     {
       try
       {
         var (runConfiguration, request) = DataAdapter.ReadPayload(taskContext.TaskInput);
-        var inputs = request.Dependencies
-          .ToDictionary(id => id,
-            id =>
-            {
-              _logger.LogInformation("Looking for result for Id {id}",
-                id);
-              var isOkay = taskContext.DataDependencies.TryGetValue(id, out var data);
-              if (!isOkay)
-              {
-                throw new KeyNotFoundException(id);
-              }
+        var inputs = request.Dependencies.ToDictionary(id => id,
+                                                       id =>
+                                                       {
+                                                         _logger.LogInformation("Looking for result for Id {id}",
+                                                                                id);
+                                                         var isOkay = taskContext.DataDependencies.TryGetValue(id,
+                                                                                                               out var data);
+                                                         if (!isOkay)
+                                                         {
+                                                           throw new KeyNotFoundException(id);
+                                                         }
 
-              return Encoding.Default.GetString(data);
-            });
+                                                         return Encoding.Default.GetString(data);
+                                                       });
 
         var requestProcessor = new RequestProcessor(true,
-          true,
-          true,
-          runConfiguration,
-          _logger);
-        var res = requestProcessor.GetResult(request, inputs);
+                                                    true,
+                                                    true,
+                                                    runConfiguration,
+                                                    _logger);
+        var res = requestProcessor.GetResult(request,
+                                             inputs);
         _logger.LogDebug("Result for processing request is HasResult={hasResult}, Value={value}",
-          res.Result.HasResult,
-          res.Result.Value);
+                         res.Result.HasResult,
+                         res.Result.Value);
 
         if (res.Result.HasResult)
         {
@@ -86,11 +87,12 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
         }
 
         var requests = res.SubRequests.GroupBy(r => r.Dependencies is null || r.Dependencies.Count == 0)
-          .ToDictionary(g => g.Key,
-            g => g);
+                          .ToDictionary(g => g.Key,
+                                        g => g);
         var readyRequests = requests[true];
         var requestsCount = readyRequests.Count();
-        _logger.LogDebug("Will submit {count} new tasks", requestsCount);
+        _logger.LogDebug("Will submit {count} new tasks",
+                         requestsCount);
 
 
         var payloads = new List<byte[]>(requestsCount);
@@ -98,29 +100,31 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
                                                                                         readyRequest)));
 
         var taskIds = SubmitTasks(payloads);
-        var req = requests[false].Single();
+        var req = requests[false]
+          .Single();
         req.Dependencies.Clear();
         foreach (var t in taskIds)
         {
           req.Dependencies.Add(t);
         }
-        SubmitTasksWithDependencies(new List<Tuple<byte[], IList<string>>>(
-          new List<Tuple<byte[], IList<string>>>
-          {
-            new(
-              DataAdapter.BuildPayload(runConfiguration, req),
-              req.Dependencies
-            ),
-          }), true);
+
+        SubmitTasksWithDependencies(new List<Tuple<byte[], IList<string>>>(new List<Tuple<byte[], IList<string>>>
+                                                                           {
+                                                                             new(DataAdapter.BuildPayload(runConfiguration,
+                                                                                                          req),
+                                                                                 req.Dependencies),
+                                                                           }),
+                                    true);
 
         return null;
       }
       catch (Exception ex)
       {
-        _logger.LogError(ex, "Error while computing task");
-        throw new WorkerApiException("Error while computing task", ex);
+        _logger.LogError(ex,
+                         "Error while computing task");
+        throw new WorkerApiException("Error while computing task",
+                                     ex);
       }
-      
     }
 
     public override void OnSessionLeave(SessionContext sessionContext)

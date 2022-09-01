@@ -28,13 +28,11 @@ namespace ArmoniK.Samples.HtcMock.Client
 {
   internal class SimpleStats
   {
-    public long EllapsedTime { get; set; }
-    public string Test { get; set; }
-    public int NRun { get; set; }
+    public long   EllapsedTime { get; set; }
+    public string Test         { get; set; }
+    public int    NRun         { get; set; }
 
     public string ToJson()
-    {
-      return JsonSerializer.Serialize(this);
-    }
+      => JsonSerializer.Serialize(this);
   }
 }

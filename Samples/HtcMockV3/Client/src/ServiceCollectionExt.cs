@@ -38,22 +38,20 @@ namespace ArmoniK.Samples.HtcMock.Client
   public static class ServiceCollectionExt
   {
     [PublicAPI]
-    public static IServiceCollection AddComponents(
-      this IServiceCollection serviceCollection,
-      IConfiguration          configuration
-    )
+    public static IServiceCollection AddComponents(this IServiceCollection serviceCollection,
+                                                   IConfiguration          configuration)
     {
       serviceCollection.Configure<Adapter.Options.Grpc>(configuration.GetSection(Adapter.Options.Grpc.SettingSection))
                        .AddSingleton(sp =>
-                       {
-                         var options = sp.GetRequiredService<IOptions<Adapter.Options.Grpc>>();
-                         return GrpcChannel.ForAddress(options.Value.Endpoint);
-                       })
+                                     {
+                                       var options = sp.GetRequiredService<IOptions<Adapter.Options.Grpc>>();
+                                       return GrpcChannel.ForAddress(options.Value.Endpoint);
+                                     })
                        .AddTransient(sp =>
-                       {
-                         ChannelBase channel = sp.GetRequiredService<GrpcChannel>();
-                         return new Submitter.SubmitterClient(channel);
-                       })
+                                     {
+                                       ChannelBase channel = sp.GetRequiredService<GrpcChannel>();
+                                       return new Submitter.SubmitterClient(channel);
+                                     })
                        .AddSingleton<GridClient>();
 
       return serviceCollection;

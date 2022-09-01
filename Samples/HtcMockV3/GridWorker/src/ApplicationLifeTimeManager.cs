@@ -32,7 +32,8 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
     private readonly IHostApplicationLifetime            lifetime_;
     private readonly ILogger<ApplicationLifeTimeManager> logger_;
 
-    public ApplicationLifeTimeManager(ILogger<ApplicationLifeTimeManager> logger, IHostApplicationLifetime lifetime)
+    public ApplicationLifeTimeManager(ILogger<ApplicationLifeTimeManager> logger,
+                                      IHostApplicationLifetime            lifetime)
     {
       logger_   = logger;
       lifetime_ = lifetime;
@@ -42,18 +43,12 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
     }
 
     private void GracefulTerminationStarted()
-    {
-      logger_.LogWarning("Application host is starting graceful termination");
-    }
+      => logger_.LogWarning("Application host is starting graceful termination");
 
     private void GracefulTerminationFinished()
-    {
-      logger_.LogWarning("Application host has finished graceful termination");
-    }
+      => logger_.LogWarning("Application host has finished graceful termination");
 
     private void ApplicationStarted()
-    {
-      logger_.LogWarning("Application host has finished starting");
-    }
+      => logger_.LogWarning("Application host has finished starting");
   }
 }

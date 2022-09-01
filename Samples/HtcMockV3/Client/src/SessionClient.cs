@@ -43,9 +43,11 @@ namespace ArmoniK.Samples.HtcMock.Client
   {
     private readonly Submitter.SubmitterClient client_;
     private readonly ILogger<GridClient>       logger_;
-    private readonly string                 sessionId_;
+    private readonly string                    sessionId_;
 
-    public SessionClient(Submitter.SubmitterClient client, string sessionId, ILogger<GridClient> logger)
+    public SessionClient(Submitter.SubmitterClient client,
+                         string                    sessionId,
+                         ILogger<GridClient>       logger)
     {
       client_    = client;
       logger_    = logger;
@@ -59,12 +61,12 @@ namespace ArmoniK.Samples.HtcMock.Client
 
     public byte[] GetResult(string id)
     {
-      using var _      = logger_.LogFunction(id);
+      using var _ = logger_.LogFunction(id);
       var resultRequest = new ResultRequest
-      {
-        Key     = id,
-        Session = sessionId_,
-      };
+                          {
+                            Key     = id,
+                            Session = sessionId_,
+                          };
 
       var availabilityReply = client_.WaitForAvailability(resultRequest);
 
@@ -102,48 +104,51 @@ namespace ArmoniK.Samples.HtcMock.Client
 
     public async Task WaitSubtasksCompletion(string id)
     {
-      using var _      = logger_.LogFunction(id);
+      using var _ = logger_.LogFunction(id);
       var waitForCompletion = client_.WaitForCompletion(new WaitRequest
-      {
-        Filter = new TaskFilter
-        {
-          Task = new TaskFilter.Types.IdsRequest
-          {
-            Ids =
-            {
-              sessionId_ + "%" + id,
-            },
-          },
-        },
-        StopOnFirstTaskCancellation = true,
-        StopOnFirstTaskError        = true,
-      });
+                                                        {
+                                                          Filter = new TaskFilter
+                                                                   {
+                                                                     Task = new TaskFilter.Types.IdsRequest
+                                                                            {
+                                                                              Ids =
+                                                                              {
+                                                                                sessionId_ + "%" + id,
+                                                                              },
+                                                                            },
+                                                                   },
+                                                          StopOnFirstTaskCancellation = true,
+                                                          StopOnFirstTaskError        = true,
+                                                        });
     }
 
     public IEnumerable<string> SubmitTasksWithDependencies(IEnumerable<Tuple<byte[], IList<string>>> payloadsWithDependencies)
     {
-      using var _         = logger_.LogFunction();
-      logger_.LogDebug("payload with dependencies {len}", payloadsWithDependencies.Count());
+      using var _ = logger_.LogFunction();
+      logger_.LogDebug("payload with dependencies {len}",
+                       payloadsWithDependencies.Count());
       var taskRequests = new List<TaskRequest>();
 
       foreach (var (payload, dependencies) in payloadsWithDependencies)
       {
-        var taskId = Guid.NewGuid().ToString();
-        logger_.LogDebug("Create task {task}", taskId);
+        var taskId = Guid.NewGuid()
+                         .ToString();
+        logger_.LogDebug("Create task {task}",
+                         taskId);
         var taskRequest = new TaskRequest
-        {
-          Id      = sessionId_ + "%" + taskId,
-          Payload =  ByteString.CopyFrom(payload),
-          DataDependencies =
-          {
-            // p.Item2,
-            dependencies.Select(i => sessionId_ + "%" + i),
-          },
-          ExpectedOutputKeys =
-          {
-            sessionId_ + "%" + taskId,
-          },
-        };
+                          {
+                            Id      = sessionId_ + "%" + taskId,
+                            Payload = ByteString.CopyFrom(payload),
+                            DataDependencies =
+                            {
+                              // p.Item2,
+                              dependencies.Select(i => sessionId_ + "%" + i),
+                            },
+                            ExpectedOutputKeys =
+                            {
+                              sessionId_ + "%" + taskId,
+                            },
+                          };
         logger_.LogDebug("Dependencies : {dep}",
                          string.Join(", ",
                                      dependencies.Select(item => item.ToString())));
@@ -151,8 +156,9 @@ namespace ArmoniK.Samples.HtcMock.Client
       }
 
       var createTaskReply = client_.CreateTasksAsync(sessionId_,
-                                                          null,
-                                                          taskRequests).Result;
+                                                     null,
+                                                     taskRequests)
+                                   .Result;
       switch (createTaskReply.DataCase)
       {
         case CreateTaskReply.DataOneofCase.NonSuccessfullIds:
@@ -169,7 +175,7 @@ namespace ArmoniK.Samples.HtcMock.Client
       var taskCreated = taskRequests.Select(t => t.Id);
 
       logger_.LogDebug("Tasks created : {ids}",
-                                   taskCreated);
+                       taskCreated);
       return taskCreated;
     }
   }

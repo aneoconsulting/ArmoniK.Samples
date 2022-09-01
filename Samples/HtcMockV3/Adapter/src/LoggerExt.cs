@@ -57,8 +57,9 @@ namespace ArmoniK.Samples.HtcMock.Adapter
                                           LogLevel                  level        = LogLevel.Debug,
                                           [CallerMemberName] string functionName = "")
     {
-      var methodInfo = new StackTrace().GetFrame(1)?.GetMethod();
-      var className  = methodInfo?.ReflectedType?.Name;
+      var methodInfo = new StackTrace().GetFrame(1)
+                                       ?.GetMethod();
+      var className = methodInfo?.ReflectedType?.Name;
 
       logger.Log(level,
                  "Entering {className}.{functionName} - {id}",
