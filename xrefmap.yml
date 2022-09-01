@@ -1004,15 +1004,15 @@ references:
   commentId: T:ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient
   fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient
   nameWithType: HtcMockSymphonyClient
-- uid: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor(SessionService,ILogger{Htc.Mock.Client})
-  name: HtcMockSymphonyClient(SessionService, ILogger<Htc.Mock.Client>)
-  href: api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html#ArmoniK_Samples_HtcMockSymphonyClient_HtcMockSymphonyClient__ctor_SessionService_ILogger_Htc_Mock_Client__
-  commentId: M:ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor(SessionService,ILogger{Htc.Mock.Client})
-  name.vb: HtcMockSymphonyClient(SessionService, ILogger(Of Htc.Mock.Client))
-  fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger<Htc.Mock.Client>)
-  fullName.vb: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger(Of Htc.Mock.Client))
-  nameWithType: HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger<Htc.Mock.Client>)
-  nameWithType.vb: HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger(Of Htc.Mock.Client))
+- uid: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor(SessionService,ILogger{Client})
+  name: HtcMockSymphonyClient(SessionService, ILogger<Client>)
+  href: api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html#ArmoniK_Samples_HtcMockSymphonyClient_HtcMockSymphonyClient__ctor_SessionService_ILogger_Client__
+  commentId: M:ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor(SessionService,ILogger{Client})
+  name.vb: HtcMockSymphonyClient(SessionService, ILogger(Of Client))
+  fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger<Client>)
+  fullName.vb: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger(Of Client))
+  nameWithType: HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger<Client>)
+  nameWithType.vb: HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger(Of Client))
 - uid: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor*
   name: HtcMockSymphonyClient
   href: api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html#ArmoniK_Samples_HtcMockSymphonyClient_HtcMockSymphonyClient__ctor_
