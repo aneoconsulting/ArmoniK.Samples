@@ -40,31 +40,31 @@ namespace ArmoniK.Samples.HtcMock.Client
     private readonly Submitter.SubmitterClient client_;
     private readonly ILogger<GridClient>       logger_;
 
-    public GridClient(Submitter.SubmitterClient client, ILoggerFactory loggerFactory)
+    public GridClient(Submitter.SubmitterClient client,
+                      ILoggerFactory            loggerFactory)
     {
       client_ = client;
       logger_ = loggerFactory.CreateLogger<GridClient>();
     }
 
     public ISessionClient CreateSubSession(string taskId)
-    {
-      return CreateSession();
-    }
+      => CreateSession();
 
     public ISessionClient CreateSession()
     {
-      using var _         = logger_.LogFunction();
-      var       sessionId = Guid.NewGuid().ToString();
+      using var _ = logger_.LogFunction();
+      var sessionId = Guid.NewGuid()
+                          .ToString();
       var createSessionRequest = new CreateSessionRequest
-      {
-        DefaultTaskOption = new TaskOptions
-        {
-          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
-          MaxRetries  = 2,
-          Priority    = 1,
-        },
-        Id = sessionId,
-      };
+                                 {
+                                   DefaultTaskOption = new TaskOptions
+                                                       {
+                                                         MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
+                                                         MaxRetries  = 2,
+                                                         Priority    = 1,
+                                                       },
+                                   Id = sessionId,
+                                 };
       var session = client_.CreateSession(createSessionRequest);
       switch (session.ResultCase)
       {
@@ -77,6 +77,7 @@ namespace ArmoniK.Samples.HtcMock.Client
         default:
           throw new ArgumentOutOfRangeException();
       }
+
       return new SessionClient(client_,
                                sessionId,
                                logger_);

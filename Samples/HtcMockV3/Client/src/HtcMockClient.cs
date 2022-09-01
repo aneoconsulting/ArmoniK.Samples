@@ -34,13 +34,14 @@ namespace ArmoniK.Samples.HtcMock.Client
 {
   public class HtcMockClient
   {
-    private GridClient               gridClient_;
-    private ILogger<Htc.Mock.Client> logger_;
+    private readonly GridClient               gridClient_;
+    private readonly ILogger<Htc.Mock.Client> logger_;
 
-    public HtcMockClient(GridClient gridClient, ILogger<Htc.Mock.Client> logger)
+    public HtcMockClient(GridClient               gridClient,
+                         ILogger<Htc.Mock.Client> logger)
     {
       gridClient_ = gridClient;
-      logger_ = logger;
+      logger_     = logger;
     }
 
     public void Start(RunConfiguration runConfiguration)
@@ -59,7 +60,8 @@ namespace ArmoniK.Samples.HtcMock.Client
 
       logger_.LogInformation("Submitted root task {taskId}",
                              taskId);
-      sessionClient.WaitSubtasksCompletion(taskId).Wait();
+      sessionClient.WaitSubtasksCompletion(taskId)
+                   .Wait();
 
       var result = Encoding.Default.GetString(sessionClient.GetResult(taskId));
 
@@ -73,6 +75,5 @@ namespace ArmoniK.Samples.HtcMock.Client
       logger_.LogWarning("Client was executed in {time}s",
                          watch.Elapsed.TotalSeconds);
     }
-
   }
 }

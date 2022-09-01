@@ -14,8 +14,11 @@ namespace ArmoniK.Samples.Common
 
       var i = 0;
       for (; i < values.Length; i++)
+      {
         values[i] = BitConverter.ToDouble(bytes.ToArray(),
-          i * 8);
+                                          i * 8);
+      }
+
       return values;
     }
   }

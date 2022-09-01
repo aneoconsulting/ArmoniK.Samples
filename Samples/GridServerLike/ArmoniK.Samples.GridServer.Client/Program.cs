@@ -26,19 +26,18 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.DevelopmentKit.GridServer.Client;
 using ArmoniK.Samples.GridServer.Common;
+
 using Google.Protobuf.WellKnownTypes;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using Serilog;
-using Serilog.Events;
 using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.GridServer.Client
@@ -53,46 +52,48 @@ namespace ArmoniK.Samples.GridServer.Client
       Console.WriteLine("Hello Armonik GridServerLike Sample !");
 
       var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json",
-          true,
-          false)
-        .AddEnvironmentVariables();
+                                              .AddJsonFile("appsettings.json",
+                                                           true,
+                                                           false)
+                                              .AddEnvironmentVariables();
 
       configuration_ = builder.Build();
 
       //var factory = new LoggerFactory(Array.Empty<ILoggerProvider>()).AddSerilog();
       var factory = new LoggerFactory(new[]
-      {
-        new SerilogLoggerProvider(new LoggerConfiguration()
-                                  .ReadFrom
-                                  .Configuration(configuration_)
-                                  .CreateLogger())
-      },
-        new LoggerFilterOptions().AddFilter("Grpc",
-          LogLevel.Error));
+                                      {
+                                        new SerilogLoggerProvider(new LoggerConfiguration().ReadFrom.Configuration(configuration_)
+                                                                                           .CreateLogger()),
+                                      },
+                                      new LoggerFilterOptions().AddFilter("Grpc",
+                                                                          LogLevel.Error));
       logger_ = factory.CreateLogger<Program>();
       logger_.LogInformation("Starting to execute gridServer");
 
-      
 
       var taskOptions = InitializeSimpleTaskOptions();
 
-      var props = new Properties(taskOptions, configuration_.GetSection("Grpc")["EndPoint"], 5001, sslValidation: false);
+      var props = new Properties(taskOptions,
+                                 configuration_.GetSection("Grpc")["EndPoint"],
+                                 5001,
+                                 sslValidation: false);
 
-      using var sessionService = ServiceFactory.GetInstance().CreateService("ArmoniK.Samples.GridServer.Package",
-                                                                            props, factory);
+      using var sessionService = ServiceFactory.GetInstance()
+                                               .CreateService("ArmoniK.Samples.GridServer.Package",
+                                                              props,
+                                                              factory);
 
       var numbers = new List<double>
-      {
-        1.0,
-        2.0,
-        3.0,
-        3.0,
-        3.0,
-        3.0,
-        3.0,
-        3.0,
-      }.ToArray();
+                    {
+                      1.0,
+                      2.0,
+                      3.0,
+                      3.0,
+                      3.0,
+                      3.0,
+                      3.0,
+                      3.0,
+                    }.ToArray();
 
       var handler = new ResultHandler(logger_);
 
@@ -105,27 +106,30 @@ namespace ArmoniK.Samples.GridServer.Client
                             handler);
 
       sessionService.Submit("ComputeReduceCube",
-                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes).ToArray()),
+                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
+                                                .ToArray()),
                             handler);
 
       sessionService.Submit("ComputeMadd",
-                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes).ToArray(),
-                                         numbers.SelectMany(BitConverter.GetBytes).ToArray(),
+                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
+                                                .ToArray(),
+                                         numbers.SelectMany(BitConverter.GetBytes)
+                                                .ToArray(),
                                          4.0),
                             handler);
 
       sessionService.Submit("NonStaticComputeMadd",
-                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes).ToArray(),
-                                         numbers.SelectMany(BitConverter.GetBytes).ToArray(),
+                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
+                                                .ToArray(),
+                                         numbers.SelectMany(BitConverter.GetBytes)
+                                                .ToArray(),
                                          4.0),
                             handler);
     }
 
 
     private static object[] ParamsHelper(params object[] elements)
-    {
-      return elements;
-    }
+      => elements;
 
     /// <summary>
     ///   Initialize Setting for task i.e :
@@ -144,15 +148,15 @@ namespace ArmoniK.Samples.GridServer.Client
     /// <returns></returns>
     private static TaskOptions InitializeSimpleTaskOptions()
     {
-      TaskOptions taskOptions = new TaskOptions
-      {
-        MaxDuration = new Duration
-        {
-          Seconds = 3600 * 24,
-        },
-        MaxRetries = 3,
-        Priority   = 1,
-      };
+      var taskOptions = new TaskOptions
+                        {
+                          MaxDuration = new Duration
+                                        {
+                                          Seconds = 3600 * 24,
+                                        },
+                          MaxRetries = 3,
+                          Priority   = 1,
+                        };
 
       taskOptions.Options.Add(AppsOptions.EngineTypeNameKey,
                               EngineType.DataSynapse.ToString());
@@ -177,21 +181,22 @@ namespace ArmoniK.Samples.GridServer.Client
     private class ResultHandler : IServiceInvocationHandler
     {
       private readonly double           _total = 0;
-      private          ILogger<Program> logger_;
+      private readonly ILogger<Program> logger_;
+
       public ResultHandler(ILogger<Program> logger)
-      {
-        logger_ = logger;
-      }
+        => logger_ = logger;
 
 
-      public void HandleError(ServiceInvocationException e, string taskId)
+      public void HandleError(ServiceInvocationException e,
+                              string                     taskId)
       {
         logger_.LogError($"Error from {taskId} : " + e.Message);
         throw new ApplicationException($"Error from {taskId}",
                                        e);
       }
 
-      public void HandleResponse(object response, string taskId)
+      public void HandleResponse(object response,
+                                 string taskId)
       {
         switch (response)
         {
@@ -202,17 +207,14 @@ namespace ArmoniK.Samples.GridServer.Client
             logger_.LogInformation($"Task finished with result {value}");
             break;
           case double[] doubles:
-            logger_.LogInformation("Result is " +
-                                   string.Join(", ",
-                                               doubles));
+            logger_.LogInformation("Result is " + string.Join(", ",
+                                                              doubles));
             break;
           case byte[] values:
-            logger_.LogInformation("Result is " +
-                                   string.Join(", ",
-                                               values.ConvertToArray()));
+            logger_.LogInformation("Result is " + string.Join(", ",
+                                                              values.ConvertToArray()));
             break;
         }
-
       }
     }
   }
@@ -220,24 +222,28 @@ namespace ArmoniK.Samples.GridServer.Client
   public static class ServiceFactoryExt
   {
     /// <summary>
-    /// The method to create new Service
+    ///   The method to create new Service
     /// </summary>
     /// <param name="serviceFactory"></param>
-    /// <param name="serviceType">Future value no usage for now.
-    /// This is the Service type reflection for method</param>
+    /// <param name="serviceType">
+    ///   Future value no usage for now.
+    ///   This is the Service type reflection for method
+    /// </param>
     /// <param name="props">Properties for the service containing IConfiguration and TaskOptions</param>
     /// <param name="factory"></param>
     /// <returns>returns the new instantiated service</returns>
-    public static Service CreateService(this ServiceFactory serviceFactory, string serviceType, Properties props, ILoggerFactory factory = null)
+    public static Service CreateService(this ServiceFactory serviceFactory,
+                                        string              serviceType,
+                                        Properties          props,
+                                        ILoggerFactory      factory = null)
     {
-
       factory ??= new LoggerFactory(Array.Empty<ILoggerProvider>(),
-        new LoggerFilterOptions().AddFilter("Grpc",
-          LogLevel.Debug)).AddSerilog();
+                                    new LoggerFilterOptions().AddFilter("Grpc",
+                                                                        LogLevel.Debug)).AddSerilog();
 
       return new Service(serviceType,
-        factory,
-        props);
+                         factory,
+                         props);
     }
   }
 }

@@ -40,17 +40,18 @@ namespace ArmoniK.HelloWorld.Worker
 
     public static int Main(string[] args)
     {
-      Log.Logger = new LoggerConfiguration()
-                   .MinimumLevel.Override("Microsoft",
-                                          LogEventLevel.Information)
-                   .Enrich.FromLogContext()
-                   .WriteTo.Console()
-                   .CreateBootstrapLogger();
+      Log.Logger = new LoggerConfiguration().MinimumLevel.Override("Microsoft",
+                                                                   LogEventLevel.Information)
+                                            .Enrich.FromLogContext()
+                                            .WriteTo.Console()
+                                            .CreateBootstrapLogger();
 
       try
       {
         Log.Information("Starting web host");
-        CreateHostBuilder(args).Build().Run();
+        CreateHostBuilder(args)
+          .Build()
+          .Run();
         return 0;
       }
       catch (Exception ex)
@@ -68,29 +69,30 @@ namespace ArmoniK.HelloWorld.Worker
     // Additional configuration_ is required to successfully run gRPC on macOS.
     // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
     public static IHostBuilder CreateHostBuilder(string[] args)
-    {
-      return Host.CreateDefaultBuilder(args)
-                 .UseSerilog((context, services, configuration) => configuration
-                                                                   .ReadFrom.Configuration(context.Configuration)
-                                                                   .ReadFrom.Services(services)
-                                                                   .MinimumLevel
-                                                                   .Override("Microsoft.AspNetCore",
-                                                                             LogEventLevel.Information)
-                                                                   .Enrich.FromLogContext())
-                 .ConfigureWebHostDefaults(webBuilder =>
-                 {
-                   webBuilder.UseStartup<Startup>();
-                   webBuilder.ConfigureKestrel(options =>
-                   {
-                     if (File.Exists(SocketPath))
-                     {
-                       File.Delete(SocketPath);
-                     }
+      => Host.CreateDefaultBuilder(args)
+             .UseSerilog((context,
+                          services,
+                          configuration) => configuration.ReadFrom.Configuration(context.Configuration)
+                                                         .ReadFrom.Services(services)
+                                                         .MinimumLevel.Override("Microsoft.AspNetCore",
+                                                                                LogEventLevel.Information)
+                                                         .Enrich.FromLogContext())
+             .ConfigureWebHostDefaults(webBuilder =>
+                                       {
+                                         webBuilder.UseStartup<Startup>();
+                                         webBuilder.ConfigureKestrel(options =>
+                                                                     {
+                                                                       if (File.Exists(SocketPath))
+                                                                       {
+                                                                         File.Delete(SocketPath);
+                                                                       }
 
-                     options.ListenUnixSocket(SocketPath,
-                                              listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });
-                   });
-                 });
-    }
+                                                                       options.ListenUnixSocket(SocketPath,
+                                                                                                listenOptions =>
+                                                                                                {
+                                                                                                  listenOptions.Protocols = HttpProtocols.Http2;
+                                                                                                });
+                                                                     });
+                                       });
   }
 }

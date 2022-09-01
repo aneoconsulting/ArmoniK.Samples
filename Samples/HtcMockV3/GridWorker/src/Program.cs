@@ -25,8 +25,6 @@
 using System;
 using System.IO;
 
-using ArmoniK.Samples.HtcMock.Adapter;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -36,7 +34,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Serilog;
-using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.HtcMock.GridWorker
 {
@@ -46,10 +43,9 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
 
     public static int Main(string[] args)
     {
-      Log.Logger = new LoggerConfiguration()
-                   .Enrich.FromLogContext()
-                   .WriteTo.Console()
-                   .CreateBootstrapLogger();
+      Log.Logger = new LoggerConfiguration().Enrich.FromLogContext()
+                                            .WriteTo.Console()
+                                            .CreateBootstrapLogger();
 
       try
       {
@@ -58,8 +54,7 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
 
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Configuration
-               .SetBasePath(Directory.GetCurrentDirectory())
+        builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
                .AddJsonFile("appsettings.json",
                             true,
                             true)
@@ -75,25 +70,27 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
         var loggerFactory = LoggerFactory.Create(loggingBuilder => loggingBuilder.AddSerilog(serilogLogger));
         var logger        = loggerFactory.CreateLogger("root");
 
-        builder.Host
-               .UseSerilog((context, services, config)
-                             => config.ReadFrom.Configuration(context.Configuration)
-                                      .ReadFrom.Services(services)
-                                      .Enrich.FromLogContext());
+        builder.Host.UseSerilog((context,
+                                 services,
+                                 config) => config.ReadFrom.Configuration(context.Configuration)
+                                                  .ReadFrom.Services(services)
+                                                  .Enrich.FromLogContext());
 
         builder.WebHost.ConfigureKestrel(options =>
-        {
-          if (File.Exists(SocketPath))
-          {
-            File.Delete(SocketPath);
-          }
+                                         {
+                                           if (File.Exists(SocketPath))
+                                           {
+                                             File.Delete(SocketPath);
+                                           }
 
-          options.ListenUnixSocket(SocketPath,
-                                   listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });
-        });
+                                           options.ListenUnixSocket(SocketPath,
+                                                                    listenOptions =>
+                                                                    {
+                                                                      listenOptions.Protocols = HttpProtocols.Http2;
+                                                                    });
+                                         });
 
-        builder.Services
-               .AddSingleton<ApplicationLifeTimeManager>()
+        builder.Services.AddSingleton<ApplicationLifeTimeManager>()
                .AddSingleton(sp => loggerFactory)
                .AddLogging()
                .AddGrpc(options => options.MaxReceiveMessageSize = null);
@@ -102,7 +99,9 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
+        {
           app.UseDeveloperExceptionPage();
+        }
 
         app.UseSerilogRequestLogging();
 
@@ -110,15 +109,15 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
 
 
         app.UseEndpoints(endpoints =>
-        {
-          endpoints.MapGrpcService<SampleComputerService>();
+                         {
+                           endpoints.MapGrpcService<SampleComputerService>();
 
-          if (app.Environment.IsDevelopment())
-          {
-            endpoints.MapGrpcReflectionService();
-            logger.LogInformation("Grpc Reflection Activated");
-          }
-        });
+                           if (app.Environment.IsDevelopment())
+                           {
+                             endpoints.MapGrpcReflectionService();
+                             logger.LogInformation("Grpc Reflection Activated");
+                           }
+                         });
 
         app.Run();
 
