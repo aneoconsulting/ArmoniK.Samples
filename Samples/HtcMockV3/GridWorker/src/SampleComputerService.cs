@@ -51,10 +51,11 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
     private readonly ApplicationLifeTimeManager applicationLifeTime_;
 
     private readonly ILogger<SampleComputerService> logger_;
-    private readonly ILoggerFactory loggerFactory_;
+    private readonly ILoggerFactory                 loggerFactory_;
 
     public SampleComputerService(ILoggerFactory             loggerFactory,
-                                 ApplicationLifeTimeManager applicationLifeTime) : base(loggerFactory)
+                                 ApplicationLifeTimeManager applicationLifeTime)
+      : base(loggerFactory)
     {
       logger_              = loggerFactory.CreateLogger<SampleComputerService>();
       loggerFactory_       = loggerFactory;
@@ -66,30 +67,33 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
       using var scopedLog = logger_.BeginNamedScope("Execute task",
                                                     ("Session", taskHandler.SessionId),
                                                     ("taskId", taskHandler.TaskId));
-      logger_.LogTrace("DataDependencies {DataDependencies}", taskHandler.DataDependencies.Keys);
-      logger_.LogTrace("ExpectedResults {ExpectedResults}", taskHandler.ExpectedResults);
+      logger_.LogTrace("DataDependencies {DataDependencies}",
+                       taskHandler.DataDependencies.Keys);
+      logger_.LogTrace("ExpectedResults {ExpectedResults}",
+                       taskHandler.ExpectedResults);
 
       var output = new Output();
       try
       {
         var (runConfiguration, request) = DataAdapter.ReadPayload(taskHandler.Payload);
 
-        var inputs = request.Dependencies
-                            .ToDictionary(id => id,
-                                          id =>
-                                          {
-                                            logger_.LogInformation("Looking for result for Id {id}",
-                                                                   id);
-                                            var armonik_id = taskHandler.SessionId + "%" + id;
-                                            var isOkay = taskHandler.DataDependencies.TryGetValue(armonik_id,
-                                                                                     out var data);
-                                            if (!isOkay)
-                                            {
-                                              throw new KeyNotFoundException(armonik_id);
-                                            }
-                                            return Encoding.Default.GetString(data);
-                                          });
-        logger_.LogDebug("Inputs {input}", inputs);
+        var inputs = request.Dependencies.ToDictionary(id => id,
+                                                       id =>
+                                                       {
+                                                         logger_.LogInformation("Looking for result for Id {id}",
+                                                                                id);
+                                                         var armonik_id = taskHandler.SessionId + "%" + id;
+                                                         var isOkay = taskHandler.DataDependencies.TryGetValue(armonik_id,
+                                                                                                               out var data);
+                                                         if (!isOkay)
+                                                         {
+                                                           throw new KeyNotFoundException(armonik_id);
+                                                         }
+
+                                                         return Encoding.Default.GetString(data);
+                                                       });
+        logger_.LogDebug("Inputs {input}",
+                         inputs);
 
         var requestProcessor = new RequestProcessor(true,
                                                     true,
@@ -97,7 +101,7 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
                                                     runConfiguration,
                                                     logger_);
         var res = requestProcessor.GetResult(request,
-                                              inputs);
+                                             inputs);
         logger_.LogDebug("Result for processing request is HasResult={hasResult}, Value={value}",
                          res.Result.HasResult,
                          res.Result.Value);
@@ -105,7 +109,7 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
         if (res.Result.HasResult)
         {
           await taskHandler.SendResult(taskHandler.ExpectedResults.Single(),
-                                 Encoding.Default.GetBytes(res.Result.Value));
+                                       Encoding.Default.GetBytes(res.Result.Value));
         }
         else
         {
@@ -113,57 +117,60 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
                             .ToDictionary(g => g.Key,
                                           g => g);
           logger_.LogDebug("Will submit {count} new tasks",
-                           requests[true].Count());
+                           requests[true]
+                             .Count());
           var readyRequests = requests[true];
           await taskHandler.CreateTasksAsync(readyRequests.Select(r =>
-          {
-            var taskId = taskHandler.SessionId + "%" + r.Id;
-            logger_.LogDebug("Create task {task}",
-                             taskId);
-            return new TaskRequest
-            {
-              Id      = taskId,
-              Payload = ByteString.CopyFrom(DataAdapter.BuildPayload(runConfiguration, r)),
-              DataDependencies =
-              {
-                r.Dependencies.Select(s => taskHandler.SessionId + "%" + s),
-              },
-              ExpectedOutputKeys =
-              {
-                taskId,
-              },
-            };
-          }));
+                                                                  {
+                                                                    var taskId = taskHandler.SessionId + "%" + r.Id;
+                                                                    logger_.LogDebug("Create task {task}",
+                                                                                     taskId);
+                                                                    return new TaskRequest
+                                                                           {
+                                                                             Id = taskId,
+                                                                             Payload = ByteString.CopyFrom(DataAdapter.BuildPayload(runConfiguration,
+                                                                                                                                    r)),
+                                                                             DataDependencies =
+                                                                             {
+                                                                               r.Dependencies.Select(s => taskHandler.SessionId + "%" + s),
+                                                                             },
+                                                                             ExpectedOutputKeys =
+                                                                             {
+                                                                               taskId,
+                                                                             },
+                                                                           };
+                                                                  }));
           // code à adapter pour créer le bon type de request
           //sessionClient.SubmitTasks(readyRequests.Select(r => DataAdapter.BuildPayload(runConfiguration, r)));
-          var req    = requests[false].Single();
+          var req = requests[false]
+            .Single();
           await taskHandler.CreateTasksAsync(new[]
-          {
-            new TaskRequest
-            {
-              Id = taskHandler.SessionId + "%" +req.Id,
-              Payload = ByteString.CopyFrom(DataAdapter.BuildPayload(runConfiguration,
-                                                                     req)),
-              DataDependencies = 
-              {
-                req.Dependencies.Select(s => taskHandler.SessionId + "%" + s),
-              },
-              ExpectedOutputKeys = 
-              {
-                 taskHandler.TaskId,
-              },
-            },
-          });
+                                             {
+                                               new TaskRequest
+                                               {
+                                                 Id = taskHandler.SessionId + "%" + req.Id,
+                                                 Payload = ByteString.CopyFrom(DataAdapter.BuildPayload(runConfiguration,
+                                                                                                        req)),
+                                                 DataDependencies =
+                                                 {
+                                                   req.Dependencies.Select(s => taskHandler.SessionId + "%" + s),
+                                                 },
+                                                 ExpectedOutputKeys =
+                                                 {
+                                                   taskHandler.TaskId,
+                                                 },
+                                               },
+                                             });
           // code à adapter pour créer le bon type de request
           // ici, le ExpectedDependency doit être celui de la tâche en cours
           //sessionClient.SubmitTaskWithDependencies(readyRequests.Select(r => DataAdapter.BuildPayload(runConfiguration, req), req.Dependencies));
         }
 
         output = new Output
-        {
-          Ok     = new Empty(),
-          Status = TaskStatus.Completed,
-        };
+                 {
+                   Ok     = new Empty(),
+                   Status = TaskStatus.Completed,
+                 };
       }
       catch (Exception ex)
       {
@@ -171,15 +178,16 @@ namespace ArmoniK.Samples.HtcMock.GridWorker
                          "Error while computing task");
 
         output = new Output
-        {
-          Error = new Output.Types.Error
-          {
-            Details = ex.Message + ex.StackTrace,
-            KillSubTasks = true,
-          },
-          Status = TaskStatus.Error,
-        };
+                 {
+                   Error = new Output.Types.Error
+                           {
+                             Details      = ex.Message + ex.StackTrace,
+                             KillSubTasks = true,
+                           },
+                   Status = TaskStatus.Error,
+                 };
       }
+
       return output;
     }
   }

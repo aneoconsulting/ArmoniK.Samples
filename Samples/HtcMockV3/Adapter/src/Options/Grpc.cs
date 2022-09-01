@@ -30,6 +30,6 @@ namespace ArmoniK.Samples.HtcMock.Adapter.Options
   public class Grpc
   {
     public const string SettingSection = nameof(Grpc);
-    public string Endpoint { get; set; }
+    public       string Endpoint { get; set; }
   }
 }

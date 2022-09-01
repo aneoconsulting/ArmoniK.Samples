@@ -38,11 +38,10 @@ namespace ArmoniK.HelloWorld.Worker
   {
     public Startup(IWebHostEnvironment env)
     {
-      var builder = new ConfigurationBuilder()
-                    .SetBasePath(env.ContentRootPath)
-                    .AddJsonFile("appsettings.json",
-                                 false,
-                                 true);
+      var builder = new ConfigurationBuilder().SetBasePath(env.ContentRootPath)
+                                              .AddJsonFile("appsettings.json",
+                                                           false,
+                                                           true);
 
 
       Configuration = builder.Build();
@@ -58,23 +57,33 @@ namespace ArmoniK.HelloWorld.Worker
       services.AddSingleton<ApplicationLifeTimeManager>()
               .AddLogging()
               .AddSingleton<ILoggerFactory>(sp =>
-              {
-                var conf        = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
-                var logProvider = new SerilogLoggerProvider(conf);
-                return new LoggerFactory(new[] { logProvider });
-              })
+                                            {
+                                              var conf = new LoggerConfiguration().ReadFrom.Configuration(Configuration)
+                                                                                  .CreateLogger();
+                                              var logProvider = new SerilogLoggerProvider(conf);
+                                              return new LoggerFactory(new[]
+                                                                       {
+                                                                         logProvider,
+                                                                       });
+                                            })
               .AddSingleton<SampleComputerService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app,
+                          IWebHostEnvironment env)
     {
       if (env.IsDevelopment())
+      {
         app.UseDeveloperExceptionPage();
+      }
 
       app.UseRouting();
 
-      app.UseEndpoints(endpoints => { endpoints.MapGrpcService<SampleComputerService>(); });
+      app.UseEndpoints(endpoints =>
+                       {
+                         endpoints.MapGrpcService<SampleComputerService>();
+                       });
     }
   }
 }

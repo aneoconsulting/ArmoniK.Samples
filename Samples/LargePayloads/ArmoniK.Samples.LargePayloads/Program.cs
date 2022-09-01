@@ -12,14 +12,14 @@ using Empty = ArmoniK.Api.gRPC.V1.Empty;
 var rnd = new Random();
 
 TaskOptions taskOptions = new()
-{
-  MaxDuration = new Duration
-  {
-    Seconds = 300,
-  },
-  MaxRetries = 2,
-  Priority   = 1,
-};
+                          {
+                            MaxDuration = new Duration
+                                          {
+                                            Seconds = 300,
+                                          },
+                            MaxRetries = 2,
+                            Priority   = 1,
+                          };
 
 taskOptions.Options.Add("GridAppName",
                         "ArmoniK.Samples.SymphonyPackage");
@@ -32,15 +32,16 @@ taskOptions.Options.Add("GridAppNamespace",
 
 
 var channel = GrpcChannel.ForAddress(Environment.GetEnvironmentVariable("Grpc__Endpoint") ?? string.Empty);
-var client = new Submitter.SubmitterClient(channel);
+var client  = new Submitter.SubmitterClient(channel);
 
-var sessionId = Guid.NewGuid().ToString();
+var sessionId = Guid.NewGuid()
+                    .ToString();
 
 var createSessionReply = client.CreateSession(new CreateSessionRequest
-{
-  DefaultTaskOption = taskOptions,
-  Id = sessionId,
-});
+                                              {
+                                                DefaultTaskOption = taskOptions,
+                                                Id                = sessionId,
+                                              });
 
 switch (createSessionReply.ResultCase)
 {
@@ -60,37 +61,38 @@ var serviceConfiguration = await client.GetServiceConfigurationAsync(new Empty()
 using var asyncClientStreamingCall = client.CreateLargeTasks();
 
 await asyncClientStreamingCall.RequestStream.WriteAsync(new CreateLargeTaskRequest
-{
-  InitRequest = new CreateLargeTaskRequest.Types.InitRequest
-  {
-    SessionId = sessionId,
-    TaskOptions = taskOptions,
-  },
-});
+                                                        {
+                                                          InitRequest = new CreateLargeTaskRequest.Types.InitRequest
+                                                                        {
+                                                                          SessionId   = sessionId,
+                                                                          TaskOptions = taskOptions,
+                                                                        },
+                                                        });
 
 
-for (int i = 0; i < 2000; i++)
+for (var i = 0; i < 2000; i++)
 {
-  var taskId = Guid.NewGuid().ToString();
+  var taskId = Guid.NewGuid()
+                   .ToString();
 
   await asyncClientStreamingCall.RequestStream.WriteAsync(new CreateLargeTaskRequest
-  {
-    InitTask = new InitTaskRequest
-    {
-      Header = new TaskRequestHeader
-      {
-        Id = taskId,
-        ExpectedOutputKeys =
-        {
-          taskId,
-        },
-      },
-    },
-  });
+                                                          {
+                                                            InitTask = new InitTaskRequest
+                                                                       {
+                                                                         Header = new TaskRequestHeader
+                                                                                  {
+                                                                                    Id = taskId,
+                                                                                    ExpectedOutputKeys =
+                                                                                    {
+                                                                                      taskId,
+                                                                                    },
+                                                                                  },
+                                                                       },
+                                                          });
 
   var payloadSize = 100 * 1024;
 
-  for (int j = 0; j < payloadSize; j += serviceConfiguration.DataChunkMaxSize)
+  for (var j = 0; j < payloadSize; j += serviceConfiguration.DataChunkMaxSize)
   {
     var chunkSize = Math.Min(serviceConfiguration.DataChunkMaxSize,
                              payloadSize - j);
@@ -98,30 +100,30 @@ for (int i = 0; i < 2000; i++)
     rnd.NextBytes(dataBytes);
 
     await asyncClientStreamingCall.RequestStream.WriteAsync(new CreateLargeTaskRequest
-    {
-      TaskPayload = new DataChunk
-      {
-        Data = ByteString.CopyFrom(dataBytes),
-      },
-    });
+                                                            {
+                                                              TaskPayload = new DataChunk
+                                                                            {
+                                                                              Data = ByteString.CopyFrom(dataBytes),
+                                                                            },
+                                                            });
   }
 
   await asyncClientStreamingCall.RequestStream.WriteAsync(new CreateLargeTaskRequest
-  {
-    TaskPayload = new DataChunk
-    {
-      DataComplete = true,
-    },
-  });
+                                                          {
+                                                            TaskPayload = new DataChunk
+                                                                          {
+                                                                            DataComplete = true,
+                                                                          },
+                                                          });
 }
 
 await asyncClientStreamingCall.RequestStream.WriteAsync(new CreateLargeTaskRequest
-{
-  InitTask = new InitTaskRequest
-  {
-    LastTask = true,
-  },
-});
+                                                        {
+                                                          InitTask = new InitTaskRequest
+                                                                     {
+                                                                       LastTask = true,
+                                                                     },
+                                                        });
 
 await asyncClientStreamingCall.RequestStream.CompleteAsync();
 
