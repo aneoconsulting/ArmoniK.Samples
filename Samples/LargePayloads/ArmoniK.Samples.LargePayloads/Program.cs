@@ -1,13 +1,40 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 
 using ArmoniK.Api.gRPC.V1;
+using ArmoniK.Api.gRPC.V1.Submitter;
+
+using DocoptNet;
 
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
 using Grpc.Net.Client;
 
+using System.Diagnostics;
+
 using Empty = ArmoniK.Api.gRPC.V1.Empty;
+
+const string usage = @"Test to send large payloads to the control plane
+
+Usage:
+  ArmoniK.Samples.LargePayloads <nbTasks> <sizeKb>
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+";
+
+
+var arguments = new Docopt().Apply(usage,
+                                   args,
+                                   version: "Large Payloads",
+                                   exit: true)!;
+
+var nbTasks = arguments["<nbTasks>"]
+  .AsInt;
+
+var payloadSizeByte = arguments["<sizeKb>"]
+                        .AsInt * 10;
 
 var rnd = new Random();
 
@@ -34,29 +61,17 @@ taskOptions.Options.Add("GridAppNamespace",
 var channel = GrpcChannel.ForAddress(Environment.GetEnvironmentVariable("Grpc__Endpoint") ?? string.Empty);
 var client  = new Submitter.SubmitterClient(channel);
 
-var sessionId = Guid.NewGuid()
-                    .ToString();
-
 var createSessionReply = client.CreateSession(new CreateSessionRequest
                                               {
                                                 DefaultTaskOption = taskOptions,
-                                                Id                = sessionId,
                                               });
 
-switch (createSessionReply.ResultCase)
-{
-  case CreateSessionReply.ResultOneofCase.Ok:
-    Console.WriteLine($"Session {sessionId} created with success");
-    break;
-  case CreateSessionReply.ResultOneofCase.None:
-  case CreateSessionReply.ResultOneofCase.Error:
-    throw new Exception("Issue while creating session");
-  default:
-    throw new ArgumentOutOfRangeException();
-}
+var sessionId = createSessionReply.SessionId;
 
 
 var serviceConfiguration = await client.GetServiceConfigurationAsync(new Empty());
+
+var sw = Stopwatch.StartNew();
 
 using var asyncClientStreamingCall = client.CreateLargeTasks();
 
@@ -70,7 +85,7 @@ await asyncClientStreamingCall.RequestStream.WriteAsync(new CreateLargeTaskReque
                                                         });
 
 
-for (var i = 0; i < 2000; i++)
+for (var i = 0; i < nbTasks; i++)
 {
   var taskId = Guid.NewGuid()
                    .ToString();
@@ -81,7 +96,6 @@ for (var i = 0; i < 2000; i++)
                                                                        {
                                                                          Header = new TaskRequestHeader
                                                                                   {
-                                                                                    Id = taskId,
                                                                                     ExpectedOutputKeys =
                                                                                     {
                                                                                       taskId,
@@ -90,7 +104,7 @@ for (var i = 0; i < 2000; i++)
                                                                        },
                                                           });
 
-  var payloadSize = 100 * 1024;
+  var payloadSize = payloadSizeByte * 1024;
 
   for (var j = 0; j < payloadSize; j += serviceConfiguration.DataChunkMaxSize)
   {
@@ -129,14 +143,17 @@ await asyncClientStreamingCall.RequestStream.CompleteAsync();
 
 var createTaskReply = await asyncClientStreamingCall.ResponseAsync;
 
-switch (createTaskReply.DataCase)
+switch (createTaskReply.ResponseCase)
 {
-  case CreateTaskReply.DataOneofCase.Successfull:
+  case CreateTaskReply.ResponseOneofCase.CreationStatusList:
     Console.WriteLine("Tasks created successfully");
     break;
-  case CreateTaskReply.DataOneofCase.None:
-  case CreateTaskReply.DataOneofCase.NonSuccessfullIds:
+  case CreateTaskReply.ResponseOneofCase.None:
+  case CreateTaskReply.ResponseOneofCase.Error:
     throw new Exception("Issue while creating tasks");
   default:
     throw new ArgumentOutOfRangeException();
 }
+
+var elapsedMilliseconds = sw.ElapsedMilliseconds;
+Console.WriteLine($"Client submitted {nbTasks} with payloads of size {payloadSizeByte} KBytes tasks in {elapsedMilliseconds / 1000} s");
