@@ -1,5 +1,7 @@
 // See https://aka.ms/new-console-template for more information
 
+using System.Diagnostics;
+
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.Api.gRPC.V1.Submitter;
 
@@ -9,8 +11,6 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
 using Grpc.Net.Client;
-
-using System.Diagnostics;
 
 using Empty = ArmoniK.Api.gRPC.V1.Empty;
 
