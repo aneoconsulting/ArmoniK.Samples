@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.Api" Version="2.0.3" />
+    <PackageReference Include="ArmoniK.Api.Client" Version="3.0.2-SNAPSHOT.32.1a7a62f" />
+    <PackageReference Include="docopt.net" Version="0.8.1" />
   </ItemGroup>
 
 </Project>
