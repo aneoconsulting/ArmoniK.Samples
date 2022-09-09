@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HtcMockV3", "HtcMockV3", "{F1370A41-6F70-4887-A0E5-3B68C8A25DA4}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HelloWorld", "HelloWorld", "{78533F2E-077E-439C-B2FE-C75B32D7AA40}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GridServerLike", "GridServerLike", "{9EC4B800-E36D-42EA-9C3E-404C2C25DB8E}"
@@ -22,12 +20,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.HelloWorld.Worker", "Samples\HelloWorld\GridWorker\src\ArmoniK.HelloWorld.Worker.csproj", "{2EC056E6-3276-45F0-93D9-0F310334523E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.GridServer.Common", "Samples\GridServerLike\ArmoniK.Samples.GridServer.Common\ArmoniK.Samples.GridServer.Common.csproj", "{55CC0688-95DD-4D95-B612-2D81C75BC3E6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.HtcMock.Adapter", "Samples\HtcMockV3\Adapter\src\ArmoniK.Samples.HtcMock.Adapter.csproj", "{D9072D4E-3D35-487C-B36D-483006B642F6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.HtcMock.Client", "Samples\HtcMockV3\Client\src\ArmoniK.Samples.HtcMock.Client.csproj", "{58C6D29B-0A12-461F-9470-F1D6E29634D0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.HtcMock.GridWorker", "Samples\HtcMockV3\GridWorker\src\ArmoniK.Samples.HtcMock.GridWorker.csproj", "{B727D3A1-90EB-4562-BD02-CE77F6B8AE27}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F7E8B81F-D83B-4B8E-9092-49E8357E86BA}"
 	ProjectSection(SolutionItems) = preProject
@@ -54,7 +46,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.Unified.Wor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LargePayloads", "LargePayloads", "{7CFE4D94-FB61-48EC-A902-FDC30FDCBA1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmoniK.Samples.LargePayloads", "Samples\LargePayloads\ArmoniK.Samples.LargePayloads\ArmoniK.Samples.LargePayloads.csproj", "{F35D1AB5-FB5F-423D-9D75-0591104BD567}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.LargePayloads", "Samples\LargePayloads\ArmoniK.Samples.LargePayloads\ArmoniK.Samples.LargePayloads.csproj", "{F35D1AB5-FB5F-423D-9D75-0591104BD567}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,18 +78,6 @@ Global
 		{55CC0688-95DD-4D95-B612-2D81C75BC3E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55CC0688-95DD-4D95-B612-2D81C75BC3E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55CC0688-95DD-4D95-B612-2D81C75BC3E6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D9072D4E-3D35-487C-B36D-483006B642F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9072D4E-3D35-487C-B36D-483006B642F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9072D4E-3D35-487C-B36D-483006B642F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9072D4E-3D35-487C-B36D-483006B642F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{58C6D29B-0A12-461F-9470-F1D6E29634D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58C6D29B-0A12-461F-9470-F1D6E29634D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58C6D29B-0A12-461F-9470-F1D6E29634D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58C6D29B-0A12-461F-9470-F1D6E29634D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -141,9 +121,6 @@ Global
 		{1B85C27B-91BF-4BAB-9824-185A7372B305} = {78533F2E-077E-439C-B2FE-C75B32D7AA40}
 		{2EC056E6-3276-45F0-93D9-0F310334523E} = {78533F2E-077E-439C-B2FE-C75B32D7AA40}
 		{55CC0688-95DD-4D95-B612-2D81C75BC3E6} = {9EC4B800-E36D-42EA-9C3E-404C2C25DB8E}
-		{D9072D4E-3D35-487C-B36D-483006B642F6} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
-		{58C6D29B-0A12-461F-9470-F1D6E29634D0} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
-		{B727D3A1-90EB-4562-BD02-CE77F6B8AE27} = {F1370A41-6F70-4887-A0E5-3B68C8A25DA4}
 		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604} = {520D6737-D634-4C00-8F60-242DCD12A5C5}
 		{084D60CD-805D-400F-983F-6D859639A189} = {520D6737-D634-4C00-8F60-242DCD12A5C5}
 		{484B53D2-C85D-489F-957B-B2935BAA5004} = {9EC4B800-E36D-42EA-9C3E-404C2C25DB8E}
