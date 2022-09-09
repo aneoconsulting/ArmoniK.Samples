@@ -76,7 +76,20 @@ namespace ArmoniK.Samples.Client
 
       configuration_ = builder.Build();
 
-      var taskOptions = InitializeSimpleTaskOptions();
+      var taskOptions = new TaskOptions
+                        {
+                          MaxDuration = new Duration
+                                        {
+                                          Seconds = 3600 * 24,
+                                        },
+                          MaxRetries           = 3,
+                          Priority             = 1,
+                          EngineType           = EngineType.Unified.ToString(),
+                          ApplicationVersion   = "1.0.0-700",
+                          ApplicationService   = "ServiceApps",
+                          ApplicationName      = "ArmoniK.Samples.Unified.Worker",
+                          ApplicationNamespace = "ArmoniK.Samples.Unified.Worker.Services",
+                        };
 
       var props = new Properties(taskOptions,
                                  configuration_.GetSection("Grpc")["EndPoint"],
@@ -194,51 +207,6 @@ namespace ArmoniK.Samples.Client
 
       var countErrorTasks = serviceAdmin.AdminMonitoringService.CountErrorTasksBySession(sessionService.SessionId);
       logger_.LogInformation($"Number of error tasks after Session cancel is {countErrorTasks}");
-    }
-
-    /// <summary>
-    ///   Initialize Setting for task i.e :
-    ///   Duration :
-    ///   The max duration of a task
-    ///   Priority :
-    ///   Work in Progress. Setting priority of task
-    ///   AppName  :
-    ///   The name of the Application dll (Without Extension)
-    ///   VersionName :
-    ///   The version of the package to unzip and execute
-    ///   Namespace :
-    ///   The namespace where the service can find
-    ///   the ServiceContainer object develop by the customer
-    /// </summary>
-    /// <returns></returns>
-    private static TaskOptions InitializeSimpleTaskOptions()
-    {
-      var taskOptions = new TaskOptions
-                        {
-                          MaxDuration = new Duration
-                                        {
-                                          Seconds = 3600 * 24,
-                                        },
-                          MaxRetries = 3,
-                          Priority   = 1,
-                        };
-
-      taskOptions.Options.Add(AppsOptions.EngineTypeNameKey,
-                              EngineType.Unified.ToString());
-
-      taskOptions.Options.Add(AppsOptions.GridAppNameKey,
-                              "ArmoniK.Samples.Unified.Worker");
-
-      taskOptions.Options.Add(AppsOptions.GridAppVersionKey,
-                              "1.0.0-700");
-
-      taskOptions.Options.Add(AppsOptions.GridAppNamespaceKey,
-                              "ArmoniK.Samples.Unified.Worker.Services");
-
-      taskOptions.Options.Add(AppsOptions.GridServiceNameKey,
-                              "ServiceApps");
-
-      return taskOptions;
     }
 
 

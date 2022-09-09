@@ -17,9 +17,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ArmoniK.DevelopmentKit.Common" Version="0.5.8" />
-    <PackageReference Include="ArmoniK.DevelopmentKit.GridServer.Client" Version="0.5.8" />
-    <PackageReference Include="ArmoniK.DevelopmentKit.WorkerApi.Common" Version="0.5.8" />
+    <PackageReference Include="ArmoniK.DevelopmentKit.Common" Version="0.7.0-SNAPSHOT.45.433f857" />
+    <PackageReference Include="ArmoniK.DevelopmentKit.GridServer.Client" Version="0.7.0-SNAPSHOT.45.433f857" />
+    <PackageReference Include="ArmoniK.DevelopmentKit.WorkerApi.Common" Version="0.7.0-SNAPSHOT.45.433f857" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="0.5.8" PrivateAssets="All" />
   </ItemGroup>
 

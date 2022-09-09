@@ -98,8 +98,19 @@ namespace Armonik.Samples.HtcMockSymphony.Client
       var _ = Environment.GetEnvironmentVariable("ARMONIK_DEBUG_WAIT_TASK");
 
       _logger.LogInformation("Configure taskOptions");
-      var taskOptions = InitializeSimpleTaskOptions();
-
+      var taskOptions = new TaskOptions
+                        {
+                          MaxDuration = new Duration
+                                        {
+                                          Seconds = 300,
+                                        },
+                          MaxRetries           = 5,
+                          Priority             = 1,
+                          EngineType           = EngineType.Symphony.ToString(),
+                          ApplicationVersion   = "2.0.0",
+                          ApplicationName      = "ArmoniK.Samples.HtcMockSymphonyPackage",
+                          ApplicationNamespace = "ArmoniK.Samples.HtcMockSymphony.Packages",
+                        };
 
       var sessionService = client.CreateSession(taskOptions);
 
@@ -122,44 +133,6 @@ namespace Armonik.Samples.HtcMockSymphony.Client
       ClientSeqExec(htcClient,
                     runConfiguration,
                     1);
-    }
-
-    /// <summary>
-    ///   Initialize Setting for task i.e :
-    ///   Duration :
-    ///   The max duration of a task
-    ///   Priority :
-    ///   Work in Progress. Setting priority of task
-    ///   AppName  :
-    ///   The name of the Application dll (Without Extension)
-    ///   VersionName :
-    ///   The version of the package to unzip and execute
-    ///   Namespace :
-    ///   The namespace where the service can find
-    ///   the ServiceContainer object develop by the customer
-    /// </summary>
-    /// <returns></returns>
-    private static TaskOptions InitializeSimpleTaskOptions()
-    {
-      TaskOptions taskOptions = new()
-                                {
-                                  MaxDuration = new Duration
-                                                {
-                                                  Seconds = 300,
-                                                },
-                                  MaxRetries = 5,
-                                  Priority   = 1,
-                                };
-      taskOptions.Options.Add(AppsOptions.GridAppNameKey,
-                              "ArmoniK.Samples.HtcMockSymphonyPackage");
-
-      taskOptions.Options.Add(AppsOptions.GridAppVersionKey,
-                              "2.0.0");
-
-      taskOptions.Options.Add(AppsOptions.GridAppNamespaceKey,
-                              "ArmoniK.Samples.HtcMockSymphony.Packages");
-
-      return taskOptions;
     }
 
     /// <summary>
