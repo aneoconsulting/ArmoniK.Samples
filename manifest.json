@@ -129,7 +129,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.html",
-          "hash": "kp2pTbp1npEsCvnIBYoIxrfKGHvS/FKgSL+ff9hngzQ="
+          "hash": "ewFJoOCFlZ+ckDC/wesMVSoqySKJmo3Xhoc6/RtvgcY="
         }
       },
       "is_incremental": false,
@@ -190,174 +190,6 @@
         ".html": {
           "relative_path": "api/ArmoniK.Samples.GridServer.Common.html",
           "hash": "SL/np7O1fcL7TbhMxSLtodX4dNPGQczTsHZIWMcLnEU="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.LoggerExt.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.LoggerExt.html",
-          "hash": "tGies4KG6rkl/zs/ub+QxcycCJfAGuU8e+m1JkK/7VQ="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.Options.Grpc.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.Options.Grpc.html",
-          "hash": "TcY4yZMl2YYYrYMV85Tg1cA/dMGbwZ8w/MVOTT8R2vk="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.Options.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.Options.html",
-          "hash": "BLmZjaJzywqBrlsbxnFbg6kL7hSQvARj7mLgZLEENqs="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.Adapter.html",
-          "hash": "buMOZR40kmRuhBO1ZrkX20IFdMArcEi02Nmi2XMyB+U="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.GridClient.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.GridClient.html",
-          "hash": "ZcuEb4k7F27Z7aio+n6AvM4E1DTsVBGYKuMeFvolf58="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.HtcMockClient.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.HtcMockClient.html",
-          "hash": "Yq2yB4xIQruw7hyqtJH87EKqqpNiADY78ns947N/GFM="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.HtcMockClientExt.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.HtcMockClientExt.html",
-          "hash": "DOTgXCxN7cu3ja4d1yOHKWztR6HOtptr+sVt2BzlkEo="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.ServiceCollectionExt.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.ServiceCollectionExt.html",
-          "hash": "S8aLn984BNPvN9fvR0g3v3/1ARpqoYOhqnZo+pZPvkc="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.SessionClient.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.SessionClient.html",
-          "hash": "sxpRLamthYWS5V5tYeWZwvvyyXpfThxP7zk2ZKPQ8xg="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.Client.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.Client.html",
-          "hash": "6O4edeVGmoz68joScC5Vx2IHWqCsdwgY/tqF1+VlKjY="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.ApplicationLifeTimeManager.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.ApplicationLifeTimeManager.html",
-          "hash": "T4Dp+qfY6hHhFd7/pJAkfH1KayUR4gN3S8JDD9ETKKc="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.Program.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.Program.html",
-          "hash": "/ZR2FqBYLevIPjv8QzWlDoqyzRMZ7p/QVA6Ty9UC5xk="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.SampleComputerService.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.SampleComputerService.html",
-          "hash": "SjWNJDjFNuA7LYceRqNTXMUQV6aFioDgCKNqI5GatE4="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMock.GridWorker.html",
-          "hash": "l0sOikemMVr1xiiIpVN5FNFDcPcCp8GW9YJFmF3xCNc="
         }
       },
       "is_incremental": false,
@@ -561,7 +393,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "DWW1oRvO+hM7NhI4rV4Qz9ws19IWSWnyZC0sWEInuHs="
+          "hash": "bz7rqWqCr5v6GrGYLktHIhmEiAetExvAADsM2iGbcBk="
         }
       },
       "is_incremental": false,
@@ -636,7 +468,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 45,
+          "total_file_count": 31,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
