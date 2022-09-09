@@ -70,8 +70,20 @@ namespace ArmoniK.Samples.GridServer.Client
       logger_ = factory.CreateLogger<Program>();
       logger_.LogInformation("Starting to execute gridServer");
 
-
-      var taskOptions = InitializeSimpleTaskOptions();
+      var taskOptions = new TaskOptions
+                        {
+                          MaxDuration = new Duration
+                                        {
+                                          Seconds = 3600 * 24,
+                                        },
+                          MaxRetries           = 3,
+                          Priority             = 1,
+                          EngineType           = EngineType.DataSynapse.ToString(),
+                          ApplicationVersion   = "1.0.0-700",
+                          ApplicationService   = "ServiceContainer",
+                          ApplicationName      = "ArmoniK.Samples.GridServer.Services",
+                          ApplicationNamespace = "ArmoniK.Samples.GridServer.Client.Services",
+                        };
 
       var props = new Properties(taskOptions,
                                  configuration_.GetSection("Grpc")["EndPoint"],
@@ -130,51 +142,6 @@ namespace ArmoniK.Samples.GridServer.Client
 
     private static object[] ParamsHelper(params object[] elements)
       => elements;
-
-    /// <summary>
-    ///   Initialize Setting for task i.e :
-    ///   Duration :
-    ///   The max duration of a task
-    ///   Priority :
-    ///   Work in Progress. Setting priority of task
-    ///   AppName  :
-    ///   The name of the Application dll (Without Extension)
-    ///   VersionName :
-    ///   The version of the package to unzip and execute
-    ///   Namespace :
-    ///   The namespace where the service can find
-    ///   the ServiceContainer object develop by the customer
-    /// </summary>
-    /// <returns></returns>
-    private static TaskOptions InitializeSimpleTaskOptions()
-    {
-      var taskOptions = new TaskOptions
-                        {
-                          MaxDuration = new Duration
-                                        {
-                                          Seconds = 3600 * 24,
-                                        },
-                          MaxRetries = 3,
-                          Priority   = 1,
-                        };
-
-      taskOptions.Options.Add(AppsOptions.EngineTypeNameKey,
-                              EngineType.DataSynapse.ToString());
-
-      taskOptions.Options.Add(AppsOptions.GridAppNameKey,
-                              "ArmoniK.Samples.GridServer.Services");
-
-      taskOptions.Options.Add(AppsOptions.GridAppVersionKey,
-                              "1.0.0-700");
-
-      taskOptions.Options.Add(AppsOptions.GridAppNamespaceKey,
-                              "ArmoniK.Samples.GridServer.Client.Services");
-
-      taskOptions.Options.Add(AppsOptions.GridServiceNameKey,
-                              "ServiceContainer");
-
-      return taskOptions;
-    }
 
 
     // Handler for Service Clients

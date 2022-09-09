@@ -105,8 +105,19 @@ namespace Armonik.Samples.Symphony.Client
       var _ = Environment.GetEnvironmentVariable("ARMONIK_DEBUG_WAIT_TASK");
 
       _logger.LogInformation("Configure taskOptions");
-      var taskOptions = InitializeSimpleTaskOptions();
-
+      var taskOptions = new TaskOptions
+                        {
+                          MaxDuration = new Duration
+                                        {
+                                          Seconds = 300,
+                                        },
+                          MaxRetries           = 2,
+                          Priority             = 1,
+                          EngineType           = EngineType.Symphony.ToString(),
+                          ApplicationVersion   = "2.0.0",
+                          ApplicationName      = "ArmoniK.Samples.SymphonyPackage",
+                          ApplicationNamespace = "ArmoniK.Samples.Symphony.Packages",
+                        };
 
       var sessionService = client.CreateSession(taskOptions);
 
@@ -289,44 +300,6 @@ namespace Armonik.Samples.Symphony.Client
 
       var elapsedMilliseconds = sw.ElapsedMilliseconds;
       _logger.LogInformation($"Client called {nbTasks} tasks in {elapsedMilliseconds} ms");
-    }
-
-    /// <summary>
-    ///   Initialize Setting for task i.e :
-    ///   Duration :
-    ///   The max duration of a task
-    ///   Priority :
-    ///   Work in Progress. Setting priority of task
-    ///   AppName  :
-    ///   The name of the Application dll (Without Extension)
-    ///   VersionName :
-    ///   The version of the package to unzip and execute
-    ///   Namespace :
-    ///   The namespace where the service can find
-    ///   the ServiceContainer object develop by the customer
-    /// </summary>
-    /// <returns></returns>
-    private static TaskOptions InitializeSimpleTaskOptions()
-    {
-      TaskOptions taskOptions = new()
-                                {
-                                  MaxDuration = new Duration
-                                                {
-                                                  Seconds = 300,
-                                                },
-                                  MaxRetries = 2,
-                                  Priority   = 1,
-                                };
-      taskOptions.Options.Add(AppsOptions.GridAppNameKey,
-                              "ArmoniK.Samples.SymphonyPackage");
-
-      taskOptions.Options.Add(AppsOptions.GridAppVersionKey,
-                              "2.0.0");
-
-      taskOptions.Options.Add(AppsOptions.GridAppNamespaceKey,
-                              "ArmoniK.Samples.Symphony.Packages");
-
-      return taskOptions;
     }
 
     /// <summary>
