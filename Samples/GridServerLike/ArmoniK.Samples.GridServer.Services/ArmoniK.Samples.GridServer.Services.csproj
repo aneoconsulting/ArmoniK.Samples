@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.GridServer" Version="0.7.0-dbfix522.87.d50b689" />
+    <PackageReference Include="Armonik.DevelopmentKit.GridServer" Version="0.7.0-dbfix522.88.86b8fa1" />
   </ItemGroup>
 
   <ItemGroup>
