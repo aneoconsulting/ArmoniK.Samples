@@ -179,11 +179,16 @@ namespace ArmoniK.Samples.Client
                       3.0,
                     }.ToArray();
 
-      sessionService.Submit("ComputeBasicArrayCube",
-                            Enumerable.Range(1,
-                                             100)
-                                      .Select(n => ParamsHelper(numbers)),
-                            handler);
+      const int wantedCount = 100;
+      var tasks = sessionService.Submit("ComputeBasicArrayCube",
+                                        Enumerable.Range(1,
+                                                         wantedCount)
+                                                  .Select(n => ParamsHelper(numbers)),
+                                        handler);
+      if (tasks.Count() is var count && count != wantedCount)
+      {
+        throw new ApplicationException($"Expected {wantedCount} submitted tasks, got {count}");
+      }
 
       //Get the count of running tasks after 10 s
       Thread.Sleep(15000);
