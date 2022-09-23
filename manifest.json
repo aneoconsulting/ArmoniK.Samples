@@ -113,18 +113,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.SelectExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.GridServer.Client.SelectExtensions.html",
-          "hash": "ZLYqpq/fGGwBX1lGJFsSHbnghiHEm3NarNMOrmlGZsM="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.yml",
       "output": {
         ".html": {
@@ -165,7 +153,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ArmoniK.Samples.GridServer.Client.html",
-          "hash": "6ZNErTkaVGsdZdE8Ghr5IYZ+EEJ9+HLas0d4aJa2Lpg="
+          "hash": "FdZWXep0TCLDF/T6Uv/5oCg2KMwhFgfqg4771pKAwkQ="
         }
       },
       "is_incremental": false,
@@ -328,54 +316,6 @@
       "version": ""
     },
     {
-      "type": "ManagedReference",
-      "source_relative_path": "api/QuantLib.Serialization.Compressor.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/QuantLib.Serialization.Compressor.html",
-          "hash": "kjwo1xgZDSNGGLOTtHvFPHYyLPmAvG5N7yaYoFogcLM="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/QuantLib.Serialization.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/QuantLib.Serialization.html",
-          "hash": "238d+UkO8vSP+LnfYV+iWtkiRRf2NHkMaB/HMz7sN/A="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Services.SimpleServiceContainer.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Services.SimpleServiceContainer.html",
-          "hash": "2iY9qmJxRf4Y0Jvxv4K7Aa41A7gEKDv4itWz9ISwyjw="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Services.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Services.html",
-          "hash": "qHivJ3TrYYPaLF/ZHyN9BHHZaZXLF2cFX5kin7pVkqQ="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
       "type": "Conceptual",
       "source_relative_path": "api/index.md",
       "output": {
@@ -393,7 +333,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "bz7rqWqCr5v6GrGYLktHIhmEiAetExvAADsM2iGbcBk="
+          "hash": "xfqt4d7ZvfsRtdrAFpN8sWRv+y48PHLY+Jg81iT2a4Y="
         }
       },
       "is_incremental": false,
@@ -468,7 +408,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 31,
+          "total_file_count": 26,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
