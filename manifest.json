@@ -113,18 +113,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.html",
-          "hash": "ewFJoOCFlZ+ckDC/wesMVSoqySKJmo3Xhoc6/RtvgcY="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.yml",
       "output": {
         ".html": {
@@ -142,18 +130,6 @@
         ".html": {
           "relative_path": "api/ArmoniK.Samples.GridServer.Client.Services.html",
           "hash": "xZGa4SV09nc7tlQN5j/2Ud9HWDs1CVfJDIu0tQe41hY="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.GridServer.Client.html",
-          "hash": "FdZWXep0TCLDF/T6Uv/5oCg2KMwhFgfqg4771pKAwkQ="
         }
       },
       "is_incremental": false,
@@ -189,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html",
-          "hash": "bZyAJMe7MVSVBKnD1km5r/b+Lbd5cf91/W/Fmtf/XlI="
+          "hash": "jIOQwF1CyzBj6hRDNVidd9Kza+xQLBNA+84x9uOUNcw="
         }
       },
       "is_incremental": false,
@@ -333,7 +309,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "xfqt4d7ZvfsRtdrAFpN8sWRv+y48PHLY+Jg81iT2a4Y="
+          "hash": "Lyvr6zCWbBWmNdHfAgarLPOD5+9/2tPWqOa2Etj5wW4="
         }
       },
       "is_incremental": false,
@@ -408,7 +384,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 26,
+          "total_file_count": 24,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {

@@ -358,31 +358,6 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray
   nameWithType: SelectExtensions.ConvertToArray
-- uid: ArmoniK.Samples.GridServer.Client
-  name: ArmoniK.Samples.GridServer.Client
-  href: api/ArmoniK.Samples.GridServer.Client.html
-  commentId: N:ArmoniK.Samples.GridServer.Client
-  fullName: ArmoniK.Samples.GridServer.Client
-  nameWithType: ArmoniK.Samples.GridServer.Client
-- uid: ArmoniK.Samples.GridServer.Client.ServiceFactoryExt
-  name: ServiceFactoryExt
-  href: api/ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.html
-  commentId: T:ArmoniK.Samples.GridServer.Client.ServiceFactoryExt
-  fullName: ArmoniK.Samples.GridServer.Client.ServiceFactoryExt
-  nameWithType: ServiceFactoryExt
-- uid: ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.CreateService(ServiceFactory,System.String,Properties,ILoggerFactory)
-  name: CreateService(ServiceFactory, String, Properties, ILoggerFactory)
-  href: api/ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.html#ArmoniK_Samples_GridServer_Client_ServiceFactoryExt_CreateService_ServiceFactory_System_String_Properties_ILoggerFactory_
-  commentId: M:ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.CreateService(ServiceFactory,System.String,Properties,ILoggerFactory)
-  fullName: ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.CreateService(ServiceFactory, System.String, Properties, ILoggerFactory)
-  nameWithType: ServiceFactoryExt.CreateService(ServiceFactory, String, Properties, ILoggerFactory)
-- uid: ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.CreateService*
-  name: CreateService
-  href: api/ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.html#ArmoniK_Samples_GridServer_Client_ServiceFactoryExt_CreateService_
-  commentId: Overload:ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.CreateService
-  isSpec: "True"
-  fullName: ArmoniK.Samples.GridServer.Client.ServiceFactoryExt.CreateService
-  nameWithType: ServiceFactoryExt.CreateService
 - uid: ArmoniK.Samples.GridServer.Client.Services
   name: ArmoniK.Samples.GridServer.Client.Services
   href: api/ArmoniK.Samples.GridServer.Client.Services.html
