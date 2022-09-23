@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ArmoniK.Api.Client" Version="3.0.2-SNAPSHOT.32.1a7a62f" />
+    <PackageReference Include="ArmoniK.Api.Client" Version="3.0.3" />
     <PackageReference Include="docopt.net" Version="0.8.1" />
   </ItemGroup>
 
