@@ -24,6 +24,7 @@
 
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 using ArmoniK.DevelopmentKit.Worker.Grid;
 using ArmoniK.Samples.Common;
@@ -73,9 +74,14 @@ namespace ArmoniK.Samples.Unified.Worker.Services
       => inputs.Select(x => x * x * x)
                .ToArray();
 
-    public static double ComputeReduceCube(double[] inputs)
-      => inputs.Select(x => x * x * x)
-               .Sum();
+    public static double ComputeReduceCube(double[] inputs,
+                                           int      workloadTimeInMs = 10)
+    {
+      Thread.Sleep(workloadTimeInMs);
+
+      return inputs.Select(x => x * x * x)
+                   .Sum();
+    }
 
     public static double ComputeReduceCube(byte[] inputs)
     {
