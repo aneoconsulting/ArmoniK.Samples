@@ -24,14 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.Worker" Version="0.7.0-SNAPSHOT.89.e20d147" />
+    <PackageReference Include="Armonik.DevelopmentKit.Worker" Version="1.0.0-local" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
-	<ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ArmoniK.Samples.Common\ArmoniK.Samples.Common.csproj" />
   </ItemGroup>
 
@@ -40,7 +40,8 @@
   </Target>
 
   <Target Name="ZipOutputPath" AfterTargets="CreateDirectories">
-    <ZipDirectory SourceDirectory="../publish/" DestinationFile="../packages/$(MSBuildProjectName)-v$(Version).zip" Overwrite="true" />
+    <ZipDirectory SourceDirectory="../publish/" DestinationFile="../packages/$(MSBuildProjectName)-v$(Version).zip"
+                  Overwrite="true" />
   </Target>
 
 </Project>
