@@ -23,7 +23,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -43,18 +42,6 @@ namespace ArmoniK.Samples.Client
     {
       var logger         = loggerFactory.CreateLogger<LargePayloadTests>();
       var sessionService = ServiceFactory.CreateService(properties);
-
-      var numbers = new List<double>
-                    {
-                      1.0,
-                      2.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                    }.ToArray();
 
       var handler = new ResultForLargeTaskHandler(logger);
 
@@ -76,7 +63,6 @@ namespace ArmoniK.Samples.Client
     /// <param name="nbTasks">The number of task to submit</param>
     /// <param name="nbElement">The number of element n x M in the vector</param>
     /// <param name="resultForLargeTaskHandler"></param>
-    /// <param name="cancellationTokenSource"></param>
     private static IDisposable ComputeVector(Service                    sessionService,
                                              ILogger<LargePayloadTests> logger,
                                              int                        nbTasks,
@@ -92,15 +78,15 @@ namespace ArmoniK.Samples.Client
                                      nbElement)
                               .Select(x => (double)x)
                               .ToArray();
-      logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbElement * 8 / 1024} Ko Total : {nbTasks * nbElement / 128} Ko...   ===");
+      logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbElement * 128} Ko Total : {nbTasks * nbElement / 128} Ko...   ===");
       var sw = Stopwatch.StartNew();
       var periodicInfo = Utils.PeriodicInfo(() =>
                                             {
                                               logger.LogInformation($"{indexTask}/{nbTasks} Tasks. " + $"Got {resultForLargeTaskHandler.NbResults} results. " +
-                                                                    $"Check Submission perf : Payload {(indexTask - prevIndex) * nbElement * 8.0 / 1024.0 / elapsed:0.0} Ko/s (inst), " +
+                                                                    $"Check Submission perf : Payload {(indexTask - prevIndex) * nbElement * 128.0 / elapsed:0.0} Ko/s (inst), " +
                                                                     $"{(indexTask - prevIndex) / (double)elapsed:0.00} tasks/s (inst), " +
                                                                     $"{indexTask * 1000.0 / sw.ElapsedMilliseconds:0.00} task/s (avg), " +
-                                                                    $"{indexTask * nbElement * 8.0 / 1024 / (sw.ElapsedMilliseconds / 1000.0):0.00} Ko/s (avg)");
+                                                                    $"{indexTask * nbElement / 128.0 / (sw.ElapsedMilliseconds / 1000.0):0.00} Ko/s (avg)");
                                               prevIndex = indexTask;
                                             },
                                             elapsed);
@@ -126,7 +112,7 @@ namespace ArmoniK.Samples.Client
       public ResultForLargeTaskHandler(ILogger<LargePayloadTests> logger)
         => logger_ = logger;
 
-      public int NbResults { get; set; }
+      public int NbResults { get; private set; }
 
       /// <summary>
       ///   The callBack method which has to be implemented to retrieve error or exception
@@ -162,10 +148,6 @@ namespace ArmoniK.Samples.Client
         {
           case null:
             logger_.LogInformation("Task finished but nothing returned in Result");
-            break;
-          case double:
-            break;
-          case byte[] values:
             break;
         }
 
