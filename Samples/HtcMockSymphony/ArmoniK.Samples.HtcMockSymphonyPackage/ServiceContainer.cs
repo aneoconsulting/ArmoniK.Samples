@@ -99,20 +99,27 @@ namespace ArmoniK.Samples.HtcMockSymphony.Packages
         payloads.AddRange(readyRequests.Select(readyRequest => DataAdapter.BuildPayload(runConfiguration,
                                                                                         readyRequest)));
 
-        var taskIds = SubmitTasks(payloads);
+        var taskIds = SubmitTasks(payloads)
+          .ToList();
         var req = requests[false]
           .Single();
         req.Dependencies.Clear();
         foreach (var t in taskIds)
         {
-          req.Dependencies.Add(t);
+          if (!TaskId2OutputId.TryGetValue(t,
+                                           out var resultId))
+          {
+            throw new KeyNotFoundException(t);
+          }
+
+          req.Dependencies.Add(resultId);
         }
 
         SubmitTasksWithDependencies(new List<Tuple<byte[], IList<string>>>(new List<Tuple<byte[], IList<string>>>
                                                                            {
                                                                              new(DataAdapter.BuildPayload(runConfiguration,
                                                                                                           req),
-                                                                                 req.Dependencies),
+                                                                                 taskIds),
                                                                            }),
                                     true);
 
