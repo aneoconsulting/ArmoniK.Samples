@@ -59,7 +59,6 @@ namespace ArmoniK.Samples.GridServer.Client
 
       configuration_ = builder.Build();
 
-      //var factory = new LoggerFactory(Array.Empty<ILoggerProvider>()).AddSerilog();
       var factory = new LoggerFactory(new[]
                                       {
                                         new SerilogLoggerProvider(new LoggerConfiguration().ReadFrom.Configuration(configuration_)
@@ -183,34 +182,6 @@ namespace ArmoniK.Samples.GridServer.Client
             break;
         }
       }
-    }
-  }
-
-  public static class ServiceFactoryExt
-  {
-    /// <summary>
-    ///   The method to create new Service
-    /// </summary>
-    /// <param name="serviceFactory"></param>
-    /// <param name="serviceType">
-    ///   Future value no usage for now.
-    ///   This is the Service type reflection for method
-    /// </param>
-    /// <param name="props">Properties for the service containing IConfiguration and TaskOptions</param>
-    /// <param name="factory"></param>
-    /// <returns>returns the new instantiated service</returns>
-    public static Service CreateService(this ServiceFactory serviceFactory,
-                                        string              serviceType,
-                                        Properties          props,
-                                        ILoggerFactory      factory = null)
-    {
-      factory ??= new LoggerFactory(Array.Empty<ILoggerProvider>(),
-                                    new LoggerFilterOptions().AddFilter("Grpc",
-                                                                        LogLevel.Debug)).AddSerilog();
-
-      return new Service(serviceType,
-                         factory,
-                         props);
     }
   }
 }
