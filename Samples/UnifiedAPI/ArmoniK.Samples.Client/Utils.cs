@@ -33,16 +33,16 @@ namespace ArmoniK.Samples.Client
     public static object[] ParamsHelper(params object[] elements)
       => elements;
 
-    public static IDisposable PeriodicInfo(Action            action,
-                                           int               seconds)
+    public static IDisposable PeriodicInfo(Action action,
+                                           int    seconds)
       => new DisposablePeriodicInfo(action,
                                     seconds);
 
 
     private class DisposablePeriodicInfo : IDisposable
     {
-      private readonly CancellationTokenSource cts_;
       private readonly Action                  action_;
+      private readonly CancellationTokenSource cts_;
 
       internal DisposablePeriodicInfo(Action action,
                                       int    seconds)
