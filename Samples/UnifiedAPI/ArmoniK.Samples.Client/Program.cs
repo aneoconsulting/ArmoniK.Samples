@@ -39,11 +39,14 @@ using ArmoniK.Samples.Common;
 
 using Google.Protobuf.WellKnownTypes;
 
+using JetBrains.Annotations;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using Serilog;
 using Serilog.Events;
+using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.Client
 {
@@ -62,9 +65,12 @@ namespace ArmoniK.Samples.Client
                                             .WriteTo.Console()
                                             .CreateLogger();
 
-      var factory = new LoggerFactory(Array.Empty<ILoggerProvider>(),
+      var factory = new LoggerFactory(new[]
+                                      {
+                                        new SerilogLoggerProvider(Log.Logger),
+                                      },
                                       new LoggerFilterOptions().AddFilter("Grpc",
-                                                                          LogLevel.Error)).AddSerilog();
+                                                                          LogLevel.Error));
 
       logger_ = factory.CreateLogger<Program>();
 
@@ -108,11 +114,10 @@ namespace ArmoniK.Samples.Client
       RunningAndCancelSession(sessionService,
                               sessionServiceAdmin,
                               handler);
+
+      LargePayloadTests.LargePayloadSubmit(props,
+                                           factory);
     }
-
-
-    private static object[] ParamsHelper(params object[] elements)
-      => elements;
 
     private static void SimpleExecution(Service       sessionService,
                                         ResultHandler handler)
@@ -128,34 +133,36 @@ namespace ArmoniK.Samples.Client
                       3.0,
                       3.0,
                     }.ToArray();
+      var workloadInMs = 10;
 
       sessionService.Submit("ComputeBasicArrayCube",
-                            ParamsHelper(numbers),
+                            Utils.ParamsHelper(numbers),
                             handler);
 
       sessionService.Submit("ComputeReduceCube",
-                            ParamsHelper(numbers),
+                            Utils.ParamsHelper(numbers,
+                                               workloadInMs),
                             handler);
 
       sessionService.Submit("ComputeReduceCube",
-                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
-                                                .ToArray()),
+                            Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
+                                                      .ToArray()),
                             handler);
 
       sessionService.Submit("ComputeMadd",
-                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
-                                                .ToArray(),
-                                         numbers.SelectMany(BitConverter.GetBytes)
-                                                .ToArray(),
-                                         4.0),
+                            Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
+                                                      .ToArray(),
+                                               numbers.SelectMany(BitConverter.GetBytes)
+                                                      .ToArray(),
+                                               4.0),
                             handler);
 
       sessionService.Submit("NonStaticComputeMadd",
-                            ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
-                                                .ToArray(),
-                                         numbers.SelectMany(BitConverter.GetBytes)
-                                                .ToArray(),
-                                         4.0),
+                            Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
+                                                      .ToArray(),
+                                               numbers.SelectMany(BitConverter.GetBytes)
+                                                      .ToArray(),
+                                               4.0),
                             handler);
     }
 
@@ -163,10 +170,15 @@ namespace ArmoniK.Samples.Client
     ///   The first test developed to validate the Session cancellation
     /// </summary>
     /// <param name="sessionService"></param>
-    private static void RunningAndCancelSession(Service       sessionService,
-                                                ServiceAdmin  serviceAdmin,
-                                                ResultHandler handler)
+    private static void RunningAndCancelSession(Service                 sessionService,
+                                                ServiceAdmin            serviceAdmin,
+                                                [NotNull] ResultHandler handler)
     {
+      if (handler == null)
+      {
+        throw new ArgumentNullException(nameof(handler));
+      }
+
       var numbers = new List<double>
                     {
                       1.0,
@@ -183,7 +195,7 @@ namespace ArmoniK.Samples.Client
       var tasks = sessionService.Submit("ComputeBasicArrayCube",
                                         Enumerable.Range(1,
                                                          wantedCount)
-                                                  .Select(n => ParamsHelper(numbers)),
+                                                  .Select(n => Utils.ParamsHelper(numbers)),
                                         handler);
       if (tasks.Count() is var count && count != wantedCount)
       {
@@ -213,7 +225,6 @@ namespace ArmoniK.Samples.Client
       var countErrorTasks = serviceAdmin.AdminMonitoringService.CountErrorTasksBySession(sessionService.SessionId);
       logger_.LogInformation($"Number of error tasks after Session cancel is {countErrorTasks}");
     }
-
 
     // Handler for Service Clients
     private class ResultHandler : IServiceInvocationHandler
