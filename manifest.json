@@ -65,6 +65,30 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.Client.Utils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.Client.Utils.html",
+          "hash": "nnV0MhiRO9ZMc3/ckyTKLsxhGCEa5VXjKtXd3QEPnek="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.Client.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.Client.html",
+          "hash": "oXtVcfVZLcV/B30Fb3CekkTqM1qdT0jDshLt8A5RR+M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/ArmoniK.Samples.Common.ClientPayload.TaskType.yml",
       "output": {
         ".html": {
@@ -237,7 +261,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html",
-          "hash": "ZsUqfgEgArnovS5akojXoESBZ/qTPsv67dNWwCwf7ZQ="
+          "hash": "ZHpUeRgaQt/bj9kuCRaoYKpN1d+7yZ9eVhEvkmFtOLQ="
         }
       },
       "is_incremental": false,
@@ -309,7 +333,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "Lyvr6zCWbBWmNdHfAgarLPOD5+9/2tPWqOa2Etj5wW4="
+          "hash": "pUfF+dCGr7gXIfGw/jliA/FxVgXpGvo1LdSvzw4jPmA="
         }
       },
       "is_incremental": false,
@@ -384,7 +408,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 24,
+          "total_file_count": 26,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
