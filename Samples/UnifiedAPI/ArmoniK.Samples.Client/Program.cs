@@ -23,23 +23,9 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
+using System.CommandLine;
 using System.IO;
-using System.Linq;
-using System.Threading;
-
-using ArmoniK.Api.gRPC.V1;
-using ArmoniK.DevelopmentKit.Client.Exceptions;
-using ArmoniK.DevelopmentKit.Client.Factory;
-using ArmoniK.DevelopmentKit.Client.Services;
-using ArmoniK.DevelopmentKit.Client.Services.Admin;
-using ArmoniK.DevelopmentKit.Client.Services.Submitter;
-using ArmoniK.DevelopmentKit.Common;
-using ArmoniK.Samples.Common;
-
-using Google.Protobuf.WellKnownTypes;
-
-using JetBrains.Annotations;
+using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -55,9 +41,10 @@ namespace ArmoniK.Samples.Client
     private static IConfiguration   configuration_;
     private static ILogger<Program> logger_;
 
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
       Console.WriteLine("Hello Armonik Unified Sample !");
+
 
       Log.Logger = new LoggerConfiguration().MinimumLevel.Override("Microsoft",
                                                                    LogEventLevel.Information)
@@ -82,189 +69,83 @@ namespace ArmoniK.Samples.Client
 
       configuration_ = builder.Build();
 
-      var taskOptions = new TaskOptions
-                        {
-                          MaxDuration = new Duration
-                                        {
-                                          Seconds = 3600 * 24,
-                                        },
-                          MaxRetries           = 3,
-                          Priority             = 1,
-                          EngineType           = EngineType.Unified.ToString(),
-                          ApplicationVersion   = "1.0.0-700",
-                          ApplicationService   = "ServiceApps",
-                          ApplicationName      = "ArmoniK.Samples.Unified.Worker",
-                          ApplicationNamespace = "ArmoniK.Samples.Unified.Worker.Services",
-                        };
 
-      var props = new Properties(taskOptions,
-                                 configuration_.GetSection("Grpc")["EndPoint"],
-                                 5001);
+      var rootCommand = new RootCommand("Samples for unifiedAPI: Binary for simple tests and quick benchmarks");
+      var pTaskCommand = new Command("ptask",
+                                     "Execute Parallel task with different number of task and/or different size of payload");
+      var numberTaskOption = new Option<int>("--nbTask",
+                                             description: "An option to set the number of task",
+                                             getDefaultValue: () => 100);
+      var numberOfDoubleElement = new Option<int>("--nbElement",
+                                                  description: "An option to set the number of Double element a vector as Client payload",
+                                                  getDefaultValue: () => 64000);
+      var numberOfBytes = new Option<long>("--nbBytes",
+                                           description:
+                                           $"An option to set the number of Bytes for the client payload. Setting this option will override --nbElement value Default {64000 * 8} Bytes",
+                                           getDefaultValue: () => 0);
+      pTaskCommand.Add(numberTaskOption);
+      pTaskCommand.Add(numberOfDoubleElement);
+      pTaskCommand.Add(numberOfBytes);
 
-      using var sessionService      = ServiceFactory.CreateService(props);
-      using var sessionServiceAdmin = ServiceFactory.GetServiceAdmin(props);
-      var       handler             = new ResultHandler(logger_);
+      pTaskCommand.SetHandler((numberTaskOption,
+                               numberOfDoubleElement,
+                               numberOfBytes) =>
+                              {
+                                logger_.LogInformation("Option Parallel task Run");
+                                logger_.LogInformation($"--nbTask    = {numberTaskOption}");
+                                logger_.LogInformation($"--nbElement = {numberOfDoubleElement}");
+                                logger_.LogInformation($"--nbBytes   = {numberOfBytes}");
 
-      logger_.LogInformation("Running Simple execution test with UnifiedApi");
+                                numberOfDoubleElement = numberOfBytes == 0
+                                                          ? numberOfDoubleElement
+                                                          : (int)(numberOfBytes / 8);
 
+                                var test1 = new LargePayloadTests(configuration_,
+                                                                  factory);
 
-      SimpleExecution(sessionService,
-                      handler);
-
-      RunningAndCancelSession(sessionService,
-                              sessionServiceAdmin,
-                              handler);
-
-      LargePayloadTests.LargePayloadSubmit(props,
-                                           factory);
-    }
-
-    private static void SimpleExecution(Service       sessionService,
-                                        ResultHandler handler)
-    {
-      var numbers = new List<double>
-                    {
-                      1.0,
-                      2.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                    }.ToArray();
-      var workloadInMs = 10;
-
-      sessionService.Submit("ComputeBasicArrayCube",
-                            Utils.ParamsHelper(numbers),
-                            handler);
-
-      sessionService.Submit("ComputeReduceCube",
-                            Utils.ParamsHelper(numbers,
-                                               workloadInMs),
-                            handler);
-
-      sessionService.Submit("ComputeReduceCube",
-                            Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
-                                                      .ToArray()),
-                            handler);
-
-      sessionService.Submit("ComputeMadd",
-                            Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
-                                                      .ToArray(),
-                                               numbers.SelectMany(BitConverter.GetBytes)
-                                                      .ToArray(),
-                                               4.0),
-                            handler);
-
-      sessionService.Submit("NonStaticComputeMadd",
-                            Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
-                                                      .ToArray(),
-                                               numbers.SelectMany(BitConverter.GetBytes)
-                                                      .ToArray(),
-                                               4.0),
-                            handler);
-    }
-
-    /// <summary>
-    ///   The first test developed to validate the Session cancellation
-    /// </summary>
-    /// <param name="sessionService"></param>
-    private static void RunningAndCancelSession(Service                 sessionService,
-                                                ServiceAdmin            serviceAdmin,
-                                                [NotNull] ResultHandler handler)
-    {
-      if (handler == null)
-      {
-        throw new ArgumentNullException(nameof(handler));
-      }
-
-      var numbers = new List<double>
-                    {
-                      1.0,
-                      2.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                      3.0,
-                    }.ToArray();
-
-      const int wantedCount = 100;
-      var tasks = sessionService.Submit("ComputeBasicArrayCube",
-                                        Enumerable.Range(1,
-                                                         wantedCount)
-                                                  .Select(n => Utils.ParamsHelper(numbers)),
-                                        handler);
-      if (tasks.Count() is var count && count != wantedCount)
-      {
-        throw new ApplicationException($"Expected {wantedCount} submitted tasks, got {count}");
-      }
-
-      //Get the count of running tasks after 10 s
-      Thread.Sleep(15000);
-
-      var countRunningTasks = serviceAdmin.AdminMonitoringService.CountCompletedTasksBySession(sessionService.SessionId);
-      logger_.LogInformation($"Number of completed tasks after 15 seconds is {countRunningTasks}");
-
-      //Cancel all the session
-      logger_.LogInformation("Cancel the whole session");
-      serviceAdmin.AdminMonitoringService.CancelSession(sessionService.SessionId);
-
-      //Get the count of running tasks after 10 s
-      Thread.Sleep(10000);
-      //Cancel all the session
-      var countCancelTasks = serviceAdmin.AdminMonitoringService.CountCancelTasksBySession(sessionService.SessionId);
-      logger_.LogInformation($"Number of canceled tasks after Session cancel is {countCancelTasks}");
-
-      countRunningTasks = serviceAdmin.AdminMonitoringService.CountCompletedTasksBySession(sessionService.SessionId);
-      logger_.LogInformation($"Number of running tasks after Session cancel is {countRunningTasks}");
+                                test1.LargePayloadSubmit(numberTaskOption,
+                                                         numberOfDoubleElement);
+                              },
+                              numberTaskOption,
+                              numberOfDoubleElement,
+                              numberOfBytes);
 
 
-      var countErrorTasks = serviceAdmin.AdminMonitoringService.CountErrorTasksBySession(sessionService.SessionId);
-      logger_.LogInformation($"Number of error tasks after Session cancel is {countErrorTasks}");
-    }
+      var simpleTestCommand = new Command("simple",
+                                          "Execute Simple Unified API test with some Execution");
 
-    // Handler for Service Clients
-    private class ResultHandler : IServiceInvocationHandler
-    {
-      private readonly double           _total = 0;
-      private readonly ILogger<Program> logger_;
+      simpleTestCommand.SetHandler(() =>
+                                   {
+                                     logger_.LogInformation("Running Simple execution test with UnifiedApi");
+                                     new SimpleUnifiedAPI(configuration_,
+                                                          factory).SimpleExecution();
+                                   });
 
-      public ResultHandler(ILogger<Program> logger)
-        => logger_ = logger;
+      var nTaskCommand = new Command("ntask",
+                                     "Execute several thousand tasks in a batch of execution");
+      nTaskCommand.Add(numberTaskOption);
+      nTaskCommand.SetHandler(numberTaskOption =>
+                              {
+                                logger_.LogInformation("Running Simple execution test with UnifiedApi");
+                                new SimpleUnifiedAPI(configuration_,
+                                                     factory).SimpleExecution();
+                              },
+                              numberTaskOption);
 
 
-      public void HandleError(ServiceInvocationException e,
-                              string                     taskId)
-      {
-        logger_.LogError($"Error from {taskId} : " + e.Message);
-        throw new ApplicationException($"Error from {taskId}",
-                                       e);
-      }
+      rootCommand.Add(pTaskCommand);
+      rootCommand.Add(simpleTestCommand);
+      rootCommand.Add(nTaskCommand);
 
-      public void HandleResponse(object response,
-                                 string taskId)
-      {
-        switch (response)
-        {
-          case null:
-            logger_.LogInformation("Task finished but nothing returned in Result");
-            break;
-          case double value:
-            logger_.LogInformation($"Task finished with result {value}");
-            break;
-          case double[] doubles:
-            logger_.LogInformation("Result is " + string.Join(", ",
-                                                              doubles));
-            break;
-          case byte[] values:
-            logger_.LogInformation("Result is " + string.Join(", ",
-                                                              values.ConvertToArray()));
-            break;
-        }
-      }
+      //Default without parameters
+      rootCommand.SetHandler(() =>
+                             {
+                               logger_.LogInformation("Running Simple execution test with UnifiedApi");
+                               new SimpleUnifiedAPI(configuration_,
+                                                    factory).SimpleExecution();
+                             });
+
+      await rootCommand.InvokeAsync(args);
     }
   }
 }

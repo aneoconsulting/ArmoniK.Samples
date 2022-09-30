@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -24,14 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.Worker" Version="0.7.1" />
+    <PackageReference Include="Armonik.DevelopmentKit.Worker" Version="0.7.2-dduchunksubmit.15.05cad7b" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
-	<ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ArmoniK.Samples.Common\ArmoniK.Samples.Common.csproj" />
   </ItemGroup>
 
@@ -40,6 +40,7 @@
   </Target>
 
   <Target Name="ZipOutputPath" AfterTargets="CreateDirectories">
-    <ZipDirectory SourceDirectory="../publish/" DestinationFile="../packages/$(MSBuildProjectName)-v$(Version).zip" Overwrite="true" />
+    <ZipDirectory SourceDirectory="../publish/" DestinationFile="../packages/$(MSBuildProjectName)-v$(Version).zip"
+                  Overwrite="true" />
   </Target>
 </Project>
