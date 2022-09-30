@@ -23,16 +23,8 @@
 // limitations under the License.
 
 using System;
-using System.CommandLine;
 using System.IO;
 using System.Threading.Tasks;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-
-using Serilog;
-using Serilog.Events;
-using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.Client
 {
@@ -98,7 +90,7 @@ namespace ArmoniK.Samples.Client
 
                                 numberOfDoubleElement = numberOfBytes == 0
                                                           ? numberOfDoubleElement
-                                                          : (int)(numberOfBytes / 8);
+                                                          : numberOfBytes / 8;
 
                                 var test1 = new LargePayloadTests(configuration_,
                                                                   factory);
@@ -127,8 +119,8 @@ namespace ArmoniK.Samples.Client
       nTaskCommand.SetHandler(numberTaskOption =>
                               {
                                 logger_.LogInformation("Running Simple execution test with UnifiedApi");
-                                new SimpleUnifiedAPI(configuration_,
-                                                     factory).SimpleExecution();
+                                new NSubmitTest(configuration_,
+                                                factory).BatchExecution(numberTaskOption);
                               },
                               numberTaskOption);
 
