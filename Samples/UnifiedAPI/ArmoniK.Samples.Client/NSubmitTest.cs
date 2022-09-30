@@ -85,7 +85,7 @@ namespace ArmoniK.Samples.Client
       => Service?.Dispose();
 
 
-    public void SimpleExecution(int nbTask)
+    public void BatchExecution(int nbTask)
     {
       var toSum = new List<double>
                   {
