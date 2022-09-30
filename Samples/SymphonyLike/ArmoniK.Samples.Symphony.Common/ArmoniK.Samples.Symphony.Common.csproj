@@ -5,14 +5,14 @@
     <Version>1.0.0</Version>
     <Authors>ANEO</Authors>
     <Company>ANEO</Company>
-    
+
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <OutputPath>bin</OutputPath>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
     <PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
- </PropertyGroup>
+  </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48'">
     <PackageReference Include="System.Text.Json" Version="6.0.4" />

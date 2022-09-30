@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.GridServer.Client" Version="0.7.1" />
+    <PackageReference Include="Armonik.DevelopmentKit.GridServer.Client" Version="0.7.2-dduchunksubmit.15.05cad7b" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,14 +38,14 @@
     <ProjectReference Include="..\ArmoniK.Samples.GridServer.Common\ArmoniK.Samples.GridServer.Common.csproj" />
   </ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Services\" />
-	</ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
 
-	<ItemGroup>
-	  <None Update="appsettings.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	</ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
- </Project>
+</Project>

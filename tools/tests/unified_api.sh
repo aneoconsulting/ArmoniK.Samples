@@ -107,7 +107,7 @@ function execute() {
   echo "cd ${TestDir}/${RELATIVE_CLIENT}/"
   cd "${TestDir}/${RELATIVE_CLIENT}/"
   echo dotnet run -r linux-x64 -f net6.0 -c ${configuration} $@
-  dotnet run -r linux-x64 -f net6.0 -c ${configuration} $@
+  dotnet run -r linux-x64 -f net6.0 -c ${configuration} -- $@
 }
 
 function usage() {
@@ -172,7 +172,7 @@ while [ $# -ne 0 ]; do
       shift
       ;;
 
-    -h | --help)
+    -h)
       usage
       exit
       ;;
