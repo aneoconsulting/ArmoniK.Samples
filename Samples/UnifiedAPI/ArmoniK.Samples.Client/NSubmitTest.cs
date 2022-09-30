@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using ArmoniK.Api.gRPC.V1;
@@ -93,7 +94,15 @@ namespace ArmoniK.Samples.Client
                     14,
                     18,
                   }.ToArray();
-
+      Logger.LogInformation("Execute {nTask} in one batch",
+                            nbTask);
+      var sw = Stopwatch.StartNew();
+      var periodicInfo = Utils.PeriodicInfo(() =>
+                                            {
+                                              Logger.LogInformation($"Got {ResultHandle.NbResults} results. " +
+                                                                    $"{ResultHandle.NbResults / (sw.ElapsedMilliseconds / 1000.0):0.00} Result/s (avg)");
+                                            },
+                                            30);
       var tasks = Service.Submit("ComputeReduce",
                                  Enumerable.Range(1,
                                                   nbTask)
@@ -103,22 +112,29 @@ namespace ArmoniK.Samples.Client
       {
         throw new ApplicationException($"Expected {nbTask} submitted tasks, got {count}");
       }
+
+      Logger.LogInformation($"Number of requested task {nbTask}, Submitted tasks {tasks.Count()} in {sw.ElapsedMilliseconds / 1000.0:0.00} seconds");
+
+      Service.Dispose();
+      periodicInfo.Dispose();
     }
 
     // Handler for Service Clients
     private class ResultHandler : IServiceInvocationHandler
     {
-      private readonly double               _total = 0;
       private readonly ILogger<NSubmitTest> logger_;
 
       public ResultHandler(ILogger<NSubmitTest> logger)
         => logger_ = logger;
+
+      public int NbResults { get; set; }
 
 
       public void HandleError(ServiceInvocationException e,
                               string                     taskId)
       {
         logger_.LogError($"Error from {taskId} : " + e.Message);
+        NbResults++;
         throw new ApplicationException($"Error from {taskId}",
                                        e);
       }
@@ -143,6 +159,8 @@ namespace ArmoniK.Samples.Client
                                                         values.ConvertToArray()));
             break;
         }
+
+        NbResults++;
       }
     }
   }
