@@ -584,7 +584,7 @@ namespace Armonik.Samples.Symphony.Client
 
       while (missing.Count != 0)
       {
-        missing.Batch(10000)
+        missing.ToChunk(10000)
                .ToList()
                .ForEach(bucket =>
                         {
