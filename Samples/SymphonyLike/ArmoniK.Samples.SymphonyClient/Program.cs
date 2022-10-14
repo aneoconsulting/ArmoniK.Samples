@@ -119,7 +119,8 @@ namespace Armonik.Samples.Symphony.Client
                           ApplicationNamespace = "ArmoniK.Samples.Symphony.Packages",
                         };
 
-      var sessionService = client.CreateSession(taskOptions);
+      var sessionService = client.CreateSession(taskOptions,
+                                                250);
 
       _logger.LogInformation($"New session created : {sessionService}");
 
