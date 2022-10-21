@@ -52,35 +52,37 @@ namespace ArmoniK.Samples.Client
 {
   internal class Program
   {
-    private static IConfiguration   configuration_;
-    private static ILogger<Program> logger_;
+    private static IConfiguration   _configuration;
+    private static ILogger<Program> _logger;
 
     private static void Main(string[] args)
     {
       Console.WriteLine("Hello Armonik Unified Sample !");
 
-      Log.Logger = new LoggerConfiguration().MinimumLevel.Override("Microsoft",
-                                                                   LogEventLevel.Information)
-                                            .Enrich.FromLogContext()
-                                            .WriteTo.Console()
-                                            .CreateLogger();
+      var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+                                              .AddJsonFile("appsettings.json",
+                                                           true,
+                                                           true)
+                                              .AddEnvironmentVariables();
+
+      _configuration = builder.Build();
 
       var factory = new LoggerFactory(new[]
                                       {
-                                        new SerilogLoggerProvider(Log.Logger),
+                                        new SerilogLoggerProvider(new LoggerConfiguration().ReadFrom.Configuration(_configuration)
+                                                                                           .MinimumLevel.Override("Microsoft",
+                                                                                                                  LogEventLevel.Information)
+                                                                                           .Enrich.FromLogContext()
+                                                                                           .WriteTo.Console()
+                                                                                           .CreateLogger()),
                                       },
                                       new LoggerFilterOptions().AddFilter("Grpc",
                                                                           LogLevel.Error));
 
-      logger_ = factory.CreateLogger<Program>();
 
-      var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
-                                              .AddJsonFile("appsettings.json",
-                                                           true,
-                                                           false)
-                                              .AddEnvironmentVariables();
+      _logger = factory.CreateLogger<Program>();
 
-      configuration_ = builder.Build();
+      _configuration = builder.Build();
 
       var taskOptions = new TaskOptions
                         {
@@ -98,14 +100,15 @@ namespace ArmoniK.Samples.Client
                         };
 
       var props = new Properties(taskOptions,
-                                 configuration_.GetSection("Grpc")["EndPoint"],
-                                 5001);
+                                 _configuration.GetSection("Grpc")["EndPoint"]);
 
-      using var sessionService      = ServiceFactory.CreateService(props);
-      using var sessionServiceAdmin = ServiceFactory.GetServiceAdmin(props);
-      var       handler             = new ResultHandler(logger_);
+      using var sessionService = ServiceFactory.CreateService(props,
+                                                              factory);
+      using var sessionServiceAdmin = ServiceFactory.GetServiceAdmin(props,
+                                                                     factory);
+      var handler = new ResultHandler(_logger);
 
-      logger_.LogInformation("Running Simple execution test with UnifiedApi");
+      _logger.LogInformation("Running Simple execution test with UnifiedApi");
 
 
       SimpleExecution(sessionService,
@@ -206,24 +209,24 @@ namespace ArmoniK.Samples.Client
       Thread.Sleep(15000);
 
       var countRunningTasks = serviceAdmin.AdminMonitoringService.CountCompletedTasksBySession(sessionService.SessionId);
-      logger_.LogInformation($"Number of completed tasks after 15 seconds is {countRunningTasks}");
+      _logger.LogInformation($"Number of completed tasks after 15 seconds is {countRunningTasks}");
 
       //Cancel all the session
-      logger_.LogInformation("Cancel the whole session");
+      _logger.LogInformation("Cancel the whole session");
       serviceAdmin.AdminMonitoringService.CancelSession(sessionService.SessionId);
 
       //Get the count of running tasks after 10 s
       Thread.Sleep(10000);
       //Cancel all the session
       var countCancelTasks = serviceAdmin.AdminMonitoringService.CountCancelTasksBySession(sessionService.SessionId);
-      logger_.LogInformation($"Number of canceled tasks after Session cancel is {countCancelTasks}");
+      _logger.LogInformation($"Number of canceled tasks after Session cancel is {countCancelTasks}");
 
       countRunningTasks = serviceAdmin.AdminMonitoringService.CountCompletedTasksBySession(sessionService.SessionId);
-      logger_.LogInformation($"Number of running tasks after Session cancel is {countRunningTasks}");
+      _logger.LogInformation($"Number of running tasks after Session cancel is {countRunningTasks}");
 
 
       var countErrorTasks = serviceAdmin.AdminMonitoringService.CountErrorTasksBySession(sessionService.SessionId);
-      logger_.LogInformation($"Number of error tasks after Session cancel is {countErrorTasks}");
+      _logger.LogInformation($"Number of error tasks after Session cancel is {countErrorTasks}");
     }
 
     // Handler for Service Clients
