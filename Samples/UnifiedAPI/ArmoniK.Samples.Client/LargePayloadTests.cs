@@ -87,10 +87,12 @@ namespace ArmoniK.Samples.Client
     private Service Service { get; }
 
     internal void LargePayloadSubmit(long nbTasks   = 100,
-                                     int  nbElement = 64000)
+                                     int  nbElement = 64000,
+                                     int workloadTimeInMs = 1)
     {
       var periodicInfo = ComputeVector(nbTasks,
-                                       nbElement);
+                                       nbElement,
+                                       workloadTimeInMs);
 
       Service.Dispose();
       periodicInfo.Dispose();
@@ -102,12 +104,12 @@ namespace ArmoniK.Samples.Client
     /// <param name="nbTasks">The number of task to submit</param>
     /// <param name="nbElement">The number of element n x M in the vector</param>
     private IDisposable ComputeVector(long nbTasks,
-                                      int  nbElement)
+                                      int  nbElement,
+                                      int workloadTimeInMs = 1)
     {
       var       indexTask        = 0;
       var       prevIndex        = 0;
       const int elapsed          = 30;
-      const int workloadTimeInMs = 1;
 
       var numbers = Enumerable.Range(0,
                                      nbElement)
