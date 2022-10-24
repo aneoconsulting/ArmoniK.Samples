@@ -83,18 +83,27 @@ namespace ArmoniK.Samples.Client
                                            description:
                                            $"An option to set the number of Bytes for the client payload. Setting this option will override --nbElement value Default {64000 * 8} Bytes",
                                            getDefaultValue: () => 0);
+
+      var workLoadTimeInMs = new Option<int>("--workLoadTimeInMs",
+                                             description:
+                                             $"Workload time in milliseconds. Time spent by a task to execute itself in the worker",
+                                             getDefaultValue: () => 1);
+
       pTaskCommand.Add(numberTaskOption);
       pTaskCommand.Add(numberOfDoubleElement);
       pTaskCommand.Add(numberOfBytes);
+      pTaskCommand.Add(workLoadTimeInMs);
 
       pTaskCommand.SetHandler((numberTaskOption,
                                numberOfDoubleElement,
-                               numberOfBytes) =>
+                               numberOfBytes,
+                               workLoadTimeInMs) =>
                               {
                                 logger_.LogInformation("Option Parallel task Run");
-                                logger_.LogInformation($"--nbTask    = {numberTaskOption}");
-                                logger_.LogInformation($"--nbElement = {numberOfDoubleElement}");
-                                logger_.LogInformation($"--nbBytes   = {numberOfBytes}");
+                                logger_.LogInformation($"--nbTask             = {numberTaskOption}");
+                                logger_.LogInformation($"--nbElement          = {numberOfDoubleElement}");
+                                logger_.LogInformation($"--nbBytes            = {numberOfBytes}");
+                                logger_.LogInformation($"--workLoadTimeInMs   = {workLoadTimeInMs}");
 
                                 numberOfDoubleElement = numberOfBytes == 0
                                                           ? numberOfDoubleElement
@@ -104,11 +113,13 @@ namespace ArmoniK.Samples.Client
                                                                   factory);
 
                                 test1.LargePayloadSubmit(numberTaskOption,
-                                                         numberOfDoubleElement);
+                                                         numberOfDoubleElement,
+                                                         workLoadTimeInMs);
                               },
                               numberTaskOption,
                               numberOfDoubleElement,
-                              numberOfBytes);
+                              numberOfBytes,
+                              workLoadTimeInMs);
 
 
       var simpleTestCommand = new Command("simple",
