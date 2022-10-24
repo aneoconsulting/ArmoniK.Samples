@@ -33,8 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.7.2-dduchunksubmit.15.05cad7b" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
+    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.7.4" />
   </ItemGroup>
 
   <ItemGroup>
