@@ -174,7 +174,7 @@ while [ $# -ne 0 ]; do
       shift
       ;;
 
-    -h)
+    -u | --usage)
       usage
       exit
       ;;
