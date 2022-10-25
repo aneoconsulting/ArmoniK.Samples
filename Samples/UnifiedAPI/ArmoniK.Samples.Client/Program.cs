@@ -74,7 +74,7 @@ namespace ArmoniK.Samples.Client
       var pTaskCommand = new Command("ptask",
                                      "Execute Parallel task with different number of task and/or different size of payload");
       var numberTaskOption = new Option<int>("--nbTask",
-                                             description: "An option to set the number of task",
+                                             description: "An option to set the number of tasks",
                                              getDefaultValue: () => 100);
       var numberOfDoubleElement = new Option<int>("--nbElement",
                                                   description: "An option to set the number of Double elements in a vector as Client payload",
