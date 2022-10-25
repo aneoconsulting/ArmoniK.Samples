@@ -5,12 +5,13 @@ on:
 
 jobs:
   versionning:
+    name: Versionning
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.genver.outputs.version }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ github.head_ref }}
         fetch-depth: 0
@@ -19,7 +20,9 @@ jobs:
       id: genver
       run: |
         VERSION=$(docker run --rm -v $(pwd):/repo codacy/git-version /bin/git-version --folder=/repo --release-branch=release --dev-branch=master)
-        echo "::set-output name=version::$VERSION"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Version : " >> $GITHUB_STEP_SUMMARY
+        echo "$VERSION" >> $GITHUB_STEP_SUMMARY
         echo $VERSION
 
   formatCsharp:
@@ -27,14 +30,14 @@ jobs:
     timeout-minutes: 15
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ github.ref }}
         fetch-depth: 0
         submodules: true
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.x
 
@@ -68,12 +71,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ github.head_ref }}
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.x
 
@@ -87,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
 
@@ -142,7 +145,7 @@ jobs:
           find /tmp/armoniklogs -name "*.log"
 
       - name: Store logs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Logs Worker
