@@ -72,7 +72,7 @@ namespace ArmoniK.Samples.Client
 
       var rootCommand = new RootCommand("Samples for unifiedAPI: Binary for simple tests and quick benchmarks");
       var pTaskCommand = new Command("ptask",
-                                     "Execute Parallel task with different number of task and/or different size of payload");
+                                     "Execute Parallel tasks with different number of tasks and/or different sizes of payload");
       var numberTaskOption = new Option<int>("--nbTask",
                                              description: "An option to set the number of tasks",
                                              getDefaultValue: () => 100);
