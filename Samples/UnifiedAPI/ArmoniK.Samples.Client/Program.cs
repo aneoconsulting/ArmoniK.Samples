@@ -85,8 +85,7 @@ namespace ArmoniK.Samples.Client
                                            getDefaultValue: () => 0);
 
       var workLoadTimeInMs = new Option<int>("--workLoadTimeInMs",
-                                             description:
-                                             $"Workload time in milliseconds. Time spent by a task to execute itself in the worker",
+                                             description: "Workload time in milliseconds. Time spent by a task to execute itself in the worker",
                                              getDefaultValue: () => 1);
 
       pTaskCommand.Add(numberTaskOption);
