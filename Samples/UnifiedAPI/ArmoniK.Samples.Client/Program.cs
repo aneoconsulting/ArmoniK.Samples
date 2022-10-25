@@ -122,7 +122,7 @@ namespace ArmoniK.Samples.Client
 
 
       var simpleTestCommand = new Command("simple",
-                                          "Execute Simple Unified API test with some Execution");
+                                          "Execute Simple Unified API test. It will submit 5 quick tasks and wait for 5 results");
 
       simpleTestCommand.SetHandler(() =>
                                    {
