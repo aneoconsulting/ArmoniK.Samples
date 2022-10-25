@@ -77,7 +77,7 @@ namespace ArmoniK.Samples.Client
                                              description: "An option to set the number of task",
                                              getDefaultValue: () => 100);
       var numberOfDoubleElement = new Option<int>("--nbElement",
-                                                  description: "An option to set the number of Double element a vector as Client payload",
+                                                  description: "An option to set the number of Double elements in a vector as Client payload",
                                                   getDefaultValue: () => 64000);
       var numberOfBytes = new Option<long>("--nbBytes",
                                            description:
