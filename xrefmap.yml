@@ -982,6 +982,22 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd
   nameWithType: ServiceApps.ComputeMadd
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce(System.Double[])
+  name: ComputeReduce(Double[])
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeReduce_System_Double___
+  commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce(System.Double[])
+  name.vb: ComputeReduce(Double())
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce(System.Double[])
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce(System.Double())
+  nameWithType: ServiceApps.ComputeReduce(Double[])
+  nameWithType.vb: ServiceApps.ComputeReduce(Double())
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce*
+  name: ComputeReduce
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeReduce_
+  commentId: Overload:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce
+  isSpec: "True"
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce
+  nameWithType: ServiceApps.ComputeReduce
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Byte[])
   name: ComputeReduceCube(Byte[])
   href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeReduceCube_System_Byte___
