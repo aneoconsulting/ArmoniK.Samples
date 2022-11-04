@@ -28,7 +28,9 @@ popd >/dev/null 2>&1
 TestDir=${BASEDIR}/$RELATIVE_PROJECT
 cd ${TestDir}
 
-export CPIP=$(kubectl get svc ingress -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
+CPIP=$(kubectl get svc ingress -n armonik -o jsonpath="{.status.loadBalancer.ingress[0]."ip"}")
+CPHOST=$(kubectl get svc ingress -n armonik -o jsonpath="{.status.loadBalancer.ingress[0]."hostname"}")
+export CPIP=${CPHOST:-$CPIP}
 export CPPort=$(kubectl get svc ingress -n armonik -o custom-columns="PORT:.spec.ports[1].port" --no-headers=true)
 export Grpc__Endpoint=http://$CPIP:$CPPort
 export Grpc__SSLValidation="disable"
@@ -107,7 +109,7 @@ function execute() {
   echo "cd ${TestDir}/${RELATIVE_CLIENT}/"
   cd "${TestDir}/${RELATIVE_CLIENT}/"
   echo dotnet run -r linux-x64 -f net6.0 -c ${configuration} $@
-  dotnet run -r linux-x64 -f net6.0 -c ${configuration} $@
+  dotnet run -r linux-x64 -f net6.0 -c ${configuration} -- $@
 }
 
 function usage() {
@@ -172,7 +174,7 @@ while [ $# -ne 0 ]; do
       shift
       ;;
 
-    -h | --help)
+    -u | --usage)
       usage
       exit
       ;;

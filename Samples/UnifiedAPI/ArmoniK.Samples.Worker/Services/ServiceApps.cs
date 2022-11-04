@@ -74,6 +74,9 @@ namespace ArmoniK.Samples.Unified.Worker.Services
       => inputs.Select(x => x * x * x)
                .ToArray();
 
+    public static double ComputeReduce(double[] inputs)
+      => inputs.Sum();
+
     public static double ComputeReduceCube(double[] inputs,
                                            int      workloadTimeInMs = 10)
     {
