@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
@@ -17,7 +17,7 @@
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
 
- </PropertyGroup>
+  </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>embedded</DebugType>
@@ -50,7 +50,8 @@
   </Target>
 
   <Target Name="ZipOutputPath" AfterTargets="CreateDirectories">
-    <ZipDirectory SourceDirectory="../publish/" DestinationFile="../packages/$(MSBuildProjectName)-v$(Version).zip" Overwrite="true" />
+    <ZipDirectory SourceDirectory="../publish/" DestinationFile="../packages/$(MSBuildProjectName)-v$(Version).zip"
+                  Overwrite="true" />
   </Target>
 
   <!--<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">

@@ -26,63 +26,100 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 
+using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Client.Exceptions;
 using ArmoniK.DevelopmentKit.Client.Factory;
 using ArmoniK.DevelopmentKit.Client.Services;
+using ArmoniK.DevelopmentKit.Client.Services.Admin;
 using ArmoniK.DevelopmentKit.Client.Services.Submitter;
+using ArmoniK.DevelopmentKit.Common;
 
+using Google.Protobuf.WellKnownTypes;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace ArmoniK.Samples.Client
 {
   internal class LargePayloadTests
   {
-    internal static void LargePayloadSubmit(Properties     properties,
-                                            ILoggerFactory loggerFactory)
+    public LargePayloadTests(IConfiguration configuration,
+                             ILoggerFactory factory)
     {
-      var logger         = loggerFactory.CreateLogger<LargePayloadTests>();
-      var sessionService = ServiceFactory.CreateService(properties);
+      TaskOptions = new TaskOptions
+                    {
+                      MaxDuration = new Duration
+                                    {
+                                      Seconds = 3600 * 24,
+                                    },
+                      MaxRetries           = 3,
+                      Priority             = 1,
+                      EngineType           = EngineType.Unified.ToString(),
+                      ApplicationVersion   = "1.0.0-700",
+                      ApplicationService   = "ServiceApps",
+                      ApplicationName      = "ArmoniK.Samples.Unified.Worker",
+                      ApplicationNamespace = "ArmoniK.Samples.Unified.Worker.Services",
+                    };
 
-      var handler = new ResultForLargeTaskHandler(logger);
+      Props = new Properties(TaskOptions,
+                             configuration.GetSection("Grpc")["EndPoint"],
+                             5001);
 
-      var periodicInfo = ComputeVector(sessionService,
-                                       logger,
-                                       1000,
-                                       64000,
-                                       handler);
+      Logger = factory.CreateLogger<LargePayloadTests>();
 
-      sessionService.Dispose();
+      Service = ServiceFactory.CreateService(Props,
+                                             factory);
+      ServiceAdmin = ServiceFactory.GetServiceAdmin(Props,
+                                                    factory);
+      ResultHandle = new ResultForLargeTaskHandler(Logger);
+    }
+
+    public ServiceAdmin ServiceAdmin { get; set; }
+
+    private ResultForLargeTaskHandler ResultHandle { get; }
+
+    public ILogger<LargePayloadTests> Logger { get; set; }
+
+    public Properties Props { get; set; }
+
+    public TaskOptions TaskOptions { get; set; }
+
+    private Service Service { get; }
+
+    internal void LargePayloadSubmit(long nbTasks          = 100,
+                                     int  nbElement        = 64000,
+                                     int  workloadTimeInMs = 1)
+    {
+      var periodicInfo = ComputeVector(nbTasks,
+                                       nbElement,
+                                       workloadTimeInMs);
+
+      Service.Dispose();
       periodicInfo.Dispose();
     }
 
     /// <summary>
     ///   The first test developed to validate dependencies subTasking
     /// </summary>
-    /// <param name="sessionService"></param>
-    /// <param name="logger"></param>
     /// <param name="nbTasks">The number of task to submit</param>
     /// <param name="nbElement">The number of element n x M in the vector</param>
-    /// <param name="resultForLargeTaskHandler"></param>
-    private static IDisposable ComputeVector(Service                    sessionService,
-                                             ILogger<LargePayloadTests> logger,
-                                             int                        nbTasks,
-                                             int                        nbElement,
-                                             ResultForLargeTaskHandler  resultForLargeTaskHandler)
+    private IDisposable ComputeVector(long nbTasks,
+                                      int  nbElement,
+                                      int  workloadTimeInMs = 1)
     {
-      var       indexTask        = 0;
-      var       prevIndex        = 0;
-      const int elapsed          = 30;
-      const int workloadTimeInMs = 1;
+      var       indexTask = 0;
+      var       prevIndex = 0;
+      const int elapsed   = 30;
 
       var numbers = Enumerable.Range(0,
                                      nbElement)
                               .Select(x => (double)x)
                               .ToArray();
-      logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbElement * 128} Ko Total : {nbTasks * nbElement / 128} Ko...   ===");
+      Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbElement * 128} Ko Total : {nbTasks * nbElement / 128} Ko...   ===");
       var sw = Stopwatch.StartNew();
       var periodicInfo = Utils.PeriodicInfo(() =>
                                             {
-                                              logger.LogInformation($"{indexTask}/{nbTasks} Tasks. " + $"Got {resultForLargeTaskHandler.NbResults} results. " +
+                                              Logger.LogInformation($"{indexTask}/{nbTasks} Tasks. " + $"Got {ResultHandle.NbResults} results. " +
                                                                     $"Check Submission perf : Payload {(indexTask - prevIndex) * nbElement * 128.0 / elapsed:0.0} Ko/s (inst), " +
                                                                     $"{(indexTask - prevIndex) / (double)elapsed:0.00} tasks/s (inst), " +
                                                                     $"{indexTask * 1000.0 / sw.ElapsedMilliseconds:0.00} task/s (avg), " +
@@ -94,23 +131,23 @@ namespace ArmoniK.Samples.Client
 
       for (indexTask = 0; indexTask < nbTasks; indexTask++)
       {
-        sessionService.Submit("ComputeReduceCube",
-                              Utils.ParamsHelper(numbers,
-                                                 workloadTimeInMs),
-                              resultForLargeTaskHandler);
+        Service.Submit("ComputeReduceCube",
+                       Utils.ParamsHelper(numbers,
+                                          workloadTimeInMs),
+                       ResultHandle);
       }
 
-      logger.LogInformation($"{nbTasks} tasks executed in : {sw.ElapsedMilliseconds / 1000} secs with Total bytes {nbTasks * nbElement / 128} Ko");
+      Logger.LogInformation($"{nbTasks} tasks executed in : {sw.ElapsedMilliseconds / 1000} secs with Total bytes {nbTasks * nbElement / 128} Ko");
 
       return periodicInfo;
     }
 
     private class ResultForLargeTaskHandler : IServiceInvocationHandler
     {
-      private readonly ILogger<LargePayloadTests> logger_;
+      private readonly ILogger<LargePayloadTests> Logger_;
 
-      public ResultForLargeTaskHandler(ILogger<LargePayloadTests> logger)
-        => logger_ = logger;
+      public ResultForLargeTaskHandler(ILogger<LargePayloadTests> Logger)
+        => Logger_ = Logger;
 
       public int NbResults { get; private set; }
 
@@ -125,11 +162,11 @@ namespace ArmoniK.Samples.Client
       {
         if (e.StatusCode == ArmonikStatusCode.TaskCanceled)
         {
-          logger_.LogWarning($"Warning from {taskId} : " + e.Message);
+          Logger_.LogWarning($"Warning from {taskId} : " + e.Message);
         }
         else
         {
-          logger_.LogError($"Error from {taskId} : " + e.Message);
+          Logger_.LogError($"Error from {taskId} : " + e.Message);
           throw new ApplicationException($"Error from {taskId}",
                                          e);
         }
@@ -147,7 +184,7 @@ namespace ArmoniK.Samples.Client
         switch (response)
         {
           case null:
-            logger_.LogInformation("Task finished but nothing returned in Result");
+            Logger_.LogInformation("Task finished but nothing returned in Result");
             break;
         }
 

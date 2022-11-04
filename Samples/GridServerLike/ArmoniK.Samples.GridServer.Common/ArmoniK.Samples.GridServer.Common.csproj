@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net5.0;net6.0;net48</TargetFrameworks>
@@ -14,7 +14,7 @@
     <IsPackable>true</IsPackable>
     <PublishUrl>../publish/$(MSBuildProjectName)/$(Version)</PublishUrl>
     <LangVersion>latest</LangVersion>
- </PropertyGroup>
+  </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48'">
     <PackageReference Include="System.Text.Json" Version="6.0.6" />
