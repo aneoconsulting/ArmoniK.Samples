@@ -113,7 +113,7 @@ function execute() {
 }
 
 function usage() {
-  echo "Usage: $0 [option...]  with : " >&2
+  echo "Usage: $0 [script options...] [-- binary options...] with : " >&2
   echo
   cat <<-EOF
         no option           : To build and Run tests
@@ -131,6 +131,7 @@ EOF
   exit 0
 }
 
+# shellcheck disable=SC2120
 function printConfiguration() {
   echo "Running script $0 $@"
   echo
@@ -141,6 +142,7 @@ function printConfiguration() {
 
 function main() {
 args=()
+binargs=()
 
 while [ $# -ne 0 ]; do
   echo "NB Arguments : $#"
@@ -174,9 +176,19 @@ while [ $# -ne 0 ]; do
       shift
       ;;
 
-    -u | --usage)
+    -h | --help)
       usage
       exit
+      ;;
+
+    --)
+      shift
+      while [ $# -ne 0 ]; do
+        binargs+=("$1")
+        shift
+      done
+      echo "Binray arguments : ${binargs[*]}"
+      break
       ;;
 
     *)
@@ -196,7 +208,7 @@ echo "List of args : ${args[*]}"
     echo "Execute default run"
     build
     deploy
-    execute "${args[@]}"
+    execute "${binargs[@]}"
     exit 0
   fi
 
@@ -205,38 +217,38 @@ echo "List of args : ${args[*]}"
     case "${args[0]}" in
     -r | --run)
       args=("${args[@]:1}") # past argument=value
-      echo "Only execute without build '${args[@]}'"
-      execute "${args[@]}"
+      echo "Only execute without build '${binargs[@]}'"
+      execute "${binargs[@]}"
       break
       ;;
     -b | --build)
       args=("${args[@]:1}") # past argument=value
-      echo "Only execute without build '${args[@]}'"
+      echo "Only execute without build '${binargs[@]}'"
       build
       break
       ;;
     -d | --deploy)
       args=("${args[@]:1}") # past argument=value
-      echo "Only deploy package'${args[@]}'"
+      echo "Only deploy package'${binargs[@]}'"
       deploy
       break
       ;;
     -a)
       # all build and execute
 	    args=("${args[@]:1}") # past argument=value
-      echo "Build and execute '${args[@]}'"
+      echo "Build and execute '${binargs[@]}'"
       break
       build
       deploy
-      execute "${args[@]}"
+      execute "${binargs[@]}"
       ;;
     *)
 	# unknown option
-      echo "Running all with args ['${args[@]}']"
-      echo "Build and execute '${args[@]}'"
+      echo "Running all with args ['${binargs[@]}']"
+      echo "Build and execute '${binargs[@]}'"
       build
       deploy
-      execute "${args[@]}"
+      execute "${binargs[@]}"
       exit 0
       ;;
     esac
