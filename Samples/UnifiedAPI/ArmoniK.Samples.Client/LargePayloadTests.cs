@@ -115,12 +115,12 @@ namespace ArmoniK.Samples.Client
                                      nbElement)
                               .Select(x => (double)x)
                               .ToArray();
-      Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbElement * 128} Ko Total : {nbTasks * nbElement / 128} Ko...   ===");
+      Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbElement / 128} Ko Total : {nbTasks * nbElement / 128} Ko...   ===");
       var sw = Stopwatch.StartNew();
       var periodicInfo = Utils.PeriodicInfo(() =>
                                             {
                                               Logger.LogInformation($"{indexTask}/{nbTasks} Tasks. " + $"Got {ResultHandle.NbResults} results. " +
-                                                                    $"Check Submission perf : Payload {(indexTask - prevIndex) * nbElement * 128.0 / elapsed:0.0} Ko/s (inst), " +
+                                                                    $"Check Submission perf : Payload {(indexTask - prevIndex) * nbElement / 128.0 / elapsed:0.0} Ko/s (inst), " +
                                                                     $"{(indexTask - prevIndex) / (double)elapsed:0.00} tasks/s (inst), " +
                                                                     $"{indexTask * 1000.0 / sw.ElapsedMilliseconds:0.00} task/s (avg), " +
                                                                     $"{indexTask * nbElement / 128.0 / (sw.ElapsedMilliseconds / 1000.0):0.00} Ko/s (avg)");
