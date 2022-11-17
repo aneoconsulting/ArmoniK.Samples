@@ -43,7 +43,10 @@ namespace ArmoniK.Samples.Client
 {
   internal class SimpleUnifiedAPI : IDisposable
   {
+    private readonly int workloadTimeInMs_ = 10;
+
     public SimpleUnifiedAPI(IConfiguration configuration,
+                            int            workLoadTimeInMs,
                             ILoggerFactory factory)
     {
       TaskOptions = new TaskOptions
@@ -61,14 +64,17 @@ namespace ArmoniK.Samples.Client
                       ApplicationNamespace = "ArmoniK.Samples.Unified.Worker.Services",
                     };
 
+      var endpoint = configuration.GetSection("Grpc")["EndPoint"];
+
       Props = new Properties(TaskOptions,
-                             configuration.GetSection("Grpc")["EndPoint"],
+                             endpoint,
                              5001);
 
       Logger = factory.CreateLogger<SimpleUnifiedAPI>();
 
-      Service      = ServiceFactory.CreateService(Props);
-      ResultHandle = new ResultHandler(Logger);
+      Service           = ServiceFactory.CreateService(Props);
+      ResultHandle      = new ResultHandler(Logger);
+      workloadTimeInMs_ = workLoadTimeInMs;
     }
 
     private ResultHandler ResultHandle { get; }
@@ -104,7 +110,8 @@ namespace ArmoniK.Samples.Client
                      ResultHandle);
 
       Service.Submit("ComputeReduceCube",
-                     Utils.ParamsHelper(numbers),
+                     Utils.ParamsHelper(numbers,
+                                        workloadTimeInMs_),
                      ResultHandle);
 
       Service.Submit("ComputeReduceCube",

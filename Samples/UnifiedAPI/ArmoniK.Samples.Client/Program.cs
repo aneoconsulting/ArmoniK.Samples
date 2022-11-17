@@ -127,8 +127,10 @@ namespace ArmoniK.Samples.Client
       simpleTestCommand.SetHandler(() =>
                                    {
                                      logger_.LogInformation("Running Simple execution test with UnifiedApi");
-                                     new SimpleUnifiedAPI(configuration_,
-                                                          factory).SimpleExecution();
+                                     using var submitter = new SimpleUnifiedAPI(configuration_,
+                                                                                1,
+                                                                                factory);
+                                     submitter.SimpleExecution();
                                    });
 
       var nTaskCommand = new Command("ntask",
@@ -151,8 +153,10 @@ namespace ArmoniK.Samples.Client
       rootCommand.SetHandler(() =>
                              {
                                logger_.LogInformation("Running Simple execution test with UnifiedApi");
-                               new SimpleUnifiedAPI(configuration_,
-                                                    factory).SimpleExecution();
+                               using var submitter = new SimpleUnifiedAPI(configuration_,
+                                                                          1,
+                                                                          factory);
+                               submitter.SimpleExecution();
                              });
 
       await rootCommand.InvokeAsync(args);
