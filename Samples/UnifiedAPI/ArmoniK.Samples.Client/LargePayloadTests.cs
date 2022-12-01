@@ -44,7 +44,8 @@ namespace ArmoniK.Samples.Client
   internal class LargePayloadTests
   {
     public LargePayloadTests(IConfiguration configuration,
-                             ILoggerFactory factory)
+                             ILoggerFactory factory,
+                             string         partition)
     {
       TaskOptions = new TaskOptions
                     {
@@ -59,6 +60,7 @@ namespace ArmoniK.Samples.Client
                       ApplicationService   = "ServiceApps",
                       ApplicationName      = "ArmoniK.Samples.Unified.Worker",
                       ApplicationNamespace = "ArmoniK.Samples.Unified.Worker.Services",
+                      PartitionId          = partition,
                     };
 
       Props = new Properties(TaskOptions,
