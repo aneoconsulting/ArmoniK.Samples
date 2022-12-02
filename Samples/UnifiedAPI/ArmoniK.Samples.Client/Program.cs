@@ -88,28 +88,38 @@ namespace ArmoniK.Samples.Client
                                              description: "Workload time in milliseconds. Time spent by a task to execute itself in the worker",
                                              getDefaultValue: () => 1);
 
+      var partition = new Option<string>("--partition",
+                                         () => "",
+                                         "specify the partition to use for the session.");
+
+
       pTaskCommand.Add(numberTaskOption);
       pTaskCommand.Add(numberOfDoubleElement);
       pTaskCommand.Add(numberOfBytes);
       pTaskCommand.Add(workLoadTimeInMs);
+      pTaskCommand.Add(partition);
+
 
       pTaskCommand.SetHandler((numberTaskOption,
                                numberOfDoubleElement,
                                numberOfBytes,
-                               workLoadTimeInMs) =>
+                               workLoadTimeInMs,
+                               partition) =>
                               {
                                 logger_.LogInformation("Option Parallel task Run");
                                 logger_.LogInformation($"--nbTask             = {numberTaskOption}");
                                 logger_.LogInformation($"--nbElement          = {numberOfDoubleElement}");
                                 logger_.LogInformation($"--nbBytes            = {numberOfBytes}");
                                 logger_.LogInformation($"--workLoadTimeInMs   = {workLoadTimeInMs}");
+                                logger_.LogInformation($"--partition          = {partition}");
 
                                 numberOfDoubleElement = numberOfBytes == 0
                                                           ? numberOfDoubleElement
                                                           : (int)(numberOfBytes / 8);
 
                                 var test1 = new LargePayloadTests(configuration_,
-                                                                  factory);
+                                                                  factory,
+                                                                  partition);
 
                                 test1.LargePayloadSubmit(numberTaskOption,
                                                          numberOfDoubleElement,
@@ -118,7 +128,8 @@ namespace ArmoniK.Samples.Client
                               numberTaskOption,
                               numberOfDoubleElement,
                               numberOfBytes,
-                              workLoadTimeInMs);
+                              workLoadTimeInMs,
+                              partition);
 
 
       var simpleTestCommand = new Command("simple",
