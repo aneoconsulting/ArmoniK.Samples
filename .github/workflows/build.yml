@@ -87,6 +87,20 @@ jobs:
   testInfraWorker:
     needs:
       - buildProjects
+    strategy:
+      matrix:
+        scneario:
+           - --nbTask 224  --nbInputBytes 224  503680 --nbOutputBytes 226016  --workLoadTimeInMs 46560
+           - --nbTask 2688 --nbInputBytes 2688 516608 --nbOutputBytes 226204  --workLoadTimeInMs 54100
+           - --nbTask 224  --nbInputBytes 224  503680 --nbOutputBytes 226016  --workLoadTimeInMs 46560
+           - --nbTask 7842 --nbInputBytes 7842 389504 --nbOutputBytes 124792  --workLoadTimeInMs 60880
+           - --nbTask 224  --nbInputBytes 224  504192 --nbOutputBytes 226016  --workLoadTimeInMs 46790
+           - --nbTask 8470 --nbInputBytes 8470 391680 --nbOutputBytes 124377  --workLoadTimeInMs 68960
+           - --nbTask 222  --nbInputBytes 222  507392 --nbOutputBytes 225432  --workLoadTimeInMs 47910
+           - --nbTask 1206 --nbInputBytes 1206 390528 --nbOutputBytes 123774  --workLoadTimeInMs 51580
+           - --nbTask 6609 --nbInputBytes 6609 68992  --nbOutputBytes  25940  --workLoadTimeInMs 46110
+ 
+      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -99,24 +113,11 @@ jobs:
         with:
           ingress: 'None'
 
-      - name: Run GridServerLike
+      - name: Run StressTests
         run: |
          cd tools/tests
          mkdir -p ${HOME}/data
-         bash -x ./gridserver_like.sh
-
-      - name: Run SymphonyLike
-        run: |
-         cd tools/tests
-         echo "WorkingDirectory : [$(pwd -P)]"
-         mkdir -p ${HOME}/data
-         bash -x ./symphony_like.sh
-
-      - name: Run UnifiedAPI
-        run: |
-         cd tools/tests
-         mkdir -p ${HOME}/data
-         bash -x ./unified_api.sh
+         bash -x ./stress-tests.sh -s3 -e http://a4dba2126f2864d768d5bb6290bb5321-1129828734.eu-west-3.elb.amazonaws.com:5001 -- stressTest ${{ matrix.scenarios }}
 
       - name: Run HtcMock SymphonyLike
         run: |

@@ -27,12 +27,13 @@ using System.Diagnostics;
 using System.Linq;
 
 using ArmoniK.Api.gRPC.V1;
-using ArmoniK.DevelopmentKit.Client.Exceptions;
-using ArmoniK.DevelopmentKit.Client.Factory;
-using ArmoniK.DevelopmentKit.Client.Services;
-using ArmoniK.DevelopmentKit.Client.Services.Admin;
-using ArmoniK.DevelopmentKit.Client.Services.Submitter;
+using ArmoniK.DevelopmentKit.Client.Common;
+using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
+using ArmoniK.DevelopmentKit.Client.Unified.Factory;
+using ArmoniK.DevelopmentKit.Client.Unified.Services.Admin;
+using ArmoniK.DevelopmentKit.Client.Unified.Services.Submitter;
 using ArmoniK.DevelopmentKit.Common;
+using ArmoniK.Samples.Common;
 
 using Google.Protobuf.WellKnownTypes;
 
@@ -64,8 +65,7 @@ namespace ArmoniK.Samples.Client
                     };
 
       Props = new Properties(TaskOptions,
-                             configuration.GetSection("Grpc")["EndPoint"],
-                             5001);
+                             configuration.GetSection("Grpc")["EndPoint"]);
 
       Logger = factory.CreateLogger<LargePayloadTests>();
 

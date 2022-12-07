@@ -136,7 +136,7 @@ function printConfiguration() {
   echo "Running script $0 $@"
   echo
   echo "SSL check strong auth server [${Grpc__SSLValidation}]"
-  echo "SSL Client file [${Grpc__ClientCert}}"
+  echo "SSL Client file [${Grpc__ClientCert}]"
   echo
 }
 

@@ -26,7 +26,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
-using ArmoniK.DevelopmentKit.Worker.Grid;
+using ArmoniK.DevelopmentKit.Worker.Unified;
 using ArmoniK.Samples.Common;
 
 using Microsoft.Extensions.Configuration;

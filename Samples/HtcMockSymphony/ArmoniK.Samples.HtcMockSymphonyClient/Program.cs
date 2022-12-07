@@ -28,8 +28,8 @@ using System.IO;
 using System.Threading;
 
 using ArmoniK.Api.gRPC.V1;
+using ArmoniK.DevelopmentKit.Client.Symphony;
 using ArmoniK.DevelopmentKit.Common;
-using ArmoniK.DevelopmentKit.SymphonyApi.Client;
 using ArmoniK.Samples.HtcMockSymphonyClient;
 using ArmoniK.Samples.HtcMockSymphonyLike.Client;
 
