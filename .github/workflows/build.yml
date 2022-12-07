@@ -111,6 +111,8 @@ jobs:
       - uses: aneoconsulting/ArmoniK@main
         id: deploy-infra
         with:
+          worker-tag: 0.7.5-pretests.85.7d8df8d
+          core-tag: 0.8.0-jgfix743.62.87481d31
           ingress: 'None'
 
       - name: Run StressTests
@@ -118,22 +120,6 @@ jobs:
          cd tools/tests
          mkdir -p ${HOME}/data
          bash -x ./stress-tests.sh -s3 -e http://a4dba2126f2864d768d5bb6290bb5321-1129828734.eu-west-3.elb.amazonaws.com:5001 -- stressTest ${{ matrix.scenarios }}
-
-      - name: Run HtcMock SymphonyLike
-        run: |
-         export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-         export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-         export Grpc__Endpoint=http://$CPIP:$CPPort
-
-         cd Samples/HtcMockSymphony/
-         dotnet publish --self-contained -r linux-x64  -f net6.0 HtcMockSymphony.sln
-
-         mkdir -p ${{ steps.deploy-infra.outputs.host-path }}
-
-         cp -v packages/ArmoniK.Samples.HtcMockSymphonyPackage-v2.0.0.zip ${{ steps.deploy-infra.outputs.host-path }}
-
-         cd ArmoniK.Samples.HtcMockSymphonyClient/
-         dotnet bin/Debug/net6.0/linux-x64/ArmoniK.Samples.HtcMockSymphonyClient.dll
 
       - name: Copy logs
         if: always()
