@@ -73,7 +73,7 @@ namespace Armonik.Samples.StressTests.Worker
 
 
     public double[] ComputeWorkLoad(double[] input,
-                                    long      nbOutputBytes,
+                                    long     nbOutputBytes,
                                     int      workLoadTimeInMs)
     {
       if (input is not

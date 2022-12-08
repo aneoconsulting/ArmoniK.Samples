@@ -106,7 +106,6 @@ namespace Armonik.Samples.StressTests.Client
       periodicInfo.Dispose();
 
       Logger.LogInformation($"Total result is {ResultHandle.Total}");
-
     }
 
     /// <summary>
@@ -152,7 +151,8 @@ namespace Armonik.Samples.StressTests.Client
                                                                                    workloadTimeInMs),
                                                                 ResultHandle));
 
-      var taskIds = Task.WhenAll(result).Result.ToHashSet();
+      var taskIds = Task.WhenAll(result)
+                        .Result.ToHashSet();
       indexTask = taskIds.Count();
 
       Logger.LogInformation($"{taskIds.Count}/{nbTasks} tasks executed in : {sw.ElapsedMilliseconds / 1000.0:0.00} secs with Total bytes {nbTasks * nbInputBytes / 1024.0:0.00} Ko");
@@ -167,8 +167,8 @@ namespace Armonik.Samples.StressTests.Client
       public ResultForStressTestsHandler(ILogger<StressTests> Logger)
         => Logger_ = Logger;
 
-      public int NbResults { get; private set; }
-      public double Total { get; private set; }
+      public int    NbResults { get; private set; }
+      public double Total     { get; private set; }
 
       /// <summary>
       ///   The callBack method which has to be implemented to retrieve error or exception

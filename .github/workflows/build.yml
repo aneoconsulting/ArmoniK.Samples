@@ -90,15 +90,15 @@ jobs:
     strategy:
       matrix:
         scenario:
-           - --nbTask 224  --nbInputBytes 224  503680 --nbOutputBytes 226016  --workLoadTimeInMs 46560
-           - --nbTask 2688 --nbInputBytes 2688 516608 --nbOutputBytes 226204  --workLoadTimeInMs 54100
-           - --nbTask 224  --nbInputBytes 224  503680 --nbOutputBytes 226016  --workLoadTimeInMs 46560
-           - --nbTask 7842 --nbInputBytes 7842 389504 --nbOutputBytes 124792  --workLoadTimeInMs 60880
-           - --nbTask 224  --nbInputBytes 224  504192 --nbOutputBytes 226016  --workLoadTimeInMs 46790
-           - --nbTask 8470 --nbInputBytes 8470 391680 --nbOutputBytes 124377  --workLoadTimeInMs 68960
-           - --nbTask 222  --nbInputBytes 222  507392 --nbOutputBytes 225432  --workLoadTimeInMs 47910
-           - --nbTask 1206 --nbInputBytes 1206 390528 --nbOutputBytes 123774  --workLoadTimeInMs 51580
-           - --nbTask 6609 --nbInputBytes 6609 68992  --nbOutputBytes  25940  --workLoadTimeInMs 46110
+           - --nbTask 224  --nbInputBytes 503680 --nbOutputBytes 226016  --workLoadTimeInMs 46560
+           - --nbTask 2688 --nbInputBytes 516608 --nbOutputBytes 226204  --workLoadTimeInMs 54100
+           - --nbTask 224  --nbInputBytes 503680 --nbOutputBytes 226016  --workLoadTimeInMs 46560
+           - --nbTask 7842 --nbInputBytes 389504 --nbOutputBytes 124792  --workLoadTimeInMs 60880
+           - --nbTask 224  --nbInputBytes 504192 --nbOutputBytes 226016  --workLoadTimeInMs 46790
+           - --nbTask 8470 --nbInputBytes 391680 --nbOutputBytes 124377  --workLoadTimeInMs 68960
+           - --nbTask 222  --nbInputBytes 507392 --nbOutputBytes 225432  --workLoadTimeInMs 47910
+           - --nbTask 1206 --nbInputBytes 390528 --nbOutputBytes 123774  --workLoadTimeInMs 51580
+           - --nbTask 6609 --nbInputBytes 68992  --nbOutputBytes  25940  --workLoadTimeInMs 46110
  
       fail-fast: false
     runs-on: ubuntu-latest
