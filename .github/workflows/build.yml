@@ -108,13 +108,6 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - uses: aneoconsulting/ArmoniK@main
-        id: deploy-infra
-        with:
-          worker-tag: 0.7.5-pretests.85.7d8df8d
-          core-tag: 0.8.0-jgfix743.62.87481d31
-          ingress: 'None'
-
       - name: Run StressTests
         run: |
          cd tools/tests
