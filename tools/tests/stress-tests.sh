@@ -28,10 +28,10 @@ popd >/dev/null 2>&1
 TestDir=${BASEDIR}/$RELATIVE_PROJECT
 cd ${TestDir}
 
-CPIP=$(kubectl get svc ingress -n armonik -o jsonpath="{.status.loadBalancer.ingress[0]."ip"}")
-CPHOST=$(kubectl get svc ingress -n armonik -o jsonpath="{.status.loadBalancer.ingress[0]."hostname"}")
+CPIP=$(kubectl get svc ingress -n armonik -o jsonpath="{.status.loadBalancer.ingress[0]."ip"}" || echo "failure")
+CPHOST=$(kubectl get svc ingress -n armonik -o jsonpath="{.status.loadBalancer.ingress[0]."hostname"}" || echo "failure")
 export CPIP=${CPHOST:-$CPIP}
-export CPPort=$(kubectl get svc ingress -n armonik -o custom-columns="PORT:.spec.ports[1].port" --no-headers=true)
+export CPPort=$(kubectl get svc ingress -n armonik -o custom-columns="PORT:.spec.ports[1].port" --no-headers=true || echo "failure")
 export Grpc__Endpoint=http://$CPIP:$CPPort
 export Grpc__SSLValidation="disable"
 export Grpc__CaCert=""
