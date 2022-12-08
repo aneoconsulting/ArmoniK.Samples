@@ -89,7 +89,7 @@ jobs:
       - buildProjects
     strategy:
       matrix:
-        scneario:
+        scenario:
            - --nbTask 224  --nbInputBytes 224  503680 --nbOutputBytes 226016  --workLoadTimeInMs 46560
            - --nbTask 2688 --nbInputBytes 2688 516608 --nbOutputBytes 226204  --workLoadTimeInMs 54100
            - --nbTask 224  --nbInputBytes 224  503680 --nbOutputBytes 226016  --workLoadTimeInMs 46560
@@ -119,7 +119,7 @@ jobs:
         run: |
          cd tools/tests
          mkdir -p ${HOME}/data
-         bash -x ./stress-tests.sh -e http://a4dba2126f2864d768d5bb6290bb5321-1129828734.eu-west-3.elb.amazonaws.com:5001 -- stressTest ${{ matrix.scenarios }}
+         bash -x ./stress-tests.sh -e http://a4dba2126f2864d768d5bb6290bb5321-1129828734.eu-west-3.elb.amazonaws.com:5001 -- stressTest ${{ matrix.scenario }}
 
       - name: Copy logs
         if: always()
