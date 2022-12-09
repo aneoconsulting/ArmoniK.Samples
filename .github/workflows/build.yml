@@ -114,20 +114,3 @@ jobs:
          mkdir -p ${HOME}/data
          bash -x ./stress-tests.sh -e http://a21c797c98c684f558956dbe67b0aff3-1462782799.eu-west-3.elb.amazonaws.com:5001 -- stressTest ${{ matrix.scenario }}
 
-      - name: Copy logs
-        if: always()
-        shell: bash
-        run: |
-          set -e
-          mkdir -p /tmp/armoniklogs
-          sudo cp -rL /var/log/pods/armonik_* /tmp/armoniklogs
-          sudo chown $USER -R /tmp/armoniklogs
-          find /tmp/armoniklogs -name "*.log"
-
-      - name: Store logs
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: Logs Worker
-          path: /tmp/armoniklogs/**/*.log
-          retention-days: 5

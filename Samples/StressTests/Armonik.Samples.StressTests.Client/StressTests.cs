@@ -28,9 +28,9 @@ using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Client.Common;
 using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
 using ArmoniK.DevelopmentKit.Client.Unified.Factory;
-using ArmoniK.DevelopmentKit.Client.Unified.Services.Admin;
 using ArmoniK.DevelopmentKit.Client.Unified.Services.Submitter;
 using ArmoniK.DevelopmentKit.Common;
+using ArmoniK.DevelopmentKit.Common.Extensions;
 using ArmoniK.Samples.Common;
 
 using Google.Protobuf.WellKnownTypes;
@@ -66,7 +66,7 @@ namespace Armonik.Samples.StressTests.Client
                              configuration.GetSection("Grpc")["EndPoint"])
               {
                 MaxConcurrentBuffer = 2,
-                MaxTasksPerBuffer   = 50,
+                MaxTasksPerBuffer   = 100,
                 MaxParallelChannel  = 2,
                 TimeTriggerBuffer   = TimeSpan.FromSeconds(5),
               };
@@ -75,12 +75,9 @@ namespace Armonik.Samples.StressTests.Client
 
       Service = ServiceFactory.CreateService(Props,
                                              factory);
-      ServiceAdmin = ServiceFactory.GetServiceAdmin(Props,
-                                                    factory);
+
       ResultHandle = new ResultForStressTestsHandler(Logger);
     }
-
-    public ServiceAdmin ServiceAdmin { get; set; }
 
     private ResultForStressTestsHandler ResultHandle { get; }
 
@@ -121,7 +118,6 @@ namespace Armonik.Samples.StressTests.Client
                                       int  workloadTimeInMs = 1)
     {
       var       indexTask = 0;
-      var       prevIndex = 0;
       const int elapsed   = 30;
 
       var inputArrayOfBytes = Enumerable.Range(0,
@@ -134,25 +130,25 @@ namespace Armonik.Samples.StressTests.Client
       var sw = Stopwatch.StartNew();
       var periodicInfo = Utils.PeriodicInfo(() =>
                                             {
-                                              Logger.LogInformation($"{indexTask}/{nbTasks} Tasks. " + $"Got {ResultHandle.NbResults} results. " +
-                                                                    $"Check Submission perf : Payload {(indexTask - prevIndex) * nbInputBytes / 1024.0 / elapsed:0.0} Ko/s (inst), " +
-                                                                    $"{(indexTask - prevIndex) / (double)elapsed:0.00} tasks/s (inst), " +
-                                                                    $"{indexTask * 1000.0 / sw.ElapsedMilliseconds:0.00} task/s (avg), " +
-                                                                    $"{indexTask * nbInputBytes / 1024.0 / (sw.ElapsedMilliseconds / 1000.0):0.00} Ko/s (avg)");
-                                              prevIndex = indexTask;
+                                              Logger.LogInformation($"Got {ResultHandle.NbResults} results. All tasks submitted ? {(indexTask == nbTasks).ToString()}");
                                             },
                                             elapsed);
 
       var result = Enumerable.Range(0,
                                     nbTasks)
-                             .Select(idx => Service.SubmitAsync("ComputeWorkLoad",
-                                                                Utils.ParamsHelper(inputArrayOfBytes,
-                                                                                   nbOutputBytes,
-                                                                                   workloadTimeInMs),
-                                                                ResultHandle));
+                             .AsParallel()
+                             .ToChunk(10)
+                             .Select(idx => idx.Select(subIdx => Service.SubmitAsync("ComputeWorkLoad",
+                                                                                     Utils.ParamsHelper(inputArrayOfBytes,
+                                                                                                        nbOutputBytes,
+                                                                                                        workloadTimeInMs),
+                                                                                     ResultHandle)));
 
-      var taskIds = Task.WhenAll(result)
-                        .Result.ToHashSet();
+      var taskIds = result.SelectMany(t => Task.WhenAll(t)
+                                               .Result)
+                          .ToHashSet();
+
+
       indexTask = taskIds.Count();
 
       Logger.LogInformation($"{taskIds.Count}/{nbTasks} tasks executed in : {sw.ElapsedMilliseconds / 1000.0:0.00} secs with Total bytes {nbTasks * nbInputBytes / 1024.0:0.00} Ko");
