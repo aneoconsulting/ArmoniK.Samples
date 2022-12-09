@@ -68,7 +68,7 @@ namespace Armonik.Samples.StressTests.Client
                 MaxConcurrentBuffer = 2,
                 MaxTasksPerBuffer   = 100,
                 MaxParallelChannel  = 2,
-                TimeTriggerBuffer   = TimeSpan.FromSeconds(5),
+                TimeTriggerBuffer   = TimeSpan.FromSeconds(10),
               };
 
       Logger = factory.CreateLogger<StressTests>();
@@ -136,16 +136,13 @@ namespace Armonik.Samples.StressTests.Client
 
       var result = Enumerable.Range(0,
                                     nbTasks)
-                             .AsParallel()
-                             .ToChunk(10)
-                             .Select(idx => idx.Select(subIdx => Service.SubmitAsync("ComputeWorkLoad",
+                             .Select( subInt => Service.SubmitAsync("ComputeWorkLoad",
                                                                                      Utils.ParamsHelper(inputArrayOfBytes,
                                                                                                         nbOutputBytes,
                                                                                                         workloadTimeInMs),
-                                                                                     ResultHandle)));
+                                                                                     ResultHandle)).ToList();
 
-      var taskIds = result.SelectMany(t => Task.WhenAll(t)
-                                               .Result)
+      var taskIds = Task.WhenAll(result).Result
                           .ToHashSet();
 
 
