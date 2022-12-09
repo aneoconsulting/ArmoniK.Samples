@@ -38,7 +38,7 @@ using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.Unified.Worker.Services
 {
-  public class ServiceApps : BaseService<ServiceApps>
+  public class ServiceApps : TaskSubmitterWorkerService
   {
     private readonly IConfiguration       configuration_;
     private readonly ILogger<ServiceApps> logger_;
