@@ -30,7 +30,6 @@ using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
 using ArmoniK.DevelopmentKit.Client.Unified.Factory;
 using ArmoniK.DevelopmentKit.Client.Unified.Services.Submitter;
 using ArmoniK.DevelopmentKit.Common;
-using ArmoniK.DevelopmentKit.Common.Extensions;
 using ArmoniK.Samples.Common;
 
 using Google.Protobuf.WellKnownTypes;
@@ -135,14 +134,18 @@ namespace Armonik.Samples.StressTests.Client
                                             elapsed);
 
       var result = Enumerable.Range(0,
-                                    nbTasks).Chunk(nbTasks / Props.MaxParallelChannel).AsParallel()
-                             .Select( subInt => subInt.Select( idx => Service.SubmitAsync("ComputeWorkLoad",
-                                                                                     Utils.ParamsHelper(inputArrayOfBytes,
-                                                                                                        nbOutputBytes,
-                                                                                                        workloadTimeInMs),
-                                                                                     ResultHandle)).ToList());
+                                    nbTasks)
+                             .Chunk(nbTasks / Props.MaxParallelChannel)
+                             .AsParallel()
+                             .Select(subInt => subInt.Select(idx => Service.SubmitAsync("ComputeWorkLoad",
+                                                                                        Utils.ParamsHelper(inputArrayOfBytes,
+                                                                                                           nbOutputBytes,
+                                                                                                           workloadTimeInMs),
+                                                                                        ResultHandle))
+                                                     .ToList());
 
-      var taskIds = result.SelectMany( t => Task.WhenAll(t).Result)
+      var taskIds = result.SelectMany(t => Task.WhenAll(t)
+                                               .Result)
                           .ToHashSet();
 
 
