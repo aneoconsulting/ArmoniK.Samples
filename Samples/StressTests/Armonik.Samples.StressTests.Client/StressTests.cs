@@ -22,15 +22,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
 using System.Diagnostics;
-using System.Linq;
 
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Client.Common;
 using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
 using ArmoniK.DevelopmentKit.Client.Unified.Factory;
-using ArmoniK.DevelopmentKit.Client.Unified.Services.Admin;
 using ArmoniK.DevelopmentKit.Client.Unified.Services.Submitter;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.Samples.Common;
@@ -40,13 +37,13 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace ArmoniK.Samples.Client
+namespace Armonik.Samples.StressTests.Client
 {
-  internal class LargePayloadTests
+  internal class StressTests
   {
-    public LargePayloadTests(IConfiguration configuration,
-                             ILoggerFactory factory,
-                             string         partition)
+    public StressTests(IConfiguration configuration,
+                       ILoggerFactory factory,
+                       string         partition)
     {
       TaskOptions = new TaskOptions
                     {
@@ -59,28 +56,31 @@ namespace ArmoniK.Samples.Client
                       EngineType           = EngineType.Unified.ToString(),
                       ApplicationVersion   = "1.0.0-700",
                       ApplicationService   = "ServiceApps",
-                      ApplicationName      = "ArmoniK.Samples.Unified.Worker",
-                      ApplicationNamespace = "ArmoniK.Samples.Unified.Worker.Services",
+                      ApplicationName      = "Armonik.Samples.StressTests.Worker",
+                      ApplicationNamespace = "Armonik.Samples.StressTests.Worker",
                       PartitionId          = partition,
                     };
 
-      Props = new Properties(TaskOptions,
-                             configuration.GetSection("Grpc")["EndPoint"]);
+      var props = new Properties(TaskOptions,
+                             configuration.GetSection("Grpc")["EndPoint"])
+              {
+                MaxConcurrentBuffer = 5,
+                MaxTasksPerBuffer   = 50,
+                MaxParallelChannel  = 5,
+                TimeTriggerBuffer   = TimeSpan.FromSeconds(10),
+              };
 
-      Logger = factory.CreateLogger<LargePayloadTests>();
+      Logger = factory.CreateLogger<StressTests>();
 
       Service = ServiceFactory.CreateService(Props,
                                              factory);
-      ServiceAdmin = ServiceFactory.GetServiceAdmin(Props,
-                                                    factory);
-      ResultHandle = new ResultForLargeTaskHandler(Logger);
+
+      ResultHandle = new ResultForStressTestsHandler(Logger);
     }
 
-    public ServiceAdmin ServiceAdmin { get; set; }
+    private ResultForStressTestsHandler ResultHandle { get; }
 
-    private ResultForLargeTaskHandler ResultHandle { get; }
-
-    public ILogger<LargePayloadTests> Logger { get; set; }
+    public ILogger<StressTests> Logger { get; set; }
 
     public Properties Props { get; set; }
 
@@ -88,70 +88,83 @@ namespace ArmoniK.Samples.Client
 
     private Service Service { get; }
 
-    internal void LargePayloadSubmit(long nbTasks          = 100,
-                                     int  nbElement        = 64000,
+    internal void LargePayloadSubmit(int  nbTasks          = 100,
+                                     long nbInputBytes     = 64000,
+                                     long nbOutputBytes    = 8,
                                      int  workloadTimeInMs = 1)
     {
       var periodicInfo = ComputeVector(nbTasks,
-                                       nbElement,
+                                       nbInputBytes,
+                                       nbOutputBytes,
                                        workloadTimeInMs);
 
       Service.Dispose();
       periodicInfo.Dispose();
+
+      Logger.LogInformation($"Total result is {ResultHandle.Total}");
     }
 
     /// <summary>
     ///   The first test developed to validate dependencies subTasking
     /// </summary>
     /// <param name="nbTasks">The number of task to submit</param>
-    /// <param name="nbElement">The number of element n x M in the vector</param>
-    private IDisposable ComputeVector(long nbTasks,
-                                      int  nbElement,
+    /// <param name="nbInputBytes">The number of element n x M in the vector</param>
+    /// <param name="nbOutputBytes">The number of bytes to expect as result</param>
+    /// <param name="workloadTimeInMs">The time spent to compute task</param>
+    private IDisposable ComputeVector(int  nbTasks,
+                                      long nbInputBytes,
+                                      long nbOutputBytes    = 8,
                                       int  workloadTimeInMs = 1)
     {
       var       indexTask = 0;
-      var       prevIndex = 0;
       const int elapsed   = 30;
 
-      var numbers = Enumerable.Range(0,
-                                     nbElement)
-                              .Select(x => (double)x)
-                              .ToArray();
-      Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbElement / 128} Ko Total : {nbTasks * nbElement / 128} Ko...   ===");
+      var inputArrayOfBytes = Enumerable.Range(0,
+                                               (int)(nbInputBytes / 8))
+                                        .Select(x => Math.Pow(42.0 * 8 / nbInputBytes,
+                                                              1        / 3.0))
+                                        .ToArray();
+
+      Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbInputBytes / 1024.0} Ko Total : {nbTasks * nbInputBytes / 1024.0} Ko...   ===");
       var sw = Stopwatch.StartNew();
       var periodicInfo = Utils.PeriodicInfo(() =>
                                             {
-                                              Logger.LogInformation($"{indexTask}/{nbTasks} Tasks. " + $"Got {ResultHandle.NbResults} results. " +
-                                                                    $"Check Submission perf : Payload {(indexTask - prevIndex) * nbElement / 128.0 / elapsed:0.0} Ko/s (inst), " +
-                                                                    $"{(indexTask - prevIndex) / (double)elapsed:0.00} tasks/s (inst), " +
-                                                                    $"{indexTask * 1000.0 / sw.ElapsedMilliseconds:0.00} task/s (avg), " +
-                                                                    $"{indexTask * nbElement / 128.0 / (sw.ElapsedMilliseconds / 1000.0):0.00} Ko/s (avg)");
-                                              prevIndex = indexTask;
+                                              Logger.LogInformation($"Got {ResultHandle.NbResults} results. All tasks submitted ? {(indexTask == nbTasks).ToString()}");
                                             },
                                             elapsed);
 
+      var result = Enumerable.Range(0,
+                                    nbTasks)
+                             .Chunk(nbTasks / Props.MaxParallelChannel)
+                             .AsParallel()
+                             .Select(subInt => subInt.Select(idx => Service.SubmitAsync("ComputeWorkLoad",
+                                                                                        Utils.ParamsHelper(inputArrayOfBytes,
+                                                                                                           nbOutputBytes,
+                                                                                                           workloadTimeInMs),
+                                                                                        ResultHandle))
+                                                     .ToList());
 
-      for (indexTask = 0; indexTask < nbTasks; indexTask++)
-      {
-        Service.Submit("ComputeReduceCube",
-                       Utils.ParamsHelper(numbers,
-                                          workloadTimeInMs),
-                       ResultHandle);
-      }
+      var taskIds = result.SelectMany(t => Task.WhenAll(t)
+                                               .Result)
+                          .ToHashSet();
 
-      Logger.LogInformation($"{nbTasks} tasks executed in : {sw.ElapsedMilliseconds / 1000} secs with Total bytes {nbTasks * nbElement / 128} Ko");
+
+      indexTask = taskIds.Count();
+
+      Logger.LogInformation($"{taskIds.Count}/{nbTasks} tasks executed in : {sw.ElapsedMilliseconds / 1000.0:0.00} secs with Total bytes {nbTasks * nbInputBytes / 1024.0:0.00} Ko");
 
       return periodicInfo;
     }
 
-    private class ResultForLargeTaskHandler : IServiceInvocationHandler
+    private class ResultForStressTestsHandler : IServiceInvocationHandler
     {
-      private readonly ILogger<LargePayloadTests> Logger_;
+      private readonly ILogger<StressTests> Logger_;
 
-      public ResultForLargeTaskHandler(ILogger<LargePayloadTests> Logger)
+      public ResultForStressTestsHandler(ILogger<StressTests> Logger)
         => Logger_ = Logger;
 
-      public int NbResults { get; private set; }
+      public int    NbResults { get; private set; }
+      public double Total     { get; private set; }
 
       /// <summary>
       ///   The callBack method which has to be implemented to retrieve error or exception
@@ -185,6 +198,9 @@ namespace ArmoniK.Samples.Client
       {
         switch (response)
         {
+          case double[] doubles:
+            Total += doubles.Sum();
+            break;
           case null:
             Logger_.LogInformation("Task finished but nothing returned in Result");
             break;

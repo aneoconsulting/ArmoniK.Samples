@@ -22,12 +22,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 
+using ArmoniK.DevelopmentKit.Common.Exceptions;
 using ArmoniK.DevelopmentKit.Worker.Unified;
-using ArmoniK.Samples.Common;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -36,9 +37,9 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;
 
-namespace ArmoniK.Samples.Unified.Worker.Services
+namespace Armonik.Samples.StressTests.Worker
 {
-  public class ServiceApps : TaskSubmitterWorkerService
+  public class ServiceApps : BaseService<ServiceApps>
   {
     private readonly IConfiguration       configuration_;
     private readonly ILogger<ServiceApps> logger_;
@@ -70,58 +71,46 @@ namespace ArmoniK.Samples.Unified.Worker.Services
       logger_ = factory.CreateLogger<ServiceApps>();
     }
 
-    public static double[] ComputeBasicArrayCube(double[] inputs)
-      => inputs.Select(x => x * x * x)
-               .ToArray();
 
-    public static double ComputeReduce(double[] inputs)
-      => inputs.Sum();
-
-    public static double ComputeReduceCube(double[] inputs,
-                                           int      workloadTimeInMs = 10)
+    public double[] ComputeWorkLoad(double[] input,
+                                    long     nbOutputBytes,
+                                    int      workLoadTimeInMs)
     {
-      Thread.Sleep(workloadTimeInMs);
+      if (input is not
+          {
+            Length: > 0,
+          } || nbOutputBytes <= 0)
+      {
+        logger_.LogInformation("Cannot execute function with nb element <= 0");
+        throw new WorkerApiException("Cannot execute function with nb bytes <= 0");
+      }
 
-      return inputs.Select(x => x * x * x)
-                   .Sum();
-    }
+      if (workLoadTimeInMs <= 0)
+      {
+        workLoadTimeInMs = 1;
+      }
 
-    public static double ComputeReduceCube(byte[] inputs)
-    {
-      var doubles = inputs.ConvertToArray();
+      var output = Enumerable.Range(0,
+                                    (int)(nbOutputBytes / 8))
+                             .Select(x => (double)x)
+                             .ToArray();
 
-      return doubles.Select(x => x * x * x)
-                    .Sum();
-    }
+      var result = input.Select(x => Math.Pow(x,
+                                              3.0))
+                        .Sum();
+      // Record start time
+      var start = Stopwatch.StartNew();
 
-    public static double[] ComputeMadd(byte[] inputs1,
-                                       byte[] inputs2,
-                                       double k)
-    {
-      var doubles1 = inputs1.ConvertToArray()
-                            .ToArray();
-      var doubles2 = inputs2.ConvertToArray()
-                            .ToArray();
-
-
-      return doubles1.Select((x,
-                              idx) => k * x * doubles2[idx])
-                     .ToArray();
-    }
-
-    public double[] NonStaticComputeMadd(byte[] inputs1,
-                                         byte[] inputs2,
-                                         double k)
-    {
-      var doubles1 = inputs1.ConvertToArray()
-                            .ToArray();
-      var doubles2 = inputs2.ConvertToArray()
-                            .ToArray();
+      while (start.ElapsedMilliseconds < workLoadTimeInMs)
+      {
+        for (var rIdx = 0; rIdx < output.Length; rIdx++)
+        {
+          output[rIdx] = result / output.Length;
+        }
+      }
 
 
-      return doubles1.Select((x,
-                              idx) => k * x * doubles2[idx])
-                     .ToArray();
+      return output;
     }
   }
 }
