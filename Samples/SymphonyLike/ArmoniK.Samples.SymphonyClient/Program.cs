@@ -32,9 +32,9 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ArmoniK.Api.gRPC.V1;
+using ArmoniK.DevelopmentKit.Client.Symphony;
 using ArmoniK.DevelopmentKit.Common;
-using ArmoniK.DevelopmentKit.SymphonyApi.Client;
-using ArmoniK.DevelopmentKit.SymphonyApi.Client.api;
+using ArmoniK.DevelopmentKit.Common.Extensions;
 
 using Armonik.Samples.Symphony.Common;
 

@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Armonik.Samples.StressTests.Worker": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:54346;http://localhost:54347"
+    }
+  }
+}
