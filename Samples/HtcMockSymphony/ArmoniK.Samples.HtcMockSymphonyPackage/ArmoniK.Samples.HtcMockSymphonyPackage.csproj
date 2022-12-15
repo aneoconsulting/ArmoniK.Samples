@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
@@ -34,7 +34,7 @@
 
   <ItemGroup>
     <PackageReference Include="Htc.Mock" Version="3.0.0-alpha11" />
-    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.8.1-SNAPSHOT.12.59c499d" />
+    <PackageReference Include="Armonik.DevelopmentKit.Worker.Symphony" Version="0.8.1-SNAPSHOT.12.59c499d" />
   </ItemGroup>
 
   <ItemGroup>
