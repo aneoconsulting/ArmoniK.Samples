@@ -162,7 +162,7 @@ namespace ArmoniK.Samples.Client
                               string                     taskId)
 
       {
-        if (e.StatusCode == ArmonikStatusCode.TaskCanceled)
+        if (e.StatusCode == ArmonikStatusCode.TaskCancelled)
         {
           Logger_.LogWarning($"Warning from {taskId} : " + e.Message);
         }
