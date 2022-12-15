@@ -61,13 +61,13 @@ namespace Armonik.Samples.StressTests.Client
                       PartitionId          = partition,
                     };
 
-      var props = new Properties(TaskOptions,
+      Props = new Properties(TaskOptions,
                              configuration.GetSection("Grpc")["EndPoint"])
               {
-                MaxConcurrentBuffer = 5,
-                MaxTasksPerBuffer   = 50,
-                MaxParallelChannel  = 5,
-                TimeTriggerBuffer   = TimeSpan.FromSeconds(10),
+                MaxConcurrentBuffers = 5,
+                MaxTasksPerBuffer    = 50,
+                MaxParallelChannels  = 5,
+                TimeTriggerBuffer    = TimeSpan.FromSeconds(10),
               };
 
       Logger = factory.CreateLogger<StressTests>();
@@ -135,7 +135,7 @@ namespace Armonik.Samples.StressTests.Client
 
       var result = Enumerable.Range(0,
                                     nbTasks)
-                             .Chunk(nbTasks / Props.MaxParallelChannel)
+                             .Chunk(nbTasks / Props.MaxParallelChannels)
                              .AsParallel()
                              .Select(subInt => subInt.Select(idx => Service.SubmitAsync("ComputeWorkLoad",
                                                                                         Utils.ParamsHelper(inputArrayOfBytes,
@@ -175,7 +175,7 @@ namespace Armonik.Samples.StressTests.Client
                               string                     taskId)
 
       {
-        if (e.StatusCode == ArmonikStatusCode.TaskCanceled)
+        if (e.StatusCode == ArmonikStatusCode.TaskCancelled)
         {
           Logger_.LogWarning($"Warning from {taskId} : " + e.Message);
         }
