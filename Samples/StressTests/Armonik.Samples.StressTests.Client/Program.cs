@@ -42,7 +42,7 @@ namespace ArmoniK.Samples.Client
 
     private static async Task Main(string[] args)
     {
-      Console.WriteLine("Hello Armonik Unified Sample !");
+      Console.WriteLine("Hello Armonik StressTest");
 
 
       Log.Logger = new LoggerConfiguration().MinimumLevel.Override("Microsoft",
