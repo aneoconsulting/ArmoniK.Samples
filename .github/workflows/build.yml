@@ -104,8 +104,6 @@ jobs:
         id: deploy-infra
         with:
           ingress: 'None'
-          core-tag: '0.8.2'
-          worker-tag: '0.8.1'
 
       - name: Run GridServerLike
         run: |
