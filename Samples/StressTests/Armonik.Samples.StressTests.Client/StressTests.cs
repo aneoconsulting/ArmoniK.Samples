@@ -65,9 +65,9 @@ namespace Armonik.Samples.StressTests.Client
                              configuration.GetSection("Grpc")["EndPoint"])
               {
                 MaxConcurrentBuffers = 6,
-                MaxTasksPerBuffer   = 30,
+                MaxTasksPerBuffer    = 30,
                 MaxParallelChannels  = 6,
-                TimeTriggerBuffer   = TimeSpan.FromSeconds(10),
+                TimeTriggerBuffer    = TimeSpan.FromSeconds(10),
               };
 
       Logger = factory.CreateLogger<StressTests>();
