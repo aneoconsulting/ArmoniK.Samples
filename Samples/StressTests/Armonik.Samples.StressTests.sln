@@ -3,17 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Armonik.Samples.StressTests.Client", "Armonik.Samples.StressTests.Client\Armonik.Samples.StressTests.Client.csproj", "{60EBBB6F-939C-4DC5-B715-E5B2B765C4F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Armonik.Samples.StressTests.Client", "Armonik.Samples.StressTests.Client\Armonik.Samples.StressTests.Client.csproj", "{60EBBB6F-939C-4DC5-B715-E5B2B765C4F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Armonik.Samples.StressTests.Worker", "Armonik.Samples.StressTests.Worker\Armonik.Samples.StressTests.Worker.csproj", "{42086644-6721-4016-ACBF-76F39E9649BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Armonik.Samples.StressTests.Worker", "Armonik.Samples.StressTests.Worker\Armonik.Samples.StressTests.Worker.csproj", "{42086644-6721-4016-ACBF-76F39E9649BD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.Common", "..\UnifiedAPI\ArmoniK.Samples.Common\ArmoniK.Samples.Common.csproj", "{D690B990-5E08-4E43-8366-7845B8BB8DD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{60EBBB6F-939C-4DC5-B715-E5B2B765C4F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -24,5 +23,15 @@ Global
 		{42086644-6721-4016-ACBF-76F39E9649BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42086644-6721-4016-ACBF-76F39E9649BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42086644-6721-4016-ACBF-76F39E9649BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D690B990-5E08-4E43-8366-7845B8BB8DD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D690B990-5E08-4E43-8366-7845B8BB8DD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D690B990-5E08-4E43-8366-7845B8BB8DD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D690B990-5E08-4E43-8366-7845B8BB8DD8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {10342070-3325-4B09-8AAA-3295E197C890}
 	EndGlobalSection
 EndGlobal

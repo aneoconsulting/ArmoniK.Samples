@@ -80,10 +80,6 @@ jobs:
       with:
         dotnet-version: 6.x
 
-    - name: Build the package
-      run: |
-        dotnet build AllSamples.sln
-
   testInfraWorker:
     needs:
       - buildProjects
