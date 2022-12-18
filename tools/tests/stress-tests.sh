@@ -39,6 +39,8 @@ export Grpc__ClientCert=""
 export Grpc__ClientKey=""
 export Grpc__mTLS="false"
 
+export SUFFIX=main
+
 nuget_cache=$(dotnet nuget locals global-packages --list | awk '{ print $2 }')
 
 function createLocalDirectory() {
@@ -94,7 +96,7 @@ function build() {
 function deploy() {
   cd "${TestDir}"
   if [[ ${TO_BUCKET} == true ]]; then
-    export S3_BUCKET=$(aws s3api list-buckets --output json | jq -r '.Buckets[].Name' | grep "s3fs")
+    export S3_BUCKET=$(aws s3api list-buckets --output json | jq -r '.Buckets[].Name' | grep "s3fs-$SUFFIX")
     echo "Copy of S3 Bucket ${TO_BUCKET}"
     aws s3 cp "packages/${PACKAGE_NAME}" "s3://${S3_BUCKET}"
   elif [[ ${TO_DIRECTORY} == true ]]; then
@@ -176,6 +178,13 @@ while [ $# -ne 0 ]; do
       shift
       ;;
 
+    -s | --suffix)
+      export SUFFIX="$2"
+      shift
+      shift
+      ;;
+
+
     -h | --help)
       usage
       exit
@@ -223,15 +232,13 @@ echo "List of args : ${args[*]}"
       ;;
     -b | --build)
       args=("${args[@]:1}") # past argument=value
-      echo "Only execute without build '${binargs[@]}'"
+      echo "Build source code'${binargs[@]}'"
       build
-      break
       ;;
     -d | --deploy)
       args=("${args[@]:1}") # past argument=value
-      echo "Only deploy package'${binargs[@]}'"
+      echo "Deploy package'${binargs[@]}'"
       deploy
-      break
       ;;
     -a)
       # all build and execute

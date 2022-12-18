@@ -112,5 +112,5 @@ jobs:
         run: |
          cd tools/tests
          mkdir -p ${HOME}/data
-         bash -x ./stress-tests.sh -e http://a21c797c98c684f558956dbe67b0aff3-1462782799.eu-west-3.elb.amazonaws.com:5001 -- stressTest ${{ matrix.scenario }}
+         bash -x ./stress-tests.sh -e ${{secrets.CONTROLPLANE_ENTRYPOINT}} -- stressTest ${{ matrix.scenario }}
 

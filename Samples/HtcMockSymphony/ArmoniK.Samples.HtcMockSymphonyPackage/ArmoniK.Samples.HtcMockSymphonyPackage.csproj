@@ -34,7 +34,7 @@
 
   <ItemGroup>
     <PackageReference Include="Htc.Mock" Version="3.0.0-alpha11" />
-    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.7.5-pretests.84.151d152" />
+    <PackageReference Include="Armonik.DevelopmentKit.SymphonyApi" Version="0.8.1" />
   </ItemGroup>
 
   <ItemGroup>

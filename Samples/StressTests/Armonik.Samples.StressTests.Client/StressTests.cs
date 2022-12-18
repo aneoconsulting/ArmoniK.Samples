@@ -64,9 +64,9 @@ namespace Armonik.Samples.StressTests.Client
       Props = new Properties(TaskOptions,
                              configuration.GetSection("Grpc")["EndPoint"])
               {
-                MaxConcurrentBuffer = 4,
-                MaxTasksPerBuffer   = 50,
-                MaxParallelChannel  = 4,
+                MaxConcurrentBuffers = 6,
+                MaxTasksPerBuffer   = 30,
+                MaxParallelChannels  = 6,
                 TimeTriggerBuffer   = TimeSpan.FromSeconds(10),
               };
 
@@ -135,7 +135,7 @@ namespace Armonik.Samples.StressTests.Client
 
       var result = Enumerable.Range(0,
                                     nbTasks)
-                             .Chunk(nbTasks / Props.MaxParallelChannel)
+                             .Chunk(nbTasks / Props.MaxParallelChannels)
                              .AsParallel()
                              .Select(subInt => subInt.Select(idx => Service.SubmitAsync("ComputeWorkLoad",
                                                                                         Utils.ParamsHelper(inputArrayOfBytes,
@@ -175,7 +175,7 @@ namespace Armonik.Samples.StressTests.Client
                               string                     taskId)
 
       {
-        if (e.StatusCode == ArmonikStatusCode.TaskCanceled)
+        if (e.StatusCode == ArmonikStatusCode.TaskCancelled)
         {
           Logger_.LogWarning($"Warning from {taskId} : " + e.Message);
         }
