@@ -87,6 +87,12 @@ jobs:
   testInfraWorker:
     needs:
       - buildProjects
+    strategy:
+      matrix:
+        scenario:
+           - --nbTask 224  --nbInputBytes 4029815 --nbOutputBytes 226016  --workLoadTimeInMs 10
+
+      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -134,6 +140,11 @@ jobs:
          cd ArmoniK.Samples.HtcMockSymphonyClient/
          dotnet bin/Debug/net6.0/linux-x64/ArmoniK.Samples.HtcMockSymphonyClient.dll
 
+      - name: Run StressTests
+        run: |
+         cd tools/tests
+         mkdir -p ${HOME}/data
+         bash -x ./stress-tests.sh -- stressTest ${{ matrix.scenario }}
       - name: Copy logs
         if: always()
         shell: bash

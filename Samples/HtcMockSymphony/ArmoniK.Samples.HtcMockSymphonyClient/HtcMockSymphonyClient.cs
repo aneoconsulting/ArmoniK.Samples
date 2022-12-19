@@ -25,7 +25,7 @@
 using System.Diagnostics;
 using System.Text;
 
-using ArmoniK.DevelopmentKit.SymphonyApi.Client.api;
+using ArmoniK.DevelopmentKit.Client.Symphony;
 
 using Htc.Mock;
 using Htc.Mock.Core;

@@ -26,7 +26,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ArmoniK.Samples.Client
+namespace ArmoniK.Samples.Common
 {
   public static class Utils
   {
