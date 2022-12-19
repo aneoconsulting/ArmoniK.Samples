@@ -157,47 +157,6 @@ references:
   isSpec: "True"
   fullName: ArmoniK.HelloWorld.Worker.Startup.ConfigureServices
   nameWithType: Startup.ConfigureServices
-- uid: ArmoniK.Samples.Client
-  name: ArmoniK.Samples.Client
-  href: api/ArmoniK.Samples.Client.html
-  commentId: N:ArmoniK.Samples.Client
-  fullName: ArmoniK.Samples.Client
-  nameWithType: ArmoniK.Samples.Client
-- uid: ArmoniK.Samples.Client.Utils
-  name: Utils
-  href: api/ArmoniK.Samples.Client.Utils.html
-  commentId: T:ArmoniK.Samples.Client.Utils
-  fullName: ArmoniK.Samples.Client.Utils
-  nameWithType: Utils
-- uid: ArmoniK.Samples.Client.Utils.ParamsHelper(System.Object[])
-  name: ParamsHelper(Object[])
-  href: api/ArmoniK.Samples.Client.Utils.html#ArmoniK_Samples_Client_Utils_ParamsHelper_System_Object___
-  commentId: M:ArmoniK.Samples.Client.Utils.ParamsHelper(System.Object[])
-  name.vb: ParamsHelper(Object())
-  fullName: ArmoniK.Samples.Client.Utils.ParamsHelper(System.Object[])
-  fullName.vb: ArmoniK.Samples.Client.Utils.ParamsHelper(System.Object())
-  nameWithType: Utils.ParamsHelper(Object[])
-  nameWithType.vb: Utils.ParamsHelper(Object())
-- uid: ArmoniK.Samples.Client.Utils.ParamsHelper*
-  name: ParamsHelper
-  href: api/ArmoniK.Samples.Client.Utils.html#ArmoniK_Samples_Client_Utils_ParamsHelper_
-  commentId: Overload:ArmoniK.Samples.Client.Utils.ParamsHelper
-  isSpec: "True"
-  fullName: ArmoniK.Samples.Client.Utils.ParamsHelper
-  nameWithType: Utils.ParamsHelper
-- uid: ArmoniK.Samples.Client.Utils.PeriodicInfo(Action,System.Int32)
-  name: PeriodicInfo(Action, Int32)
-  href: api/ArmoniK.Samples.Client.Utils.html#ArmoniK_Samples_Client_Utils_PeriodicInfo_Action_System_Int32_
-  commentId: M:ArmoniK.Samples.Client.Utils.PeriodicInfo(Action,System.Int32)
-  fullName: ArmoniK.Samples.Client.Utils.PeriodicInfo(Action, System.Int32)
-  nameWithType: Utils.PeriodicInfo(Action, Int32)
-- uid: ArmoniK.Samples.Client.Utils.PeriodicInfo*
-  name: PeriodicInfo
-  href: api/ArmoniK.Samples.Client.Utils.html#ArmoniK_Samples_Client_Utils_PeriodicInfo_
-  commentId: Overload:ArmoniK.Samples.Client.Utils.PeriodicInfo
-  isSpec: "True"
-  fullName: ArmoniK.Samples.Client.Utils.PeriodicInfo
-  nameWithType: Utils.PeriodicInfo
 - uid: ArmoniK.Samples.Common
   name: ArmoniK.Samples.Common
   href: api/ArmoniK.Samples.Common.html
@@ -399,6 +358,41 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray
   nameWithType: SelectExtensions.ConvertToArray
+- uid: ArmoniK.Samples.Common.Utils
+  name: Utils
+  href: api/ArmoniK.Samples.Common.Utils.html
+  commentId: T:ArmoniK.Samples.Common.Utils
+  fullName: ArmoniK.Samples.Common.Utils
+  nameWithType: Utils
+- uid: ArmoniK.Samples.Common.Utils.ParamsHelper(System.Object[])
+  name: ParamsHelper(Object[])
+  href: api/ArmoniK.Samples.Common.Utils.html#ArmoniK_Samples_Common_Utils_ParamsHelper_System_Object___
+  commentId: M:ArmoniK.Samples.Common.Utils.ParamsHelper(System.Object[])
+  name.vb: ParamsHelper(Object())
+  fullName: ArmoniK.Samples.Common.Utils.ParamsHelper(System.Object[])
+  fullName.vb: ArmoniK.Samples.Common.Utils.ParamsHelper(System.Object())
+  nameWithType: Utils.ParamsHelper(Object[])
+  nameWithType.vb: Utils.ParamsHelper(Object())
+- uid: ArmoniK.Samples.Common.Utils.ParamsHelper*
+  name: ParamsHelper
+  href: api/ArmoniK.Samples.Common.Utils.html#ArmoniK_Samples_Common_Utils_ParamsHelper_
+  commentId: Overload:ArmoniK.Samples.Common.Utils.ParamsHelper
+  isSpec: "True"
+  fullName: ArmoniK.Samples.Common.Utils.ParamsHelper
+  nameWithType: Utils.ParamsHelper
+- uid: ArmoniK.Samples.Common.Utils.PeriodicInfo(Action,System.Int32)
+  name: PeriodicInfo(Action, Int32)
+  href: api/ArmoniK.Samples.Common.Utils.html#ArmoniK_Samples_Common_Utils_PeriodicInfo_Action_System_Int32_
+  commentId: M:ArmoniK.Samples.Common.Utils.PeriodicInfo(Action,System.Int32)
+  fullName: ArmoniK.Samples.Common.Utils.PeriodicInfo(Action, System.Int32)
+  nameWithType: Utils.PeriodicInfo(Action, Int32)
+- uid: ArmoniK.Samples.Common.Utils.PeriodicInfo*
+  name: PeriodicInfo
+  href: api/ArmoniK.Samples.Common.Utils.html#ArmoniK_Samples_Common_Utils_PeriodicInfo_
+  commentId: Overload:ArmoniK.Samples.Common.Utils.PeriodicInfo
+  isSpec: "True"
+  fullName: ArmoniK.Samples.Common.Utils.PeriodicInfo
+  nameWithType: Utils.PeriodicInfo
 - uid: ArmoniK.Samples.GridServer.Client.Services
   name: ArmoniK.Samples.GridServer.Client.Services
   href: api/ArmoniK.Samples.GridServer.Client.Services.html
@@ -643,6 +637,47 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.Start
   nameWithType: HtcMockSymphonyClient.Start
+- uid: Armonik.Samples.StressTests.Worker
+  name: Armonik.Samples.StressTests.Worker
+  href: api/Armonik.Samples.StressTests.Worker.html
+  commentId: N:Armonik.Samples.StressTests.Worker
+  fullName: Armonik.Samples.StressTests.Worker
+  nameWithType: Armonik.Samples.StressTests.Worker
+- uid: Armonik.Samples.StressTests.Worker.ServiceApps
+  name: ServiceApps
+  href: api/Armonik.Samples.StressTests.Worker.ServiceApps.html
+  commentId: T:Armonik.Samples.StressTests.Worker.ServiceApps
+  fullName: Armonik.Samples.StressTests.Worker.ServiceApps
+  nameWithType: ServiceApps
+- uid: Armonik.Samples.StressTests.Worker.ServiceApps.#ctor
+  name: ServiceApps()
+  href: api/Armonik.Samples.StressTests.Worker.ServiceApps.html#Armonik_Samples_StressTests_Worker_ServiceApps__ctor
+  commentId: M:Armonik.Samples.StressTests.Worker.ServiceApps.#ctor
+  fullName: Armonik.Samples.StressTests.Worker.ServiceApps.ServiceApps()
+  nameWithType: ServiceApps.ServiceApps()
+- uid: Armonik.Samples.StressTests.Worker.ServiceApps.#ctor*
+  name: ServiceApps
+  href: api/Armonik.Samples.StressTests.Worker.ServiceApps.html#Armonik_Samples_StressTests_Worker_ServiceApps__ctor_
+  commentId: Overload:Armonik.Samples.StressTests.Worker.ServiceApps.#ctor
+  isSpec: "True"
+  fullName: Armonik.Samples.StressTests.Worker.ServiceApps.ServiceApps
+  nameWithType: ServiceApps.ServiceApps
+- uid: Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad(System.Double[],System.Int64,System.Int32)
+  name: ComputeWorkLoad(Double[], Int64, Int32)
+  href: api/Armonik.Samples.StressTests.Worker.ServiceApps.html#Armonik_Samples_StressTests_Worker_ServiceApps_ComputeWorkLoad_System_Double___System_Int64_System_Int32_
+  commentId: M:Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad(System.Double[],System.Int64,System.Int32)
+  name.vb: ComputeWorkLoad(Double(), Int64, Int32)
+  fullName: Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad(System.Double[], System.Int64, System.Int32)
+  fullName.vb: Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad(System.Double(), System.Int64, System.Int32)
+  nameWithType: ServiceApps.ComputeWorkLoad(Double[], Int64, Int32)
+  nameWithType.vb: ServiceApps.ComputeWorkLoad(Double(), Int64, Int32)
+- uid: Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad*
+  name: ComputeWorkLoad
+  href: api/Armonik.Samples.StressTests.Worker.ServiceApps.html#Armonik_Samples_StressTests_Worker_ServiceApps_ComputeWorkLoad_
+  commentId: Overload:Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad
+  isSpec: "True"
+  fullName: Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad
+  nameWithType: ServiceApps.ComputeWorkLoad
 - uid: Armonik.Samples.Symphony.Common
   name: Armonik.Samples.Symphony.Common
   href: api/Armonik.Samples.Symphony.Common.html

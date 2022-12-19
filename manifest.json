@@ -65,30 +65,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.Client.Utils.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.Client.Utils.html",
-          "hash": "nnV0MhiRO9ZMc3/ckyTKLsxhGCEa5VXjKtXd3QEPnek="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.Client.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.Client.html",
-          "hash": "oXtVcfVZLcV/B30Fb3CekkTqM1qdT0jDshLt8A5RR+M="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/ArmoniK.Samples.Common.ClientPayload.TaskType.yml",
       "output": {
         ".html": {
@@ -125,11 +101,23 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.Common.Utils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.Common.Utils.html",
+          "hash": "EiWkWhlnD9+EiclvXs00HNxto18AOGBhzFGAtfn2agM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/ArmoniK.Samples.Common.yml",
       "output": {
         ".html": {
           "relative_path": "api/ArmoniK.Samples.Common.html",
-          "hash": "R2Xb/vHrkFF+l1hdWb9HqTK4c+cX8jjJ/KBcBP0XokU="
+          "hash": "cX7OW2h+6P+qX7fhuypTjC7RzmQ64lZPir9e/sap30Q="
         }
       },
       "is_incremental": false,
@@ -189,7 +177,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html",
-          "hash": "jIOQwF1CyzBj6hRDNVidd9Kza+xQLBNA+84x9uOUNcw="
+          "hash": "vz9FiTrV6+OE5goscBmwDlOPdDesTKDgV1ltJ4/I6nw="
         }
       },
       "is_incremental": false,
@@ -237,7 +225,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html",
-          "hash": "RWtQ9HPSVOwVQ1nNGJ6Lb4pqv09oOE+ShFTLLrAX+wE="
+          "hash": "4VFM4ex56zXy8lKsZp65gdAm89vL2s5Ds/MNjpGMpsY="
         }
       },
       "is_incremental": false,
@@ -274,6 +262,30 @@
         ".html": {
           "relative_path": "api/ArmoniK.Samples.Unified.Worker.Services.html",
           "hash": "bcKVgki/KX+FBRLhXfAhuOytu4nKCfr+W/Ql4p/Pvy4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Armonik.Samples.StressTests.Worker.ServiceApps.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Armonik.Samples.StressTests.Worker.ServiceApps.html",
+          "hash": "8i1P+xWqE+vtC2dNv+z1qx29lumTGQEF8g61zHSuaTI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Armonik.Samples.StressTests.Worker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Armonik.Samples.StressTests.Worker.html",
+          "hash": "4dWjbE0kE5OcXKkm/oSmMPZ/4bWC90ohGw/kOtrsfJ0="
         }
       },
       "is_incremental": false,
@@ -333,7 +345,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "pUfF+dCGr7gXIfGw/jliA/FxVgXpGvo1LdSvzw4jPmA="
+          "hash": "cA1qGC1iJlKAYqSob0Zi+4HLqo4yPuzUbxvV60QySqg="
         }
       },
       "is_incremental": false,
@@ -408,7 +420,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 26,
+          "total_file_count": 27,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
