@@ -27,10 +27,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ArmoniK.Api.gRPC.V1;
-using ArmoniK.DevelopmentKit.Client.Exceptions;
-using ArmoniK.DevelopmentKit.Client.Factory;
-using ArmoniK.DevelopmentKit.Client.Services;
-using ArmoniK.DevelopmentKit.Client.Services.Submitter;
+using ArmoniK.DevelopmentKit.Client.Common;
+using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
+using ArmoniK.DevelopmentKit.Client.Unified.Factory;
+using ArmoniK.DevelopmentKit.Client.Unified.Services.Submitter;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.Samples.Common;
 
@@ -67,8 +67,7 @@ namespace ArmoniK.Samples.Client
       var endpoint = configuration.GetSection("Grpc")["EndPoint"];
 
       Props = new Properties(TaskOptions,
-                             endpoint,
-                             5001);
+                             endpoint);
 
       Logger = factory.CreateLogger<SimpleUnifiedAPI>();
 
