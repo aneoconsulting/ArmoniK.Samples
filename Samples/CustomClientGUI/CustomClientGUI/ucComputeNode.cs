@@ -34,6 +34,8 @@ using System.Windows.Forms;
 
 using MetroFramework.Controls;
 
+using TaskStatus = ArmoniK.Api.gRPC.V1.TaskStatus;
+
 namespace CustomClientGUI
 {
   public partial class ucComputeNode : MetroUserControl
@@ -43,61 +45,67 @@ namespace CustomClientGUI
       InitializeComponent();
       this.Name              = "Node_" + idxNode;
       this.mLblInstance.Text = "Node " + idxNode;
-      
+
       ListCores = Enumerable.Range(0,
-                                        36)
-                                 .Select(idx =>
-                                         {
-                                           var lbl = new Label();
-                                           lbl.Name         = "core" + idx;
-                                           lbl.Text         = "";
-                                           lbl.Margin       = new Padding(0, 1, 1, 0);
-                                           
-                                           lbl.Dock         = DockStyle.Fill;
-                                           lbl.BackColor    = Color.Gray;
-                                           return lbl;
-                                         }).ToList();
+                                   36)
+                            .Select(idx =>
+                                    {
+                                      var lbl = new Label();
+                                      lbl.Name = "core" + idx;
+                                      lbl.Text = "";
+                                      lbl.Margin = new Padding(0,
+                                                               1,
+                                                               1,
+                                                               0);
+
+                                      lbl.Dock      = DockStyle.Fill;
+                                      lbl.BackColor = Color.Gray;
+                                      return lbl;
+                                    })
+                            .ToList();
       foreach (var core in ListCores)
       {
         tableLayoutPanel1.Controls.Add(core);
       }
     }
 
+    
     public List<Label> ListCores { get; set; }
 
-    private void urlTxtBox_Click(object sender, EventArgs e)
-    {
 
+    private void urlTxtBox_Click(object    sender,
+                                 EventArgs e)
+    {
     }
 
-    private void portTxtBox_Click(object sender, EventArgs e)
+    private void portTxtBox_Click(object    sender,
+                                  EventArgs e)
     {
-
     }
 
-    private void metroLabel3_Click(object sender, EventArgs e)
+    private void metroLabel3_Click(object    sender,
+                                   EventArgs e)
     {
-
     }
 
-    private void urlTxtBox_Enter(object sender, EventArgs e)
+    private void urlTxtBox_Enter(object    sender,
+                                 EventArgs e)
     {
-
     }
 
-    private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+    private void tableLayoutPanel1_Paint(object         sender,
+                                         PaintEventArgs e)
     {
-
     }
 
-    private void metroLabel2_Click(object sender, EventArgs e)
+    private void metroLabel2_Click(object    sender,
+                                   EventArgs e)
     {
-
     }
 
-    private void label1_Click(object sender, EventArgs e)
+    private void label1_Click(object    sender,
+                              EventArgs e)
     {
-
     }
   }
 }

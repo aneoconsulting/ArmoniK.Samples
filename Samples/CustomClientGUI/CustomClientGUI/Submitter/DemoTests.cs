@@ -32,6 +32,7 @@ using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Client.Common;
 using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
 using ArmoniK.DevelopmentKit.Client.Unified.Factory;
+using ArmoniK.DevelopmentKit.Client.Unified.Services.Admin;
 using ArmoniK.DevelopmentKit.Client.Unified.Services.Submitter;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.DevelopmentKit.Common.Extensions;
@@ -87,8 +88,14 @@ namespace CustomClientGUI.Submitter
       Service = ServiceFactory.CreateService(Props,
                                              factory);
 
+      ServiceAdmin = ServiceFactory.GetServiceAdmin(Props,
+                                                    factory);
+
+
       ResultHandle = responseHandler;
     }
+
+    public ServiceAdmin ServiceAdmin { get; set; }
 
     public string MethodName { get; set; }
 

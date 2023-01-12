@@ -53,6 +53,7 @@ namespace CustomClientGUI
         private void InitializeComponent()
         {
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+      this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
       this.SuspendLayout();
       // 
       // tableLayoutPanel1
@@ -76,6 +77,10 @@ namespace CustomClientGUI
       this.tableLayoutPanel1.TabIndex = 0;
       this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint_1);
       // 
+      // backgroundWorker1
+      // 
+      this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+      // 
       // ucActivities
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -93,5 +98,6 @@ namespace CustomClientGUI
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }

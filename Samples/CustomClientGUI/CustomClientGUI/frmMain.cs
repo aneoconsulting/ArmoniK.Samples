@@ -66,9 +66,9 @@ namespace CustomClientGUI
         mPanel.Controls.Add(ucLogs);
       }
 
-      ucActivities ucActivities = new ucActivities();
-      ucActivities.Dock = DockStyle.Fill;
-      mPanel.Controls.Add(ucActivities);
+      UcActivities      = new ucActivities();
+      UcActivities.Dock = DockStyle.Fill;
+      mPanel.Controls.Add(UcActivities);
 
       ucLogin ucLogin = new ucLogin();
       ucLogin.Dock = DockStyle.Fill;
@@ -80,6 +80,8 @@ namespace CustomClientGUI
 
       Mtc = mtc;
     }
+
+    public ucActivities UcActivities { get; set; }
 
     private void frmMain_Resize(object    sender,
                                 EventArgs e)

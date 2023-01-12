@@ -26,6 +26,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -48,6 +49,10 @@ using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
 
 using CustomClientGUI.Data;
+
+using ArmoniK.Api.gRPC.V1.Sessions;
+
+using TaskStatus = ArmoniK.Api.gRPC.V1.TaskStatus;
 
 
 namespace CustomClientGUI.Submitter
@@ -121,7 +126,7 @@ namespace CustomClientGUI.Submitter
                                                 idx = FindRowsByTaskId(taskId);
                                                 Thread.Sleep(100);
                                               }
-                                              
+
                                               var end = DateTime.Now;
 
                                               TableSession.Rows[idx]
@@ -149,6 +154,14 @@ namespace CustomClientGUI.Submitter
                                                           .Cells["ResultStatus"]
                                                           .Value = "Received";
 
+                                              frmMain.Instance.UcActivities.AddOrUpdateTasks(new List<Tuple<string, TaskStatus>>()
+                                                                                             {
+                                                                                               Tuple.Create(taskId,
+                                                                                                            TaskStatus.Completed),
+                                                                                             });
+                                              ExecutingTasks.TryRemove(taskId,
+                                                                       out var _);
+
                                               ResultHandler!.NbResponse++;
                                             },
 
@@ -161,6 +174,7 @@ namespace CustomClientGUI.Submitter
                                              idx = FindRowsByTaskId(taskId);
                                              Thread.Sleep(100);
                                            }
+
                                            var end = DateTime.Now;
                                            var start = DateTime.ParseExact(TableSession.Rows[idx]
                                                                                        .Cells["StartTime"]
@@ -191,6 +205,11 @@ namespace CustomClientGUI.Submitter
                                              TableSession.Rows[idx]
                                                          .Cells["ErrorDetails"]
                                                          .Value = "Task was cancelled by user";
+                                             frmMain.Instance.UcActivities.AddOrUpdateTasks(new List<Tuple<string, TaskStatus>>()
+                                                                                            {
+                                                                                              Tuple.Create(taskId,
+                                                                                                           TaskStatus.Cancelled),
+                                                                                            });
                                            }
                                            else
                                            {
@@ -204,10 +223,18 @@ namespace CustomClientGUI.Submitter
 
                                              TableSession.Rows[idx]
                                                          .Cells["ErrorDetails"]
-                                                         .Value = ex.Message.Substring(0, Math.Min(8192, ex.Message.Length)) + "...";
+                                                         .Value = ex.Message.Substring(0,
+                                                                                       Math.Min(8192,
+                                                                                                ex.Message.Length)) + "...";
+                                             frmMain.Instance.UcActivities.AddOrUpdateTasks(new List<Tuple<string, TaskStatus>>()
+                                                                                            {
+                                                                                              Tuple.Create(taskId,
+                                                                                                           TaskStatus.Error),
+                                                                                            });
                                            }
+                                           ExecutingTasks.TryRemove(taskId,
+                                                                    out var _);
 
-                                           
 
                                            ResultHandler!.NbResponse++;
                                          },
@@ -231,24 +258,34 @@ namespace CustomClientGUI.Submitter
 
     public int FindRowsByTaskId(string taskId)
     {
-      for (var idx = 0; idx < TableSession.Rows.Count; idx++)
+      try
       {
-        if (TableSession.Rows[idx]
-                        .Cells["TaskId"]
-                        .Value != null)
+        for (var idx = 0; idx < TableSession.Rows.Count; idx++)
         {
           if (TableSession.Rows[idx]
                           .Cells["TaskId"]
-                          .Value.ToString()
-                          .Equals(taskId))
+                          .Value != null)
           {
-            return idx;
+            if (TableSession.Rows[idx]
+                            .Cells["TaskId"]
+                            .Value.ToString()
+                            .Equals(taskId))
+            {
+              return idx;
+            }
           }
         }
       }
+      catch (Exception e)
+      {
+        return -1;
+      }
+      
 
       return -1;
     }
+
+    public ConcurrentDictionary<string, TaskStatus> ExecutingTasks = new ConcurrentDictionary<string, TaskStatus>();
 
     public Task Watcher()
     {
@@ -257,12 +294,22 @@ namespace CustomClientGUI.Submitter
                             var indexNewRow = 0;
                             while (!CancellationToken.IsCancellationRequested)
                             {
+                              if (ExecutingTasks.Any())
+                              {
+                                var executingTasksKeys = ExecutingTasks.Keys.ToList();
+                                var taskStatus = DemoRun.ServiceAdmin.AdminMonitoringService.GetTaskStatus(executingTasksKeys)
+                                                        .ToList();
+
+                                frmMain.Instance.UcActivities.AddOrUpdateTasks(taskStatus);
+
+                              }
+
                               if (!AsyncTaskIds.Any())
                               {
                                 Thread.Sleep(100);
                                 continue;
                               }
-                             
+
 
                               foreach (var task in AsyncTaskIds)
                               {
@@ -272,12 +319,10 @@ namespace CustomClientGUI.Submitter
                                   if (idx == -1)
                                   {
                                     var dataGridViewRow = TableSession.Rows[Offset + indexNewRow++];
-                                    dataGridViewRow
-                                      .Cells["Status"]
-                                      .Value = "Running";
-                                    dataGridViewRow
-                                      .Cells["ResultStatus"]
-                                      .Value = "Waiting for Result...";
+                                    dataGridViewRow.Cells["Status"]
+                                                   .Value = "Running";
+                                    dataGridViewRow.Cells["ResultStatus"]
+                                                   .Value = "Waiting for Result...";
 
                                     dataGridViewRow.Cells["SessionId"]
                                                    .Value = DemoRun.Service.SessionId;
@@ -288,8 +333,9 @@ namespace CustomClientGUI.Submitter
                                                                                   culture_);
                                     dataGridViewRow.Cells["TaskId"]
                                                    .Value = task.Result;
-
                                   }
+
+                                  ExecutingTasks[task.Result] = TaskStatus.Submitted;
                                 }
                                 else if (task.IsCanceled)
 
