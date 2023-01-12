@@ -45,11 +45,14 @@ using Serilog.Events;
 using Serilog.Extensions.Logging;
 
 using ArmoniK.Api.gRPC.V1;
+using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
+
+using CustomClientGUI.Data;
 
 
 namespace CustomClientGUI.Submitter
 {
-  public class ArmonikClientSession
+  public class ArmonikClientSession : IDisposable
   {
     private readonly ILogger<ArmonikClientSession> logger_;
     private readonly IConfigurationRoot            configuration_;
@@ -64,11 +67,14 @@ namespace CustomClientGUI.Submitter
 
     private const string Format = "dddd, dd MMMM yyyy HH:mm:ss";
 
-    public ArmonikClientSession(string                      address,
-                                ResultForStressTestsHandler resultHandler,
-                                MetroGrid                   metroGrid1,
-                                BackgroundWorker            bgWorkerSubmit,
-                                int                         offset)
+    public static TbsLoggerSink LoggerSink = new TbsLoggerSink();
+
+    public ArmonikClientSession(string           address,
+                                TaskOptions      taskOptions,
+                                string           methodName,
+                                MetroGrid        metroGrid1,
+                                BackgroundWorker bgWorkerSubmit,
+                                int              offset)
     {
       Console.WriteLine("Hello Armonik Demo test");
 
@@ -78,6 +84,7 @@ namespace CustomClientGUI.Submitter
                                                                    LogEventLevel.Information)
                                             .Enrich.FromLogContext()
                                             .WriteTo.Console()
+                                            .WriteTo.Sink(LoggerSink)
                                             .CreateLogger();
 
       LoggerFactory = new LoggerFactory(new[]
@@ -109,7 +116,12 @@ namespace CustomClientGUI.Submitter
                                              taskId) =>
                                             {
                                               var idx = FindRowsByTaskId(taskId);
-
+                                              while (idx == -1)
+                                              {
+                                                idx = FindRowsByTaskId(taskId);
+                                                Thread.Sleep(100);
+                                              }
+                                              
                                               var end = DateTime.Now;
 
                                               TableSession.Rows[idx]
@@ -144,6 +156,11 @@ namespace CustomClientGUI.Submitter
                                           taskId) =>
                                          {
                                            var idx = FindRowsByTaskId(taskId);
+                                           while (idx == -1)
+                                           {
+                                             idx = FindRowsByTaskId(taskId);
+                                             Thread.Sleep(100);
+                                           }
                                            var end = DateTime.Now;
                                            var start = DateTime.ParseExact(TableSession.Rows[idx]
                                                                                        .Cells["StartTime"]
@@ -153,16 +170,44 @@ namespace CustomClientGUI.Submitter
                                            var duration = end - start;
 
                                            TableSession.Rows[idx]
+                                                       .Cells["EndTime"]
+                                                       .Value = end.ToString(Format,
+                                                                             culture_);
+
+                                           TableSession.Rows[idx]
                                                        .Cells["Duration"]
                                                        .Value = $"{duration:G}";
 
-                                           TableSession.Rows[idx]
-                                                       .Cells["Status"]
-                                                       .Value = "Error";
+                                           if (ex.StatusCode == ArmonikStatusCode.TaskCancelled)
+                                           {
+                                             TableSession.Rows[idx]
+                                                         .Cells["Status"]
+                                                         .Value = "Cancelled";
 
-                                           TableSession.Rows[idx]
-                                                       .Cells["ResultStatus"]
-                                                       .Value = "Error";
+                                             TableSession.Rows[idx]
+                                                         .Cells["ResultStatus"]
+                                                         .Value = "No Result";
+
+                                             TableSession.Rows[idx]
+                                                         .Cells["ErrorDetails"]
+                                                         .Value = "Task was cancelled by user";
+                                           }
+                                           else
+                                           {
+                                             TableSession.Rows[idx]
+                                                         .Cells["Status"]
+                                                         .Value = "Error";
+
+                                             TableSession.Rows[idx]
+                                                         .Cells["ResultStatus"]
+                                                         .Value = "Error";
+
+                                             TableSession.Rows[idx]
+                                                         .Cells["ErrorDetails"]
+                                                         .Value = ex.Message.Substring(0, Math.Min(8192, ex.Message.Length)) + "...";
+                                           }
+
+                                           
 
                                            ResultHandler!.NbResponse++;
                                          },
@@ -172,6 +217,8 @@ namespace CustomClientGUI.Submitter
       DemoRun = new DemoTests(configuration_,
                               address,
                               LoggerFactory,
+                              taskOptions,
+                              methodName,
                               ResultHandler,
                               "");
 
@@ -208,7 +255,6 @@ namespace CustomClientGUI.Submitter
       var task = Task.Run(() =>
                           {
                             var indexNewRow = 0;
-
                             while (!CancellationToken.IsCancellationRequested)
                             {
                               if (!AsyncTaskIds.Any())
@@ -216,6 +262,7 @@ namespace CustomClientGUI.Submitter
                                 Thread.Sleep(100);
                                 continue;
                               }
+                             
 
                               foreach (var task in AsyncTaskIds)
                               {
@@ -225,28 +272,45 @@ namespace CustomClientGUI.Submitter
                                   if (idx == -1)
                                   {
                                     var dataGridViewRow = TableSession.Rows[Offset + indexNewRow++];
+                                    dataGridViewRow
+                                      .Cells["Status"]
+                                      .Value = "Running";
+                                    dataGridViewRow
+                                      .Cells["ResultStatus"]
+                                      .Value = "Waiting for Result...";
+
                                     dataGridViewRow.Cells["SessionId"]
                                                    .Value = DemoRun.Service.SessionId;
-                                    dataGridViewRow.Cells["TaskId"]
-                                                   .Value = task.Result;
                                     dataGridViewRow.Cells["UserName"]
                                                    .Value = "ddubuc-shock";
                                     dataGridViewRow.Cells["StartTime"]
                                                    .Value = DateTime.Now.ToString(Format,
                                                                                   culture_);
-                                    dataGridViewRow
-                                                .Cells["Status"]
-                                                .Value = "Running";
-                                    dataGridViewRow
-                                                .Cells["ResultStatus"]
-                                                .Value = "Waiting for Result...";
+                                    dataGridViewRow.Cells["TaskId"]
+                                                   .Value = task.Result;
+
                                   }
+                                }
+                                else if (task.IsCanceled)
+
+                                {
+                                  logger_.LogError("Task {taskId} was canceled");
+                                  AsyncTaskIds.Remove(task);
+                                }
+
+                                else if (task.IsFaulted)
+
+                                {
+                                  logger_.LogError(task.Exception?.InnerException,
+                                                   task.Exception?.Message);
+                                  AsyncTaskIds.Remove(task);
                                 }
                               }
 
-                              if (AsyncTaskIds.Any() && AsyncTaskIds.All(t => t.IsCompleted) && AsyncTaskIds.Count() == ResultHandler.NbResponse)
+                              if (AsyncTaskIds.Any() && AsyncTaskIds.All(t => t.IsCompleted) && AsyncTaskIds.Count() <= ResultHandler.NbResponse)
                               {
                                 AsyncTaskIds.Clear();
+                                indexNewRow = 0;
                               }
                             }
                           });
@@ -274,5 +338,18 @@ namespace CustomClientGUI.Submitter
     }
 
     public ResultForStressTestsHandler ResultHandler { get; set; }
+
+    public void Dispose()
+    {
+      CancellationToken.Cancel();
+      Monitoring.Wait();
+
+      Monitoring?.Dispose();
+
+      CancellationToken?.Dispose();
+
+
+      LoggerFactory?.Dispose();
+    }
   }
 }

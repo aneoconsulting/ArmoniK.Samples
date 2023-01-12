@@ -63,9 +63,10 @@ namespace CustomClientGUI.Submitter
       {
         Logger_.LogError($"Error from {taskId} : " + e.Message);
 
-        SubActionError?.Invoke(e,
-                               taskId);
+      
       }
+      SubActionError?.Invoke(e,
+                             taskId);
     }
 
     /// <summary>

@@ -38,6 +38,8 @@ using ArmoniK.DevelopmentKit.Common.Extensions;
 
 using Google.Protobuf.WellKnownTypes;
 
+using Grpc.Net.Client.Configuration;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -48,10 +50,12 @@ namespace CustomClientGUI.Submitter
     public DemoTests(IConfiguration              configuration,
                      string                      address,
                      ILoggerFactory              factory,
+                     TaskOptions                 taskOptions,
+                     string                      methodName,
                      ResultForStressTestsHandler responseHandler,
                      string                      partition)
     {
-      TaskOptions = new TaskOptions
+      TaskOptions = taskOptions ?? new TaskOptions
                     {
                       MaxDuration = new Duration
                                     {
@@ -66,6 +70,8 @@ namespace CustomClientGUI.Submitter
                       ApplicationNamespace = "Armonik.Samples.StressTests.Worker",
                       PartitionId          = partition,
                     };
+
+      MethodName = methodName;
 
       Props = new ArmoniK.DevelopmentKit.Client.Common.Properties(TaskOptions,
                                                                   address)
@@ -83,6 +89,8 @@ namespace CustomClientGUI.Submitter
 
       ResultHandle = responseHandler;
     }
+
+    public string MethodName { get; set; }
 
     private ResultForStressTestsHandler ResultHandle { get; }
 
@@ -103,8 +111,6 @@ namespace CustomClientGUI.Submitter
                                        nbInputBytes,
                                        nbOutputBytes,
                                        workloadTimeInMs);
-
-      Logger.LogInformation($"Total result is {ResultHandle.Total}");
 
       return pTaskIdsList;
     }
@@ -140,7 +146,7 @@ namespace CustomClientGUI.Submitter
 
       var result = Enumerable.Range(0,
                                     nbTasks)
-                             .Select(idx => Service.SubmitAsync("ComputeWorkLoad",
+                             .Select(idx => Service.SubmitAsync(MethodName,
                                                                 Utils.ParamsHelper(inputArrayOfBytes,
                                                                                    nbOutputBytes,
                                                                                    workloadTimeInMs),

@@ -29,6 +29,7 @@ using System.Linq;
 
 using ArmoniK.DevelopmentKit.Common.Exceptions;
 using ArmoniK.DevelopmentKit.Worker.Unified;
+using ArmoniK.DevelopmentKit.Worker.Unified.Exceptions;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -44,6 +45,7 @@ namespace Armonik.Samples.StressTests.Worker
     private readonly IConfiguration       configuration_;
     private readonly ILogger<ServiceApps> logger_;
 
+    private readonly Random rd = new();
     public ServiceApps()
     {
       var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
@@ -84,6 +86,54 @@ namespace Armonik.Samples.StressTests.Worker
         logger_.LogInformation("Cannot execute function with nb element <= 0");
         throw new WorkerApiException("Cannot execute function with nb bytes <= 0");
       }
+
+      if (workLoadTimeInMs <= 0)
+      {
+        workLoadTimeInMs = 1;
+      }
+
+      var output = Enumerable.Range(0,
+                                    (int)(nbOutputBytes / 8))
+                             .Select(x => (double)x)
+                             .ToArray();
+
+      var result = input.Select(x => Math.Pow(x,
+                                              3.0))
+                        .Sum();
+      // Record start time
+      var start = Stopwatch.StartNew();
+
+      while (start.ElapsedMilliseconds < workLoadTimeInMs)
+      {
+        for (var rIdx = 0; rIdx < output.Length; rIdx++)
+        {
+          output[rIdx] = result / output.Length;
+        }
+      }
+
+
+      return output;
+    }
+
+    public double[] ComputeWorkLoadWithException(double[] input,
+                                    long     nbOutputBytes,
+                                    int      workLoadTimeInMs)
+    {
+      if (input is not
+          {
+            Length: > 0,
+          } || nbOutputBytes <= 0)
+      {
+        logger_.LogInformation("Cannot execute function with nb element <= 0");
+        throw new WorkerApiException("Cannot execute function with nb bytes <= 0");
+      }
+
+      var randNum = rd.NextDouble();
+      if (randNum <= 0.65)
+      {
+        throw new WorkerApiException("An expected failure in this random call");
+      }
+
 
       if (workLoadTimeInMs <= 0)
       {

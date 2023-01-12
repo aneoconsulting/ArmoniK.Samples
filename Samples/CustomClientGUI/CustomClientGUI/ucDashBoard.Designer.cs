@@ -52,10 +52,10 @@ namespace CustomClientGUI
     /// </summary>
     private void InitializeComponent()
     {
-      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-      this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+      this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
       this.mPanelTaskInfo = new MetroFramework.Controls.MetroPanel();
       this.mTxtPartition = new MetroFramework.Controls.MetroTextBox();
       this.metroLabel5 = new MetroFramework.Controls.MetroLabel();
@@ -70,6 +70,9 @@ namespace CustomClientGUI
       this.metroPanel2 = new MetroFramework.Controls.MetroPanel();
       this.metroButton1 = new MetroFramework.Controls.MetroButton();
       this.metroGrid1 = new MetroFramework.Controls.MetroGrid();
+      this.bgWorkerSubmit = new System.ComponentModel.BackgroundWorker();
+      this.mBtnClear = new MetroFramework.Controls.MetroButton();
+      this.mLblDashBoard = new MetroFramework.Controls.MetroLabel();
       this.SessionId = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.TaskId = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -79,32 +82,35 @@ namespace CustomClientGUI
       this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.ResultStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.ErrorDetails = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.bgWorkerSubmit = new System.ComponentModel.BackgroundWorker();
-      this.mBtnClear = new MetroFramework.Controls.MetroButton();
-      this.tableLayoutPanel1.SuspendLayout();
+      this.mTxtDashBoardLog = new MetroFramework.Controls.MetroTextBox();
+      this.tableLayoutPanel.SuspendLayout();
       this.mPanelTaskInfo.SuspendLayout();
       this.metroPanel2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.metroGrid1)).BeginInit();
       this.SuspendLayout();
       // 
-      // tableLayoutPanel1
+      // tableLayoutPanel
       // 
-      this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.tableLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.tableLayoutPanel1.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.InsetDouble;
-      this.tableLayoutPanel1.ColumnCount = 1;
-      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-      this.tableLayoutPanel1.Controls.Add(this.mPanelTaskInfo, 0, 0);
-      this.tableLayoutPanel1.Controls.Add(this.metroPanel2, 0, 1);
-      this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-      this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-      this.tableLayoutPanel1.RowCount = 3;
-      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 180F));
-      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 87F));
-      this.tableLayoutPanel1.Size = new System.Drawing.Size(811, 479);
-      this.tableLayoutPanel1.TabIndex = 0;
+      this.tableLayoutPanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.InsetDouble;
+      this.tableLayoutPanel.ColumnCount = 1;
+      this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel.Controls.Add(this.mPanelTaskInfo, 0, 1);
+      this.tableLayoutPanel.Controls.Add(this.metroPanel2, 0, 2);
+      this.tableLayoutPanel.Controls.Add(this.mLblDashBoard, 0, 0);
+      this.tableLayoutPanel.Controls.Add(this.mTxtDashBoardLog, 0, 3);
+      this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+      this.tableLayoutPanel.Name = "tableLayoutPanel";
+      this.tableLayoutPanel.RowCount = 4;
+      this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+      this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 180F));
+      this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 87F));
+      this.tableLayoutPanel.Size = new System.Drawing.Size(813, 480);
+      this.tableLayoutPanel.TabIndex = 0;
+      this.tableLayoutPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
       // 
       // mPanelTaskInfo
       // 
@@ -126,9 +132,9 @@ namespace CustomClientGUI
       this.mPanelTaskInfo.HorizontalScrollbarBarColor = true;
       this.mPanelTaskInfo.HorizontalScrollbarHighlightOnWheel = false;
       this.mPanelTaskInfo.HorizontalScrollbarSize = 10;
-      this.mPanelTaskInfo.Location = new System.Drawing.Point(6, 6);
+      this.mPanelTaskInfo.Location = new System.Drawing.Point(6, 29);
       this.mPanelTaskInfo.Name = "mPanelTaskInfo";
-      this.mPanelTaskInfo.Size = new System.Drawing.Size(799, 174);
+      this.mPanelTaskInfo.Size = new System.Drawing.Size(801, 174);
       this.mPanelTaskInfo.TabIndex = 0;
       this.mPanelTaskInfo.VerticalScrollbarBarColor = true;
       this.mPanelTaskInfo.VerticalScrollbarHighlightOnWheel = false;
@@ -195,7 +201,7 @@ namespace CustomClientGUI
       this.mTxtWorkloadInMs.CustomButton.Visible = false;
       this.mTxtWorkloadInMs.Lines = new string[] {
         "10"};
-      this.mTxtWorkloadInMs.Location = new System.Drawing.Point(537, 88);
+      this.mTxtWorkloadInMs.Location = new System.Drawing.Point(539, 88);
       this.mTxtWorkloadInMs.MaxLength = 32767;
       this.mTxtWorkloadInMs.Name = "mTxtWorkloadInMs";
       this.mTxtWorkloadInMs.PasswordChar = '\0';
@@ -215,7 +221,7 @@ namespace CustomClientGUI
       // 
       this.metroLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.metroLabel4.AutoSize = true;
-      this.metroLabel4.Location = new System.Drawing.Point(364, 92);
+      this.metroLabel4.Location = new System.Drawing.Point(366, 92);
       this.metroLabel4.Name = "metroLabel4";
       this.metroLabel4.Size = new System.Drawing.Size(153, 19);
       this.metroLabel4.TabIndex = 9;
@@ -239,7 +245,7 @@ namespace CustomClientGUI
       this.mTxtNbCurrencies.CustomButton.Visible = false;
       this.mTxtNbCurrencies.Lines = new string[] {
         "1"};
-      this.mTxtNbCurrencies.Location = new System.Drawing.Point(537, 49);
+      this.mTxtNbCurrencies.Location = new System.Drawing.Point(539, 49);
       this.mTxtNbCurrencies.MaxLength = 32767;
       this.mTxtNbCurrencies.Name = "mTxtNbCurrencies";
       this.mTxtNbCurrencies.PasswordChar = '\0';
@@ -259,7 +265,7 @@ namespace CustomClientGUI
       // 
       this.metroLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.metroLabel3.AutoSize = true;
-      this.metroLabel3.Location = new System.Drawing.Point(364, 52);
+      this.metroLabel3.Location = new System.Drawing.Point(366, 52);
       this.metroLabel3.Name = "metroLabel3";
       this.metroLabel3.Size = new System.Drawing.Size(89, 19);
       this.metroLabel3.TabIndex = 7;
@@ -283,7 +289,7 @@ namespace CustomClientGUI
       this.mTxtNbUnderlyings.CustomButton.Visible = false;
       this.mTxtNbUnderlyings.Lines = new string[] {
         "1"};
-      this.mTxtNbUnderlyings.Location = new System.Drawing.Point(537, 12);
+      this.mTxtNbUnderlyings.Location = new System.Drawing.Point(539, 12);
       this.mTxtNbUnderlyings.MaxLength = 32767;
       this.mTxtNbUnderlyings.Name = "mTxtNbUnderlyings";
       this.mTxtNbUnderlyings.PasswordChar = '\0';
@@ -303,7 +309,7 @@ namespace CustomClientGUI
       // 
       this.metroLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.metroLabel2.AutoSize = true;
-      this.metroLabel2.Location = new System.Drawing.Point(364, 15);
+      this.metroLabel2.Location = new System.Drawing.Point(366, 15);
       this.metroLabel2.Name = "metroLabel2";
       this.metroLabel2.Size = new System.Drawing.Size(97, 19);
       this.metroLabel2.TabIndex = 5;
@@ -357,9 +363,9 @@ namespace CustomClientGUI
       this.metroPanel2.HorizontalScrollbarBarColor = true;
       this.metroPanel2.HorizontalScrollbarHighlightOnWheel = false;
       this.metroPanel2.HorizontalScrollbarSize = 10;
-      this.metroPanel2.Location = new System.Drawing.Point(6, 189);
+      this.metroPanel2.Location = new System.Drawing.Point(6, 212);
       this.metroPanel2.Name = "metroPanel2";
-      this.metroPanel2.Size = new System.Drawing.Size(799, 194);
+      this.metroPanel2.Size = new System.Drawing.Size(801, 172);
       this.metroPanel2.TabIndex = 1;
       this.metroPanel2.VerticalScrollbarBarColor = true;
       this.metroPanel2.VerticalScrollbarHighlightOnWheel = false;
@@ -368,7 +374,7 @@ namespace CustomClientGUI
       // metroButton1
       // 
       this.metroButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.metroButton1.Location = new System.Drawing.Point(653, 135);
+      this.metroButton1.Location = new System.Drawing.Point(655, 135);
       this.metroButton1.Name = "metroButton1";
       this.metroButton1.Size = new System.Drawing.Size(133, 29);
       this.metroButton1.TabIndex = 15;
@@ -385,14 +391,14 @@ namespace CustomClientGUI
       this.metroGrid1.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.metroGrid1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
       this.metroGrid1.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-      dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-      dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
-      dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-      dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-      dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
-      dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-      dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-      this.metroGrid1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+      dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+      dataGridViewCellStyle10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
+      dataGridViewCellStyle10.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+      dataGridViewCellStyle10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+      dataGridViewCellStyle10.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+      dataGridViewCellStyle10.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+      dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+      this.metroGrid1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
       this.metroGrid1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.metroGrid1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.SessionId,
@@ -404,14 +410,14 @@ namespace CustomClientGUI
             this.Status,
             this.ResultStatus,
             this.ErrorDetails});
-      dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-      dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-      dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-      dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(136)))), ((int)(((byte)(136)))), ((int)(((byte)(136)))));
-      dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
-      dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-      dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-      this.metroGrid1.DefaultCellStyle = dataGridViewCellStyle2;
+      dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+      dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+      dataGridViewCellStyle11.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+      dataGridViewCellStyle11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(136)))), ((int)(((byte)(136)))), ((int)(((byte)(136)))));
+      dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+      dataGridViewCellStyle11.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+      dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+      this.metroGrid1.DefaultCellStyle = dataGridViewCellStyle11;
       this.metroGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.metroGrid1.EnableHeadersVisualStyles = false;
       this.metroGrid1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
@@ -420,18 +426,42 @@ namespace CustomClientGUI
       this.metroGrid1.Name = "metroGrid1";
       this.metroGrid1.ReadOnly = true;
       this.metroGrid1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-      dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-      dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
-      dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-      dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-      dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
-      dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-      dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-      this.metroGrid1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+      dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+      dataGridViewCellStyle12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
+      dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+      dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+      dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+      dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+      dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+      this.metroGrid1.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
       this.metroGrid1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
       this.metroGrid1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.metroGrid1.Size = new System.Drawing.Size(799, 194);
+      this.metroGrid1.Size = new System.Drawing.Size(801, 172);
       this.metroGrid1.TabIndex = 2;
+      // 
+      // bgWorkerSubmit
+      // 
+      this.bgWorkerSubmit.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgWorkerSubmit_DoWork);
+      this.bgWorkerSubmit.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgWorkerSubmit_ProgressChanged);
+      // 
+      // mBtnClear
+      // 
+      this.mBtnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.mBtnClear.Location = new System.Drawing.Point(18, 135);
+      this.mBtnClear.Name = "mBtnClear";
+      this.mBtnClear.Size = new System.Drawing.Size(133, 29);
+      this.mBtnClear.TabIndex = 16;
+      this.mBtnClear.Text = "ClearTable";
+      this.mBtnClear.UseSelectable = true;
+      this.mBtnClear.Click += new System.EventHandler(this.mBtnClear_Click);
+      // 
+      // mLblDashBoard
+      // 
+      this.mLblDashBoard.AutoSize = true;
+      this.mLblDashBoard.Location = new System.Drawing.Point(6, 3);
+      this.mLblDashBoard.Name = "mLblDashBoard";
+      this.mLblDashBoard.Size = new System.Drawing.Size(0, 0);
+      this.mLblDashBoard.TabIndex = 2;
       // 
       // SessionId
       // 
@@ -459,18 +489,18 @@ namespace CustomClientGUI
       // StartTime
       // 
       this.StartTime.HeaderText = "StartTime";
-      this.StartTime.MinimumWidth = 200;
+      this.StartTime.MinimumWidth = 300;
       this.StartTime.Name = "StartTime";
       this.StartTime.ReadOnly = true;
-      this.StartTime.Width = 200;
+      this.StartTime.Width = 300;
       // 
       // EndTime
       // 
       this.EndTime.HeaderText = "EndTime";
-      this.EndTime.MinimumWidth = 200;
+      this.EndTime.MinimumWidth = 300;
       this.EndTime.Name = "EndTime";
       this.EndTime.ReadOnly = true;
-      this.EndTime.Width = 200;
+      this.EndTime.Width = 300;
       // 
       // Duration
       // 
@@ -500,32 +530,53 @@ namespace CustomClientGUI
       this.ErrorDetails.ReadOnly = true;
       this.ErrorDetails.Width = 500;
       // 
-      // bgWorkerSubmit
+      // mTxtDashBoardLog
       // 
-      this.bgWorkerSubmit.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgWorkerSubmit_DoWork);
-      this.bgWorkerSubmit.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgWorkerSubmit_ProgressChanged);
+      this.mTxtDashBoardLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       // 
-      // mBtnClear
       // 
-      this.mBtnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.mBtnClear.Location = new System.Drawing.Point(3, 135);
-      this.mBtnClear.Name = "mBtnClear";
-      this.mBtnClear.Size = new System.Drawing.Size(133, 29);
-      this.mBtnClear.TabIndex = 16;
-      this.mBtnClear.Text = "ClearTable";
-      this.mBtnClear.UseSelectable = true;
-      this.mBtnClear.Click += new System.EventHandler(this.mBtnClear_Click);
+      // 
+      this.mTxtDashBoardLog.CustomButton.Image = null;
+      this.mTxtDashBoardLog.CustomButton.Location = new System.Drawing.Point(721, 1);
+      this.mTxtDashBoardLog.CustomButton.Name = "";
+      this.mTxtDashBoardLog.CustomButton.Size = new System.Drawing.Size(79, 79);
+      this.mTxtDashBoardLog.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+      this.mTxtDashBoardLog.CustomButton.TabIndex = 1;
+      this.mTxtDashBoardLog.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+      this.mTxtDashBoardLog.CustomButton.UseSelectable = true;
+      this.mTxtDashBoardLog.CustomButton.Visible = false;
+      this.mTxtDashBoardLog.Lines = new string[0];
+      this.mTxtDashBoardLog.Location = new System.Drawing.Point(6, 393);
+      this.mTxtDashBoardLog.MaxLength = 327670000;
+      this.mTxtDashBoardLog.Multiline = true;
+      this.mTxtDashBoardLog.Name = "mTxtDashBoardLog";
+      this.mTxtDashBoardLog.PasswordChar = '\0';
+      this.mTxtDashBoardLog.PromptText = "Waiting for Log event";
+      this.mTxtDashBoardLog.ReadOnly = true;
+      this.mTxtDashBoardLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+      this.mTxtDashBoardLog.SelectedText = "";
+      this.mTxtDashBoardLog.SelectionLength = 0;
+      this.mTxtDashBoardLog.SelectionStart = 0;
+      this.mTxtDashBoardLog.ShortcutsEnabled = true;
+      this.mTxtDashBoardLog.Size = new System.Drawing.Size(801, 81);
+      this.mTxtDashBoardLog.TabIndex = 3;
+      this.mTxtDashBoardLog.UseSelectable = true;
+      this.mTxtDashBoardLog.WaterMark = "Waiting for Log event";
+      this.mTxtDashBoardLog.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+      this.mTxtDashBoardLog.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
       // 
       // ucDashBoard
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.Controls.Add(this.tableLayoutPanel1);
+      this.Controls.Add(this.tableLayoutPanel);
       this.Margin = new System.Windows.Forms.Padding(2);
       this.Name = "ucDashBoard";
-      this.Size = new System.Drawing.Size(812, 478);
-      this.tableLayoutPanel1.ResumeLayout(false);
+      this.Size = new System.Drawing.Size(814, 480);
+      this.tableLayoutPanel.ResumeLayout(false);
+      this.tableLayoutPanel.PerformLayout();
       this.mPanelTaskInfo.ResumeLayout(false);
       this.mPanelTaskInfo.PerformLayout();
       this.metroPanel2.ResumeLayout(false);
@@ -536,7 +587,7 @@ namespace CustomClientGUI
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
         private MetroFramework.Controls.MetroPanel mPanelTaskInfo;
         private MetroFramework.Controls.MetroTextBox mTxtPartition;
         private MetroFramework.Controls.MetroLabel metroLabel5;
@@ -551,6 +602,9 @@ namespace CustomClientGUI
         private MetroFramework.Controls.MetroPanel metroPanel2;
     private MetroFramework.Controls.MetroButton metroButton1;
     private MetroFramework.Controls.MetroGrid metroGrid1;
+    private System.ComponentModel.BackgroundWorker bgWorkerSubmit;
+    private MetroFramework.Controls.MetroButton mBtnClear;
+    private MetroFramework.Controls.MetroLabel mLblDashBoard;
     private System.Windows.Forms.DataGridViewTextBoxColumn SessionId;
     private System.Windows.Forms.DataGridViewTextBoxColumn Username;
     private System.Windows.Forms.DataGridViewTextBoxColumn TaskId;
@@ -560,7 +614,6 @@ namespace CustomClientGUI
     private System.Windows.Forms.DataGridViewTextBoxColumn Status;
     private System.Windows.Forms.DataGridViewTextBoxColumn ResultStatus;
     private System.Windows.Forms.DataGridViewTextBoxColumn ErrorDetails;
-    private System.ComponentModel.BackgroundWorker bgWorkerSubmit;
-    private MetroFramework.Controls.MetroButton mBtnClear;
+    private MetroFramework.Controls.MetroTextBox mTxtDashBoardLog;
   }
 }

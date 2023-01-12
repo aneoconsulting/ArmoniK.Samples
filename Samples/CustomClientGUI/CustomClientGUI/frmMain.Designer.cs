@@ -43,6 +43,7 @@ namespace CustomClientGUI
       this.mTileExit = new MetroFramework.Controls.MetroTile();
       this.mTileSettings = new MetroFramework.Controls.MetroTile();
       this.mTileActivities = new MetroFramework.Controls.MetroTile();
+      this.mTileLogs = new MetroFramework.Controls.MetroTile();
       this.tableLayoutPanel1.SuspendLayout();
       this.menuPanel.SuspendLayout();
       this.mtc.SuspendLayout();
@@ -78,7 +79,6 @@ namespace CustomClientGUI
             | System.Windows.Forms.AnchorStyles.Right)));
       this.mPanel.AutoScroll = true;
       this.mPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-      this.mPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.mPanel.HorizontalScrollbar = true;
       this.mPanel.HorizontalScrollbarBarColor = true;
       this.mPanel.HorizontalScrollbarHighlightOnWheel = false;
@@ -125,6 +125,7 @@ namespace CustomClientGUI
       this.mtc.Style = MetroFramework.MetroColorStyle.Green;
       this.mtc.TabIndex = 2;
       this.mtc.UseSelectable = true;
+      this.mtc.SelectedIndexChanged += new System.EventHandler(this.mtc_SelectedIndexChanged);
       // 
       // mtp1
       // 
@@ -175,10 +176,11 @@ namespace CustomClientGUI
       // 
       this.tableLayoutPanel2.ColumnCount = 1;
       this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel2.Controls.Add(this.mTileLogs, 0, 2);
+      this.tableLayoutPanel2.Controls.Add(this.mTileSettings, 0, 1);
       this.tableLayoutPanel2.Controls.Add(this.metroPanel1, 0, 0);
       this.tableLayoutPanel2.Controls.Add(this.metroPanel2, 0, 4);
-      this.tableLayoutPanel2.Controls.Add(this.mTileSettings, 0, 2);
-      this.tableLayoutPanel2.Controls.Add(this.mTileActivities, 0, 1);
+      this.tableLayoutPanel2.Controls.Add(this.mTileActivities, 0, 3);
       this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
       this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -233,6 +235,7 @@ namespace CustomClientGUI
       this.mTileDashBoard.Text = "Dashboard";
       this.mTileDashBoard.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.mTileDashBoard.UseSelectable = true;
+      this.mTileDashBoard.Click += new System.EventHandler(this.mTileDashBoard_Click);
       // 
       // mTileExit
       // 
@@ -251,27 +254,42 @@ namespace CustomClientGUI
       // 
       this.mTileSettings.ActiveControl = null;
       this.mTileSettings.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.mTileSettings.Location = new System.Drawing.Point(0, 103);
+      this.mTileSettings.Location = new System.Drawing.Point(0, 53);
       this.mTileSettings.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
       this.mTileSettings.Name = "mTileSettings";
       this.mTileSettings.Size = new System.Drawing.Size(94, 44);
-      this.mTileSettings.TabIndex = 2;
+      this.mTileSettings.TabIndex = 4;
       this.mTileSettings.Text = "Settings";
       this.mTileSettings.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.mTileSettings.UseSelectable = true;
-      this.mTileSettings.Click += new System.EventHandler(this.metroTile3_Click);
+      this.mTileSettings.Click += new System.EventHandler(this.mTileSettings_Click);
       // 
       // mTileActivities
       // 
       this.mTileActivities.ActiveControl = null;
-      this.mTileActivities.Location = new System.Drawing.Point(0, 53);
+      this.mTileActivities.Location = new System.Drawing.Point(0, 153);
       this.mTileActivities.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
       this.mTileActivities.Name = "mTileActivities";
-      this.mTileActivities.Size = new System.Drawing.Size(94, 44);
-      this.mTileActivities.TabIndex = 3;
+      this.mTileActivities.Size = new System.Drawing.Size(94, 39);
+      this.mTileActivities.TabIndex = 5;
       this.mTileActivities.Text = "Activities";
       this.mTileActivities.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.mTileActivities.UseSelectable = true;
+      this.mTileActivities.Click += new System.EventHandler(this.mTileActivities_Click);
+      // 
+      // mTileLogs
+      // 
+      this.mTileLogs.ActiveControl = null;
+      this.mTileLogs.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.mTileLogs.Location = new System.Drawing.Point(0, 103);
+      this.mTileLogs.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+      this.mTileLogs.Name = "mTileLogs";
+      this.mTileLogs.Size = new System.Drawing.Size(94, 44);
+      this.mTileLogs.TabIndex = 6;
+      this.mTileLogs.Text = "Logs";
+      this.mTileLogs.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.mTileLogs.UseSelectable = true;
+      this.mTileLogs.Click += new System.EventHandler(this.mTileLogs_Click);
       // 
       // frmMain
       // 
@@ -311,8 +329,9 @@ namespace CustomClientGUI
         private MetroFramework.Controls.MetroTile mTileDashBoard;
         private MetroFramework.Controls.MetroPanel metroPanel2;
         private MetroFramework.Controls.MetroTile mTileExit;
-        private MetroFramework.Controls.MetroTile mTileSettings;
-        private MetroFramework.Controls.MetroTile mTileActivities;
-    }
+    private MetroFramework.Controls.MetroTile mTileActivities;
+    private MetroFramework.Controls.MetroTile mTileSettings;
+    private MetroFramework.Controls.MetroTile mTileLogs;
+  }
 }
 

@@ -22,21 +22,34 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using Serilog.Core;
+using Serilog.Events;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using ArmoniK.Api.gRPC.V1;
-
 namespace CustomClientGUI.Data
 {
-  public class ConnectionData
+  public class TbsLoggerSink : ILogEventSink
   {
-    public ArmoniK.DevelopmentKit.Client.Common.Properties Properties       { get; set; }
-    public string                                          Host             { get; set; }
-    public string                                          MethodName       { get; set; }
-    public TaskOptions                                     TaskOptions      { get; set; }
+    public event EventHandler NewLogHandler;
+
+    public TbsLoggerSink() { }
+
+    public void Emit(LogEvent logEvent)
+    {
+#if DEBUG
+      Console.WriteLine($"{logEvent.Timestamp}] {logEvent.MessageTemplate}");
+#endif
+      NewLogHandler?.Invoke(typeof(TbsLoggerSink), new LogEventArgs() { Log = logEvent });
+    }
+  }
+
+  public class LogEventArgs : EventArgs
+  {
+    public LogEvent Log { get; set; }
   }
 }

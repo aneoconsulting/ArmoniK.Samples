@@ -36,11 +36,25 @@ using MetroFramework.Controls;
 
 namespace CustomClientGUI
 {
-  public partial class ucLogin : MetroUserControl
+  public partial class ucActivities : MetroUserControl
   {
-    public ucLogin()
+    public ucActivities()
     {
       InitializeComponent();
+      var listSimplePanel = Enumerable.Range(0, 20).Select(idx =>
+                                               {
+                                                 var panel = new ucComputeNode(idx.ToString());
+                                                 panel.Dock   = DockStyle.Fill;
+                                                 panel.Margin = Padding.Empty;
+                                                 return panel;
+                                               }).ToList();
+
+      foreach (var panel in listSimplePanel)
+      {
+        tableLayoutPanel1.Controls.Add(panel);
+      }
+
+
     }
 
     private void urlTxtBox_Click(object sender, EventArgs e)
@@ -68,23 +82,14 @@ namespace CustomClientGUI
 
     }
 
-    private void mConnect_Click(object sender, EventArgs e)
+    private void flowLayout_Paint(object sender, PaintEventArgs e)
     {
-      if (urlTxtBox.Text != "")
-      {
-        var ucDashboard = frmMain.Instance.MetroContainer.Controls["ucDashBoard_" + frmMain.Instance.Mtc.TabPages[frmMain.Instance.Mtc.SelectedIndex].Text];
-        ucDashboard.Dock = DockStyle.Fill;
-        Uri url = new Uri(urlTxtBox.Text);
-        if (portTxtBox.Text != "")
-        {
-          url = new Uri(url.Scheme + url.Host + int.Parse(portTxtBox.Text));
-        }
+      
+    }
 
-        frmMain.Instance.SessionConfiguration.Host      = url.AbsoluteUri;
-
-
-        ucDashboard.BringToFront();
-      }
+    private void tableLayoutPanel1_Paint_1(object sender, PaintEventArgs e)
+    {
+      
     }
   }
 }

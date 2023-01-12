@@ -36,12 +36,34 @@ using MetroFramework.Controls;
 
 namespace CustomClientGUI
 {
-  public partial class ucLogin : MetroUserControl
+  public partial class ucComputeNode : MetroUserControl
   {
-    public ucLogin()
+    public ucComputeNode(string idxNode)
     {
       InitializeComponent();
+      this.Name              = "Node_" + idxNode;
+      this.mLblInstance.Text = "Node " + idxNode;
+      
+      ListCores = Enumerable.Range(0,
+                                        36)
+                                 .Select(idx =>
+                                         {
+                                           var lbl = new Label();
+                                           lbl.Name         = "core" + idx;
+                                           lbl.Text         = "";
+                                           lbl.Margin       = new Padding(0, 1, 1, 0);
+                                           
+                                           lbl.Dock         = DockStyle.Fill;
+                                           lbl.BackColor    = Color.Gray;
+                                           return lbl;
+                                         }).ToList();
+      foreach (var core in ListCores)
+      {
+        tableLayoutPanel1.Controls.Add(core);
+      }
     }
+
+    public List<Label> ListCores { get; set; }
 
     private void urlTxtBox_Click(object sender, EventArgs e)
     {
@@ -68,23 +90,14 @@ namespace CustomClientGUI
 
     }
 
-    private void mConnect_Click(object sender, EventArgs e)
+    private void metroLabel2_Click(object sender, EventArgs e)
     {
-      if (urlTxtBox.Text != "")
-      {
-        var ucDashboard = frmMain.Instance.MetroContainer.Controls["ucDashBoard_" + frmMain.Instance.Mtc.TabPages[frmMain.Instance.Mtc.SelectedIndex].Text];
-        ucDashboard.Dock = DockStyle.Fill;
-        Uri url = new Uri(urlTxtBox.Text);
-        if (portTxtBox.Text != "")
-        {
-          url = new Uri(url.Scheme + url.Host + int.Parse(portTxtBox.Text));
-        }
 
-        frmMain.Instance.SessionConfiguration.Host      = url.AbsoluteUri;
+    }
 
+    private void label1_Click(object sender, EventArgs e)
+    {
 
-        ucDashboard.BringToFront();
-      }
     }
   }
 }

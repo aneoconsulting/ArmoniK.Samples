@@ -35,6 +35,7 @@ using System.Windows.Forms;
 
 using ArmoniK.Api.gRPC.V1;
 
+using CustomClientGUI.Data;
 using CustomClientGUI.Submitter;
 
 using MetroFramework.Controls;
@@ -44,13 +45,18 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Extensions.Logging;
 
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
 namespace CustomClientGUI
 {
   public partial class ucDashBoard : MetroFramework.Controls.MetroUserControl
   {
-    public ucDashBoard()
+    public ucDashBoard(string name)
     {
       InitializeComponent();
+      this.Name                            = name;
+      mLblDashBoard.Text                   = name;
+      bgWorkerSubmit.WorkerReportsProgress = true;
     }
 
     private void metroTile2_Click(object    sender,
@@ -91,7 +97,6 @@ namespace CustomClientGUI
       metroButton1.Text    = "Executing ...";
     }
 
-    public ResultForStressTestsHandler ResultForStressTestsHandler { get; set; }
 
     public LoggerFactory LoggerFactory { get; set; }
 
@@ -113,8 +118,6 @@ namespace CustomClientGUI
       var workloadTimeInMs = int.Parse(mTxtWorkloadInMs.Text);
       var offset           = metroGrid1.Rows.Count - nbTasks;
 
-      bgWorkerSubmit.WorkerReportsProgress = true;
-
 
       for (var row = offset; row < offset + nbTasks; row++)
       {
@@ -131,8 +134,12 @@ namespace CustomClientGUI
                   .Value = "Sending";
       }
 
-      SessionRun = new ArmonikClientSession(frmMain.Instance.DataConnection.Host,
-                                            ResultForStressTestsHandler,
+      ArmonikClientSession.LoggerSink.NewLogHandler += LogHandler;
+
+
+      SessionRun = new ArmonikClientSession(frmMain.Instance.SessionConfiguration.Host,
+                                            frmMain.Instance.SessionConfiguration.TaskOptions,
+                                            frmMain.Instance.SessionConfiguration.MethodName,
                                             metroGrid1,
                                             bgWorkerSubmit,
                                             offset);
@@ -150,6 +157,9 @@ namespace CustomClientGUI
       SessionRun.DemoRun.Service.Dispose();
 
       bgWorkerSubmit.ReportProgress(100);
+      ArmonikClientSession.LoggerSink.NewLogHandler -= LogHandler;
+
+      SessionRun?.Dispose();
     }
 
     public ArmonikClientSession SessionRun { get; set; }
@@ -157,15 +167,51 @@ namespace CustomClientGUI
     private void bgWorkerSubmit_ProgressChanged(object                   sender,
                                                 ProgressChangedEventArgs e)
     {
-      SessionRun.DemoRun.Service.Dispose();
-      metroButton1.Text    = "Submit";
-      metroButton1.Enabled = true;
+      if (e.UserState is Serilog.Events.LogEvent log)
+      {
+        var lines = mTxtDashBoardLog.Text.Split('\n')
+                                    .ToList();
+        if (lines.Count > 512)
+        {
+          mTxtDashBoardLog.Text = string.Join("\n",
+                                              lines.GetRange(lines.Count - 129,
+                                                             128));
+          ((ucLogs)frmMain.Instance.MetroContainer.Controls["ucLogs_" + frmMain.Instance.Mtc.TabPages[frmMain.Instance.Mtc.SelectedIndex]
+                                                                               .Text]).Logs.Text = mTxtDashBoardLog.Text;
+        }
+
+        StringBuilder sb = new StringBuilder(mTxtDashBoardLog.Text);
+        sb.Append($@"{log.Timestamp.DateTime:HH:mm:ss}: {log.Level} {log.MessageTemplate}" + Environment.NewLine);
+        mTxtDashBoardLog.Text           = sb.ToString();
+
+        ((ucLogs)frmMain.Instance.MetroContainer.Controls["ucLogs_" + frmMain.Instance.Mtc.TabPages[frmMain.Instance.Mtc.SelectedIndex]
+                                                                             .Text]).Logs.Text = sb.ToString();
+      }
+      else
+      {
+        SessionRun.DemoRun.Service.Dispose();
+        metroButton1.Text    = "Submit";
+        metroButton1.Enabled = true;
+      }
     }
 
     private void mBtnClear_Click(object    sender,
                                  EventArgs e)
     {
       metroGrid1.Rows.Clear();
+    }
+
+    private void tableLayoutPanel1_Paint(object         sender,
+                                         PaintEventArgs e)
+    {
+    }
+
+    private void LogHandler(object    sender,
+                            EventArgs e)
+    {
+      var log = ((LogEventArgs)e).Log;
+      bgWorkerSubmit.ReportProgress(50,
+                                    log);
     }
   }
 }

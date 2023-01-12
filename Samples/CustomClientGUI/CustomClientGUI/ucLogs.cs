@@ -24,19 +24,57 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-using ArmoniK.Api.gRPC.V1;
+using MetroFramework.Controls;
 
-namespace CustomClientGUI.Data
+namespace CustomClientGUI
 {
-  public class ConnectionData
+  public partial class ucLogs : MetroUserControl
   {
-    public ArmoniK.DevelopmentKit.Client.Common.Properties Properties       { get; set; }
-    public string                                          Host             { get; set; }
-    public string                                          MethodName       { get; set; }
-    public TaskOptions                                     TaskOptions      { get; set; }
+    public ucLogs(string name)
+    {
+      InitializeComponent();
+      this.Name = name;
+      Logs      = mTxtLogs;
+    }
+
+    public MetroTextBox Logs
+    {
+      get => mTxtLogs;
+      set => mTxtLogs = value;
+    }
+
+    private void urlTxtBox_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void portTxtBox_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void metroLabel3_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void urlTxtBox_Enter(object sender, EventArgs e)
+    {
+
+    }
+
+    private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+    {
+
+    }
+    
   }
 }

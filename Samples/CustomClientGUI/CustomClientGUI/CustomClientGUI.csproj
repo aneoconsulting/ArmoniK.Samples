@@ -266,6 +266,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\ConnectionData.cs" />
+    <Compile Include="Data\TbsLogHandler.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -278,11 +279,35 @@
     <Compile Include="Submitter\DemoTests.cs" />
     <Compile Include="Submitter\ResultForStressTestsHandler.cs" />
     <Compile Include="Submitter\Utils.cs" />
+    <Compile Include="ucComputeNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucComputeNode.Designer.cs">
+      <DependentUpon>ucComputeNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucLogs.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucLogs.Designer.cs">
+      <DependentUpon>ucLogs.cs</DependentUpon>
+    </Compile>
     <Compile Include="ucDashBoard.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ucDashBoard.Designer.cs">
       <DependentUpon>ucDashBoard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucActivities.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucActivities.Designer.cs">
+      <DependentUpon>ucActivities.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ucSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucSettings.Designer.cs">
+      <DependentUpon>ucSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="ucLogin.cs">
       <SubType>UserControl</SubType>
@@ -302,8 +327,20 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ucComputeNode.resx">
+      <DependentUpon>ucComputeNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucLogs.resx">
+      <DependentUpon>ucLogs.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ucDashBoard.resx">
       <DependentUpon>ucDashBoard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucActivities.resx">
+      <DependentUpon>ucActivities.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucSettings.resx">
+      <DependentUpon>ucSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucLogin.resx">
       <DependentUpon>ucLogin.cs</DependentUpon>
