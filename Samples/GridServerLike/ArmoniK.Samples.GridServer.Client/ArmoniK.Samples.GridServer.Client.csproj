@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.Client.GridServer" Version="0.8.1" />
+    <PackageReference Include="Armonik.DevelopmentKit.Client.GridServer" Version="0.8.2" />
   </ItemGroup>
 
   <ItemGroup>
