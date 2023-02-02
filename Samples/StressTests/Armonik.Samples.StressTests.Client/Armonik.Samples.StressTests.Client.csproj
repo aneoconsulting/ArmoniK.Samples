@@ -28,4 +28,10 @@
     <ProjectReference Include="..\..\UnifiedAPI\ArmoniK.Samples.Common\ArmoniK.Samples.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="startup.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
