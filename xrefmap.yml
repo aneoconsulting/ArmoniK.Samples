@@ -1,6 +1,9 @@
 ### YamlMime:XRefMap
 sorted: true
 references:
+- uid: armonik_api_samples
+  name: Armonik.Samples API
+  href: api/index.html
 - uid: ArmoniK.HelloWorld.Worker
   name: ArmoniK.HelloWorld.Worker
   href: api/ArmoniK.HelloWorld.Worker.html
@@ -13,22 +16,25 @@ references:
   commentId: T:ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager
   fullName: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager
   nameWithType: ApplicationLifeTimeManager
-- uid: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.#ctor(ILogger{ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager},IHostApplicationLifetime)
+- uid: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.#ctor(Microsoft.Extensions.Logging.ILogger{ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager},Microsoft.Extensions.Hosting.IHostApplicationLifetime)
   name: ApplicationLifeTimeManager(ILogger<ApplicationLifeTimeManager>, IHostApplicationLifetime)
-  href: api/ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.html#ArmoniK_HelloWorld_Worker_ApplicationLifeTimeManager__ctor_ILogger_ArmoniK_HelloWorld_Worker_ApplicationLifeTimeManager__IHostApplicationLifetime_
-  commentId: M:ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.#ctor(ILogger{ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager},IHostApplicationLifetime)
-  name.vb: ApplicationLifeTimeManager(ILogger(Of ApplicationLifeTimeManager), IHostApplicationLifetime)
-  fullName: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.ApplicationLifeTimeManager(ILogger<ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager>, IHostApplicationLifetime)
-  fullName.vb: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.ApplicationLifeTimeManager(ILogger(Of ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager), IHostApplicationLifetime)
+  href: api/ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.html#ArmoniK_HelloWorld_Worker_ApplicationLifeTimeManager__ctor_Microsoft_Extensions_Logging_ILogger_ArmoniK_HelloWorld_Worker_ApplicationLifeTimeManager__Microsoft_Extensions_Hosting_IHostApplicationLifetime_
+  commentId: M:ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.#ctor(Microsoft.Extensions.Logging.ILogger{ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager},Microsoft.Extensions.Hosting.IHostApplicationLifetime)
+  name.vb: New(ILogger(Of ApplicationLifeTimeManager), IHostApplicationLifetime)
+  fullName: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.ApplicationLifeTimeManager(Microsoft.Extensions.Logging.ILogger<ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager>, Microsoft.Extensions.Hosting.IHostApplicationLifetime)
+  fullName.vb: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.New(Microsoft.Extensions.Logging.ILogger(Of ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager), Microsoft.Extensions.Hosting.IHostApplicationLifetime)
   nameWithType: ApplicationLifeTimeManager.ApplicationLifeTimeManager(ILogger<ApplicationLifeTimeManager>, IHostApplicationLifetime)
-  nameWithType.vb: ApplicationLifeTimeManager.ApplicationLifeTimeManager(ILogger(Of ApplicationLifeTimeManager), IHostApplicationLifetime)
+  nameWithType.vb: ApplicationLifeTimeManager.New(ILogger(Of ApplicationLifeTimeManager), IHostApplicationLifetime)
 - uid: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.#ctor*
   name: ApplicationLifeTimeManager
   href: api/ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.html#ArmoniK_HelloWorld_Worker_ApplicationLifeTimeManager__ctor_
   commentId: Overload:ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.ApplicationLifeTimeManager
+  fullName.vb: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.New
   nameWithType: ApplicationLifeTimeManager.ApplicationLifeTimeManager
+  nameWithType.vb: ApplicationLifeTimeManager.New
 - uid: ArmoniK.HelloWorld.Worker.Program
   name: Program
   href: api/ArmoniK.HelloWorld.Worker.Program.html
@@ -36,13 +42,13 @@ references:
   fullName: ArmoniK.HelloWorld.Worker.Program
   nameWithType: Program
 - uid: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder(System.String[])
-  name: CreateHostBuilder(String[])
+  name: CreateHostBuilder(string[])
   href: api/ArmoniK.HelloWorld.Worker.Program.html#ArmoniK_HelloWorld_Worker_Program_CreateHostBuilder_System_String___
   commentId: M:ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder(System.String[])
   name.vb: CreateHostBuilder(String())
-  fullName: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder(System.String[])
-  fullName.vb: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder(System.String())
-  nameWithType: Program.CreateHostBuilder(String[])
+  fullName: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder(string[])
+  fullName.vb: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder(String())
+  nameWithType: Program.CreateHostBuilder(string[])
   nameWithType.vb: Program.CreateHostBuilder(String())
 - uid: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder*
   name: CreateHostBuilder
@@ -52,13 +58,13 @@ references:
   fullName: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder
   nameWithType: Program.CreateHostBuilder
 - uid: ArmoniK.HelloWorld.Worker.Program.Main(System.String[])
-  name: Main(String[])
+  name: Main(string[])
   href: api/ArmoniK.HelloWorld.Worker.Program.html#ArmoniK_HelloWorld_Worker_Program_Main_System_String___
   commentId: M:ArmoniK.HelloWorld.Worker.Program.Main(System.String[])
   name.vb: Main(String())
-  fullName: ArmoniK.HelloWorld.Worker.Program.Main(System.String[])
-  fullName.vb: ArmoniK.HelloWorld.Worker.Program.Main(System.String())
-  nameWithType: Program.Main(String[])
+  fullName: ArmoniK.HelloWorld.Worker.Program.Main(string[])
+  fullName.vb: ArmoniK.HelloWorld.Worker.Program.Main(String())
+  nameWithType: Program.Main(string[])
   nameWithType.vb: Program.Main(String())
 - uid: ArmoniK.HelloWorld.Worker.Program.Main*
   name: Main
@@ -73,19 +79,25 @@ references:
   commentId: T:ArmoniK.HelloWorld.Worker.SampleComputerService
   fullName: ArmoniK.HelloWorld.Worker.SampleComputerService
   nameWithType: SampleComputerService
-- uid: ArmoniK.HelloWorld.Worker.SampleComputerService.#ctor(ILoggerFactory,ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager)
+- uid: ArmoniK.HelloWorld.Worker.SampleComputerService.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager)
   name: SampleComputerService(ILoggerFactory, ApplicationLifeTimeManager)
-  href: api/ArmoniK.HelloWorld.Worker.SampleComputerService.html#ArmoniK_HelloWorld_Worker_SampleComputerService__ctor_ILoggerFactory_ArmoniK_HelloWorld_Worker_ApplicationLifeTimeManager_
-  commentId: M:ArmoniK.HelloWorld.Worker.SampleComputerService.#ctor(ILoggerFactory,ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager)
-  fullName: ArmoniK.HelloWorld.Worker.SampleComputerService.SampleComputerService(ILoggerFactory, ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager)
+  href: api/ArmoniK.HelloWorld.Worker.SampleComputerService.html#ArmoniK_HelloWorld_Worker_SampleComputerService__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_HelloWorld_Worker_ApplicationLifeTimeManager_
+  commentId: M:ArmoniK.HelloWorld.Worker.SampleComputerService.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager)
+  name.vb: New(ILoggerFactory, ApplicationLifeTimeManager)
+  fullName: ArmoniK.HelloWorld.Worker.SampleComputerService.SampleComputerService(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager)
+  fullName.vb: ArmoniK.HelloWorld.Worker.SampleComputerService.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager)
   nameWithType: SampleComputerService.SampleComputerService(ILoggerFactory, ApplicationLifeTimeManager)
+  nameWithType.vb: SampleComputerService.New(ILoggerFactory, ApplicationLifeTimeManager)
 - uid: ArmoniK.HelloWorld.Worker.SampleComputerService.#ctor*
   name: SampleComputerService
   href: api/ArmoniK.HelloWorld.Worker.SampleComputerService.html#ArmoniK_HelloWorld_Worker_SampleComputerService__ctor_
   commentId: Overload:ArmoniK.HelloWorld.Worker.SampleComputerService.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: ArmoniK.HelloWorld.Worker.SampleComputerService.SampleComputerService
+  fullName.vb: ArmoniK.HelloWorld.Worker.SampleComputerService.New
   nameWithType: SampleComputerService.SampleComputerService
+  nameWithType.vb: SampleComputerService.New
 - uid: ArmoniK.HelloWorld.Worker.SampleComputerService.Execute(ComputeRequest,ServerCallContext)
   name: Execute(ComputeRequest, ServerCallContext)
   href: api/ArmoniK.HelloWorld.Worker.SampleComputerService.html#ArmoniK_HelloWorld_Worker_SampleComputerService_Execute_ComputeRequest_ServerCallContext_
@@ -105,19 +117,25 @@ references:
   commentId: T:ArmoniK.HelloWorld.Worker.Startup
   fullName: ArmoniK.HelloWorld.Worker.Startup
   nameWithType: Startup
-- uid: ArmoniK.HelloWorld.Worker.Startup.#ctor(IWebHostEnvironment)
+- uid: ArmoniK.HelloWorld.Worker.Startup.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
   name: Startup(IWebHostEnvironment)
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup__ctor_IWebHostEnvironment_
-  commentId: M:ArmoniK.HelloWorld.Worker.Startup.#ctor(IWebHostEnvironment)
-  fullName: ArmoniK.HelloWorld.Worker.Startup.Startup(IWebHostEnvironment)
+  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup__ctor_Microsoft_AspNetCore_Hosting_IWebHostEnvironment_
+  commentId: M:ArmoniK.HelloWorld.Worker.Startup.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
+  name.vb: New(IWebHostEnvironment)
+  fullName: ArmoniK.HelloWorld.Worker.Startup.Startup(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
+  fullName.vb: ArmoniK.HelloWorld.Worker.Startup.New(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
   nameWithType: Startup.Startup(IWebHostEnvironment)
+  nameWithType.vb: Startup.New(IWebHostEnvironment)
 - uid: ArmoniK.HelloWorld.Worker.Startup.#ctor*
   name: Startup
   href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup__ctor_
   commentId: Overload:ArmoniK.HelloWorld.Worker.Startup.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: ArmoniK.HelloWorld.Worker.Startup.Startup
+  fullName.vb: ArmoniK.HelloWorld.Worker.Startup.New
   nameWithType: Startup.Startup
+  nameWithType.vb: Startup.New
 - uid: ArmoniK.HelloWorld.Worker.Startup.Configuration
   name: Configuration
   href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup_Configuration
@@ -131,11 +149,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.HelloWorld.Worker.Startup.Configuration
   nameWithType: Startup.Configuration
-- uid: ArmoniK.HelloWorld.Worker.Startup.Configure(IApplicationBuilder,IWebHostEnvironment)
+- uid: ArmoniK.HelloWorld.Worker.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
   name: Configure(IApplicationBuilder, IWebHostEnvironment)
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup_Configure_IApplicationBuilder_IWebHostEnvironment_
-  commentId: M:ArmoniK.HelloWorld.Worker.Startup.Configure(IApplicationBuilder,IWebHostEnvironment)
-  fullName: ArmoniK.HelloWorld.Worker.Startup.Configure(IApplicationBuilder, IWebHostEnvironment)
+  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup_Configure_Microsoft_AspNetCore_Builder_IApplicationBuilder_Microsoft_AspNetCore_Hosting_IWebHostEnvironment_
+  commentId: M:ArmoniK.HelloWorld.Worker.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
+  fullName: ArmoniK.HelloWorld.Worker.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder, Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
   nameWithType: Startup.Configure(IApplicationBuilder, IWebHostEnvironment)
 - uid: ArmoniK.HelloWorld.Worker.Startup.Configure*
   name: Configure
@@ -144,11 +162,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.HelloWorld.Worker.Startup.Configure
   nameWithType: Startup.Configure
-- uid: ArmoniK.HelloWorld.Worker.Startup.ConfigureServices(IServiceCollection)
+- uid: ArmoniK.HelloWorld.Worker.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)
   name: ConfigureServices(IServiceCollection)
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup_ConfigureServices_IServiceCollection_
-  commentId: M:ArmoniK.HelloWorld.Worker.Startup.ConfigureServices(IServiceCollection)
-  fullName: ArmoniK.HelloWorld.Worker.Startup.ConfigureServices(IServiceCollection)
+  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup_ConfigureServices_Microsoft_Extensions_DependencyInjection_IServiceCollection_
+  commentId: M:ArmoniK.HelloWorld.Worker.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  fullName: ArmoniK.HelloWorld.Worker.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)
   nameWithType: Startup.ConfigureServices(IServiceCollection)
 - uid: ArmoniK.HelloWorld.Worker.Startup.ConfigureServices*
   name: ConfigureServices
@@ -170,13 +188,13 @@ references:
   fullName: ArmoniK.Samples.Common.ClientPayload
   nameWithType: ClientPayload
 - uid: ArmoniK.Samples.Common.ClientPayload.deserialize(System.Byte[])
-  name: deserialize(Byte[])
+  name: deserialize(byte[])
   href: api/ArmoniK.Samples.Common.ClientPayload.html#ArmoniK_Samples_Common_ClientPayload_deserialize_System_Byte___
   commentId: M:ArmoniK.Samples.Common.ClientPayload.deserialize(System.Byte[])
   name.vb: deserialize(Byte())
-  fullName: ArmoniK.Samples.Common.ClientPayload.deserialize(System.Byte[])
-  fullName.vb: ArmoniK.Samples.Common.ClientPayload.deserialize(System.Byte())
-  nameWithType: ClientPayload.deserialize(Byte[])
+  fullName: ArmoniK.Samples.Common.ClientPayload.deserialize(byte[])
+  fullName.vb: ArmoniK.Samples.Common.ClientPayload.deserialize(Byte())
+  nameWithType: ClientPayload.deserialize(byte[])
   nameWithType.vb: ClientPayload.deserialize(Byte())
 - uid: ArmoniK.Samples.Common.ClientPayload.deserialize*
   name: deserialize
@@ -343,13 +361,13 @@ references:
   fullName: ArmoniK.Samples.Common.SelectExtensions
   nameWithType: SelectExtensions
 - uid: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(IEnumerable{System.Byte})
-  name: ConvertToArray(IEnumerable<Byte>)
+  name: ConvertToArray(IEnumerable<byte>)
   href: api/ArmoniK.Samples.Common.SelectExtensions.html#ArmoniK_Samples_Common_SelectExtensions_ConvertToArray_IEnumerable_System_Byte__
   commentId: M:ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(IEnumerable{System.Byte})
   name.vb: ConvertToArray(IEnumerable(Of Byte))
-  fullName: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(IEnumerable<System.Byte>)
-  fullName.vb: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(IEnumerable(Of System.Byte))
-  nameWithType: SelectExtensions.ConvertToArray(IEnumerable<Byte>)
+  fullName: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(IEnumerable<byte>)
+  fullName.vb: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(IEnumerable(Of Byte))
+  nameWithType: SelectExtensions.ConvertToArray(IEnumerable<byte>)
   nameWithType.vb: SelectExtensions.ConvertToArray(IEnumerable(Of Byte))
 - uid: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray*
   name: ConvertToArray
@@ -365,14 +383,14 @@ references:
   fullName: ArmoniK.Samples.Common.Utils
   nameWithType: Utils
 - uid: ArmoniK.Samples.Common.Utils.ParamsHelper(System.Object[])
-  name: ParamsHelper(Object[])
+  name: ParamsHelper(params object[])
   href: api/ArmoniK.Samples.Common.Utils.html#ArmoniK_Samples_Common_Utils_ParamsHelper_System_Object___
   commentId: M:ArmoniK.Samples.Common.Utils.ParamsHelper(System.Object[])
-  name.vb: ParamsHelper(Object())
-  fullName: ArmoniK.Samples.Common.Utils.ParamsHelper(System.Object[])
-  fullName.vb: ArmoniK.Samples.Common.Utils.ParamsHelper(System.Object())
-  nameWithType: Utils.ParamsHelper(Object[])
-  nameWithType.vb: Utils.ParamsHelper(Object())
+  name.vb: ParamsHelper(ParamArray Object())
+  fullName: ArmoniK.Samples.Common.Utils.ParamsHelper(params object[])
+  fullName.vb: ArmoniK.Samples.Common.Utils.ParamsHelper(ParamArray Object())
+  nameWithType: Utils.ParamsHelper(params object[])
+  nameWithType.vb: Utils.ParamsHelper(ParamArray Object())
 - uid: ArmoniK.Samples.Common.Utils.ParamsHelper*
   name: ParamsHelper
   href: api/ArmoniK.Samples.Common.Utils.html#ArmoniK_Samples_Common_Utils_ParamsHelper_
@@ -381,11 +399,14 @@ references:
   fullName: ArmoniK.Samples.Common.Utils.ParamsHelper
   nameWithType: Utils.ParamsHelper
 - uid: ArmoniK.Samples.Common.Utils.PeriodicInfo(Action,System.Int32)
-  name: PeriodicInfo(Action, Int32)
+  name: PeriodicInfo(Action, int)
   href: api/ArmoniK.Samples.Common.Utils.html#ArmoniK_Samples_Common_Utils_PeriodicInfo_Action_System_Int32_
   commentId: M:ArmoniK.Samples.Common.Utils.PeriodicInfo(Action,System.Int32)
-  fullName: ArmoniK.Samples.Common.Utils.PeriodicInfo(Action, System.Int32)
-  nameWithType: Utils.PeriodicInfo(Action, Int32)
+  name.vb: PeriodicInfo(Action, Integer)
+  fullName: ArmoniK.Samples.Common.Utils.PeriodicInfo(Action, int)
+  fullName.vb: ArmoniK.Samples.Common.Utils.PeriodicInfo(Action, Integer)
+  nameWithType: Utils.PeriodicInfo(Action, int)
+  nameWithType.vb: Utils.PeriodicInfo(Action, Integer)
 - uid: ArmoniK.Samples.Common.Utils.PeriodicInfo*
   name: PeriodicInfo
   href: api/ArmoniK.Samples.Common.Utils.html#ArmoniK_Samples_Common_Utils_PeriodicInfo_
@@ -409,23 +430,29 @@ references:
   name: ServiceContainer()
   href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer__ctor
   commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.#ctor
+  name.vb: New()
   fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ServiceContainer()
+  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.New()
   nameWithType: ServiceContainer.ServiceContainer()
+  nameWithType.vb: ServiceContainer.New()
 - uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.#ctor*
   name: ServiceContainer
   href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer__ctor_
   commentId: Overload:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ServiceContainer
+  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.New
   nameWithType: ServiceContainer.ServiceContainer
+  nameWithType.vb: ServiceContainer.New
 - uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube(System.Double[])
-  name: ComputeBasicArrayCube(Double[])
+  name: ComputeBasicArrayCube(double[])
   href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_ComputeBasicArrayCube_System_Double___
   commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube(System.Double[])
   name.vb: ComputeBasicArrayCube(Double())
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube(System.Double[])
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube(System.Double())
-  nameWithType: ServiceContainer.ComputeBasicArrayCube(Double[])
+  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube(double[])
+  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube(Double())
+  nameWithType: ServiceContainer.ComputeBasicArrayCube(double[])
   nameWithType.vb: ServiceContainer.ComputeBasicArrayCube(Double())
 - uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube*
   name: ComputeBasicArrayCube
@@ -435,13 +462,13 @@ references:
   fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube
   nameWithType: ServiceContainer.ComputeBasicArrayCube
 - uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd(System.Byte[],System.Byte[],System.Double)
-  name: ComputeMadd(Byte[], Byte[], Double)
+  name: ComputeMadd(byte[], byte[], double)
   href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_ComputeMadd_System_Byte___System_Byte___System_Double_
   commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd(System.Byte[],System.Byte[],System.Double)
   name.vb: ComputeMadd(Byte(), Byte(), Double)
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd(System.Byte[], System.Byte[], System.Double)
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd(System.Byte(), System.Byte(), System.Double)
-  nameWithType: ServiceContainer.ComputeMadd(Byte[], Byte[], Double)
+  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd(byte[], byte[], double)
+  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd(Byte(), Byte(), Double)
+  nameWithType: ServiceContainer.ComputeMadd(byte[], byte[], double)
   nameWithType.vb: ServiceContainer.ComputeMadd(Byte(), Byte(), Double)
 - uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd*
   name: ComputeMadd
@@ -451,22 +478,22 @@ references:
   fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd
   nameWithType: ServiceContainer.ComputeMadd
 - uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Byte[])
-  name: ComputeReduceCube(Byte[])
+  name: ComputeReduceCube(byte[])
   href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_ComputeReduceCube_System_Byte___
   commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Byte[])
   name.vb: ComputeReduceCube(Byte())
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Byte[])
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Byte())
-  nameWithType: ServiceContainer.ComputeReduceCube(Byte[])
+  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(byte[])
+  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(Byte())
+  nameWithType: ServiceContainer.ComputeReduceCube(byte[])
   nameWithType.vb: ServiceContainer.ComputeReduceCube(Byte())
 - uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Double[])
-  name: ComputeReduceCube(Double[])
+  name: ComputeReduceCube(double[])
   href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_ComputeReduceCube_System_Double___
   commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Double[])
   name.vb: ComputeReduceCube(Double())
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Double[])
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Double())
-  nameWithType: ServiceContainer.ComputeReduceCube(Double[])
+  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(double[])
+  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(Double())
+  nameWithType: ServiceContainer.ComputeReduceCube(double[])
   nameWithType.vb: ServiceContainer.ComputeReduceCube(Double())
 - uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube*
   name: ComputeReduceCube
@@ -476,13 +503,13 @@ references:
   fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube
   nameWithType: ServiceContainer.ComputeReduceCube
 - uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd(System.Byte[],System.Byte[],System.Double)
-  name: NonStaticComputeMadd(Byte[], Byte[], Double)
+  name: NonStaticComputeMadd(byte[], byte[], double)
   href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_NonStaticComputeMadd_System_Byte___System_Byte___System_Double_
   commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd(System.Byte[],System.Byte[],System.Double)
   name.vb: NonStaticComputeMadd(Byte(), Byte(), Double)
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd(System.Byte[], System.Byte[], System.Double)
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd(System.Byte(), System.Byte(), System.Double)
-  nameWithType: ServiceContainer.NonStaticComputeMadd(Byte[], Byte[], Double)
+  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd(byte[], byte[], double)
+  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd(Byte(), Byte(), Double)
+  nameWithType: ServiceContainer.NonStaticComputeMadd(byte[], byte[], double)
   nameWithType.vb: ServiceContainer.NonStaticComputeMadd(Byte(), Byte(), Double)
 - uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd*
   name: NonStaticComputeMadd
@@ -504,13 +531,13 @@ references:
   fullName: ArmoniK.Samples.GridServer.Common.SelectExtensions
   nameWithType: SelectExtensions
 - uid: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(IEnumerable{System.Byte})
-  name: ConvertToArray(IEnumerable<Byte>)
+  name: ConvertToArray(IEnumerable<byte>)
   href: api/ArmoniK.Samples.GridServer.Common.SelectExtensions.html#ArmoniK_Samples_GridServer_Common_SelectExtensions_ConvertToArray_IEnumerable_System_Byte__
   commentId: M:ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(IEnumerable{System.Byte})
   name.vb: ConvertToArray(IEnumerable(Of Byte))
-  fullName: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(IEnumerable<System.Byte>)
-  fullName.vb: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(IEnumerable(Of System.Byte))
-  nameWithType: SelectExtensions.ConvertToArray(IEnumerable<Byte>)
+  fullName: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(IEnumerable<byte>)
+  fullName.vb: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(IEnumerable(Of Byte))
+  nameWithType: SelectExtensions.ConvertToArray(IEnumerable<byte>)
   nameWithType.vb: SelectExtensions.ConvertToArray(IEnumerable(Of Byte))
 - uid: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray*
   name: ConvertToArray
@@ -612,18 +639,21 @@ references:
   name: HtcMockSymphonyClient(SessionService, ILogger<Client>)
   href: api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html#ArmoniK_Samples_HtcMockSymphonyClient_HtcMockSymphonyClient__ctor_SessionService_ILogger_Client__
   commentId: M:ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor(SessionService,ILogger{Client})
-  name.vb: HtcMockSymphonyClient(SessionService, ILogger(Of Client))
+  name.vb: New(SessionService, ILogger(Of Client))
   fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger<Client>)
-  fullName.vb: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger(Of Client))
+  fullName.vb: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.New(SessionService, ILogger(Of Client))
   nameWithType: HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger<Client>)
-  nameWithType.vb: HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger(Of Client))
+  nameWithType.vb: HtcMockSymphonyClient.New(SessionService, ILogger(Of Client))
 - uid: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor*
   name: HtcMockSymphonyClient
   href: api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html#ArmoniK_Samples_HtcMockSymphonyClient_HtcMockSymphonyClient__ctor_
   commentId: Overload:ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.HtcMockSymphonyClient
+  fullName.vb: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.New
   nameWithType: HtcMockSymphonyClient.HtcMockSymphonyClient
+  nameWithType.vb: HtcMockSymphonyClient.New
 - uid: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.Start(RunConfiguration)
   name: Start(RunConfiguration)
   href: api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html#ArmoniK_Samples_HtcMockSymphonyClient_HtcMockSymphonyClient_Start_RunConfiguration_
@@ -653,24 +683,30 @@ references:
   name: ServiceApps()
   href: api/Armonik.Samples.StressTests.Worker.ServiceApps.html#Armonik_Samples_StressTests_Worker_ServiceApps__ctor
   commentId: M:Armonik.Samples.StressTests.Worker.ServiceApps.#ctor
+  name.vb: New()
   fullName: Armonik.Samples.StressTests.Worker.ServiceApps.ServiceApps()
+  fullName.vb: Armonik.Samples.StressTests.Worker.ServiceApps.New()
   nameWithType: ServiceApps.ServiceApps()
+  nameWithType.vb: ServiceApps.New()
 - uid: Armonik.Samples.StressTests.Worker.ServiceApps.#ctor*
   name: ServiceApps
   href: api/Armonik.Samples.StressTests.Worker.ServiceApps.html#Armonik_Samples_StressTests_Worker_ServiceApps__ctor_
   commentId: Overload:Armonik.Samples.StressTests.Worker.ServiceApps.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: Armonik.Samples.StressTests.Worker.ServiceApps.ServiceApps
+  fullName.vb: Armonik.Samples.StressTests.Worker.ServiceApps.New
   nameWithType: ServiceApps.ServiceApps
+  nameWithType.vb: ServiceApps.New
 - uid: Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad(System.Double[],System.Int64,System.Int32)
-  name: ComputeWorkLoad(Double[], Int64, Int32)
+  name: ComputeWorkLoad(double[], long, int)
   href: api/Armonik.Samples.StressTests.Worker.ServiceApps.html#Armonik_Samples_StressTests_Worker_ServiceApps_ComputeWorkLoad_System_Double___System_Int64_System_Int32_
   commentId: M:Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad(System.Double[],System.Int64,System.Int32)
-  name.vb: ComputeWorkLoad(Double(), Int64, Int32)
-  fullName: Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad(System.Double[], System.Int64, System.Int32)
-  fullName.vb: Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad(System.Double(), System.Int64, System.Int32)
-  nameWithType: ServiceApps.ComputeWorkLoad(Double[], Int64, Int32)
-  nameWithType.vb: ServiceApps.ComputeWorkLoad(Double(), Int64, Int32)
+  name.vb: ComputeWorkLoad(Double(), Long, Integer)
+  fullName: Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad(double[], long, int)
+  fullName.vb: Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad(Double(), Long, Integer)
+  nameWithType: ServiceApps.ComputeWorkLoad(double[], long, int)
+  nameWithType.vb: ServiceApps.ComputeWorkLoad(Double(), Long, Integer)
 - uid: Armonik.Samples.StressTests.Worker.ServiceApps.ComputeWorkLoad*
   name: ComputeWorkLoad
   href: api/Armonik.Samples.StressTests.Worker.ServiceApps.html#Armonik_Samples_StressTests_Worker_ServiceApps_ComputeWorkLoad_
@@ -691,13 +727,13 @@ references:
   fullName: Armonik.Samples.Symphony.Common.ClientPayload
   nameWithType: ClientPayload
 - uid: Armonik.Samples.Symphony.Common.ClientPayload.deserialize(System.Byte[])
-  name: deserialize(Byte[])
+  name: deserialize(byte[])
   href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_deserialize_System_Byte___
   commentId: M:Armonik.Samples.Symphony.Common.ClientPayload.deserialize(System.Byte[])
   name.vb: deserialize(Byte())
-  fullName: Armonik.Samples.Symphony.Common.ClientPayload.deserialize(System.Byte[])
-  fullName.vb: Armonik.Samples.Symphony.Common.ClientPayload.deserialize(System.Byte())
-  nameWithType: ClientPayload.deserialize(Byte[])
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.deserialize(byte[])
+  fullName.vb: Armonik.Samples.Symphony.Common.ClientPayload.deserialize(Byte())
+  nameWithType: ClientPayload.deserialize(byte[])
   nameWithType.vb: ClientPayload.deserialize(Byte())
 - uid: Armonik.Samples.Symphony.Common.ClientPayload.deserialize*
   name: deserialize
@@ -976,23 +1012,29 @@ references:
   name: ServiceApps()
   href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps__ctor
   commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.#ctor
+  name.vb: New()
   fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ServiceApps()
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.New()
   nameWithType: ServiceApps.ServiceApps()
+  nameWithType.vb: ServiceApps.New()
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.#ctor*
   name: ServiceApps
   href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps__ctor_
   commentId: Overload:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.#ctor
   isSpec: "True"
+  name.vb: New
   fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ServiceApps
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.New
   nameWithType: ServiceApps.ServiceApps
+  nameWithType.vb: ServiceApps.New
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeBasicArrayCube(System.Double[])
-  name: ComputeBasicArrayCube(Double[])
+  name: ComputeBasicArrayCube(double[])
   href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeBasicArrayCube_System_Double___
   commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeBasicArrayCube(System.Double[])
   name.vb: ComputeBasicArrayCube(Double())
-  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeBasicArrayCube(System.Double[])
-  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeBasicArrayCube(System.Double())
-  nameWithType: ServiceApps.ComputeBasicArrayCube(Double[])
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeBasicArrayCube(double[])
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeBasicArrayCube(Double())
+  nameWithType: ServiceApps.ComputeBasicArrayCube(double[])
   nameWithType.vb: ServiceApps.ComputeBasicArrayCube(Double())
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeBasicArrayCube*
   name: ComputeBasicArrayCube
@@ -1002,13 +1044,13 @@ references:
   fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeBasicArrayCube
   nameWithType: ServiceApps.ComputeBasicArrayCube
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd(System.Byte[],System.Byte[],System.Double)
-  name: ComputeMadd(Byte[], Byte[], Double)
+  name: ComputeMadd(byte[], byte[], double)
   href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeMadd_System_Byte___System_Byte___System_Double_
   commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd(System.Byte[],System.Byte[],System.Double)
   name.vb: ComputeMadd(Byte(), Byte(), Double)
-  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd(System.Byte[], System.Byte[], System.Double)
-  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd(System.Byte(), System.Byte(), System.Double)
-  nameWithType: ServiceApps.ComputeMadd(Byte[], Byte[], Double)
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd(byte[], byte[], double)
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd(Byte(), Byte(), Double)
+  nameWithType: ServiceApps.ComputeMadd(byte[], byte[], double)
   nameWithType.vb: ServiceApps.ComputeMadd(Byte(), Byte(), Double)
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd*
   name: ComputeMadd
@@ -1018,13 +1060,13 @@ references:
   fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeMadd
   nameWithType: ServiceApps.ComputeMadd
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce(System.Double[])
-  name: ComputeReduce(Double[])
+  name: ComputeReduce(double[])
   href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeReduce_System_Double___
   commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce(System.Double[])
   name.vb: ComputeReduce(Double())
-  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce(System.Double[])
-  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce(System.Double())
-  nameWithType: ServiceApps.ComputeReduce(Double[])
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce(double[])
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce(Double())
+  nameWithType: ServiceApps.ComputeReduce(double[])
   nameWithType.vb: ServiceApps.ComputeReduce(Double())
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce*
   name: ComputeReduce
@@ -1034,23 +1076,23 @@ references:
   fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduce
   nameWithType: ServiceApps.ComputeReduce
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Byte[])
-  name: ComputeReduceCube(Byte[])
+  name: ComputeReduceCube(byte[])
   href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeReduceCube_System_Byte___
   commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Byte[])
   name.vb: ComputeReduceCube(Byte())
-  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Byte[])
-  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Byte())
-  nameWithType: ServiceApps.ComputeReduceCube(Byte[])
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(byte[])
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(Byte())
+  nameWithType: ServiceApps.ComputeReduceCube(byte[])
   nameWithType.vb: ServiceApps.ComputeReduceCube(Byte())
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Double[],System.Int32)
-  name: ComputeReduceCube(Double[], Int32)
+  name: ComputeReduceCube(double[], int)
   href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeReduceCube_System_Double___System_Int32_
   commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Double[],System.Int32)
-  name.vb: ComputeReduceCube(Double(), Int32)
-  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Double[], System.Int32)
-  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(System.Double(), System.Int32)
-  nameWithType: ServiceApps.ComputeReduceCube(Double[], Int32)
-  nameWithType.vb: ServiceApps.ComputeReduceCube(Double(), Int32)
+  name.vb: ComputeReduceCube(Double(), Integer)
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(double[], int)
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube(Double(), Integer)
+  nameWithType: ServiceApps.ComputeReduceCube(double[], int)
+  nameWithType.vb: ServiceApps.ComputeReduceCube(Double(), Integer)
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube*
   name: ComputeReduceCube
   href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_ComputeReduceCube_
@@ -1059,13 +1101,13 @@ references:
   fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.ComputeReduceCube
   nameWithType: ServiceApps.ComputeReduceCube
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd(System.Byte[],System.Byte[],System.Double)
-  name: NonStaticComputeMadd(Byte[], Byte[], Double)
+  name: NonStaticComputeMadd(byte[], byte[], double)
   href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html#ArmoniK_Samples_Unified_Worker_Services_ServiceApps_NonStaticComputeMadd_System_Byte___System_Byte___System_Double_
   commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd(System.Byte[],System.Byte[],System.Double)
   name.vb: NonStaticComputeMadd(Byte(), Byte(), Double)
-  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd(System.Byte[], System.Byte[], System.Double)
-  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd(System.Byte(), System.Byte(), System.Double)
-  nameWithType: ServiceApps.NonStaticComputeMadd(Byte[], Byte[], Double)
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd(byte[], byte[], double)
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd(Byte(), Byte(), Double)
+  nameWithType: ServiceApps.NonStaticComputeMadd(byte[], byte[], double)
   nameWithType.vb: ServiceApps.NonStaticComputeMadd(Byte(), Byte(), Double)
 - uid: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd*
   name: NonStaticComputeMadd
@@ -1074,6 +1116,3 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd
   nameWithType: ServiceApps.NonStaticComputeMadd
-- uid: armonik_api_samples
-  name: Armonik.Samples API
-  href: api/index.html
