@@ -13,21 +13,30 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        ref: ${{ github.head_ref }}
+        ref: ${{ github.ref }}
         fetch-depth: 0
 
     - name: Generate Version
       id: genver
-      run: |
-        VERSION=$(docker run --rm -v $(pwd):/repo codacy/git-version /bin/git-version --folder=/repo --release-branch=release --dev-branch=master)
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        echo "Version : " >> $GITHUB_STEP_SUMMARY
-        echo "$VERSION" >> $GITHUB_STEP_SUMMARY
-        echo $VERSION
+      uses: codacy/git-version@2.7.1
+      with:
+        minor-identifier: "feat:"
+        release-branch: release
+        dev-branch: main
+        prefix: v
+
+    - name: Print version
+      run: echo VERSION ${{ steps.genver.outputs.version }} >> $GITHUB_STEP_SUMMARY
 
   formatCsharp:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        solution:
+          - AllSamples.sln
+          - csharp/native/Demo.sln
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -47,11 +56,11 @@ jobs:
 
     - name: Restore
       run: |
-        dotnet restore AllSamples.sln
+        dotnet restore ${{ matrix.solution }}
 
     - name: Reformat
       run: |
-        jb cleanupcode AllSamples.sln
+        jb cleanupcode ${{ matrix.solution }}
 
     - name: Check Diff
       run: |
@@ -83,6 +92,71 @@ jobs:
     - name: Build the package
       run: |
         dotnet build AllSamples.sln
+
+  buildImages:
+    runs-on: ubuntu-latest
+    needs:
+      - versionning
+      - buildProjects
+    env:
+      VERSION: ${{ needs.versionning.outputs.version }}
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+        -  img : dockerhubaneo/armonik_demo_helloworld_client
+           path: ./csharp/native/HelloWorld/Client/Dockerfile
+           ctx: csharp/native/
+        -  img : dockerhubaneo/armonik_demo_helloworld_worker
+           path: ./csharp/native/HelloWorld/Worker/Dockerfile
+           ctx: csharp/native/
+        -  img : dockerhubaneo/armonik_demo_multipleresults_client
+           path: ./csharp/native/MultipleResults/Client/Dockerfile
+           ctx: csharp/native/
+        -  img : dockerhubaneo/armonik_demo_multipleresults_worker
+           path: ./csharp/native/MultipleResults/Worker/Dockerfile
+           ctx: csharp/native/
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.ref }}
+
+    - name: login
+      run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
+
+    - name: Build
+      run: docker build -t ${{ matrix.img }}:$VERSION -f ${{ matrix.path }} ${{ matrix.ctx }}
+
+    - name: push
+      run: docker push ${{ matrix.img }}:$VERSION
+
+  testHelloWorld:
+    runs-on: ubuntu-latest
+    needs:
+      - versionning
+      - buildImages
+    strategy:
+      fail-fast: false
+      matrix:
+        demo:
+          - helloworld
+          - multipleresults
+    steps:
+      - uses: aneoconsulting/ArmoniK@main
+        id: deploy-infra
+        with:
+          ingress: 'None'
+          worker-image: dockerhubaneo/armonik_demo_${{ matrix.demo }}_worker
+          worker-tag: ${{ needs.versionning.outputs.version }}
+      - name: Run Demo Client
+        run: |
+         export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
+         export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
+         export Grpc__Endpoint=http://$CPIP:$CPPort
+
+         docker run --rm dockerhubaneo/armonik_demo_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }} --endpoint $Grpc__Endpoint
 
   testInfraWorker:
     needs:
