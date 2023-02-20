@@ -1,6 +1,6 @@
 root = true
 
-[*.{appxmanifest,axaml,axml,build,c,config,cs,csproj,cpp,dbml,discomap,dtd,html,js,json,jsproj,lsproj,md,njsproj,nuspec,paml,proj,props,proto,resjson,StyleCop,targets,tasks,vbproj,xaml,xamlx,xml,xoml,xsd}]
+[*.{appxmanifest,axaml,axml,build,c,config,cs,csproj,cpp,dbml,discomap,dtd,html,js,json,jsproj,lsproj,md,njsproj,nuspec,paml,proj,props,proto,resjson,StyleCop,sln,targets,tasks,vbproj,xaml,xamlx,xml,xoml,xsd}]
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
