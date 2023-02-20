@@ -24,3 +24,4 @@ RUN mkdir /cache && chown armonikuser: /cache
 USER armonikuser
 EXPOSE 1080
 ENTRYPOINT ["dotnet", "ArmoniK.Samples.MultipleResults.Worker.dll"]
+
