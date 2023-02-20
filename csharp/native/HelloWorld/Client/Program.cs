@@ -64,16 +64,19 @@ namespace ArmoniK.Samples.HelloWorld.Client
       // Create client for task submission
       var submitterClient = new Submitter.SubmitterClient(channel);
 
+      // Default task options that will be used by each task if not overwritten when submitting tasks
+      var taskOptions = new TaskOptions
+                        {
+                          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
+                          MaxRetries  = 2,
+                          Priority    = 1,
+                          PartitionId = partition,
+                        };
+
       // Request for session creation with default task options and allowed partitions for the session
       var createSessionReply = submitterClient.CreateSession(new CreateSessionRequest
                                                              {
-                                                               DefaultTaskOption = new TaskOptions
-                                                                                   {
-                                                                                     MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
-                                                                                     MaxRetries  = 2,
-                                                                                     Priority    = 1,
-                                                                                     PartitionId = partition,
-                                                                                   },
+                                                               DefaultTaskOption = taskOptions,
                                                                PartitionIds =
                                                                {
                                                                  partition,
@@ -84,23 +87,25 @@ namespace ArmoniK.Samples.HelloWorld.Client
       var resultId = Guid.NewGuid()
                          .ToString();
 
+      // Task request with payload for the task
+      // Also contains the list of results that will be created by the task
+      var taskRequest = new TaskRequest
+                        {
+                          ExpectedOutputKeys =
+                          {
+                            resultId,
+                          },
+                          // Avoid unnecessary copy but data could be modified during sending if the
+                          // reference to the object is still available
+                          // This is not the case here
+                          Payload = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes("Hello")),
+                        };
+
       var createTaskReply = await submitterClient.CreateTasksAsync(createSessionReply.SessionId,
                                                                    null,
                                                                    new[]
                                                                    {
-                                                                     // Task request with payload for the task
-                                                                     // Also contains the list of results that will be created by the task
-                                                                     new TaskRequest
-                                                                     {
-                                                                       ExpectedOutputKeys =
-                                                                       {
-                                                                         resultId,
-                                                                       },
-                                                                       // Avoid unnecessary copy but data could be modified during sending if the
-                                                                       // reference to the object is still available
-                                                                       // This is not the case here
-                                                                       Payload = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes("Hello")),
-                                                                     },
+                                                                     taskRequest,
                                                                    })
                                                  .ConfigureAwait(false);
 
