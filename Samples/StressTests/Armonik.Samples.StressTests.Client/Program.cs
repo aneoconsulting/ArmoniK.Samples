@@ -23,8 +23,10 @@
 // limitations under the License.
 
 using System.CommandLine;
+using System.CommandLine.NamingConventionBinder;
 
 using Armonik.Samples.StressTests.Client;
+using Armonik.Samples.StressTests.Client.Metrics;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -71,68 +73,69 @@ namespace ArmoniK.Samples.Client
 
       var rootCommand = new RootCommand("Samples for unifiedAPI: Binary for simple tests and quick benchmarks");
       var pTaskCommand = new Command("stressTest",
-                                     "Execute Parallel tasks with different number of tasks and/or different sizes of payload");
-      var numberTaskOption = new Option<int>("--nbTask",
-                                             description: "An option to set the number of tasks",
-                                             getDefaultValue: () => 100);
+                                     "Execute Parallel tasks with different number of tasks and/or different sizes of payload")
+                         {
+                           new Option<int>("--nbTask",
+                                           description: "An option to set the number of tasks",
+                                           getDefaultValue: () => 100),
 
-      var numberInputOfBytes = new Option<long>("--nbInputBytes",
-                                                description: $"An option to set the number of Bytes for the input payload. Default {64000 * 8} Bytes",
-                                                getDefaultValue: () => 64000 * 8);
+                           new Option<long>("--nbInputBytes",
+                                            description: $"An option to set the number of Bytes for the input payload. Default {64000 * 8} Bytes",
+                                            getDefaultValue: () => 64000 * 8),
+                           new Option<long>("--nbOutputBytes",
+                                            description: "An option to set the number of Bytes for the result payload. Default 8 Bytes",
+                                            getDefaultValue: () => 8),
+                           new Option<int>("--workLoadTimeInMs",
+                                           description: "Workload time in milliseconds. Time spent by a task to execute itself in the worker",
+                                           getDefaultValue: () => 1),
+                           new Option<string>("--partition",
+                                              () => "",
+                                              "specify the partition to use for the session."),
+                           new Option<int>("--nbTaskPerBuffer",
+                                           () => 50,
+                                           "specify the number of task per buffer"),
+                           new Option<int>("--nbBufferPerChannel",
+                                           () => 5,
+                                           "specify the number of concurrent buffer per channel"),
+                           new Option<int>("--nbChannel",
+                                           () => 5,
+                                           "specify the number of Grpc Channel"),
+                           new Option<string>("--jsonPath",
+                                              () => "",
+                                              "specify the jsonPath to get metrics. Options are Raw or Json"),
+                         };
 
-      var numberOutputOfBytes = new Option<long>("--nbOutputBytes",
-                                                 description: "An option to set the number of Bytes for the result payload. Default 8 Bytes",
-                                                 getDefaultValue: () => 8);
-
-      var workLoadTimeInMs = new Option<int>("--workLoadTimeInMs",
-                                             description: "Workload time in milliseconds. Time spent by a task to execute itself in the worker",
-                                             getDefaultValue: () => 1);
-
-      var partition = new Option<string>("--partition",
-                                         () => "",
-                                         "specify the partition to use for the session.");
-
-
-      pTaskCommand.Add(numberTaskOption);
-      pTaskCommand.Add(numberInputOfBytes);
-      pTaskCommand.Add(numberOutputOfBytes);
-      pTaskCommand.Add(workLoadTimeInMs);
-      pTaskCommand.Add(partition);
-
-
-      pTaskCommand.SetHandler((numberTaskOption,
-                               numberInputOfBytes,
-                               numberOutputOfBytes,
-                               workLoadTimeInMs,
-                               partition) =>
-                              {
-                                logger_.LogInformation("Option Parallel task Run");
-                                logger_.LogInformation($"--nbTask             = {numberTaskOption}");
-                                logger_.LogInformation($"--nInputBytes        = {numberInputOfBytes}");
-                                logger_.LogInformation($"--nOutputBytes       = {numberOutputOfBytes}");
-                                logger_.LogInformation($"--workLoadTimeInMs   = {workLoadTimeInMs}");
-                                logger_.LogInformation($"--partition          = {partition}");
-
-
-                                var test1 = new StressTests(configuration_,
-                                                            factory,
-                                                            partition);
+      pTaskCommand.Handler = CommandHandler.Create((ContainerOptions options) =>
+                                                   {
+                                                     logger_.LogInformation("Option Parallel task Run");
+                                                     logger_.LogInformation($"--nbTask              = {options.NbTask}");
+                                                     logger_.LogInformation($"--nbInputBytes        = {options.NbInputBytes}");
+                                                     logger_.LogInformation($"--nbOutputBytes       = {options.NbOutputBytes}");
+                                                     logger_.LogInformation($"--workLoadTimeInMs    = {options.WorkLoadTimeInMs}");
+                                                     logger_.LogInformation($"--partition           = {options.Partition}");
+                                                     logger_.LogInformation($"--nbTaskPerBuffer     = {options.NbTaskPerBuffer}");
+                                                     logger_.LogInformation($"--nbBufferPerChannel  = {options.NbBufferPerChannel}");
+                                                     logger_.LogInformation($"--nbChannel           = {options.NbChannel}");
+                                                     logger_.LogInformation($"--jsonPath              = {options.JsonPath}");
 
 
-                                test1.LargePayloadSubmit(numberTaskOption,
-                                                         numberInputOfBytes,
-                                                         numberOutputOfBytes,
-                                                         workLoadTimeInMs);
-                              },
-                              numberTaskOption,
-                              numberInputOfBytes,
-                              numberOutputOfBytes,
-                              workLoadTimeInMs,
-                              partition);
+                                                     var test1 = new StressTests(configuration_,
+                                                                                 factory,
+                                                                                 options.Partition,
+                                                                                 options.NbTaskPerBuffer,
+                                                                                 options.NbBufferPerChannel,
+                                                                                 options
+                                                                                   .NbChannel); //Bug:  SystemCommand line version cannot accept more than 8 arguments !!!
 
+
+                                                     test1.LargePayloadSubmit(options.NbTask,
+                                                                              options.NbInputBytes,
+                                                                              options.NbOutputBytes,
+                                                                              options.WorkLoadTimeInMs,
+                                                                              options.JsonPath);
+                                                   });
 
       rootCommand.Add(pTaskCommand);
-
 
       //Default without parameters
       rootCommand.SetHandler(() =>
@@ -141,6 +144,40 @@ namespace ArmoniK.Samples.Client
                              });
 
       await rootCommand.InvokeAsync(args);
+    }
+
+    public class ContainerOptions
+    {
+      //public ContainerOptions(int    nbTask,
+      //                        long   nbInputBytes,
+      //                        long   nbOutputBytes,
+      //                        int    workLoadTimeInMs,
+      //                        string partition,
+      //                        int    nbTaskPerBuffer,
+      //                        int    nbBufferPerChannel,
+      //                        int    nbChannel,
+      //                        string jsonPath)
+      //{
+      //  this.nbTask             = nbTask;
+      //  this.nbInputBytes       = nbInputBytes;
+      //  this.nbOutputBytes      = nbOutputBytes;
+      //  this.workLoadTimeInMs   = workLoadTimeInMs;
+      //  this.partition          = partition;
+      //  this.nbTaskPerBuffer    = nbTaskPerBuffer;
+      //  this.nbBufferPerChannel = nbBufferPerChannel;
+      //  this.nbChannel          = nbChannel;
+      //  this.jsonPath           = jsonPath;
+      //}
+
+      public int    NbTask             { get; set; }
+      public long   NbInputBytes       { get; set; }
+      public long   NbOutputBytes      { get; set; }
+      public int    WorkLoadTimeInMs   { get; set; }
+      public string Partition          { get; set; }
+      public int    NbTaskPerBuffer    { get; set; }
+      public int    NbBufferPerChannel { get; set; }
+      public int    NbChannel          { get; set; }
+      public string JsonPath           { get; set; }
     }
   }
 }

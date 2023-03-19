@@ -22,12 +22,19 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.CommandLine;
 using System.Diagnostics;
+using System.Text;
+
+using Armonik.Samples.StressTests.Client.Metrics;
 
 using ArmoniK.Api.gRPC.V1;
+using ArmoniK.Api.gRPC.V1.Agent;
+using ArmoniK.Api.gRPC.V1.Tasks;
 using ArmoniK.DevelopmentKit.Client.Common;
 using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
 using ArmoniK.DevelopmentKit.Client.Unified.Factory;
+using ArmoniK.DevelopmentKit.Client.Unified.Services;
 using ArmoniK.DevelopmentKit.Client.Unified.Services.Submitter;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.Samples.Common;
@@ -35,7 +42,9 @@ using ArmoniK.Samples.Common;
 using Google.Protobuf.WellKnownTypes;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 
 namespace Armonik.Samples.StressTests.Client
 {
@@ -43,7 +52,10 @@ namespace Armonik.Samples.StressTests.Client
   {
     public StressTests(IConfiguration configuration,
                        ILoggerFactory factory,
-                       string         partition)
+                       string         partition,
+                       int            nbTaskPerBufferValue,
+                       int            nbBufferPerChannelValue,
+                       int            nbChannel)
     {
       TaskOptions = new TaskOptions
                     {
@@ -64,9 +76,9 @@ namespace Armonik.Samples.StressTests.Client
       Props = new Properties(TaskOptions,
                              configuration.GetSection("Grpc")["EndPoint"])
               {
-                MaxConcurrentBuffers = 5,
-                MaxTasksPerBuffer    = 50,
-                MaxParallelChannels  = 5,
+                MaxConcurrentBuffers = nbBufferPerChannelValue,
+                MaxTasksPerBuffer    = nbTaskPerBufferValue,
+                MaxParallelChannels  = nbChannel,
                 TimeTriggerBuffer    = TimeSpan.FromSeconds(10),
               };
 
@@ -88,20 +100,55 @@ namespace Armonik.Samples.StressTests.Client
 
     private Service Service { get; }
 
-    internal void LargePayloadSubmit(int  nbTasks          = 100,
-                                     long nbInputBytes     = 64000,
-                                     long nbOutputBytes    = 8,
-                                     int  workloadTimeInMs = 1)
+    internal void LargePayloadSubmit(int    nbTasks          = 100,
+                                     long   nbInputBytes     = 64000,
+                                     long   nbOutputBytes    = 8,
+                                     int    workloadTimeInMs = 1,
+                                     string jsonPath       = "")
     {
+      var inputArrayOfBytes = Enumerable.Range(0,
+                                               (int)(nbInputBytes / 8))
+                                        .Select(x => Math.Pow(42.0 * 8 / nbInputBytes,
+                                                              1        / 3.0))
+                                        .ToArray();
+
+      Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbInputBytes / 1024.0} Ko Total : {nbTasks * nbInputBytes / 1024.0} Ko...   ===");
+      var sw = Stopwatch.StartNew();
+      var dt = DateTime.Now;
+
       var periodicInfo = ComputeVector(nbTasks,
-                                       nbInputBytes,
+                                       inputArrayOfBytes,
                                        nbOutputBytes,
                                        workloadTimeInMs);
+      Logger.LogInformation($"{nbTasks}/{nbTasks} tasks Submitted in : {sw.ElapsedMilliseconds / 1000.0:0.00} secs with Total bytes {nbTasks * nbInputBytes / 1024.0:0.00} Ko");
+      ResultHandle.WaitForResult(nbTasks,
+                                 new CancellationToken())
+                  .Wait();
+      periodicInfo.Dispose();
+      var sb = new StringBuilder();
+
+      var stats = new TasksStats(nbTasks,
+                                 nbInputBytes,
+                                 nbOutputBytes,
+                                 workloadTimeInMs,
+                                 Props);
+
+      stats.GetAllStats(channel: Service.GetChannel(),
+                        Service.SessionId,
+                        dt,
+                        DateTime.Now)
+           .Wait();
+
+      if (!string.IsNullOrEmpty(jsonPath))
+      {
+        stats.PrintToJson(jsonPath).Wait();
+      }
+
+      Logger.LogInformation(stats.PrintToText()
+                                   .Result);
+
 
       Service.Dispose();
-      periodicInfo.Dispose();
-
-      Logger.LogInformation($"Total result is {ResultHandle.Total}");
     }
 
     /// <summary>
@@ -111,22 +158,15 @@ namespace Armonik.Samples.StressTests.Client
     /// <param name="nbInputBytes">The number of element n x M in the vector</param>
     /// <param name="nbOutputBytes">The number of bytes to expect as result</param>
     /// <param name="workloadTimeInMs">The time spent to compute task</param>
-    private IDisposable ComputeVector(int  nbTasks,
-                                      long nbInputBytes,
-                                      long nbOutputBytes    = 8,
-                                      int  workloadTimeInMs = 1)
+    private IDisposable ComputeVector(int      nbTasks,
+                                      double[] inputArrayOfBytes,
+                                      long     nbOutputBytes    = 8,
+                                      int      workloadTimeInMs = 1)
     {
       var       indexTask = 0;
       const int elapsed   = 30;
 
-      var inputArrayOfBytes = Enumerable.Range(0,
-                                               (int)(nbInputBytes / 8))
-                                        .Select(x => Math.Pow(42.0 * 8 / nbInputBytes,
-                                                              1        / 3.0))
-                                        .ToArray();
 
-      Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbInputBytes / 1024.0} Ko Total : {nbTasks * nbInputBytes / 1024.0} Ko...   ===");
-      var sw = Stopwatch.StartNew();
       var periodicInfo = Utils.PeriodicInfo(() =>
                                             {
                                               Logger.LogInformation($"Got {ResultHandle.NbResults} results. All tasks submitted ? {(indexTask == nbTasks).ToString()}");
@@ -148,13 +188,12 @@ namespace Armonik.Samples.StressTests.Client
                                                .Result)
                           .ToHashSet();
 
-
       indexTask = taskIds.Count();
 
-      Logger.LogInformation($"{taskIds.Count}/{nbTasks} tasks executed in : {sw.ElapsedMilliseconds / 1000.0:0.00} secs with Total bytes {nbTasks * nbInputBytes / 1024.0:0.00} Ko");
 
       return periodicInfo;
     }
+
 
     private class ResultForStressTestsHandler : IServiceInvocationHandler
     {
@@ -164,6 +203,7 @@ namespace Armonik.Samples.StressTests.Client
         => Logger_ = Logger;
 
       public int    NbResults { get; private set; }
+      public int    NbErrors  { get; private set; }
       public double Total     { get; private set; }
 
       /// <summary>
@@ -175,6 +215,8 @@ namespace Armonik.Samples.StressTests.Client
                               string                     taskId)
 
       {
+        NbErrors++;
+
         if (e.StatusCode == ArmonikStatusCode.TaskCancelled)
         {
           Logger_.LogWarning($"Warning from {taskId} : " + e.Message);
@@ -207,6 +249,16 @@ namespace Armonik.Samples.StressTests.Client
         }
 
         NbResults++;
+      }
+
+      public async Task WaitForResult(int               nbTasks,
+                                      CancellationToken token)
+      {
+        while (NbResults + NbErrors < nbTasks && !token.IsCancellationRequested)
+        {
+          await Task.Delay(TimeSpan.FromMilliseconds(100),
+                           token);
+        }
       }
     }
   }

@@ -106,10 +106,10 @@ function deploy() {
 }
 
 function execute() {
-  echo "cd ${TestDir}/${RELATIVE_CLIENT}/"
-  cd "${TestDir}/${RELATIVE_CLIENT}/"
-  echo dotnet run -r linux-x64 -f net6.0 -c ${configuration} $@
-  dotnet run -r linux-x64 -f net6.0 -c ${configuration} -- $@
+  echo "cd ${BASEDIR}"
+  cd "${BASEDIR}"
+  echo dotnet run --project "${TestDir}/${RELATIVE_CLIENT}/" -r linux-x64 -f net6.0 -c ${configuration} $@
+  dotnet run --project "${TestDir}/${RELATIVE_CLIENT}/" -r linux-x64 -f net6.0 -c ${configuration} -- $@
 }
 
 function usage() {
