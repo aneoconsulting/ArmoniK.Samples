@@ -29,7 +29,6 @@ using System.Linq;
 
 using ArmoniK.DevelopmentKit.Common.Exceptions;
 using ArmoniK.DevelopmentKit.Worker.Unified;
-using ArmoniK.DevelopmentKit.Worker.Unified.Exceptions;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -46,6 +45,7 @@ namespace Armonik.Samples.StressTests.Worker
     private readonly ILogger<ServiceApps> logger_;
 
     private readonly Random rd = new();
+
     public ServiceApps()
     {
       var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
@@ -116,8 +116,8 @@ namespace Armonik.Samples.StressTests.Worker
     }
 
     public double[] ComputeWorkLoadWithException(double[] input,
-                                    long     nbOutputBytes,
-                                    int      workLoadTimeInMs)
+                                                 long     nbOutputBytes,
+                                                 int      workLoadTimeInMs)
     {
       if (input is not
           {

@@ -25,11 +25,11 @@
 namespace Armonik.Samples.StressTests.Client.Metrics
 {
   /// <summary>
-  /// Enumeration of jsonPath to print metrics
+  ///   Enumeration of jsonPath to print metrics
   /// </summary>
   public enum Formatting
   {
-    Raw = 0,
+    Raw  = 0,
     Json = 1,
   }
 }

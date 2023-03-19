@@ -26,7 +26,6 @@ using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
 
 using Armonik.Samples.StressTests.Client;
-using Armonik.Samples.StressTests.Client.Metrics;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

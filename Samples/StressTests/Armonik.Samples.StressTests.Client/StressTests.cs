@@ -22,29 +22,23 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.CommandLine;
 using System.Diagnostics;
 using System.Text;
 
-using Armonik.Samples.StressTests.Client.Metrics;
-
 using ArmoniK.Api.gRPC.V1;
-using ArmoniK.Api.gRPC.V1.Agent;
-using ArmoniK.Api.gRPC.V1.Tasks;
 using ArmoniK.DevelopmentKit.Client.Common;
 using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
 using ArmoniK.DevelopmentKit.Client.Unified.Factory;
-using ArmoniK.DevelopmentKit.Client.Unified.Services;
 using ArmoniK.DevelopmentKit.Client.Unified.Services.Submitter;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.Samples.Common;
 
+using Armonik.Samples.StressTests.Client.Metrics;
+
 using Google.Protobuf.WellKnownTypes;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
 
 namespace Armonik.Samples.StressTests.Client
 {
@@ -104,7 +98,7 @@ namespace Armonik.Samples.StressTests.Client
                                      long   nbInputBytes     = 64000,
                                      long   nbOutputBytes    = 8,
                                      int    workloadTimeInMs = 1,
-                                     string jsonPath       = "")
+                                     string jsonPath         = "")
     {
       var inputArrayOfBytes = Enumerable.Range(0,
                                                (int)(nbInputBytes / 8))
@@ -133,7 +127,7 @@ namespace Armonik.Samples.StressTests.Client
                                  workloadTimeInMs,
                                  Props);
 
-      stats.GetAllStats(channel: Service.GetChannel(),
+      stats.GetAllStats(Service.GetChannel(),
                         Service.SessionId,
                         dt,
                         DateTime.Now)
@@ -141,11 +135,12 @@ namespace Armonik.Samples.StressTests.Client
 
       if (!string.IsNullOrEmpty(jsonPath))
       {
-        stats.PrintToJson(jsonPath).Wait();
+        stats.PrintToJson(jsonPath)
+             .Wait();
       }
 
       Logger.LogInformation(stats.PrintToText()
-                                   .Result);
+                                 .Result);
 
 
       Service.Dispose();

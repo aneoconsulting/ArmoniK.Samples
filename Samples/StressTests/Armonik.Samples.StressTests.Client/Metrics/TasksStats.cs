@@ -22,11 +22,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Globalization;
 using System.Text;
 using System.Text.Json;
 
-using ArmoniK.Api.gRPC.V1;
 using ArmoniK.Api.gRPC.V1.Tasks;
 using ArmoniK.DevelopmentKit.Client.Common;
 
@@ -38,21 +36,6 @@ namespace Armonik.Samples.StressTests.Client.Metrics
 {
   internal class TasksStats
   {
-    public TasksStats(int        nbTasks,
-                      long       nbInputBytes,
-                      long       nbOutputBytes,
-                      int        workloadTimeInMs,
-                      Properties props)
-    {
-      Kpi[KpiKeys.KPI_NB_TASKS]                         = nbTasks.ToString();
-      Kpi[KpiKeys.KPI_NB_INPUTBYTES]                    = nbInputBytes.ToString();
-      Kpi[KpiKeys.KPI_NB_OUTPUTBYTES]                   = nbOutputBytes.ToString();
-      Kpi[KpiKeys.KPI_TIME_WORKLOAD_IN_MS]              = workloadTimeInMs.ToString();
-      Kpi[KpiKeys.KPI_TASKS_PER_BUFFER]                 = props.MaxTasksPerBuffer.ToString();
-      Kpi[KpiKeys.KPI_NB_CHANNEL]                       = props.MaxParallelChannels.ToString();
-      Kpi[KpiKeys.KPI_NB_CONCURRENT_BUFFER_PER_CHANNEL] = props.MaxConcurrentBuffers.ToString();
-    }
-
     public enum KpiKeys
     {
       KPI_COMPLETED_TASKS            = 0,
@@ -74,11 +57,26 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       KPI_NB_CONCURRENT_BUFFER_PER_CHANNEL = 14,
       KPI_UPLOAD_SPEED_KB,
       KPI_DOWNLOAD_SPEED_KB,
-      KPI_NB_POD_USED
-    };
+      KPI_NB_POD_USED,
+    }
+
+    public TasksStats(int        nbTasks,
+                      long       nbInputBytes,
+                      long       nbOutputBytes,
+                      int        workloadTimeInMs,
+                      Properties props)
+    {
+      Kpi[KpiKeys.KPI_NB_TASKS]                         = nbTasks.ToString();
+      Kpi[KpiKeys.KPI_NB_INPUTBYTES]                    = nbInputBytes.ToString();
+      Kpi[KpiKeys.KPI_NB_OUTPUTBYTES]                   = nbOutputBytes.ToString();
+      Kpi[KpiKeys.KPI_TIME_WORKLOAD_IN_MS]              = workloadTimeInMs.ToString();
+      Kpi[KpiKeys.KPI_TASKS_PER_BUFFER]                 = props.MaxTasksPerBuffer.ToString();
+      Kpi[KpiKeys.KPI_NB_CHANNEL]                       = props.MaxParallelChannels.ToString();
+      Kpi[KpiKeys.KPI_NB_CONCURRENT_BUFFER_PER_CHANNEL] = props.MaxConcurrentBuffers.ToString();
+    }
 
 
-    public Dictionary<KpiKeys, string> Kpi      { get; set; } = new Dictionary<KpiKeys, string>();
+    public Dictionary<KpiKeys, string> Kpi      { get; set; } = new();
     public IList<TaskRaw>              TasksRaw { get; set; } = new List<TaskRaw>();
 
     private async IAsyncEnumerable<TaskRaw> RetrieveAllTasksStats(ChannelBase                   channel,
@@ -174,7 +172,7 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       var withMs = timeDiff.Seconds + timeDiff.Nanos / 1e9;
       Kpi[KpiKeys.KPI_TIME_PROCESSED_TASKS] = TimeSpan.FromSeconds(withMs)
                                                       .ToString();
-      Kpi[KpiKeys.KPI_TIME_THROUGHPUT_PROCESS] = ((double)TasksRaw.Count() / withMs).ToString("F02");
+      Kpi[KpiKeys.KPI_TIME_THROUGHPUT_PROCESS] = (TasksRaw.Count() / withMs).ToString("F02");
     }
 
     public async Task GetTimeToRetrieveResults(ChannelBase channel,
@@ -232,7 +230,7 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       var dictJson = Kpi.Select(pair => new KeyValuePair<string, string>(pair.Key.ToString(),
                                                                          pair.Value));
 
-      var options = new JsonSerializerOptions()
+      var options = new JsonSerializerOptions
                     {
                       WriteIndented = true,
                     };
@@ -240,8 +238,9 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       {
         File.Delete(jsonPath);
       }
+
       await using var file = File.OpenWrite(jsonPath);
-      
+
       await file.WriteAsync(new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(dictJson,
                                                                                                      options))))
                 .ConfigureAwait(false);
@@ -251,7 +250,7 @@ namespace Armonik.Samples.StressTests.Client.Metrics
     public async Task<string> PrintToText()
     {
       var sb = new StringBuilder();
-      sb.Append($"========      Statistics and performance      ========" + Environment.NewLine);
+      sb.Append("========      Statistics and performance      ========" + Environment.NewLine);
       sb.Append(Environment.NewLine);
       sb.Append("-------- Submission buffer configuration --------------"                                 + Environment.NewLine);
       sb.Append($"Max nb tasks per buffer          : {Kpi[KpiKeys.KPI_TASKS_PER_BUFFER]}"                 + Environment.NewLine);
