@@ -55,9 +55,9 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       KPI_TASKS_PER_BUFFER                 = 12,
       KPI_NB_CHANNEL                       = 13,
       KPI_NB_CONCURRENT_BUFFER_PER_CHANNEL = 14,
-      KPI_UPLOAD_SPEED_KB,
-      KPI_DOWNLOAD_SPEED_KB,
-      KPI_NB_POD_USED,
+      KPI_UPLOAD_SPEED_KB                  = 15,
+      KPI_DOWNLOAD_SPEED_KB                = 16,
+      KPI_NB_POD_USED                      = 17,
     }
 
     public TasksStats(int        nbTasks,

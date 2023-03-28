@@ -115,7 +115,7 @@ namespace ArmoniK.Samples.Client
                                                      logger_.LogInformation($"--nbTaskPerBuffer     = {options.NbTaskPerBuffer}");
                                                      logger_.LogInformation($"--nbBufferPerChannel  = {options.NbBufferPerChannel}");
                                                      logger_.LogInformation($"--nbChannel           = {options.NbChannel}");
-                                                     logger_.LogInformation($"--jsonPath              = {options.JsonPath}");
+                                                     logger_.LogInformation($"--jsonPath            = {options.JsonPath}");
 
 
                                                      var test1 = new StressTests(configuration_,
@@ -123,8 +123,7 @@ namespace ArmoniK.Samples.Client
                                                                                  options.Partition,
                                                                                  options.NbTaskPerBuffer,
                                                                                  options.NbBufferPerChannel,
-                                                                                 options
-                                                                                   .NbChannel); //Bug:  SystemCommand line version cannot accept more than 8 arguments !!!
+                                                                                 options.NbChannel);
 
 
                                                      test1.LargePayloadSubmit(options.NbTask,
