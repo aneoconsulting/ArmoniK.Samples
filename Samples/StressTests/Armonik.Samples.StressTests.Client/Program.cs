@@ -147,27 +147,6 @@ namespace ArmoniK.Samples.Client
 
     public class ContainerOptions
     {
-      //public ContainerOptions(int    nbTask,
-      //                        long   nbInputBytes,
-      //                        long   nbOutputBytes,
-      //                        int    workLoadTimeInMs,
-      //                        string partition,
-      //                        int    nbTaskPerBuffer,
-      //                        int    nbBufferPerChannel,
-      //                        int    nbChannel,
-      //                        string jsonPath)
-      //{
-      //  this.nbTask             = nbTask;
-      //  this.nbInputBytes       = nbInputBytes;
-      //  this.nbOutputBytes      = nbOutputBytes;
-      //  this.workLoadTimeInMs   = workLoadTimeInMs;
-      //  this.partition          = partition;
-      //  this.nbTaskPerBuffer    = nbTaskPerBuffer;
-      //  this.nbBufferPerChannel = nbBufferPerChannel;
-      //  this.nbChannel          = nbChannel;
-      //  this.jsonPath           = jsonPath;
-      //}
-
       public int    NbTask             { get; set; }
       public long   NbInputBytes       { get; set; }
       public long   NbOutputBytes      { get; set; }
