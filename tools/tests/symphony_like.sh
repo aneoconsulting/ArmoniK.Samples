@@ -32,6 +32,11 @@ CPIP=$(kubectl get svc ingress -n armonik -o jsonpath="{.status.loadBalancer.ing
 CPHOST=$(kubectl get svc ingress -n armonik -o jsonpath="{.status.loadBalancer.ingress[0]."hostname"}")
 export CPIP=${CPHOST:-$CPIP}
 export CPPort=$(kubectl get svc ingress -n armonik -o custom-columns="PORT:.spec.ports[1].port" --no-headers=true)
+if [[ "$ARMONIK_SHARED_HOST_PATH" == "" ]]; then
+  export DATA_PATH=`kubectl get secret -n armonik shared-storage -o jsonpath="{.data.host_path}" 2>/dev/null | base64 -d`
+else
+  export DATA_PATH="$ARMONIK_SHARED_HOST_PATH"
+fi
 export Grpc__Endpoint=http://$CPIP:$CPPort
 export Grpc__SSLValidation="disable"
 export Grpc__CaCert=""
@@ -43,8 +48,12 @@ nuget_cache=$(dotnet nuget locals global-packages --list | awk '{ print $2 }')
 
 function createLocalDirectory() {
     if [[ ${TO_BUCKET} == false && ${TO_DIRECTORY} == true ]]; then
-      echo "Need to create Data folder \"${HOME}/data\" for application"
-      mkdir -p "${HOME}/data"
+      if [[ $DATA_PATH == "" ]]; then
+        echo "Could not retrieve data folder from kubernetes secret or ARMONIK_SHARED_HOST_PATH environment variable"
+        exit 1
+      fi
+      echo "Need to create Data folder \"${DATA_PATH}\" for application"
+      mkdir -p "${DATA_PATH}"
     fi
 }
 
@@ -98,7 +107,7 @@ function deploy() {
     echo "Copy of S3 Bucket ${TO_BUCKET}"
     aws s3 cp "packages/${PACKAGE_NAME}" "s3://${S3_BUCKET}"
   elif [[ ${TO_DIRECTORY} == true ]]; then
-    cp -v "packages/${PACKAGE_NAME}" "${HOME}/data"
+    cp -v "packages/${PACKAGE_NAME}" "${DATA_PATH}"
   else
     echo "Dll is not copied to shared storage !"
   fi
