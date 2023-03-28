@@ -114,7 +114,7 @@ namespace Armonik.Samples.StressTests.Client
                                        inputArrayOfBytes,
                                        nbOutputBytes,
                                        workloadTimeInMs);
-      Logger.LogInformation($"{nbTasks}/{nbTasks} tasks Submitted in : {sw.ElapsedMilliseconds / 1000.0:0.00} secs with Total bytes {nbTasks * nbInputBytes / 1024.0:0.00} Ko");
+      Logger.LogInformation($"{nbTasks}/{nbTasks} tasks Submitted in : {sw.ElapsedMilliseconds / 1000.0:0.00} secs with Total bytes {nbTasks * nbInputBytes / 1024.0:0.00} KB");
       ResultHandle.WaitForResult(nbTasks,
                                  new CancellationToken())
                   .Wait();
