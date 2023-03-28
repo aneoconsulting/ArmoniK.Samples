@@ -12,7 +12,7 @@
  ">
     
       <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.css">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
       <link rel="stylesheet" href="../styles/docfx.css">
       <link rel="stylesheet" href="../styles/main.css">
       <meta property="docfx:navrel" content="../toc.html">
@@ -77,7 +77,95 @@
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">object</span></div>
-    <div class="level1"><span class="xref">ServiceApps</span></div>
+    <div class="level1"><span class="xref">BaseService</span>&lt;<a class="xref" href="Armonik.Samples.StressTests.Worker.ServiceApps.html">ServiceApps</a>&gt;</div>
+    <div class="level2"><span class="xref">ServiceApps</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.OnCreateService(ServiceContext)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.OnSessionEnter(SessionContext)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.OnInvoke(SessionContext, TaskContext)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.OnSessionLeave(SessionContext)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.OnDestroyService(ServiceContext)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.SubmitTasks(IEnumerable&lt;byte[]&gt;)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.SubmitTasksWithDependencies(IEnumerable&lt;Tuple&lt;byte[], IList&lt;string&gt;&gt;&gt;, bool)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.WaitForTaskCompletion(string)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.WaitForTasksCompletion(IEnumerable&lt;string&gt;)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.WaitForSubTasksCompletion(string)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.GetDependenciesResult(string)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.Configure(IConfiguration, TaskOptions)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.ConfigureSession(Session, TaskOptions)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.ConfigureSessionService(ITaskHandler)</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.Logger</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.SessionId</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.TaskId2OutputId</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.TaskOptions</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.TaskId</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.Configuration</span>
+    </div>
+    <div>
+      <span class="xref">BaseService&lt;ServiceApps&gt;.LoggerFactory</span>
+    </div>
+    <div>
+      <span class="xref">object.Equals(object)</span>
+    </div>
+    <div>
+      <span class="xref">object.Equals(object, object)</span>
+    </div>
+    <div>
+      <span class="xref">object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">object.ReferenceEquals(object, object)</span>
+    </div>
+    <div>
+      <span class="xref">object.ToString()</span>
+    </div>
   </div>
   <h6><strong>Namespace</strong>: <span class="xref">Armonik</span>.<span class="xref">Samples</span>.<span class="xref">StressTests</span>.<a class="xref" href="Armonik.Samples.StressTests.Worker.html">Worker</a></h6>
   <h6><strong>Assembly</strong>: Armonik.Samples.StressTests.Worker.dll</h6>
@@ -120,7 +208,7 @@
     <pre><code class="lang-csharp hljs">public double[] ComputeWorkLoad(double[] input, long nbOutputBytes, int workLoadTimeInMs)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -147,7 +235,7 @@
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>

@@ -4,177 +4,6 @@ references:
 - uid: armonik_api_samples
   name: Armonik.Samples API
   href: api/index.html
-- uid: ArmoniK.HelloWorld.Worker
-  name: ArmoniK.HelloWorld.Worker
-  href: api/ArmoniK.HelloWorld.Worker.html
-  commentId: N:ArmoniK.HelloWorld.Worker
-  fullName: ArmoniK.HelloWorld.Worker
-  nameWithType: ArmoniK.HelloWorld.Worker
-- uid: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager
-  name: ApplicationLifeTimeManager
-  href: api/ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.html
-  commentId: T:ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager
-  fullName: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager
-  nameWithType: ApplicationLifeTimeManager
-- uid: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.#ctor(Microsoft.Extensions.Logging.ILogger{ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager},Microsoft.Extensions.Hosting.IHostApplicationLifetime)
-  name: ApplicationLifeTimeManager(ILogger<ApplicationLifeTimeManager>, IHostApplicationLifetime)
-  href: api/ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.html#ArmoniK_HelloWorld_Worker_ApplicationLifeTimeManager__ctor_Microsoft_Extensions_Logging_ILogger_ArmoniK_HelloWorld_Worker_ApplicationLifeTimeManager__Microsoft_Extensions_Hosting_IHostApplicationLifetime_
-  commentId: M:ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.#ctor(Microsoft.Extensions.Logging.ILogger{ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager},Microsoft.Extensions.Hosting.IHostApplicationLifetime)
-  name.vb: New(ILogger(Of ApplicationLifeTimeManager), IHostApplicationLifetime)
-  fullName: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.ApplicationLifeTimeManager(Microsoft.Extensions.Logging.ILogger<ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager>, Microsoft.Extensions.Hosting.IHostApplicationLifetime)
-  fullName.vb: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.New(Microsoft.Extensions.Logging.ILogger(Of ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager), Microsoft.Extensions.Hosting.IHostApplicationLifetime)
-  nameWithType: ApplicationLifeTimeManager.ApplicationLifeTimeManager(ILogger<ApplicationLifeTimeManager>, IHostApplicationLifetime)
-  nameWithType.vb: ApplicationLifeTimeManager.New(ILogger(Of ApplicationLifeTimeManager), IHostApplicationLifetime)
-- uid: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.#ctor*
-  name: ApplicationLifeTimeManager
-  href: api/ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.html#ArmoniK_HelloWorld_Worker_ApplicationLifeTimeManager__ctor_
-  commentId: Overload:ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.#ctor
-  isSpec: "True"
-  name.vb: New
-  fullName: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.ApplicationLifeTimeManager
-  fullName.vb: ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager.New
-  nameWithType: ApplicationLifeTimeManager.ApplicationLifeTimeManager
-  nameWithType.vb: ApplicationLifeTimeManager.New
-- uid: ArmoniK.HelloWorld.Worker.Program
-  name: Program
-  href: api/ArmoniK.HelloWorld.Worker.Program.html
-  commentId: T:ArmoniK.HelloWorld.Worker.Program
-  fullName: ArmoniK.HelloWorld.Worker.Program
-  nameWithType: Program
-- uid: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder(System.String[])
-  name: CreateHostBuilder(string[])
-  href: api/ArmoniK.HelloWorld.Worker.Program.html#ArmoniK_HelloWorld_Worker_Program_CreateHostBuilder_System_String___
-  commentId: M:ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder(System.String[])
-  name.vb: CreateHostBuilder(String())
-  fullName: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder(string[])
-  fullName.vb: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder(String())
-  nameWithType: Program.CreateHostBuilder(string[])
-  nameWithType.vb: Program.CreateHostBuilder(String())
-- uid: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder*
-  name: CreateHostBuilder
-  href: api/ArmoniK.HelloWorld.Worker.Program.html#ArmoniK_HelloWorld_Worker_Program_CreateHostBuilder_
-  commentId: Overload:ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder
-  isSpec: "True"
-  fullName: ArmoniK.HelloWorld.Worker.Program.CreateHostBuilder
-  nameWithType: Program.CreateHostBuilder
-- uid: ArmoniK.HelloWorld.Worker.Program.Main(System.String[])
-  name: Main(string[])
-  href: api/ArmoniK.HelloWorld.Worker.Program.html#ArmoniK_HelloWorld_Worker_Program_Main_System_String___
-  commentId: M:ArmoniK.HelloWorld.Worker.Program.Main(System.String[])
-  name.vb: Main(String())
-  fullName: ArmoniK.HelloWorld.Worker.Program.Main(string[])
-  fullName.vb: ArmoniK.HelloWorld.Worker.Program.Main(String())
-  nameWithType: Program.Main(string[])
-  nameWithType.vb: Program.Main(String())
-- uid: ArmoniK.HelloWorld.Worker.Program.Main*
-  name: Main
-  href: api/ArmoniK.HelloWorld.Worker.Program.html#ArmoniK_HelloWorld_Worker_Program_Main_
-  commentId: Overload:ArmoniK.HelloWorld.Worker.Program.Main
-  isSpec: "True"
-  fullName: ArmoniK.HelloWorld.Worker.Program.Main
-  nameWithType: Program.Main
-- uid: ArmoniK.HelloWorld.Worker.SampleComputerService
-  name: SampleComputerService
-  href: api/ArmoniK.HelloWorld.Worker.SampleComputerService.html
-  commentId: T:ArmoniK.HelloWorld.Worker.SampleComputerService
-  fullName: ArmoniK.HelloWorld.Worker.SampleComputerService
-  nameWithType: SampleComputerService
-- uid: ArmoniK.HelloWorld.Worker.SampleComputerService.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager)
-  name: SampleComputerService(ILoggerFactory, ApplicationLifeTimeManager)
-  href: api/ArmoniK.HelloWorld.Worker.SampleComputerService.html#ArmoniK_HelloWorld_Worker_SampleComputerService__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_HelloWorld_Worker_ApplicationLifeTimeManager_
-  commentId: M:ArmoniK.HelloWorld.Worker.SampleComputerService.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager)
-  name.vb: New(ILoggerFactory, ApplicationLifeTimeManager)
-  fullName: ArmoniK.HelloWorld.Worker.SampleComputerService.SampleComputerService(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager)
-  fullName.vb: ArmoniK.HelloWorld.Worker.SampleComputerService.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.HelloWorld.Worker.ApplicationLifeTimeManager)
-  nameWithType: SampleComputerService.SampleComputerService(ILoggerFactory, ApplicationLifeTimeManager)
-  nameWithType.vb: SampleComputerService.New(ILoggerFactory, ApplicationLifeTimeManager)
-- uid: ArmoniK.HelloWorld.Worker.SampleComputerService.#ctor*
-  name: SampleComputerService
-  href: api/ArmoniK.HelloWorld.Worker.SampleComputerService.html#ArmoniK_HelloWorld_Worker_SampleComputerService__ctor_
-  commentId: Overload:ArmoniK.HelloWorld.Worker.SampleComputerService.#ctor
-  isSpec: "True"
-  name.vb: New
-  fullName: ArmoniK.HelloWorld.Worker.SampleComputerService.SampleComputerService
-  fullName.vb: ArmoniK.HelloWorld.Worker.SampleComputerService.New
-  nameWithType: SampleComputerService.SampleComputerService
-  nameWithType.vb: SampleComputerService.New
-- uid: ArmoniK.HelloWorld.Worker.SampleComputerService.Execute(ComputeRequest,ServerCallContext)
-  name: Execute(ComputeRequest, ServerCallContext)
-  href: api/ArmoniK.HelloWorld.Worker.SampleComputerService.html#ArmoniK_HelloWorld_Worker_SampleComputerService_Execute_ComputeRequest_ServerCallContext_
-  commentId: M:ArmoniK.HelloWorld.Worker.SampleComputerService.Execute(ComputeRequest,ServerCallContext)
-  fullName: ArmoniK.HelloWorld.Worker.SampleComputerService.Execute(ComputeRequest, ServerCallContext)
-  nameWithType: SampleComputerService.Execute(ComputeRequest, ServerCallContext)
-- uid: ArmoniK.HelloWorld.Worker.SampleComputerService.Execute*
-  name: Execute
-  href: api/ArmoniK.HelloWorld.Worker.SampleComputerService.html#ArmoniK_HelloWorld_Worker_SampleComputerService_Execute_
-  commentId: Overload:ArmoniK.HelloWorld.Worker.SampleComputerService.Execute
-  isSpec: "True"
-  fullName: ArmoniK.HelloWorld.Worker.SampleComputerService.Execute
-  nameWithType: SampleComputerService.Execute
-- uid: ArmoniK.HelloWorld.Worker.Startup
-  name: Startup
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html
-  commentId: T:ArmoniK.HelloWorld.Worker.Startup
-  fullName: ArmoniK.HelloWorld.Worker.Startup
-  nameWithType: Startup
-- uid: ArmoniK.HelloWorld.Worker.Startup.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
-  name: Startup(IWebHostEnvironment)
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup__ctor_Microsoft_AspNetCore_Hosting_IWebHostEnvironment_
-  commentId: M:ArmoniK.HelloWorld.Worker.Startup.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
-  name.vb: New(IWebHostEnvironment)
-  fullName: ArmoniK.HelloWorld.Worker.Startup.Startup(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
-  fullName.vb: ArmoniK.HelloWorld.Worker.Startup.New(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
-  nameWithType: Startup.Startup(IWebHostEnvironment)
-  nameWithType.vb: Startup.New(IWebHostEnvironment)
-- uid: ArmoniK.HelloWorld.Worker.Startup.#ctor*
-  name: Startup
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup__ctor_
-  commentId: Overload:ArmoniK.HelloWorld.Worker.Startup.#ctor
-  isSpec: "True"
-  name.vb: New
-  fullName: ArmoniK.HelloWorld.Worker.Startup.Startup
-  fullName.vb: ArmoniK.HelloWorld.Worker.Startup.New
-  nameWithType: Startup.Startup
-  nameWithType.vb: Startup.New
-- uid: ArmoniK.HelloWorld.Worker.Startup.Configuration
-  name: Configuration
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup_Configuration
-  commentId: P:ArmoniK.HelloWorld.Worker.Startup.Configuration
-  fullName: ArmoniK.HelloWorld.Worker.Startup.Configuration
-  nameWithType: Startup.Configuration
-- uid: ArmoniK.HelloWorld.Worker.Startup.Configuration*
-  name: Configuration
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup_Configuration_
-  commentId: Overload:ArmoniK.HelloWorld.Worker.Startup.Configuration
-  isSpec: "True"
-  fullName: ArmoniK.HelloWorld.Worker.Startup.Configuration
-  nameWithType: Startup.Configuration
-- uid: ArmoniK.HelloWorld.Worker.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
-  name: Configure(IApplicationBuilder, IWebHostEnvironment)
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup_Configure_Microsoft_AspNetCore_Builder_IApplicationBuilder_Microsoft_AspNetCore_Hosting_IWebHostEnvironment_
-  commentId: M:ArmoniK.HelloWorld.Worker.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
-  fullName: ArmoniK.HelloWorld.Worker.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder, Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
-  nameWithType: Startup.Configure(IApplicationBuilder, IWebHostEnvironment)
-- uid: ArmoniK.HelloWorld.Worker.Startup.Configure*
-  name: Configure
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup_Configure_
-  commentId: Overload:ArmoniK.HelloWorld.Worker.Startup.Configure
-  isSpec: "True"
-  fullName: ArmoniK.HelloWorld.Worker.Startup.Configure
-  nameWithType: Startup.Configure
-- uid: ArmoniK.HelloWorld.Worker.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  name: ConfigureServices(IServiceCollection)
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup_ConfigureServices_Microsoft_Extensions_DependencyInjection_IServiceCollection_
-  commentId: M:ArmoniK.HelloWorld.Worker.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  fullName: ArmoniK.HelloWorld.Worker.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  nameWithType: Startup.ConfigureServices(IServiceCollection)
-- uid: ArmoniK.HelloWorld.Worker.Startup.ConfigureServices*
-  name: ConfigureServices
-  href: api/ArmoniK.HelloWorld.Worker.Startup.html#ArmoniK_HelloWorld_Worker_Startup_ConfigureServices_
-  commentId: Overload:ArmoniK.HelloWorld.Worker.Startup.ConfigureServices
-  isSpec: "True"
-  fullName: ArmoniK.HelloWorld.Worker.Startup.ConfigureServices
-  nameWithType: Startup.ConfigureServices
 - uid: ArmoniK.Samples.Common
   name: ArmoniK.Samples.Common
   href: api/ArmoniK.Samples.Common.html
@@ -360,13 +189,13 @@ references:
   commentId: T:ArmoniK.Samples.Common.SelectExtensions
   fullName: ArmoniK.Samples.Common.SelectExtensions
   nameWithType: SelectExtensions
-- uid: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(IEnumerable{System.Byte})
+- uid: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable{System.Byte})
   name: ConvertToArray(IEnumerable<byte>)
-  href: api/ArmoniK.Samples.Common.SelectExtensions.html#ArmoniK_Samples_Common_SelectExtensions_ConvertToArray_IEnumerable_System_Byte__
-  commentId: M:ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(IEnumerable{System.Byte})
+  href: api/ArmoniK.Samples.Common.SelectExtensions.html#ArmoniK_Samples_Common_SelectExtensions_ConvertToArray_System_Collections_Generic_IEnumerable_System_Byte__
+  commentId: M:ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable{System.Byte})
   name.vb: ConvertToArray(IEnumerable(Of Byte))
-  fullName: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(IEnumerable<byte>)
-  fullName.vb: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(IEnumerable(Of Byte))
+  fullName: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable<byte>)
+  fullName.vb: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable(Of Byte))
   nameWithType: SelectExtensions.ConvertToArray(IEnumerable<byte>)
   nameWithType.vb: SelectExtensions.ConvertToArray(IEnumerable(Of Byte))
 - uid: ArmoniK.Samples.Common.SelectExtensions.ConvertToArray*
@@ -398,13 +227,13 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Common.Utils.ParamsHelper
   nameWithType: Utils.ParamsHelper
-- uid: ArmoniK.Samples.Common.Utils.PeriodicInfo(Action,System.Int32)
+- uid: ArmoniK.Samples.Common.Utils.PeriodicInfo(System.Action,System.Int32)
   name: PeriodicInfo(Action, int)
-  href: api/ArmoniK.Samples.Common.Utils.html#ArmoniK_Samples_Common_Utils_PeriodicInfo_Action_System_Int32_
-  commentId: M:ArmoniK.Samples.Common.Utils.PeriodicInfo(Action,System.Int32)
+  href: api/ArmoniK.Samples.Common.Utils.html#ArmoniK_Samples_Common_Utils_PeriodicInfo_System_Action_System_Int32_
+  commentId: M:ArmoniK.Samples.Common.Utils.PeriodicInfo(System.Action,System.Int32)
   name.vb: PeriodicInfo(Action, Integer)
-  fullName: ArmoniK.Samples.Common.Utils.PeriodicInfo(Action, int)
-  fullName.vb: ArmoniK.Samples.Common.Utils.PeriodicInfo(Action, Integer)
+  fullName: ArmoniK.Samples.Common.Utils.PeriodicInfo(System.Action, int)
+  fullName.vb: ArmoniK.Samples.Common.Utils.PeriodicInfo(System.Action, Integer)
   nameWithType: Utils.PeriodicInfo(Action, int)
   nameWithType.vb: Utils.PeriodicInfo(Action, Integer)
 - uid: ArmoniK.Samples.Common.Utils.PeriodicInfo*
@@ -530,13 +359,13 @@ references:
   commentId: T:ArmoniK.Samples.GridServer.Common.SelectExtensions
   fullName: ArmoniK.Samples.GridServer.Common.SelectExtensions
   nameWithType: SelectExtensions
-- uid: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(IEnumerable{System.Byte})
+- uid: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable{System.Byte})
   name: ConvertToArray(IEnumerable<byte>)
-  href: api/ArmoniK.Samples.GridServer.Common.SelectExtensions.html#ArmoniK_Samples_GridServer_Common_SelectExtensions_ConvertToArray_IEnumerable_System_Byte__
-  commentId: M:ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(IEnumerable{System.Byte})
+  href: api/ArmoniK.Samples.GridServer.Common.SelectExtensions.html#ArmoniK_Samples_GridServer_Common_SelectExtensions_ConvertToArray_System_Collections_Generic_IEnumerable_System_Byte__
+  commentId: M:ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable{System.Byte})
   name.vb: ConvertToArray(IEnumerable(Of Byte))
-  fullName: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(IEnumerable<byte>)
-  fullName.vb: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(IEnumerable(Of Byte))
+  fullName: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable<byte>)
+  fullName.vb: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable(Of Byte))
   nameWithType: SelectExtensions.ConvertToArray(IEnumerable<byte>)
   nameWithType.vb: SelectExtensions.ConvertToArray(IEnumerable(Of Byte))
 - uid: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray*
@@ -546,6 +375,88 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray
   nameWithType: SelectExtensions.ConvertToArray
+- uid: ArmoniK.Samples.HelloWorld.Worker
+  name: ArmoniK.Samples.HelloWorld.Worker
+  href: api/ArmoniK.Samples.HelloWorld.Worker.html
+  commentId: N:ArmoniK.Samples.HelloWorld.Worker
+  fullName: ArmoniK.Samples.HelloWorld.Worker
+  nameWithType: ArmoniK.Samples.HelloWorld.Worker
+- uid: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker
+  name: HelloWorldWorker
+  href: api/ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.html
+  commentId: T:ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker
+  fullName: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker
+  nameWithType: HelloWorldWorker
+- uid: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name: HelloWorldWorker(ILoggerFactory, GrpcChannelProvider)
+  href: api/ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.html#ArmoniK_Samples_HelloWorld_Worker_HelloWorldWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_
+  commentId: M:ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name.vb: New(ILoggerFactory, GrpcChannelProvider)
+  fullName: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.HelloWorldWorker(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  fullName.vb: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  nameWithType: HelloWorldWorker.HelloWorldWorker(ILoggerFactory, GrpcChannelProvider)
+  nameWithType.vb: HelloWorldWorker.New(ILoggerFactory, GrpcChannelProvider)
+- uid: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.#ctor*
+  name: HelloWorldWorker
+  href: api/ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.html#ArmoniK_Samples_HelloWorld_Worker_HelloWorldWorker__ctor_
+  commentId: Overload:ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.HelloWorldWorker
+  fullName.vb: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.New
+  nameWithType: HelloWorldWorker.HelloWorldWorker
+  nameWithType.vb: HelloWorldWorker.New
+- uid: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  name: Process(ITaskHandler)
+  href: api/ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.html#ArmoniK_Samples_HelloWorld_Worker_HelloWorldWorker_Process_ArmoniK_Api_Worker_Worker_ITaskHandler_
+  commentId: M:ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  fullName: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  nameWithType: HelloWorldWorker.Process(ITaskHandler)
+- uid: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.Process*
+  name: Process
+  href: api/ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.html#ArmoniK_Samples_HelloWorld_Worker_HelloWorldWorker_Process_
+  commentId: Overload:ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.Process
+  isSpec: "True"
+  fullName: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.Process
+  nameWithType: HelloWorldWorker.Process
+- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker
+  name: MultipleResultsWorker
+  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html
+  commentId: T:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker
+  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker
+  nameWithType: MultipleResultsWorker
+- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name: MultipleResultsWorker(ILoggerFactory, GrpcChannelProvider)
+  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html#ArmoniK_Samples_HelloWorld_Worker_MultipleResultsWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_
+  commentId: M:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name.vb: New(ILoggerFactory, GrpcChannelProvider)
+  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.MultipleResultsWorker(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  fullName.vb: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  nameWithType: MultipleResultsWorker.MultipleResultsWorker(ILoggerFactory, GrpcChannelProvider)
+  nameWithType.vb: MultipleResultsWorker.New(ILoggerFactory, GrpcChannelProvider)
+- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor*
+  name: MultipleResultsWorker
+  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html#ArmoniK_Samples_HelloWorld_Worker_MultipleResultsWorker__ctor_
+  commentId: Overload:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.MultipleResultsWorker
+  fullName.vb: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.New
+  nameWithType: MultipleResultsWorker.MultipleResultsWorker
+  nameWithType.vb: MultipleResultsWorker.New
+- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  name: Process(ITaskHandler)
+  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html#ArmoniK_Samples_HelloWorld_Worker_MultipleResultsWorker_Process_ArmoniK_Api_Worker_Worker_ITaskHandler_
+  commentId: M:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  nameWithType: MultipleResultsWorker.Process(ITaskHandler)
+- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process*
+  name: Process
+  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html#ArmoniK_Samples_HelloWorld_Worker_MultipleResultsWorker_Process_
+  commentId: Overload:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process
+  isSpec: "True"
+  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process
+  nameWithType: MultipleResultsWorker.Process
 - uid: ArmoniK.Samples.HtcMockSymphony.Packages
   name: ArmoniK.Samples.HtcMockSymphony.Packages
   href: api/ArmoniK.Samples.HtcMockSymphony.Packages.html
@@ -558,11 +469,11 @@ references:
   commentId: T:ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer
   fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer
   nameWithType: ServiceContainer
-- uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnCreateService(ServiceContext)
+- uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnCreateService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
   name: OnCreateService(ServiceContext)
-  href: api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html#ArmoniK_Samples_HtcMockSymphony_Packages_ServiceContainer_OnCreateService_ServiceContext_
-  commentId: M:ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnCreateService(ServiceContext)
-  fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnCreateService(ServiceContext)
+  href: api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html#ArmoniK_Samples_HtcMockSymphony_Packages_ServiceContainer_OnCreateService_ArmoniK_DevelopmentKit_Worker_Symphony_ServiceContext_
+  commentId: M:ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnCreateService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
+  fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnCreateService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
   nameWithType: ServiceContainer.OnCreateService(ServiceContext)
 - uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnCreateService*
   name: OnCreateService
@@ -571,11 +482,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnCreateService
   nameWithType: ServiceContainer.OnCreateService
-- uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnDestroyService(ServiceContext)
+- uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnDestroyService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
   name: OnDestroyService(ServiceContext)
-  href: api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html#ArmoniK_Samples_HtcMockSymphony_Packages_ServiceContainer_OnDestroyService_ServiceContext_
-  commentId: M:ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnDestroyService(ServiceContext)
-  fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnDestroyService(ServiceContext)
+  href: api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html#ArmoniK_Samples_HtcMockSymphony_Packages_ServiceContainer_OnDestroyService_ArmoniK_DevelopmentKit_Worker_Symphony_ServiceContext_
+  commentId: M:ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnDestroyService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
+  fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnDestroyService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
   nameWithType: ServiceContainer.OnDestroyService(ServiceContext)
 - uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnDestroyService*
   name: OnDestroyService
@@ -584,11 +495,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnDestroyService
   nameWithType: ServiceContainer.OnDestroyService
-- uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnInvoke(SessionContext,TaskContext)
+- uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnInvoke(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext,ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext)
   name: OnInvoke(SessionContext, TaskContext)
-  href: api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html#ArmoniK_Samples_HtcMockSymphony_Packages_ServiceContainer_OnInvoke_SessionContext_TaskContext_
-  commentId: M:ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnInvoke(SessionContext,TaskContext)
-  fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnInvoke(SessionContext, TaskContext)
+  href: api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html#ArmoniK_Samples_HtcMockSymphony_Packages_ServiceContainer_OnInvoke_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_ArmoniK_DevelopmentKit_Worker_Symphony_TaskContext_
+  commentId: M:ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnInvoke(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext,ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext)
+  fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnInvoke(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext, ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext)
   nameWithType: ServiceContainer.OnInvoke(SessionContext, TaskContext)
 - uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnInvoke*
   name: OnInvoke
@@ -597,11 +508,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnInvoke
   nameWithType: ServiceContainer.OnInvoke
-- uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionEnter(SessionContext)
+- uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionEnter(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
   name: OnSessionEnter(SessionContext)
-  href: api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html#ArmoniK_Samples_HtcMockSymphony_Packages_ServiceContainer_OnSessionEnter_SessionContext_
-  commentId: M:ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionEnter(SessionContext)
-  fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionEnter(SessionContext)
+  href: api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html#ArmoniK_Samples_HtcMockSymphony_Packages_ServiceContainer_OnSessionEnter_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_
+  commentId: M:ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionEnter(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
+  fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionEnter(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
   nameWithType: ServiceContainer.OnSessionEnter(SessionContext)
 - uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionEnter*
   name: OnSessionEnter
@@ -610,11 +521,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionEnter
   nameWithType: ServiceContainer.OnSessionEnter
-- uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionLeave(SessionContext)
+- uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionLeave(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
   name: OnSessionLeave(SessionContext)
-  href: api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html#ArmoniK_Samples_HtcMockSymphony_Packages_ServiceContainer_OnSessionLeave_SessionContext_
-  commentId: M:ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionLeave(SessionContext)
-  fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionLeave(SessionContext)
+  href: api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html#ArmoniK_Samples_HtcMockSymphony_Packages_ServiceContainer_OnSessionLeave_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_
+  commentId: M:ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionLeave(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
+  fullName: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionLeave(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
   nameWithType: ServiceContainer.OnSessionLeave(SessionContext)
 - uid: ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.OnSessionLeave*
   name: OnSessionLeave
@@ -635,13 +546,13 @@ references:
   commentId: T:ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient
   fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient
   nameWithType: HtcMockSymphonyClient
-- uid: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor(SessionService,ILogger{Client})
+- uid: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor(ArmoniK.DevelopmentKit.Client.Symphony.SessionService,Microsoft.Extensions.Logging.ILogger{Htc.Mock.Client})
   name: HtcMockSymphonyClient(SessionService, ILogger<Client>)
-  href: api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html#ArmoniK_Samples_HtcMockSymphonyClient_HtcMockSymphonyClient__ctor_SessionService_ILogger_Client__
-  commentId: M:ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor(SessionService,ILogger{Client})
+  href: api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html#ArmoniK_Samples_HtcMockSymphonyClient_HtcMockSymphonyClient__ctor_ArmoniK_DevelopmentKit_Client_Symphony_SessionService_Microsoft_Extensions_Logging_ILogger_Htc_Mock_Client__
+  commentId: M:ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor(ArmoniK.DevelopmentKit.Client.Symphony.SessionService,Microsoft.Extensions.Logging.ILogger{Htc.Mock.Client})
   name.vb: New(SessionService, ILogger(Of Client))
-  fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger<Client>)
-  fullName.vb: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.New(SessionService, ILogger(Of Client))
+  fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.HtcMockSymphonyClient(ArmoniK.DevelopmentKit.Client.Symphony.SessionService, Microsoft.Extensions.Logging.ILogger<Htc.Mock.Client>)
+  fullName.vb: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.New(ArmoniK.DevelopmentKit.Client.Symphony.SessionService, Microsoft.Extensions.Logging.ILogger(Of Htc.Mock.Client))
   nameWithType: HtcMockSymphonyClient.HtcMockSymphonyClient(SessionService, ILogger<Client>)
   nameWithType.vb: HtcMockSymphonyClient.New(SessionService, ILogger(Of Client))
 - uid: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.#ctor*
@@ -654,11 +565,11 @@ references:
   fullName.vb: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.New
   nameWithType: HtcMockSymphonyClient.HtcMockSymphonyClient
   nameWithType.vb: HtcMockSymphonyClient.New
-- uid: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.Start(RunConfiguration)
+- uid: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.Start(Htc.Mock.Core.RunConfiguration)
   name: Start(RunConfiguration)
-  href: api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html#ArmoniK_Samples_HtcMockSymphonyClient_HtcMockSymphonyClient_Start_RunConfiguration_
-  commentId: M:ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.Start(RunConfiguration)
-  fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.Start(RunConfiguration)
+  href: api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html#ArmoniK_Samples_HtcMockSymphonyClient_HtcMockSymphonyClient_Start_Htc_Mock_Core_RunConfiguration_
+  commentId: M:ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.Start(Htc.Mock.Core.RunConfiguration)
+  fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.Start(Htc.Mock.Core.RunConfiguration)
   nameWithType: HtcMockSymphonyClient.Start(RunConfiguration)
 - uid: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.Start*
   name: Start
@@ -905,11 +816,11 @@ references:
   commentId: T:ArmoniK.Samples.Symphony.Packages.ServiceContainer
   fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer
   nameWithType: ServiceContainer
-- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube(TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)
+- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube(ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)
   name: ComputeCube(TaskContext, ClientPayload)
-  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeCube_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_
-  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube(TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)
-  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube(TaskContext, Armonik.Samples.Symphony.Common.ClientPayload)
+  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeCube_ArmoniK_DevelopmentKit_Worker_Symphony_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_
+  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube(ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)
+  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube(ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext, Armonik.Samples.Symphony.Common.ClientPayload)
   nameWithType: ServiceContainer.ComputeCube(TaskContext, ClientPayload)
 - uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube*
   name: ComputeCube
@@ -918,11 +829,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube
   nameWithType: ServiceContainer.ComputeCube
-- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare(TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)
+- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare(ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)
   name: ComputeSquare(TaskContext, ClientPayload)
-  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeSquare_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_
-  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare(TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)
-  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare(TaskContext, Armonik.Samples.Symphony.Common.ClientPayload)
+  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeSquare_ArmoniK_DevelopmentKit_Worker_Symphony_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_
+  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare(ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)
+  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare(ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext, Armonik.Samples.Symphony.Common.ClientPayload)
   nameWithType: ServiceContainer.ComputeSquare(TaskContext, ClientPayload)
 - uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare*
   name: ComputeSquare
@@ -931,11 +842,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare
   nameWithType: ServiceContainer.ComputeSquare
-- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService(ServiceContext)
+- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
   name: OnCreateService(ServiceContext)
-  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnCreateService_ServiceContext_
-  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService(ServiceContext)
-  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService(ServiceContext)
+  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnCreateService_ArmoniK_DevelopmentKit_Worker_Symphony_ServiceContext_
+  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
+  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
   nameWithType: ServiceContainer.OnCreateService(ServiceContext)
 - uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService*
   name: OnCreateService
@@ -944,11 +855,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService
   nameWithType: ServiceContainer.OnCreateService
-- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService(ServiceContext)
+- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
   name: OnDestroyService(ServiceContext)
-  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnDestroyService_ServiceContext_
-  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService(ServiceContext)
-  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService(ServiceContext)
+  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnDestroyService_ArmoniK_DevelopmentKit_Worker_Symphony_ServiceContext_
+  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
+  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)
   nameWithType: ServiceContainer.OnDestroyService(ServiceContext)
 - uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService*
   name: OnDestroyService
@@ -957,11 +868,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService
   nameWithType: ServiceContainer.OnDestroyService
-- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke(SessionContext,TaskContext)
+- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext,ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext)
   name: OnInvoke(SessionContext, TaskContext)
-  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnInvoke_SessionContext_TaskContext_
-  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke(SessionContext,TaskContext)
-  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke(SessionContext, TaskContext)
+  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnInvoke_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_ArmoniK_DevelopmentKit_Worker_Symphony_TaskContext_
+  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext,ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext)
+  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext, ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext)
   nameWithType: ServiceContainer.OnInvoke(SessionContext, TaskContext)
 - uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke*
   name: OnInvoke
@@ -970,11 +881,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke
   nameWithType: ServiceContainer.OnInvoke
-- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter(SessionContext)
+- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
   name: OnSessionEnter(SessionContext)
-  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionEnter_SessionContext_
-  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter(SessionContext)
-  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter(SessionContext)
+  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionEnter_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_
+  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
+  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
   nameWithType: ServiceContainer.OnSessionEnter(SessionContext)
 - uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter*
   name: OnSessionEnter
@@ -983,11 +894,11 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter
   nameWithType: ServiceContainer.OnSessionEnter
-- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave(SessionContext)
+- uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
   name: OnSessionLeave(SessionContext)
-  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionLeave_SessionContext_
-  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave(SessionContext)
-  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave(SessionContext)
+  href: api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html#ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionLeave_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_
+  commentId: M:ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
+  fullName: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)
   nameWithType: ServiceContainer.OnSessionLeave(SessionContext)
 - uid: ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave*
   name: OnSessionLeave

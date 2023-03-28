@@ -12,7 +12,7 @@
  ">
     
       <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.css">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
       <link rel="stylesheet" href="../styles/docfx.css">
       <link rel="stylesheet" href="../styles/main.css">
       <meta property="docfx:navrel" content="../toc.html">
@@ -77,25 +77,105 @@
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">object</span></div>
-    <div class="level1"><span class="xref">ServiceContainer</span></div>
+    <div class="level1"><span class="xref">ServiceContainerBase</span></div>
+    <div class="level2"><span class="xref">ServiceContainer</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">ServiceContainerBase.SubmitTasks(IEnumerable&lt;byte[]&gt;)</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.SubmitTasksWithDependencies(IEnumerable&lt;Tuple&lt;byte[], IList&lt;string&gt;&gt;&gt;, bool)</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.SubmitSubtaskWithDependencies(byte[], IList&lt;string&gt;)</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.SubmitSubtasksWithDependencies(IEnumerable&lt;Tuple&lt;byte[], IList&lt;string&gt;&gt;&gt;)</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.WaitForTaskCompletion(string)</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.WaitForTasksCompletion(IEnumerable&lt;string&gt;)</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.WaitForSubTasksCompletion(string)</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.GetDependenciesResult(string)</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.Configure(IConfiguration, TaskOptions)</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.ConfigureSession(Session, TaskOptions)</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.ConfigureSessionService(ITaskHandler)</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.SessionId</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.TaskId2OutputId</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.TaskOptions</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.TaskId</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.Configuration</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.LoggerFactory</span>
+    </div>
+    <div>
+      <span class="xref">ServiceContainerBase.Logger</span>
+    </div>
+    <div>
+      <span class="xref">object.Equals(object)</span>
+    </div>
+    <div>
+      <span class="xref">object.Equals(object, object)</span>
+    </div>
+    <div>
+      <span class="xref">object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">object.ReferenceEquals(object, object)</span>
+    </div>
+    <div>
+      <span class="xref">object.ToString()</span>
+    </div>
   </div>
   <h6><strong>Namespace</strong>: <span class="xref">ArmoniK</span>.<span class="xref">Samples</span>.<span class="xref">Symphony</span>.<a class="xref" href="ArmoniK.Samples.Symphony.Packages.html">Packages</a></h6>
   <h6><strong>Assembly</strong>: ArmoniK.Samples.SymphonyPackage.dll</h6>
   <h5 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class ServiceContainer : ServiceContainerBase</code></pre>
+    <pre><code class="lang-csharp hljs">[UsedImplicitly]
+public class ServiceContainer : ServiceContainerBase</code></pre>
   </div>
   <h3 id="methods">Methods
 </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeCube_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube(TaskContext%2CArmonik.Samples.Symphony.Common.ClientPayload)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeCube_ArmoniK_DevelopmentKit_Worker_Symphony_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube(ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext%2CArmonik.Samples.Symphony.Common.ClientPayload)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/main/Samples/SymphonyLike/ArmoniK.Samples.SymphonyPackage/ServiceContainer.cs/#L163">View Source</a>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeCube_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube*"></a>
-  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeCube_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube(TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)">ComputeCube(TaskContext, ClientPayload)</h4>
+  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeCube_ArmoniK_DevelopmentKit_Worker_Symphony_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeCube(ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)">ComputeCube(TaskContext, ClientPayload)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -103,7 +183,7 @@
     <pre><code class="lang-csharp hljs">public byte[] ComputeCube(TaskContext taskContext, ClientPayload clientPayload)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -125,7 +205,7 @@
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -141,13 +221,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeSquare_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare(TaskContext%2CArmonik.Samples.Symphony.Common.ClientPayload)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeSquare_ArmoniK_DevelopmentKit_Worker_Symphony_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare(ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext%2CArmonik.Samples.Symphony.Common.ClientPayload)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/main/Samples/SymphonyLike/ArmoniK.Samples.SymphonyPackage/ServiceContainer.cs/#L57">View Source</a>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeSquare_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare*"></a>
-  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeSquare_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare(TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)">ComputeSquare(TaskContext, ClientPayload)</h4>
+  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_ComputeSquare_ArmoniK_DevelopmentKit_Worker_Symphony_TaskContext_Armonik_Samples_Symphony_Common_ClientPayload_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.ComputeSquare(ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext,Armonik.Samples.Symphony.Common.ClientPayload)">ComputeSquare(TaskContext, ClientPayload)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -155,7 +235,7 @@
     <pre><code class="lang-csharp hljs">public byte[] ComputeSquare(TaskContext taskContext, ClientPayload clientPayload)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -177,7 +257,7 @@
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -193,13 +273,13 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnCreateService_ServiceContext_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService(ServiceContext)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnCreateService_ArmoniK_DevelopmentKit_Worker_Symphony_ServiceContext_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/main/Samples/SymphonyLike/ArmoniK.Samples.SymphonyPackage/ServiceContainer.cs/#L48">View Source</a>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnCreateService_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService*"></a>
-  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnCreateService_ServiceContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService(ServiceContext)">OnCreateService(ServiceContext)</h4>
+  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnCreateService_ArmoniK_DevelopmentKit_Worker_Symphony_ServiceContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)">OnCreateService(ServiceContext)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -207,7 +287,7 @@
     <pre><code class="lang-csharp hljs">public override void OnCreateService(ServiceContext serviceContext)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -223,15 +303,17 @@
       </tr>
     </tbody>
   </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContainerBase.OnCreateService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)</span></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnDestroyService_ServiceContext_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService(ServiceContext)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnDestroyService_ArmoniK_DevelopmentKit_Worker_Symphony_ServiceContext_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/main/Samples/SymphonyLike/ArmoniK.Samples.SymphonyPackage/ServiceContainer.cs/#L321">View Source</a>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnDestroyService_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService*"></a>
-  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnDestroyService_ServiceContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService(ServiceContext)">OnDestroyService(ServiceContext)</h4>
+  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnDestroyService_ArmoniK_DevelopmentKit_Worker_Symphony_ServiceContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)">OnDestroyService(ServiceContext)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -239,7 +321,7 @@
     <pre><code class="lang-csharp hljs">public override void OnDestroyService(ServiceContext serviceContext)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -255,15 +337,17 @@
       </tr>
     </tbody>
   </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContainerBase.OnDestroyService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)</span></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnInvoke_SessionContext_TaskContext_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke(SessionContext%2CTaskContext)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnInvoke_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_ArmoniK_DevelopmentKit_Worker_Symphony_TaskContext_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext%2CArmoniK.DevelopmentKit.Worker.Symphony.TaskContext)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/main/Samples/SymphonyLike/ArmoniK.Samples.SymphonyPackage/ServiceContainer.cs/#L174">View Source</a>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnInvoke_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke*"></a>
-  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnInvoke_SessionContext_TaskContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke(SessionContext,TaskContext)">OnInvoke(SessionContext, TaskContext)</h4>
+  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnInvoke_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_ArmoniK_DevelopmentKit_Worker_Symphony_TaskContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext,ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext)">OnInvoke(SessionContext, TaskContext)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -271,7 +355,7 @@
     <pre><code class="lang-csharp hljs">public override byte[] OnInvoke(SessionContext sessionContext, TaskContext taskContext)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -293,7 +377,7 @@
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -307,15 +391,17 @@
       </tr>
     </tbody>
   </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContainerBase.OnInvoke(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext, ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext)</span></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionEnter_SessionContext_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter(SessionContext)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionEnter_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/main/Samples/SymphonyLike/ArmoniK.Samples.SymphonyPackage/ServiceContainer.cs/#L52">View Source</a>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionEnter_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter*"></a>
-  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionEnter_SessionContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter(SessionContext)">OnSessionEnter(SessionContext)</h4>
+  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionEnter_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)">OnSessionEnter(SessionContext)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -323,7 +409,7 @@
     <pre><code class="lang-csharp hljs">public override void OnSessionEnter(SessionContext sessionContext)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -339,15 +425,17 @@
       </tr>
     </tbody>
   </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContainerBase.OnSessionEnter(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)</span></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionLeave_SessionContext_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave(SessionContext)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionLeave_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/main/Samples/SymphonyLike/ArmoniK.Samples.SymphonyPackage/ServiceContainer.cs/#L316">View Source</a>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionLeave_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave*"></a>
-  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionLeave_SessionContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave(SessionContext)">OnSessionLeave(SessionContext)</h4>
+  <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionLeave_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)">OnSessionLeave(SessionContext)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -355,7 +443,7 @@
     <pre><code class="lang-csharp hljs">public override void OnSessionLeave(SessionContext sessionContext)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -371,6 +459,8 @@
       </tr>
     </tbody>
   </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContainerBase.OnSessionLeave(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)</span></div>
 </article>
           </div>
 

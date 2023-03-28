@@ -12,7 +12,7 @@
  ">
     
       <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.css">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
       <link rel="stylesheet" href="../styles/docfx.css">
       <link rel="stylesheet" href="../styles/main.css">
       <meta property="docfx:navrel" content="../toc.html">
@@ -79,6 +79,30 @@
     <div class="level0"><span class="xref">object</span></div>
     <div class="level1"><span class="xref">ClientPayload</span></div>
   </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">object.Equals(object)</span>
+    </div>
+    <div>
+      <span class="xref">object.Equals(object, object)</span>
+    </div>
+    <div>
+      <span class="xref">object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">object.ReferenceEquals(object, object)</span>
+    </div>
+    <div>
+      <span class="xref">object.ToString()</span>
+    </div>
+  </div>
   <h6><strong>Namespace</strong>: <span class="xref">Armonik</span>.<span class="xref">Samples</span>.<span class="xref">Symphony</span>.<a class="xref" href="Armonik.Samples.Symphony.Common.html">Common</a></h6>
   <h6><strong>Assembly</strong>: ArmoniK.Samples.GridServer.Common.dll</h6>
   <h5 id="Armonik_Samples_Symphony_Common_ClientPayload_syntax">Syntax</h5>
@@ -103,7 +127,7 @@
     <pre><code class="lang-csharp hljs">public bool IsRootTask { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -133,7 +157,7 @@
     <pre><code class="lang-csharp hljs">public List&lt;int&gt; numbers { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -142,7 +166,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">List&lt;&gt;</span>&lt;<span class="xref">int</span>&gt;</td>
+        <td><span class="xref">List</span>&lt;<span class="xref">int</span>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -163,7 +187,7 @@
     <pre><code class="lang-csharp hljs">public int result { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -193,7 +217,7 @@
     <pre><code class="lang-csharp hljs">public int sleep { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -223,7 +247,7 @@
     <pre><code class="lang-csharp hljs">public string SubTaskId { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -253,7 +277,7 @@
     <pre><code class="lang-csharp hljs">public ClientPayload.TaskType Type { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -285,7 +309,7 @@
     <pre><code class="lang-csharp hljs">public static ClientPayload deserialize(byte[] payload)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -302,7 +326,7 @@
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -332,7 +356,7 @@
     <pre><code class="lang-csharp hljs">public byte[] serialize()</code></pre>
   </div>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>

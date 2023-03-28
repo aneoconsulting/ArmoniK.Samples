@@ -12,7 +12,7 @@
  ">
     
       <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.css">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
       <link rel="stylesheet" href="../styles/docfx.css">
       <link rel="stylesheet" href="../styles/main.css">
       <meta property="docfx:navrel" content="../toc.html">
@@ -77,13 +77,113 @@
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">object</span></div>
-    <div class="level1"><span class="xref">ServiceApps</span></div>
+    <div class="level1"><span class="xref">TaskWorkerService</span></div>
+    <div class="level2"><span class="xref">TaskSubmitterWorkerService</span></div>
+    <div class="level3"><span class="xref">ServiceApps</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">ITaskContextConfiguration</span></div>
+    <div><span class="xref">ISessionServiceConfiguration</span></div>
+    <div><span class="xref">ITaskOptionsConfiguration</span></div>
+    <div><span class="xref">ISessionConfiguration</span></div>
+    <div><span class="xref">ILoggerConfiguration</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">TaskWorkerService.ConfigureLogger(IConfiguration)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.OnCreateService(ServiceContext)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.OnDestroyService(ServiceContext)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.OnSessionEnter(SessionContext)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.OnSessionLeave(SessionContext)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.ConfigureSession(Session, TaskOptions)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.ConfigureSessionService(ITaskHandler)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.ConfigureTaskOptions(TaskOptions)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.SubmitTasks(IEnumerable&lt;byte[]&gt;)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.SubmitTasksWithDependencies(IEnumerable&lt;Tuple&lt;byte[], IList&lt;string&gt;&gt;&gt;, bool)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.SubmitTask(byte[])</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.SubmitTask(string, object[])</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.SubmitTaskWithDependencie(byte[], IList&lt;string&gt;, bool)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.SubmitTaskWithDependencies(string, object[], IList&lt;string&gt;, bool)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.GetDependenciesResult(string)</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.Logger</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.TaskId2OutputId</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.TaskOptions</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.Configuration</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.LoggerFactory</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.SessionId</span>
+    </div>
+    <div>
+      <span class="xref">TaskWorkerService.TaskContext</span>
+    </div>
+    <div>
+      <span class="xref">object.Equals(object)</span>
+    </div>
+    <div>
+      <span class="xref">object.Equals(object, object)</span>
+    </div>
+    <div>
+      <span class="xref">object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">object.ReferenceEquals(object, object)</span>
+    </div>
+    <div>
+      <span class="xref">object.ToString()</span>
+    </div>
   </div>
   <h6><strong>Namespace</strong>: <span class="xref">ArmoniK</span>.<span class="xref">Samples</span>.<span class="xref">Unified</span>.<span class="xref">Worker</span>.<a class="xref" href="ArmoniK.Samples.Unified.Worker.Services.html">Services</a></h6>
   <h6><strong>Assembly</strong>: ArmoniK.Samples.Unified.Worker.dll</h6>
   <h5 id="ArmoniK_Samples_Unified_Worker_Services_ServiceApps_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class ServiceApps : TaskSubmitterWorkerService</code></pre>
+    <pre><code class="lang-csharp hljs">public class ServiceApps : TaskSubmitterWorkerService, ITaskContextConfiguration, ISessionServiceConfiguration, ITaskOptionsConfiguration, ISessionConfiguration, ILoggerConfiguration</code></pre>
   </div>
   <h3 id="constructors">Constructors
 </h3>
@@ -120,7 +220,7 @@
     <pre><code class="lang-csharp hljs">public static double[] ComputeBasicArrayCube(double[] inputs)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -137,7 +237,7 @@
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -167,7 +267,7 @@
     <pre><code class="lang-csharp hljs">public static double[] ComputeMadd(byte[] inputs1, byte[] inputs2, double k)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -194,7 +294,7 @@
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -224,7 +324,7 @@
     <pre><code class="lang-csharp hljs">public static double ComputeReduce(double[] inputs)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -241,7 +341,7 @@
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -271,7 +371,7 @@
     <pre><code class="lang-csharp hljs">public static double ComputeReduceCube(byte[] inputs)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -288,7 +388,7 @@
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -318,7 +418,7 @@
     <pre><code class="lang-csharp hljs">public static double ComputeReduceCube(double[] inputs, int workloadTimeInMs = 10)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -340,7 +440,7 @@
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -370,7 +470,7 @@
     <pre><code class="lang-csharp hljs">public double[] NonStaticComputeMadd(byte[] inputs1, byte[] inputs2, double k)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -397,7 +497,7 @@
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -411,6 +511,22 @@
       </tr>
     </tbody>
   </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">ArmoniK.DevelopmentKit.Worker.Unified.ITaskContextConfiguration</span>
+  </div>
+  <div>
+      <span class="xref">ArmoniK.DevelopmentKit.Worker.Unified.ISessionServiceConfiguration</span>
+  </div>
+  <div>
+      <span class="xref">ArmoniK.DevelopmentKit.Worker.Unified.ITaskOptionsConfiguration</span>
+  </div>
+  <div>
+      <span class="xref">ArmoniK.DevelopmentKit.Worker.Unified.ISessionConfiguration</span>
+  </div>
+  <div>
+      <span class="xref">ArmoniK.DevelopmentKit.Worker.Unified.ILoggerConfiguration</span>
+  </div>
 </article>
           </div>
 
