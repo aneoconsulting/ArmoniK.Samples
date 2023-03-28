@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
@@ -34,7 +34,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
-    <PackageReference Include="Armonik.DevelopmentKit.Worker.Symphony" Version="0.9.1" />
+    <PackageReference Include="Armonik.DevelopmentKit.Worker.Symphony" Version="0.9.2" />
   </ItemGroup>
 
   <ItemGroup>
