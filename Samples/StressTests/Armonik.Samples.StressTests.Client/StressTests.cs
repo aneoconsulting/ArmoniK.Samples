@@ -106,7 +106,7 @@ namespace Armonik.Samples.StressTests.Client
                                                               1        / 3.0))
                                         .ToArray();
 
-      Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbInputBytes / 1024.0} Ko Total : {nbTasks * nbInputBytes / 1024.0} Ko...   ===");
+      Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbInputBytes / 1024.0} KB Total : {nbTasks * nbInputBytes / 1024.0} KB...   ===");
       var sw = Stopwatch.StartNew();
       var dt = DateTime.Now;
 
