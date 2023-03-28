@@ -184,7 +184,7 @@ namespace Armonik.Samples.StressTests.Client.Metrics
         await GetAllStatsAsync(channel,
                                sessionId);
       }
-      
+
       var timeDiff = Timestamp.FromDateTime(dateTimeFinished.ToUniversalTime()) - TasksRaw.Select(raw => raw.StartedAt)
                                                                                           .Min();
       var withMs = timeDiff.Seconds + timeDiff.Nanos / 1e9;
