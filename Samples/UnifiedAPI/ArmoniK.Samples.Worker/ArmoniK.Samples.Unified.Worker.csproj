@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.Worker.Unified" Version="0.9.1" />
+    <PackageReference Include="Armonik.DevelopmentKit.Worker.Unified" Version="0.9.2" />
   </ItemGroup>
 
   <ItemGroup>
