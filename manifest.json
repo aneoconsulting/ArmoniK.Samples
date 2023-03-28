@@ -225,6 +225,28 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Armonik.Samples.StressTests.Client.Metrics.Formatting.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Armonik.Samples.StressTests.Client.Metrics.Formatting.html",
+          "hash": "DDwjtPqWDp0U5NEsYOPAsj/Z62RhYTzZ7nmCop1zTKk="
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Armonik.Samples.StressTests.Client.Metrics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Armonik.Samples.StressTests.Client.Metrics.html",
+          "hash": "Tm4d3YWEsqtUDZi0dNSxYyJQGiLvDByl/DTjPTNq5fs="
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Armonik.Samples.StressTests.Worker.ServiceApps.yml",
       "output": {
         ".html": {
@@ -295,7 +317,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "zNgetbxyOASS15jyNPSiHD6JwElSBIbs/uzc2riHmbA="
+          "hash": "95hdcYqysvGcqwy6TjtSzx32GSmWm/+Az0ATOJEqQEI="
         }
       },
       "version": ""

@@ -578,6 +578,30 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.Start
   nameWithType: HtcMockSymphonyClient.Start
+- uid: Armonik.Samples.StressTests.Client.Metrics
+  name: Armonik.Samples.StressTests.Client.Metrics
+  href: api/Armonik.Samples.StressTests.Client.Metrics.html
+  commentId: N:Armonik.Samples.StressTests.Client.Metrics
+  fullName: Armonik.Samples.StressTests.Client.Metrics
+  nameWithType: Armonik.Samples.StressTests.Client.Metrics
+- uid: Armonik.Samples.StressTests.Client.Metrics.Formatting
+  name: Formatting
+  href: api/Armonik.Samples.StressTests.Client.Metrics.Formatting.html
+  commentId: T:Armonik.Samples.StressTests.Client.Metrics.Formatting
+  fullName: Armonik.Samples.StressTests.Client.Metrics.Formatting
+  nameWithType: Formatting
+- uid: Armonik.Samples.StressTests.Client.Metrics.Formatting.Json
+  name: Json
+  href: api/Armonik.Samples.StressTests.Client.Metrics.Formatting.html#Armonik_Samples_StressTests_Client_Metrics_Formatting_Json
+  commentId: F:Armonik.Samples.StressTests.Client.Metrics.Formatting.Json
+  fullName: Armonik.Samples.StressTests.Client.Metrics.Formatting.Json
+  nameWithType: Formatting.Json
+- uid: Armonik.Samples.StressTests.Client.Metrics.Formatting.Raw
+  name: Raw
+  href: api/Armonik.Samples.StressTests.Client.Metrics.Formatting.html#Armonik_Samples_StressTests_Client_Metrics_Formatting_Raw
+  commentId: F:Armonik.Samples.StressTests.Client.Metrics.Formatting.Raw
+  fullName: Armonik.Samples.StressTests.Client.Metrics.Formatting.Raw
+  nameWithType: Formatting.Raw
 - uid: Armonik.Samples.StressTests.Worker
   name: Armonik.Samples.StressTests.Worker
   href: api/Armonik.Samples.StressTests.Worker.html
