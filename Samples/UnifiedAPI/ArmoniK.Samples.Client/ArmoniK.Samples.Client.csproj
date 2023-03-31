@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.Client.Unified" Version="0.9.1" />
+    <PackageReference Include="Armonik.DevelopmentKit.Client.Unified" Version="0.9.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
