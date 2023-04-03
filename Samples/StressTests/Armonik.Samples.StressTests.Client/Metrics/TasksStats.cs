@@ -38,26 +38,27 @@ namespace Armonik.Samples.StressTests.Client.Metrics
   {
     public enum KpiKeys
     {
-      KPI_COMPLETED_TASKS            = 0,
-      KPI_TIME_SUBMITTED_TASKS       = 1,
-      KPI_TIME_THROUGHPUT_SUBMISSION = 2,
-      KPI_TIME_THROUGHPUT_PROCESS    = 3,
-      KPI_TIME_PROCESSED_TASKS       = 4,
-      KPI_TIME_RETRIEVE_RESULTS      = 5,
-      KPI_TIME_THROUGHPUT_RESULTS    = 6,
-      KPI_TOTAL_TIME                 = 7,
+      TEST                       = 0, 
+      COMPLETED_TASKS            = 1,
+      TIME_SUBMITTED_TASKS       = 2,
+      TIME_THROUGHPUT_SUBMISSION = 3,
+      TIME_THROUGHPUT_PROCESS    = 4,
+      TIME_PROCESSED_TASKS       = 5,
+      TIME_RETRIEVE_RESULTS      = 6,
+      TIME_THROUGHPUT_RESULTS    = 7,
+      TOTAL_TIME                 = 8,
 
-      KPI_NB_TASKS            = 8,
-      KPI_NB_INPUTBYTES       = 9,
-      KPI_NB_OUTPUTBYTES      = 10,
-      KPI_TIME_WORKLOAD_IN_MS = 11,
+      NB_TASKS            = 9,
+      NB_INPUTBYTES       = 10,
+      NB_OUTPUTBYTES      = 11,
+      TIME_WORKLOAD_IN_MS = 12,
 
-      KPI_TASKS_PER_BUFFER                 = 12,
-      KPI_NB_CHANNEL                       = 13,
-      KPI_NB_CONCURRENT_BUFFER_PER_CHANNEL = 14,
-      KPI_UPLOAD_SPEED_KB                  = 15,
-      KPI_DOWNLOAD_SPEED_KB                = 16,
-      KPI_NB_POD_USED                      = 17,
+      TASKS_PER_BUFFER                 = 13,
+      NB_CHANNEL                       = 14,
+      NB_CONCURRENT_BUFFER_PER_CHANNEL = 15,
+      UPLOAD_SPEED_KB                  = 16,
+      DOWNLOAD_SPEED_KB                = 17,
+      NB_POD_USED                      = 18,
     }
 
     public TasksStats(int        nbTasks,
@@ -66,13 +67,14 @@ namespace Armonik.Samples.StressTests.Client.Metrics
                       int        workloadTimeInMs,
                       Properties props)
     {
-      Kpi[KpiKeys.KPI_NB_TASKS]                         = nbTasks.ToString();
-      Kpi[KpiKeys.KPI_NB_INPUTBYTES]                    = nbInputBytes.ToString();
-      Kpi[KpiKeys.KPI_NB_OUTPUTBYTES]                   = nbOutputBytes.ToString();
-      Kpi[KpiKeys.KPI_TIME_WORKLOAD_IN_MS]              = workloadTimeInMs.ToString();
-      Kpi[KpiKeys.KPI_TASKS_PER_BUFFER]                 = props.MaxTasksPerBuffer.ToString();
-      Kpi[KpiKeys.KPI_NB_CHANNEL]                       = props.MaxParallelChannels.ToString();
-      Kpi[KpiKeys.KPI_NB_CONCURRENT_BUFFER_PER_CHANNEL] = props.MaxConcurrentBuffers.ToString();
+      Kpi[KpiKeys.TEST]                             = "StressTest";
+      Kpi[KpiKeys.NB_TASKS]                         = nbTasks.ToString();
+      Kpi[KpiKeys.NB_INPUTBYTES]                    = nbInputBytes.ToString();
+      Kpi[KpiKeys.NB_OUTPUTBYTES]                   = nbOutputBytes.ToString();
+      Kpi[KpiKeys.TIME_WORKLOAD_IN_MS]              = workloadTimeInMs.ToString();
+      Kpi[KpiKeys.TASKS_PER_BUFFER]                 = props.MaxTasksPerBuffer.ToString();
+      Kpi[KpiKeys.NB_CHANNEL]                       = props.MaxParallelChannels.ToString();
+      Kpi[KpiKeys.NB_CONCURRENT_BUFFER_PER_CHANNEL] = props.MaxConcurrentBuffers.ToString();
     }
 
 
@@ -147,11 +149,11 @@ namespace Armonik.Samples.StressTests.Client.Metrics
                                                                                                                   .TotalMilliseconds / 1000)
                                   .ToList();
 
-      Kpi[KpiKeys.KPI_COMPLETED_TASKS] = TasksRaw.Count.ToString();
-      Kpi[KpiKeys.KPI_TIME_SUBMITTED_TASKS] = TimeSpan.FromSeconds(timeSpentList.Max())
+      Kpi[KpiKeys.COMPLETED_TASKS] = TasksRaw.Count.ToString();
+      Kpi[KpiKeys.TIME_SUBMITTED_TASKS] = TimeSpan.FromSeconds(timeSpentList.Max())
                                                       .ToString();
-      Kpi[KpiKeys.KPI_TIME_THROUGHPUT_SUBMISSION] = (TasksRaw.Count()                                                        / timeSpentList.Max()).ToString("F02");
-      Kpi[KpiKeys.KPI_UPLOAD_SPEED_KB]            = (TasksRaw.Count() * (int.Parse(Kpi[KpiKeys.KPI_NB_INPUTBYTES]) / 1024.0) / timeSpentList.Max()).ToString("F02");
+      Kpi[KpiKeys.TIME_THROUGHPUT_SUBMISSION] = (TasksRaw.Count()                                                        / timeSpentList.Max()).ToString("F02");
+      Kpi[KpiKeys.UPLOAD_SPEED_KB]            = (TasksRaw.Count() * (int.Parse(Kpi[KpiKeys.NB_INPUTBYTES]) / 1024.0) / timeSpentList.Max()).ToString("F02");
     }
 
 
@@ -170,9 +172,9 @@ namespace Armonik.Samples.StressTests.Client.Metrics
                              .Max() - TasksRaw.Select(raw => raw.CreatedAt)
                                               .Min();
       var withMs = timeDiff.Seconds + timeDiff.Nanos / 1e9;
-      Kpi[KpiKeys.KPI_TIME_PROCESSED_TASKS] = TimeSpan.FromSeconds(withMs)
+      Kpi[KpiKeys.TIME_PROCESSED_TASKS] = TimeSpan.FromSeconds(withMs)
                                                       .ToString();
-      Kpi[KpiKeys.KPI_TIME_THROUGHPUT_PROCESS] = (TasksRaw.Count() / withMs).ToString("F02");
+      Kpi[KpiKeys.TIME_THROUGHPUT_PROCESS] = (TasksRaw.Count() / withMs).ToString("F02");
     }
 
     public async Task GetTimeToRetrieveResults(ChannelBase channel,
@@ -189,10 +191,10 @@ namespace Armonik.Samples.StressTests.Client.Metrics
                                                                                           .Min();
       var withMs = timeDiff.Seconds + timeDiff.Nanos / 1e9;
 
-      Kpi[KpiKeys.KPI_TIME_RETRIEVE_RESULTS] = TimeSpan.FromSeconds(withMs)
+      Kpi[KpiKeys.TIME_RETRIEVE_RESULTS] = TimeSpan.FromSeconds(withMs)
                                                        .ToString();
-      Kpi[KpiKeys.KPI_TIME_THROUGHPUT_RESULTS] = (TasksRaw.Count()                                                         / withMs).ToString("F02");
-      Kpi[KpiKeys.KPI_DOWNLOAD_SPEED_KB]       = (TasksRaw.Count() * (int.Parse(Kpi[KpiKeys.KPI_NB_OUTPUTBYTES]) / 1024.0) / withMs).ToString("F02");
+      Kpi[KpiKeys.TIME_THROUGHPUT_RESULTS] = (TasksRaw.Count()                                                         / withMs).ToString("F02");
+      Kpi[KpiKeys.DOWNLOAD_SPEED_KB]       = (TasksRaw.Count() * (int.Parse(Kpi[KpiKeys.NB_OUTPUTBYTES]) / 1024.0) / withMs).ToString("F02");
     }
 
     public async Task<Dictionary<KpiKeys, string>> GetAllStats(ChannelBase channel,
@@ -216,9 +218,9 @@ namespace Armonik.Samples.StressTests.Client.Metrics
                                      dateTimeFinished)
         .ConfigureAwait(false);
 
-      Kpi[KpiKeys.KPI_TOTAL_TIME] = (end - start).ToString() ?? string.Empty;
+      Kpi[KpiKeys.TOTAL_TIME] = (end - start).ToString() ?? string.Empty;
 
-      Kpi[KpiKeys.KPI_NB_POD_USED] = TasksRaw.DistinctBy(t => t.OwnerPodId)
+      Kpi[KpiKeys.NB_POD_USED] = TasksRaw.DistinctBy(t => t.OwnerPodId)
                                              .Count()
                                              .ToString();
 
@@ -227,8 +229,8 @@ namespace Armonik.Samples.StressTests.Client.Metrics
 
     public async Task PrintToJson(string jsonPath)
     {
-      var dictJson = Kpi.Select(pair => new KeyValuePair<string, string>(pair.Key.ToString(),
-                                                                         pair.Value));
+     var dictJson = new Dictionary<string, string>(Kpi.Select(pair => new KeyValuePair<string, string>(pair.Key.ToString(),
+                                                                         pair.Value)));
 
       var options = new JsonSerializerOptions
                     {
@@ -253,36 +255,36 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       sb.Append("========      Statistics and performance      ========" + Environment.NewLine);
       sb.Append(Environment.NewLine);
       sb.Append("-------- Submission buffer configuration --------------"                                 + Environment.NewLine);
-      sb.Append($"Max nb tasks per buffer          : {Kpi[KpiKeys.KPI_TASKS_PER_BUFFER]}"                 + Environment.NewLine);
-      sb.Append($"Nb Grpc channel                  : {Kpi[KpiKeys.KPI_NB_CHANNEL]}"                       + Environment.NewLine);
-      sb.Append($"Nb concurrent buffer per channel : {Kpi[KpiKeys.KPI_NB_CONCURRENT_BUFFER_PER_CHANNEL]}" + Environment.NewLine);
+      sb.Append($"Max nb tasks per buffer          : {Kpi[KpiKeys.TASKS_PER_BUFFER]}"                 + Environment.NewLine);
+      sb.Append($"Nb Grpc channel                  : {Kpi[KpiKeys.NB_CHANNEL]}"                       + Environment.NewLine);
+      sb.Append($"Nb concurrent buffer per channel : {Kpi[KpiKeys.NB_CONCURRENT_BUFFER_PER_CHANNEL]}" + Environment.NewLine);
 
 
       sb.Append(Environment.NewLine);
       sb.Append("-------- Context of stressTests          --------------"                    + Environment.NewLine);
-      sb.Append($"Nb Task received and completed   : {Kpi[KpiKeys.KPI_COMPLETED_TASKS]}"     + Environment.NewLine);
-      sb.Append($"Input bytes by payload in kB     : {Kpi[KpiKeys.KPI_NB_INPUTBYTES]}"       + Environment.NewLine);
-      sb.Append($"Output bytes by result in kB     : {Kpi[KpiKeys.KPI_NB_OUTPUTBYTES]}"      + Environment.NewLine);
-      sb.Append($"Workload time per task (ms)      : {Kpi[KpiKeys.KPI_TIME_WORKLOAD_IN_MS]}" + Environment.NewLine);
+      sb.Append($"Nb Task received and completed   : {Kpi[KpiKeys.COMPLETED_TASKS]}"     + Environment.NewLine);
+      sb.Append($"Input bytes by payload in kB     : {Kpi[KpiKeys.NB_INPUTBYTES]}"       + Environment.NewLine);
+      sb.Append($"Output bytes by result in kB     : {Kpi[KpiKeys.NB_OUTPUTBYTES]}"      + Environment.NewLine);
+      sb.Append($"Workload time per task (ms)      : {Kpi[KpiKeys.TIME_WORKLOAD_IN_MS]}" + Environment.NewLine);
       sb.Append(Environment.NewLine);
 
       sb.Append("-------- Statistics of execution         --------------"                             + Environment.NewLine);
-      sb.Append($"Time to Submit all Tasks           : {Kpi[KpiKeys.KPI_TIME_SUBMITTED_TASKS]}"       + Environment.NewLine);
-      sb.Append($"Submission throughPut (tasks/s)    : {Kpi[KpiKeys.KPI_TIME_THROUGHPUT_SUBMISSION]}" + Environment.NewLine);
-      sb.Append($"Upload speed (KB/s)                : {Kpi[KpiKeys.KPI_UPLOAD_SPEED_KB]}"            + Environment.NewLine);
+      sb.Append($"Time to Submit all Tasks           : {Kpi[KpiKeys.TIME_SUBMITTED_TASKS]}"       + Environment.NewLine);
+      sb.Append($"Submission throughPut (tasks/s)    : {Kpi[KpiKeys.TIME_THROUGHPUT_SUBMISSION]}" + Environment.NewLine);
+      sb.Append($"Upload speed (KB/s)                : {Kpi[KpiKeys.UPLOAD_SPEED_KB]}"            + Environment.NewLine);
       sb.Append(Environment.NewLine);
-      sb.Append($"Time to process all Tasks          : {Kpi[KpiKeys.KPI_TIME_PROCESSED_TASKS]}"    + Environment.NewLine);
-      sb.Append($"Processing throughPut (tasks/s)    : {Kpi[KpiKeys.KPI_TIME_THROUGHPUT_PROCESS]}" + Environment.NewLine);
+      sb.Append($"Time to process all Tasks          : {Kpi[KpiKeys.TIME_PROCESSED_TASKS]}"    + Environment.NewLine);
+      sb.Append($"Processing throughPut (tasks/s)    : {Kpi[KpiKeys.TIME_THROUGHPUT_PROCESS]}" + Environment.NewLine);
       sb.Append(Environment.NewLine);
-      sb.Append($"Time to retrieve all results       : {Kpi[KpiKeys.KPI_TIME_RETRIEVE_RESULTS]}"   + Environment.NewLine);
-      sb.Append($"Speed retrieving result (result/s) : {Kpi[KpiKeys.KPI_TIME_THROUGHPUT_RESULTS]}" + Environment.NewLine);
-      sb.Append($"Download speed (KB/s)              : {Kpi[KpiKeys.KPI_DOWNLOAD_SPEED_KB]}"       + Environment.NewLine);
+      sb.Append($"Time to retrieve all results       : {Kpi[KpiKeys.TIME_RETRIEVE_RESULTS]}"   + Environment.NewLine);
+      sb.Append($"Speed retrieving result (result/s) : {Kpi[KpiKeys.TIME_THROUGHPUT_RESULTS]}" + Environment.NewLine);
+      sb.Append($"Download speed (KB/s)              : {Kpi[KpiKeys.DOWNLOAD_SPEED_KB]}"       + Environment.NewLine);
 
       sb.Append(Environment.NewLine);
       sb.Append("-------- Total user time end to end      --------------" + Environment.NewLine);
 
-      sb.Append($"Number of pod used               : {Kpi[KpiKeys.KPI_NB_POD_USED]}" + Environment.NewLine);
-      sb.Append($"Total time                       : {Kpi[KpiKeys.KPI_TOTAL_TIME]}"  + Environment.NewLine);
+      sb.Append($"Number of pod used               : {Kpi[KpiKeys.NB_POD_USED]}" + Environment.NewLine);
+      sb.Append($"Total time                       : {Kpi[KpiKeys.TOTAL_TIME]}"  + Environment.NewLine);
 
       return sb.ToString();
     }
