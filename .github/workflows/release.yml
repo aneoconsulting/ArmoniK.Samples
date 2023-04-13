@@ -134,9 +134,3 @@ jobs:
     - name: Build the package
       run: |
         dotnet build AllSamples.sln -c Release -p:Version=$GENRELEASE
-    - name: Pack the package VERSION
-      run: |
-        dotnet pack AllSamples.sln -c Release -o /tmp/packages -p:Version=$GENRELEASE
-    - name: Push the package
-      run: |
-        find /tmp/packages -name 'ArmoniK*.nupkg' ! -name '*test*.nupkg' -exec dotnet nuget push {} -k ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols \;
