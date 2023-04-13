@@ -153,7 +153,7 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       Kpi[KpiKeys.TIME_SUBMITTED_TASKS] = TimeSpan.FromSeconds(timeSpentList.Max())
                                                   .ToString();
 
-      Kpi[KpiKeys.TIME_THROUGHPUT_SUBMISSION] = (TasksRaw.Count()                                                        / timeSpentList.Max()).ToString("F02");
+      Kpi[KpiKeys.TIME_THROUGHPUT_SUBMISSION] = (TasksRaw.Count()                                                    / timeSpentList.Max()).ToString("F02");
       Kpi[KpiKeys.UPLOAD_SPEED_KB]            = (TasksRaw.Count() * (int.Parse(Kpi[KpiKeys.NB_INPUTBYTES]) / 1024.0) / timeSpentList.Max()).ToString("F02");
     }
 
@@ -195,7 +195,7 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       Kpi[KpiKeys.TIME_RETRIEVE_RESULTS] = TimeSpan.FromSeconds(withMs)
                                                    .ToString();
 
-      Kpi[KpiKeys.TIME_THROUGHPUT_RESULTS] = (TasksRaw.Count()                                                         / withMs).ToString("F02");
+      Kpi[KpiKeys.TIME_THROUGHPUT_RESULTS] = (TasksRaw.Count()                                                     / withMs).ToString("F02");
       Kpi[KpiKeys.DOWNLOAD_SPEED_KB]       = (TasksRaw.Count() * (int.Parse(Kpi[KpiKeys.NB_OUTPUTBYTES]) / 1024.0) / withMs).ToString("F02");
     }
 
