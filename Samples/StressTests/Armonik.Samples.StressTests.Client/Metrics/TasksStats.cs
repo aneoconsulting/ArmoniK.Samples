@@ -38,6 +38,7 @@ namespace Armonik.Samples.StressTests.Client.Metrics
   {
     public enum KpiKeys
     {
+      
       TEST                       = 0, 
       COMPLETED_TASKS            = 1,
       TIME_SUBMITTED_TASKS       = 2,
