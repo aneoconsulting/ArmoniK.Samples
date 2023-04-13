@@ -38,8 +38,6 @@ namespace Armonik.Samples.StressTests.Client.Metrics
   {
     public enum KpiKeys
     {
-
-
       TEST                       = 0, 
       COMPLETED_TASKS            = 1,
       TIME_SUBMITTED_TASKS       = 2,
@@ -155,7 +153,6 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       Kpi[KpiKeys.TIME_SUBMITTED_TASKS] = TimeSpan.FromSeconds(timeSpentList.Max())
                                                   .ToString();
 
-
       Kpi[KpiKeys.TIME_THROUGHPUT_SUBMISSION] = (TasksRaw.Count()                                                        / timeSpentList.Max()).ToString("F02");
       Kpi[KpiKeys.UPLOAD_SPEED_KB]            = (TasksRaw.Count() * (int.Parse(Kpi[KpiKeys.NB_INPUTBYTES]) / 1024.0) / timeSpentList.Max()).ToString("F02");
     }
@@ -198,7 +195,6 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       Kpi[KpiKeys.TIME_RETRIEVE_RESULTS] = TimeSpan.FromSeconds(withMs)
                                                    .ToString();
 
-
       Kpi[KpiKeys.TIME_THROUGHPUT_RESULTS] = (TasksRaw.Count()                                                         / withMs).ToString("F02");
       Kpi[KpiKeys.DOWNLOAD_SPEED_KB]       = (TasksRaw.Count() * (int.Parse(Kpi[KpiKeys.NB_OUTPUTBYTES]) / 1024.0) / withMs).ToString("F02");
     }
@@ -235,8 +231,6 @@ namespace Armonik.Samples.StressTests.Client.Metrics
 
     public async Task PrintToJson(string jsonPath)
     {
-
-
       var dictJson = new Dictionary<string, string>(Kpi.Select(pair => new KeyValuePair<string, string>(pair.Key.ToString(),
                                                                                                         pair.Value)));
 
