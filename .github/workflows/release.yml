@@ -83,7 +83,7 @@ jobs:
           path: ./csharp/native/MultipleResults/Worker/Dockerfilee
         - img : dockerhubaneo/armonik_demo_multipleresults_client
           path : ./csharp/native/MultipleResults/Client/Dockerfile
-  steps:
+    steps:
     - name: Checkout
       uses: actions/checkout@v3
       with:
