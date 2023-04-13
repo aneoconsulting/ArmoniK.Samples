@@ -254,21 +254,21 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       var sb = new StringBuilder();
       sb.Append("========      Statistics and performance      ========" + Environment.NewLine);
       sb.Append(Environment.NewLine);
-      sb.Append("-------- Submission buffer configuration --------------"                                 + Environment.NewLine);
+      sb.Append("-------- Submission buffer configuration --------------"                             + Environment.NewLine);
       sb.Append($"Max nb tasks per buffer          : {Kpi[KpiKeys.TASKS_PER_BUFFER]}"                 + Environment.NewLine);
       sb.Append($"Nb Grpc channel                  : {Kpi[KpiKeys.NB_CHANNEL]}"                       + Environment.NewLine);
       sb.Append($"Nb concurrent buffer per channel : {Kpi[KpiKeys.NB_CONCURRENT_BUFFER_PER_CHANNEL]}" + Environment.NewLine);
 
 
       sb.Append(Environment.NewLine);
-      sb.Append("-------- Context of stressTests          --------------"                    + Environment.NewLine);
+      sb.Append("-------- Context of stressTests          --------------"                + Environment.NewLine);
       sb.Append($"Nb Task received and completed   : {Kpi[KpiKeys.COMPLETED_TASKS]}"     + Environment.NewLine);
       sb.Append($"Input bytes by payload in kB     : {Kpi[KpiKeys.NB_INPUTBYTES]}"       + Environment.NewLine);
       sb.Append($"Output bytes by result in kB     : {Kpi[KpiKeys.NB_OUTPUTBYTES]}"      + Environment.NewLine);
       sb.Append($"Workload time per task (ms)      : {Kpi[KpiKeys.TIME_WORKLOAD_IN_MS]}" + Environment.NewLine);
       sb.Append(Environment.NewLine);
 
-      sb.Append("-------- Statistics of execution         --------------"                             + Environment.NewLine);
+      sb.Append("-------- Statistics of execution         --------------"                         + Environment.NewLine);
       sb.Append($"Time to Submit all Tasks           : {Kpi[KpiKeys.TIME_SUBMITTED_TASKS]}"       + Environment.NewLine);
       sb.Append($"Submission throughPut (tasks/s)    : {Kpi[KpiKeys.TIME_THROUGHPUT_SUBMISSION]}" + Environment.NewLine);
       sb.Append($"Upload speed (KB/s)                : {Kpi[KpiKeys.UPLOAD_SPEED_KB]}"            + Environment.NewLine);
