@@ -1,14 +1,11 @@
 name: Sonar Analysis
 
 on:
-  push:
-    branches-ignore:
-      - release
-    paths-ignore:
-      - .github
-      - .docs
-      - terraform
-    tags-ignore: [ '**' ]
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
 
 jobs:
   sonarCloud:
