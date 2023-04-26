@@ -100,7 +100,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - uses: aneoconsulting/ArmoniK@v2.10.2
+      - uses: aneoconsulting/ArmoniK@v2.10.3
         id: deploy-infra
         with:
           ingress: 'None'
