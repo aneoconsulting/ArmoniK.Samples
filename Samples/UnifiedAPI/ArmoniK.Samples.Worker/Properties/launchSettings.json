@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "ArmoniK.Samples.GridServer.Client": {
+    "ArmoniK.Samples.Unified.Client": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
