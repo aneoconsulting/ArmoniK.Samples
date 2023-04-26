@@ -34,7 +34,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
-    <PackageReference Include="Armonik.DevelopmentKit.Worker.Symphony" Version="0.8.2" />
+    <PackageReference Include="Armonik.DevelopmentKit.Worker.Symphony" Version="0.8.2.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,7 +54,6 @@
   </Target>
 
   <Target Name="ZipOutputPath" AfterTargets="CreateDirectories">
-    <ZipDirectory SourceDirectory="../publish/" DestinationFile="../packages/$(MSBuildProjectName)-v$(Version).zip"
-                  Overwrite="true" />
+    <ZipDirectory SourceDirectory="../publish/" DestinationFile="../packages/$(MSBuildProjectName)-v$(Version).zip" Overwrite="true" />
   </Target>
 </Project>
