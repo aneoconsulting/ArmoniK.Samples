@@ -8,8 +8,8 @@ devDependencies:
     specifier: ^0.1.1
     version: 0.1.1(eslint@8.40.0)
   case-police:
-    specifier: ^0.6.0
-    version: 0.6.0
+    specifier: ^0.6.1
+    version: 0.6.1
   eslint:
     specifier: ^8.40.0
     version: 8.40.0
@@ -2836,8 +2836,8 @@ packages:
       upper-case-first: 2.0.2
     dev: true
 
-  /case-police@0.6.0:
-    resolution: {integrity: sha512-j8LQSm2rxn58hAa5a56d6dlzud9GUjZ5lFn82y81IqKwbxO/7zlytu3YnXANsvC7eeUVjYWE3JJks0RdT/+MiA==}
+  /case-police@0.6.1:
+    resolution: {integrity: sha512-tOgkG3HhtzNVHU+HVHqbpVJ3CICPDihtlgoM2C4dx0RLeo6qcNVeBgiYJN5Bln+stxKrnKrw89CFgqYQDqwZQg==}
     hasBin: true
     dev: true
 

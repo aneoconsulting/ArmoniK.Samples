@@ -16,7 +16,7 @@
   "devDependencies": {
     "@aneoconsultingfr/armonik-docs-theme": "^0.6.9",
     "@nuxt/eslint-config": "^0.1.1",
-    "case-police": "^0.6.0",
+    "case-police": "^0.6.1",
     "eslint": "^8.40.0",
     "markdownlint-cli": "^0.34.0",
     "nuxt": "3.3.3"
