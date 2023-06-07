@@ -19,7 +19,7 @@
       "groupName": "nuget packages",
       "groupSlug": "nuget",
       "excludePackagePrefixes": [
-        "ArmoniK.DevelopmentKit",
+        "Armonik.DevelopmentKit",
         "ArmoniK.Api"
       ],
       "matchDatasources": [
@@ -27,10 +27,10 @@
       ]
     },
     {
-      "groupName": "ArmoniK.DevelopmentKit",
+      "groupName": "Armonik.DevelopmentKit",
       "groupSlug": "nuget-armonik-development-kit",
       "matchPackagePrefixes": [
-        "ArmoniK.DevelopmentKit"
+        "Armonik.DevelopmentKit"
       ],
       "matchDatasources": [
         "nuget"
