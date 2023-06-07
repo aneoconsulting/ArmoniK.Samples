@@ -1,20 +1,64 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base",
-              "group:allNonMajor",
-              ":semanticCommits"
-             ],
-  "packageRules":
-  [
+  "extends": [
+    "config:base",
+    "group:allNonMajor",
+    ":semanticCommitTypeAll(chore)",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "rangeStrategy": "bump",
+  "packageRules": [
     {
-      "matchPackagePrefixes": ["ArmoniK"],
-      "groupName": "release packages Armonik"
+      "groupName": "npm packages",
+      "groupSlug": "npm",
+      "matchDatasources": [
+        "npm"
+      ]
     },
     {
-
-    "matchPackagePatterns": ["*"],
-    "excludePackagePrefixes": ["ArmoniK"],
-    "groupName": "other dependencies"  
+      "groupName": "nuget packages",
+      "groupSlug": "nuget",
+      "excludePackagePrefixes": [
+        "ArmoniK.DevelopmentKit",
+        "ArmoniK.Api"
+      ],
+      "matchDatasources": [
+        "nuget"
+      ]
+    },
+    {
+      "groupName": "ArmoniK.DevelopmentKit",
+      "groupSlug": "nuget-armonik-development-kit",
+      "matchPackagePrefixes": [
+        "ArmoniK.DevelopmentKit"
+      ],
+      "matchDatasources": [
+        "nuget"
+      ]
+    },
+    {
+      "groupName": "ArmoniK.Api",
+      "groupSlug": "nuget-armonik-api",
+      "matchPackagePrefixes": [
+        "ArmoniK.Api"
+      ],
+      "matchDatasources": [
+        "nuget"
+      ]
+    },
+    {
+      "groupName": "docker images",
+      "groupSlug": "docker",
+      "matchDatasources": [
+        "docker"
+      ]
+    },
+    {
+      "groupName": "github actions",
+      "groupSlug": "github-actions",
+      "matchDatasources": [
+        "github-tags"
+      ]
     }
   ]
 }
