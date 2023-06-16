@@ -105,33 +105,33 @@ namespace ArmoniK.Samples.Client
                     }.ToArray();
 
       Service.Submit("ComputeBasicArrayCube",
-                     Utils.ParamsHelper(numbers),
+                     Common.Utils.ParamsHelper(numbers),
                      ResultHandle);
 
       Service.Submit("ComputeReduceCube",
-                     Utils.ParamsHelper(numbers,
-                                        workloadTimeInMs_),
+                     Common.Utils.ParamsHelper(numbers,
+                                               workloadTimeInMs_),
                      ResultHandle);
 
       Service.Submit("ComputeReduceCube",
-                     Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
-                                               .ToArray()),
+                     Common.Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
+                                                      .ToArray()),
                      ResultHandle);
 
       Service.Submit("ComputeMadd",
-                     Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
-                                               .ToArray(),
-                                        numbers.SelectMany(BitConverter.GetBytes)
-                                               .ToArray(),
-                                        4.0),
+                     Common.Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
+                                                      .ToArray(),
+                                               numbers.SelectMany(BitConverter.GetBytes)
+                                                      .ToArray(),
+                                               4.0),
                      ResultHandle);
 
       Service.Submit("NonStaticComputeMadd",
-                     Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
-                                               .ToArray(),
-                                        numbers.SelectMany(BitConverter.GetBytes)
-                                               .ToArray(),
-                                        4.0),
+                     Common.Utils.ParamsHelper(numbers.SelectMany(BitConverter.GetBytes)
+                                                      .ToArray(),
+                                               numbers.SelectMany(BitConverter.GetBytes)
+                                                      .ToArray(),
+                                               4.0),
                      ResultHandle);
     }
 
