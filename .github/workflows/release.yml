@@ -35,7 +35,7 @@ jobs:
 
     - name: Generate Snapshot Version
       id: snapshot
-      uses: codacy/git-version@2.7.1
+      uses: codacy/git-version@2.8.0
       with:
         minor-identifier: "feat:"
         release-branch: ${{ github.ref_name }}-pre
@@ -44,7 +44,7 @@ jobs:
 
     - name: Generate Release Version
       id: release
-      uses: codacy/git-version@2.7.1
+      uses: codacy/git-version@2.8.0
       with:
         minor-identifier: "feat:"
         release-branch: ${{ steps.rev.outputs.current-branch }}
