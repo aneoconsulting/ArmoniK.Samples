@@ -96,16 +96,16 @@ namespace ArmoniK.Samples.Client
       Logger.LogInformation("Execute {nTask} in one batch",
                             nbTask);
       var sw = Stopwatch.StartNew();
-      var periodicInfo = Utils.PeriodicInfo(() =>
-                                            {
-                                              Logger.LogInformation($"Got {ResultHandle.NbResults} results. " +
-                                                                    $"{ResultHandle.NbResults / (sw.ElapsedMilliseconds / 1000.0):0.00} Result/s (avg)");
-                                            },
-                                            30);
+      var periodicInfo = Common.Utils.PeriodicInfo(() =>
+                                                   {
+                                                     Logger.LogInformation($"Got {ResultHandle.NbResults} results. " +
+                                                                           $"{ResultHandle.NbResults / (sw.ElapsedMilliseconds / 1000.0):0.00} Result/s (avg)");
+                                                   },
+                                                   30);
       var tasks = Service.Submit("ComputeReduce",
                                  Enumerable.Range(1,
                                                   nbTask)
-                                           .Select(_ => Utils.ParamsHelper(toSum)),
+                                           .Select(_ => Common.Utils.ParamsHelper(toSum)),
                                  ResultHandle);
       if (tasks.Count() is var count && count != nbTask)
       {

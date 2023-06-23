@@ -108,7 +108,7 @@ namespace ArmoniK.Samples.Client
       var tasks = Service.Submit("ComputeBasicArrayCube",
                                  Enumerable.Range(1,
                                                   nbTask)
-                                           .Select(_ => Utils.ParamsHelper(numbers)),
+                                           .Select(_ => Common.Utils.ParamsHelper(numbers)),
                                  ResultHandle);
       if (tasks.Count() is var count && count != nbTask)
       {

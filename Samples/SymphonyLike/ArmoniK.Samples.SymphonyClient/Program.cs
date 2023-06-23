@@ -34,9 +34,10 @@ using System.Threading.Tasks;
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Client.Symphony;
 using ArmoniK.DevelopmentKit.Common;
-using ArmoniK.DevelopmentKit.Common.Extensions;
 
 using Armonik.Samples.Symphony.Common;
+
+using ArmoniK.Utils;
 
 using Google.Protobuf.WellKnownTypes;
 
@@ -584,7 +585,7 @@ namespace Armonik.Samples.Symphony.Client
 
       while (missing.Count != 0)
       {
-        missing.ToChunk(10000)
+        missing.ToChunks(10000)
                .ToList()
                .ForEach(bucket =>
                         {
