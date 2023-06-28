@@ -86,25 +86,26 @@ await asyncClientStreamingCall.RequestStream.WriteAsync(new CreateLargeTaskReque
                                                                         },
                                                         });
 
-var resultIds = (await resultClient.CreateResultsMetaDataAsync(new CreateResultsMetaDataRequest()
-                                                              {
-                                                                SessionId = sessionId,
-                                                                Results =
-                                                                {
-                                                                  Enumerable.Range(0,
-                                                                                   nbTasks)
-                                                                            .Select(_ => new CreateResultsMetaDataRequest.Types.ResultCreate()
-                                                                                         {
-                                                                                           Name = Guid.NewGuid()
-                                                                                                      .ToString(),
-                                                                                         }),
-                                                                }
-                                                              }).ConfigureAwait(false)).Results.Select(res => res.ResultId).ToList();
+var resultIds = (await resultClient.CreateResultsMetaDataAsync(new CreateResultsMetaDataRequest
+                                                               {
+                                                                 SessionId = sessionId,
+                                                                 Results =
+                                                                 {
+                                                                   Enumerable.Range(0,
+                                                                                    nbTasks)
+                                                                             .Select(_ => new CreateResultsMetaDataRequest.Types.ResultCreate
+                                                                                          {
+                                                                                            Name = Guid.NewGuid()
+                                                                                                       .ToString(),
+                                                                                          }),
+                                                                 },
+                                                               })
+                                   .ConfigureAwait(false)).Results.Select(res => res.ResultId)
+                                                          .ToList();
 
 
 for (var i = 0; i < nbTasks; i++)
 {
-
   await asyncClientStreamingCall.RequestStream.WriteAsync(new CreateLargeTaskRequest
                                                           {
                                                             InitTask = new InitTaskRequest
