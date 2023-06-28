@@ -128,7 +128,10 @@ namespace Armonik.Samples.StressTests.Client.Metrics
                                                           new ListTasksRequest.Types.Sort
                                                           {
                                                             Direction = SortDirection.Asc,
-                                                            Field     = new TaskField{TaskSummaryField = TaskSummaryField.TaskId},
+                                                            Field = new TaskField
+                                                                    {
+                                                                      TaskSummaryField = TaskSummaryField.TaskId,
+                                                                    },
                                                           })
                        .ConfigureAwait(false))
       {

@@ -90,12 +90,21 @@ namespace ArmoniK.Samples.HelloWorld.Client
                                                              });
 
       // Generate result Ids for the submission of the current
-      var resultIds = resultClient.CreateResultsMetaData(new CreateResultsMetaDataRequest()
+      var resultIds = resultClient.CreateResultsMetaData(new CreateResultsMetaDataRequest
                                                          {
-                                                           SessionId = createSessionReply.SessionId, Results = { Enumerable.Range(0,
-                                                                                                                                  nResultsPerTask)
-                                                                                                                           .Select(i => new CreateResultsMetaDataRequest.Types.ResultCreate(){Name = Guid.NewGuid() + "_" + i}) }
-                                                         }).Results.Select(result=>result.ResultId).ToList();
+                                                           SessionId = createSessionReply.SessionId,
+                                                           Results =
+                                                           {
+                                                             Enumerable.Range(0,
+                                                                              nResultsPerTask)
+                                                                       .Select(i => new CreateResultsMetaDataRequest.Types.ResultCreate
+                                                                                    {
+                                                                                      Name = Guid.NewGuid() + "_" + i,
+                                                                                    }),
+                                                           },
+                                                         })
+                                  .Results.Select(result => result.ResultId)
+                                  .ToList();
 
       var createTaskReply = await submitterClient.CreateTasksAsync(createSessionReply.SessionId,
                                                                    null,

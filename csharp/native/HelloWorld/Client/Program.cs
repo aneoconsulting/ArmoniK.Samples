@@ -94,13 +94,15 @@ namespace ArmoniK.Samples.HelloWorld.Client
                                                           SessionId = createSessionReply.SessionId,
                                                           Results =
                                                           {
-                                                            new CreateResultsMetaDataRequest.Types.ResultCreate()
+                                                            new CreateResultsMetaDataRequest.Types.ResultCreate
                                                             {
                                                               Name = Guid.NewGuid()
                                                                          .ToString(),
                                                             },
                                                           },
-                                                        }).Results.First().ResultId;
+                                                        })
+                                 .Results.First()
+                                 .ResultId;
 
       // Task request with payload for the task
       // Also contains the list of results that will be created by the task
