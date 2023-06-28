@@ -144,12 +144,30 @@ jobs:
           - helloworld
           - multipleresults
     steps:
-      - uses: aneoconsulting/ArmoniK@main
-        id: deploy-infra
+      - name: Install Dependencies
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@db/addWorkerImageSelection
         with:
-          ingress: 'None'
+          docker: true
+          terraform: true
+          k3s: true
+          aws: true
+
+      - name: Checkout Infra
+        uses: actions/checkout@v3
+        with:
+          repository: aneoconsulting/ArmoniK
+          path: infra
+
+      - id: deploy
+        name: Deploy
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@db/addWorkerImageSelection
+        with:
+          working-directory: ${{ github.workspace }}/infra
+          type: localhost
+          ext-csharp-version: ${{ needs.versionning.outputs.version }}
+          core-version: 0.14.2
           worker-image: dockerhubaneo/armonik_demo_${{ matrix.demo }}_worker
-          worker-tag: ${{ needs.versionning.outputs.version }}
+         
       - name: Run Demo Client
         run: |
          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
@@ -157,6 +175,13 @@ jobs:
          export Grpc__Endpoint=http://$CPIP:$CPPort
 
          docker run --rm dockerhubaneo/armonik_demo_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }} --endpoint $Grpc__Endpoint
+
+      - name: Destroy deployment
+        if: success() || failure()
+        uses: aneoconsulting/ArmoniK.Action.Deploy/destroy@db/addWorkerImageSelection
+        with:
+          working-directory: ${{ github.workspace }}/infra
+          type: localhost
 
   testInfraWorker:
     needs:
@@ -175,12 +200,12 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@db/addWorkerImageSelection
         with:
-           docker: true
-           terraform: true
-           k3s: true
-           aws: true
+          docker: true
+          terraform: true
+          k3s: true
+          aws: true
 
       - name: Checkout Infra
         uses: actions/checkout@v3
@@ -190,7 +215,7 @@ jobs:
 
       - id: deploy
         name: Deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@db/addWorkerImageSelection
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -215,13 +240,14 @@ jobs:
          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
          export Grpc__Endpoint=http://$CPIP:$CPPort
+         export HOST_PATH=`kubectl get secret -n armonik shared-storage -o jsonpath="{.data.host_path}" 2>/dev/null | base64 -d`
 
          cd Samples/HtcMockSymphony/
          dotnet publish --self-contained -r linux-x64  -f net6.0 HtcMockSymphony.sln
 
-         mkdir -p ${{ steps.deploy-infra.outputs.host-path }}
+         mkdir -p $HOST_PATH
 
-         cp -v packages/ArmoniK.Samples.HtcMockSymphonyPackage-v2.0.0.zip ${{ steps.deploy-infra.outputs.host-path }}
+         cp -v packages/ArmoniK.Samples.HtcMockSymphonyPackage-v2.0.0.zip $HOST_PATH
 
          cd ArmoniK.Samples.HtcMockSymphonyClient/
          dotnet bin/Debug/net6.0/linux-x64/ArmoniK.Samples.HtcMockSymphonyClient.dll
@@ -251,7 +277,7 @@ jobs:
           
       - name: Destroy deployment
         if: success() || failure()
-        uses: aneoconsulting/ArmoniK.Action.Deploy/destroy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/destroy@db/addWorkerImageSelection
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
