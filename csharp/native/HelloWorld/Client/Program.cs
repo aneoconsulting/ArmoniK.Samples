@@ -24,12 +24,14 @@
 
 using System;
 using System.CommandLine;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 using ArmoniK.Api.Client.Options;
 using ArmoniK.Api.Client.Submitter;
 using ArmoniK.Api.gRPC.V1;
+using ArmoniK.Api.gRPC.V1.Results;
 using ArmoniK.Api.gRPC.V1.Submitter;
 
 using Google.Protobuf;
@@ -64,6 +66,9 @@ namespace ArmoniK.Samples.HelloWorld.Client
       // Create client for task submission
       var submitterClient = new Submitter.SubmitterClient(channel);
 
+      // Create client for result creation
+      var resultClient = new Results.ResultsClient(channel);
+
       // Default task options that will be used by each task if not overwritten when submitting tasks
       var taskOptions = new TaskOptions
                         {
@@ -84,8 +89,18 @@ namespace ArmoniK.Samples.HelloWorld.Client
                                                              });
 
       // Create the result id
-      var resultId = Guid.NewGuid()
-                         .ToString();
+      var resultId = resultClient.CreateResultsMetaData(new CreateResultsMetaDataRequest
+                                                        {
+                                                          SessionId = createSessionReply.SessionId,
+                                                          Results =
+                                                          {
+                                                            new CreateResultsMetaDataRequest.Types.ResultCreate()
+                                                            {
+                                                              Name = Guid.NewGuid()
+                                                                         .ToString(),
+                                                            },
+                                                          },
+                                                        }).Results.First().ResultId;
 
       // Task request with payload for the task
       // Also contains the list of results that will be created by the task
