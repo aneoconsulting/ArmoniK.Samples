@@ -3,6 +3,7 @@
 using System.Diagnostics;
 
 using ArmoniK.Api.gRPC.V1;
+using ArmoniK.Api.gRPC.V1.Results;
 using ArmoniK.Api.gRPC.V1.Submitter;
 
 using DocoptNet;
@@ -58,8 +59,9 @@ taskOptions.Options.Add("GridAppNamespace",
                         "ArmoniK.Samples.Symphony.Packages");
 
 
-var channel = GrpcChannel.ForAddress(Environment.GetEnvironmentVariable("Grpc__Endpoint") ?? string.Empty);
-var client  = new Submitter.SubmitterClient(channel);
+var channel      = GrpcChannel.ForAddress(Environment.GetEnvironmentVariable("Grpc__Endpoint") ?? string.Empty);
+var client       = new Submitter.SubmitterClient(channel);
+var resultClient = new Results.ResultsClient(channel);
 
 var createSessionReply = client.CreateSession(new CreateSessionRequest
                                               {
@@ -84,12 +86,26 @@ await asyncClientStreamingCall.RequestStream.WriteAsync(new CreateLargeTaskReque
                                                                         },
                                                         });
 
+var resultIds = (await resultClient.CreateResultsMetaDataAsync(new CreateResultsMetaDataRequest
+                                                               {
+                                                                 SessionId = sessionId,
+                                                                 Results =
+                                                                 {
+                                                                   Enumerable.Range(0,
+                                                                                    nbTasks)
+                                                                             .Select(_ => new CreateResultsMetaDataRequest.Types.ResultCreate
+                                                                                          {
+                                                                                            Name = Guid.NewGuid()
+                                                                                                       .ToString(),
+                                                                                          }),
+                                                                 },
+                                                               })
+                                   .ConfigureAwait(false)).Results.Select(res => res.ResultId)
+                                                          .ToList();
+
 
 for (var i = 0; i < nbTasks; i++)
 {
-  var taskId = Guid.NewGuid()
-                   .ToString();
-
   await asyncClientStreamingCall.RequestStream.WriteAsync(new CreateLargeTaskRequest
                                                           {
                                                             InitTask = new InitTaskRequest
@@ -98,7 +114,7 @@ for (var i = 0; i < nbTasks; i++)
                                                                                   {
                                                                                     ExpectedOutputKeys =
                                                                                     {
-                                                                                      taskId,
+                                                                                      resultIds[i],
                                                                                     },
                                                                                   },
                                                                        },
