@@ -25,6 +25,8 @@
 using System.Text;
 using System.Text.Json;
 
+using Armonik.Api.Grpc.V1.SortDirection;
+
 using ArmoniK.Api.gRPC.V1.Tasks;
 using ArmoniK.DevelopmentKit.Client.Common;
 
@@ -125,8 +127,11 @@ namespace Armonik.Samples.StressTests.Client.Metrics
                                                           },
                                                           new ListTasksRequest.Types.Sort
                                                           {
-                                                            Direction = ListTasksRequest.Types.OrderDirection.Asc,
-                                                            Field     = ListTasksRequest.Types.OrderByField.TaskId,
+                                                            Direction = SortDirection.Asc,
+                                                            Field = new TaskField
+                                                                    {
+                                                                      TaskSummaryField = TaskSummaryField.TaskId,
+                                                                    },
                                                           })
                        .ConfigureAwait(false))
       {
