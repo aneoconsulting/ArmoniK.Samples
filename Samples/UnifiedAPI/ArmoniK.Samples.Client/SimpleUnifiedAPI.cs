@@ -66,8 +66,8 @@ namespace ArmoniK.Samples.Client
 
       var endpoint = configuration.GetSection("Grpc")["EndPoint"];
 
-      Props = new Properties(TaskOptions,
-                             endpoint);
+      Props = new Properties(configuration,
+                             TaskOptions);
 
       Logger = factory.CreateLogger<SimpleUnifiedAPI>();
 

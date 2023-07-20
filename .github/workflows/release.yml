@@ -54,7 +54,7 @@ jobs:
     - name: Put versions in step summary
       run: |
         echo SNAPSHOT => ${{ steps.snapshot.outputs.version }} >> $GITHUB_STEP_SUMMARY
-        echo RELASE   => ${{ steps.release.outputs.version }} >> $GITHUB_STEP_SUMMARY
+        echo RELEASE   => ${{ steps.release.outputs.version }} >> $GITHUB_STEP_SUMMARY
 
     - name: Validate tag
       run : test ${{ steps.release.outputs.version }} == ${{ github.ref_name }}
@@ -106,10 +106,10 @@ jobs:
       run: echo ${{ steps.buildx.outputs.platforms }}
 
     - name: Build and push
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v4
       with:
         file: ${{ matrix.path }}
-        context: .
+        context: ./csharp/native
         platforms: |
           linux/arm64
           linux/amd64
@@ -133,4 +133,4 @@ jobs:
 
     - name: Build the package
       run: |
-        dotnet build AllSamples.sln -c Release -p:Version=$GENRELEASE
+        dotnet build AllSamples.sln -c Release -p:Version=$(echo $GENRELEASE | sed 's/^.//')
