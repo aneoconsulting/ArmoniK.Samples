@@ -67,8 +67,8 @@ namespace Armonik.Samples.StressTests.Client
                       PartitionId          = partition,
                     };
 
-      Props = new Properties(TaskOptions,
-                             configuration.GetSection("Grpc")["EndPoint"])
+      Props = new Properties(configuration,
+                             TaskOptions)
               {
                 MaxConcurrentBuffers = nbBufferPerChannelValue,
                 MaxTasksPerBuffer    = nbTaskPerBufferValue,

@@ -63,8 +63,8 @@ namespace ArmoniK.Samples.Client
                       ApplicationNamespace = "ArmoniK.Samples.Unified.Worker.Services",
                     };
 
-      Props = new Properties(TaskOptions,
-                             configuration.GetSection("Grpc")["EndPoint"]);
+      Props = new Properties(configuration,
+                             TaskOptions);
 
       Logger = factory.CreateLogger<SimpleCancelSessionTest>();
 
