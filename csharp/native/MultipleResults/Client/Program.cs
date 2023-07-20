@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using ArmoniK.Api.Client.Options;
 using ArmoniK.Api.Client.Submitter;
 using ArmoniK.Api.gRPC.V1;
+using ArmoniK.Api.gRPC.V1.Results;
 using ArmoniK.Api.gRPC.V1.Submitter;
 
 using Google.Protobuf;
@@ -69,6 +70,9 @@ namespace ArmoniK.Samples.HelloWorld.Client
       // Create client for task submission
       var submitterClient = new Submitter.SubmitterClient(channel);
 
+      // Create client for result creation
+      var resultClient = new Results.ResultsClient(channel);
+
       // Request for session creation with default task options and allowed partitions for the session
       var createSessionReply = submitterClient.CreateSession(new CreateSessionRequest
                                                              {
@@ -86,10 +90,21 @@ namespace ArmoniK.Samples.HelloWorld.Client
                                                              });
 
       // Generate result Ids for the submission of the current
-      var resultIds = Enumerable.Range(0,
-                                       nResultsPerTask)
-                                .Select(i => Guid.NewGuid() + "_" + i)
-                                .ToList();
+      var resultIds = resultClient.CreateResultsMetaData(new CreateResultsMetaDataRequest
+                                                         {
+                                                           SessionId = createSessionReply.SessionId,
+                                                           Results =
+                                                           {
+                                                             Enumerable.Range(0,
+                                                                              nResultsPerTask)
+                                                                       .Select(i => new CreateResultsMetaDataRequest.Types.ResultCreate
+                                                                                    {
+                                                                                      Name = Guid.NewGuid() + "_" + i,
+                                                                                    }),
+                                                           },
+                                                         })
+                                  .Results.Select(result => result.ResultId)
+                                  .ToList();
 
       var createTaskReply = await submitterClient.CreateTasksAsync(createSessionReply.SessionId,
                                                                    null,
