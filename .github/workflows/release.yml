@@ -80,7 +80,7 @@ jobs:
         - img : dockerhubaneo/armonik_demo_helloworld_client
           path : ./csharp/native/HelloWorld/Client/Dockerfile
         - img : dockerhubaneo/armonik_demo_multipleresults_worker
-          path: ./csharp/native/MultipleResults/Worker/Dockerfilee
+          path: ./csharp/native/MultipleResults/Worker/Dockerfile
         - img : dockerhubaneo/armonik_demo_multipleresults_client
           path : ./csharp/native/MultipleResults/Client/Dockerfile
     steps:
