@@ -243,138 +243,6 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Common.Utils.PeriodicInfo
   nameWithType: Utils.PeriodicInfo
-- uid: ArmoniK.Samples.GridServer.Client.Services
-  name: ArmoniK.Samples.GridServer.Client.Services
-  href: api/ArmoniK.Samples.GridServer.Client.Services.html
-  commentId: N:ArmoniK.Samples.GridServer.Client.Services
-  fullName: ArmoniK.Samples.GridServer.Client.Services
-  nameWithType: ArmoniK.Samples.GridServer.Client.Services
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer
-  name: ServiceContainer
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html
-  commentId: T:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer
-  nameWithType: ServiceContainer
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.#ctor
-  name: ServiceContainer()
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer__ctor
-  commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.#ctor
-  name.vb: New()
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ServiceContainer()
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.New()
-  nameWithType: ServiceContainer.ServiceContainer()
-  nameWithType.vb: ServiceContainer.New()
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.#ctor*
-  name: ServiceContainer
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer__ctor_
-  commentId: Overload:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.#ctor
-  isSpec: "True"
-  name.vb: New
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ServiceContainer
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.New
-  nameWithType: ServiceContainer.ServiceContainer
-  nameWithType.vb: ServiceContainer.New
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube(System.Double[])
-  name: ComputeBasicArrayCube(double[])
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_ComputeBasicArrayCube_System_Double___
-  commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube(System.Double[])
-  name.vb: ComputeBasicArrayCube(Double())
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube(double[])
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube(Double())
-  nameWithType: ServiceContainer.ComputeBasicArrayCube(double[])
-  nameWithType.vb: ServiceContainer.ComputeBasicArrayCube(Double())
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube*
-  name: ComputeBasicArrayCube
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_ComputeBasicArrayCube_
-  commentId: Overload:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube
-  isSpec: "True"
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeBasicArrayCube
-  nameWithType: ServiceContainer.ComputeBasicArrayCube
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd(System.Byte[],System.Byte[],System.Double)
-  name: ComputeMadd(byte[], byte[], double)
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_ComputeMadd_System_Byte___System_Byte___System_Double_
-  commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd(System.Byte[],System.Byte[],System.Double)
-  name.vb: ComputeMadd(Byte(), Byte(), Double)
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd(byte[], byte[], double)
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd(Byte(), Byte(), Double)
-  nameWithType: ServiceContainer.ComputeMadd(byte[], byte[], double)
-  nameWithType.vb: ServiceContainer.ComputeMadd(Byte(), Byte(), Double)
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd*
-  name: ComputeMadd
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_ComputeMadd_
-  commentId: Overload:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd
-  isSpec: "True"
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeMadd
-  nameWithType: ServiceContainer.ComputeMadd
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Byte[])
-  name: ComputeReduceCube(byte[])
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_ComputeReduceCube_System_Byte___
-  commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Byte[])
-  name.vb: ComputeReduceCube(Byte())
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(byte[])
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(Byte())
-  nameWithType: ServiceContainer.ComputeReduceCube(byte[])
-  nameWithType.vb: ServiceContainer.ComputeReduceCube(Byte())
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Double[])
-  name: ComputeReduceCube(double[])
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_ComputeReduceCube_System_Double___
-  commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(System.Double[])
-  name.vb: ComputeReduceCube(Double())
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(double[])
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube(Double())
-  nameWithType: ServiceContainer.ComputeReduceCube(double[])
-  nameWithType.vb: ServiceContainer.ComputeReduceCube(Double())
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube*
-  name: ComputeReduceCube
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_ComputeReduceCube_
-  commentId: Overload:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube
-  isSpec: "True"
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.ComputeReduceCube
-  nameWithType: ServiceContainer.ComputeReduceCube
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd(System.Byte[],System.Byte[],System.Double)
-  name: NonStaticComputeMadd(byte[], byte[], double)
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_NonStaticComputeMadd_System_Byte___System_Byte___System_Double_
-  commentId: M:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd(System.Byte[],System.Byte[],System.Double)
-  name.vb: NonStaticComputeMadd(Byte(), Byte(), Double)
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd(byte[], byte[], double)
-  fullName.vb: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd(Byte(), Byte(), Double)
-  nameWithType: ServiceContainer.NonStaticComputeMadd(byte[], byte[], double)
-  nameWithType.vb: ServiceContainer.NonStaticComputeMadd(Byte(), Byte(), Double)
-- uid: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd*
-  name: NonStaticComputeMadd
-  href: api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html#ArmoniK_Samples_GridServer_Client_Services_ServiceContainer_NonStaticComputeMadd_
-  commentId: Overload:ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd
-  isSpec: "True"
-  fullName: ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.NonStaticComputeMadd
-  nameWithType: ServiceContainer.NonStaticComputeMadd
-- uid: ArmoniK.Samples.GridServer.Common
-  name: ArmoniK.Samples.GridServer.Common
-  href: api/ArmoniK.Samples.GridServer.Common.html
-  commentId: N:ArmoniK.Samples.GridServer.Common
-  fullName: ArmoniK.Samples.GridServer.Common
-  nameWithType: ArmoniK.Samples.GridServer.Common
-- uid: ArmoniK.Samples.GridServer.Common.SelectExtensions
-  name: SelectExtensions
-  href: api/ArmoniK.Samples.GridServer.Common.SelectExtensions.html
-  commentId: T:ArmoniK.Samples.GridServer.Common.SelectExtensions
-  fullName: ArmoniK.Samples.GridServer.Common.SelectExtensions
-  nameWithType: SelectExtensions
-- uid: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable{System.Byte})
-  name: ConvertToArray(IEnumerable<byte>)
-  href: api/ArmoniK.Samples.GridServer.Common.SelectExtensions.html#ArmoniK_Samples_GridServer_Common_SelectExtensions_ConvertToArray_System_Collections_Generic_IEnumerable_System_Byte__
-  commentId: M:ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable{System.Byte})
-  name.vb: ConvertToArray(IEnumerable(Of Byte))
-  fullName: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable<byte>)
-  fullName.vb: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray(System.Collections.Generic.IEnumerable(Of Byte))
-  nameWithType: SelectExtensions.ConvertToArray(IEnumerable<byte>)
-  nameWithType.vb: SelectExtensions.ConvertToArray(IEnumerable(Of Byte))
-- uid: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray*
-  name: ConvertToArray
-  href: api/ArmoniK.Samples.GridServer.Common.SelectExtensions.html#ArmoniK_Samples_GridServer_Common_SelectExtensions_ConvertToArray_
-  commentId: Overload:ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray
-  isSpec: "True"
-  fullName: ArmoniK.Samples.GridServer.Common.SelectExtensions.ConvertToArray
-  nameWithType: SelectExtensions.ConvertToArray
 - uid: ArmoniK.Samples.HelloWorld.Worker
   name: ArmoniK.Samples.HelloWorld.Worker
   href: api/ArmoniK.Samples.HelloWorld.Worker.html
@@ -661,22 +529,35 @@ references:
   commentId: T:Armonik.Samples.Symphony.Common.ClientPayload
   fullName: Armonik.Samples.Symphony.Common.ClientPayload
   nameWithType: ClientPayload
-- uid: Armonik.Samples.Symphony.Common.ClientPayload.deserialize(System.Byte[])
-  name: deserialize(byte[])
-  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_deserialize_System_Byte___
-  commentId: M:Armonik.Samples.Symphony.Common.ClientPayload.deserialize(System.Byte[])
-  name.vb: deserialize(Byte())
-  fullName: Armonik.Samples.Symphony.Common.ClientPayload.deserialize(byte[])
-  fullName.vb: Armonik.Samples.Symphony.Common.ClientPayload.deserialize(Byte())
-  nameWithType: ClientPayload.deserialize(byte[])
-  nameWithType.vb: ClientPayload.deserialize(Byte())
-- uid: Armonik.Samples.Symphony.Common.ClientPayload.deserialize*
-  name: deserialize
-  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_deserialize_
-  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.deserialize
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Data
+  name: Data
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Data
+  commentId: P:Armonik.Samples.Symphony.Common.ClientPayload.Data
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Data
+  nameWithType: ClientPayload.Data
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Data*
+  name: Data
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Data_
+  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.Data
   isSpec: "True"
-  fullName: Armonik.Samples.Symphony.Common.ClientPayload.deserialize
-  nameWithType: ClientPayload.deserialize
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Data
+  nameWithType: ClientPayload.Data
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Deserialize(System.Byte[])
+  name: Deserialize(byte[])
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Deserialize_System_Byte___
+  commentId: M:Armonik.Samples.Symphony.Common.ClientPayload.Deserialize(System.Byte[])
+  name.vb: Deserialize(Byte())
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Deserialize(byte[])
+  fullName.vb: Armonik.Samples.Symphony.Common.ClientPayload.Deserialize(Byte())
+  nameWithType: ClientPayload.Deserialize(byte[])
+  nameWithType.vb: ClientPayload.Deserialize(Byte())
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Deserialize*
+  name: Deserialize
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Deserialize_
+  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.Deserialize
+  isSpec: "True"
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Deserialize
+  nameWithType: ClientPayload.Deserialize
 - uid: Armonik.Samples.Symphony.Common.ClientPayload.IsRootTask
   name: IsRootTask
   href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_IsRootTask
@@ -690,58 +571,71 @@ references:
   isSpec: "True"
   fullName: Armonik.Samples.Symphony.Common.ClientPayload.IsRootTask
   nameWithType: ClientPayload.IsRootTask
-- uid: Armonik.Samples.Symphony.Common.ClientPayload.numbers
-  name: numbers
-  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_numbers
-  commentId: P:Armonik.Samples.Symphony.Common.ClientPayload.numbers
-  fullName: Armonik.Samples.Symphony.Common.ClientPayload.numbers
-  nameWithType: ClientPayload.numbers
-- uid: Armonik.Samples.Symphony.Common.ClientPayload.numbers*
-  name: numbers
-  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_numbers_
-  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.numbers
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.NbRandomFailure
+  name: NbRandomFailure
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_NbRandomFailure
+  commentId: P:Armonik.Samples.Symphony.Common.ClientPayload.NbRandomFailure
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.NbRandomFailure
+  nameWithType: ClientPayload.NbRandomFailure
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.NbRandomFailure*
+  name: NbRandomFailure
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_NbRandomFailure_
+  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.NbRandomFailure
   isSpec: "True"
-  fullName: Armonik.Samples.Symphony.Common.ClientPayload.numbers
-  nameWithType: ClientPayload.numbers
-- uid: Armonik.Samples.Symphony.Common.ClientPayload.result
-  name: result
-  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_result
-  commentId: P:Armonik.Samples.Symphony.Common.ClientPayload.result
-  fullName: Armonik.Samples.Symphony.Common.ClientPayload.result
-  nameWithType: ClientPayload.result
-- uid: Armonik.Samples.Symphony.Common.ClientPayload.result*
-  name: result
-  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_result_
-  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.result
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.NbRandomFailure
+  nameWithType: ClientPayload.NbRandomFailure
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Numbers
+  name: Numbers
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Numbers
+  commentId: P:Armonik.Samples.Symphony.Common.ClientPayload.Numbers
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Numbers
+  nameWithType: ClientPayload.Numbers
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Numbers*
+  name: Numbers
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Numbers_
+  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.Numbers
   isSpec: "True"
-  fullName: Armonik.Samples.Symphony.Common.ClientPayload.result
-  nameWithType: ClientPayload.result
-- uid: Armonik.Samples.Symphony.Common.ClientPayload.serialize
-  name: serialize()
-  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_serialize
-  commentId: M:Armonik.Samples.Symphony.Common.ClientPayload.serialize
-  fullName: Armonik.Samples.Symphony.Common.ClientPayload.serialize()
-  nameWithType: ClientPayload.serialize()
-- uid: Armonik.Samples.Symphony.Common.ClientPayload.serialize*
-  name: serialize
-  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_serialize_
-  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.serialize
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Numbers
+  nameWithType: ClientPayload.Numbers
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Result
+  name: Result
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Result
+  commentId: P:Armonik.Samples.Symphony.Common.ClientPayload.Result
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Result
+  nameWithType: ClientPayload.Result
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Result*
+  name: Result
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Result_
+  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.Result
   isSpec: "True"
-  fullName: Armonik.Samples.Symphony.Common.ClientPayload.serialize
-  nameWithType: ClientPayload.serialize
-- uid: Armonik.Samples.Symphony.Common.ClientPayload.sleep
-  name: sleep
-  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_sleep
-  commentId: P:Armonik.Samples.Symphony.Common.ClientPayload.sleep
-  fullName: Armonik.Samples.Symphony.Common.ClientPayload.sleep
-  nameWithType: ClientPayload.sleep
-- uid: Armonik.Samples.Symphony.Common.ClientPayload.sleep*
-  name: sleep
-  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_sleep_
-  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.sleep
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Result
+  nameWithType: ClientPayload.Result
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Serialize
+  name: Serialize()
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Serialize
+  commentId: M:Armonik.Samples.Symphony.Common.ClientPayload.Serialize
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Serialize()
+  nameWithType: ClientPayload.Serialize()
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Serialize*
+  name: Serialize
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Serialize_
+  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.Serialize
   isSpec: "True"
-  fullName: Armonik.Samples.Symphony.Common.ClientPayload.sleep
-  nameWithType: ClientPayload.sleep
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Serialize
+  nameWithType: ClientPayload.Serialize
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Sleep
+  name: Sleep
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Sleep
+  commentId: P:Armonik.Samples.Symphony.Common.ClientPayload.Sleep
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Sleep
+  nameWithType: ClientPayload.Sleep
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.Sleep*
+  name: Sleep
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_Sleep_
+  commentId: Overload:Armonik.Samples.Symphony.Common.ClientPayload.Sleep
+  isSpec: "True"
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.Sleep
+  nameWithType: ClientPayload.Sleep
 - uid: Armonik.Samples.Symphony.Common.ClientPayload.SubTaskId
   name: SubTaskId
   href: api/Armonik.Samples.Symphony.Common.ClientPayload.html#Armonik_Samples_Symphony_Common_ClientPayload_SubTaskId
@@ -767,6 +661,12 @@ references:
   commentId: F:Armonik.Samples.Symphony.Common.ClientPayload.TaskType.Aggregation
   fullName: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.Aggregation
   nameWithType: ClientPayload.TaskType.Aggregation
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.AggregationNTask
+  name: AggregationNTask
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.TaskType.html#Armonik_Samples_Symphony_Common_ClientPayload_TaskType_AggregationNTask
+  commentId: F:Armonik.Samples.Symphony.Common.ClientPayload.TaskType.AggregationNTask
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.AggregationNTask
+  nameWithType: ClientPayload.TaskType.AggregationNTask
 - uid: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.ComputeCube
   name: ComputeCube
   href: api/Armonik.Samples.Symphony.Common.ClientPayload.TaskType.html#Armonik_Samples_Symphony_Common_ClientPayload_TaskType_ComputeCube
@@ -785,12 +685,30 @@ references:
   commentId: F:Armonik.Samples.Symphony.Common.ClientPayload.TaskType.JobOfNTasks
   fullName: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.JobOfNTasks
   nameWithType: ClientPayload.TaskType.JobOfNTasks
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.LargePayload
+  name: LargePayload
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.TaskType.html#Armonik_Samples_Symphony_Common_ClientPayload_TaskType_LargePayload
+  commentId: F:Armonik.Samples.Symphony.Common.ClientPayload.TaskType.LargePayload
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.LargePayload
+  nameWithType: ClientPayload.TaskType.LargePayload
 - uid: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.NJobOf1Tasks
   name: NJobOf1Tasks
   href: api/Armonik.Samples.Symphony.Common.ClientPayload.TaskType.html#Armonik_Samples_Symphony_Common_ClientPayload_TaskType_NJobOf1Tasks
   commentId: F:Armonik.Samples.Symphony.Common.ClientPayload.TaskType.NJobOf1Tasks
   fullName: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.NJobOf1Tasks
   nameWithType: ClientPayload.TaskType.NJobOf1Tasks
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.ParallelTask
+  name: ParallelTask
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.TaskType.html#Armonik_Samples_Symphony_Common_ClientPayload_TaskType_ParallelTask
+  commentId: F:Armonik.Samples.Symphony.Common.ClientPayload.TaskType.ParallelTask
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.ParallelTask
+  nameWithType: ClientPayload.TaskType.ParallelTask
+- uid: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.RandomFailure
+  name: RandomFailure
+  href: api/Armonik.Samples.Symphony.Common.ClientPayload.TaskType.html#Armonik_Samples_Symphony_Common_ClientPayload_TaskType_RandomFailure
+  commentId: F:Armonik.Samples.Symphony.Common.ClientPayload.TaskType.RandomFailure
+  fullName: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.RandomFailure
+  nameWithType: ClientPayload.TaskType.RandomFailure
 - uid: Armonik.Samples.Symphony.Common.ClientPayload.TaskType.Result
   name: Result
   href: api/Armonik.Samples.Symphony.Common.ClientPayload.TaskType.html#Armonik_Samples_Symphony_Common_ClientPayload_TaskType_Result

@@ -84,16 +84,16 @@
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">ServiceContainerBase.SubmitTasks(IEnumerable&lt;byte[]&gt;)</a>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">ServiceContainerBase.SubmitTasks(IEnumerable&lt;byte[]&gt;, int, TaskOptions)</a>
     </div>
     <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">ServiceContainerBase.SubmitTasksWithDependencies(IEnumerable&lt;Tuple&lt;byte[], IList&lt;string&gt;&gt;&gt;, bool)</a>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">ServiceContainerBase.SubmitTasksWithDependencies(IEnumerable&lt;Tuple&lt;byte[], IList&lt;string&gt;&gt;&gt;, bool, int, TaskOptions)</a>
     </div>
     <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">ServiceContainerBase.SubmitSubtaskWithDependencies(byte[], IList&lt;string&gt;)</a>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">ServiceContainerBase.SubmitSubtaskWithDependencies(byte[], IList&lt;string&gt;, int, TaskOptions)</a>
     </div>
     <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">ServiceContainerBase.SubmitSubtasksWithDependencies(IEnumerable&lt;Tuple&lt;byte[], IList&lt;string&gt;&gt;&gt;)</a>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">ServiceContainerBase.SubmitSubtasksWithDependencies(IEnumerable&lt;Tuple&lt;byte[], IList&lt;string&gt;&gt;&gt;, int, TaskOptions)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">ServiceContainerBase.WaitForTaskCompletion(string)</a>
@@ -281,7 +281,10 @@ public class ServiceContainer : ServiceContainerBase</code></pre>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnCreateService_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService*"></a>
   <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnCreateService_ArmoniK_DevelopmentKit_Worker_Symphony_ServiceContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnCreateService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)">OnCreateService(ServiceContext)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The middleware triggers the invocation of this handler just after a Service Instance is started.
+The application developer must put any service initialization into this handler.
+Default implementation does nothing.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
@@ -300,7 +303,8 @@ public class ServiceContainer : ServiceContainerBase</code></pre>
       <tr>
         <td><span class="xref">ServiceContext</span></td>
         <td><span class="parametername">serviceContext</span></td>
-        <td></td>
+        <td><p>Holds all information on the state of the service at the start of the execution.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -315,7 +319,9 @@ public class ServiceContainer : ServiceContainerBase</code></pre>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnDestroyService_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService*"></a>
   <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnDestroyService_ArmoniK_DevelopmentKit_Worker_Symphony_ServiceContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnDestroyService(ArmoniK.DevelopmentKit.Worker.Symphony.ServiceContext)">OnDestroyService(ServiceContext)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The middleware triggers the invocation of this handler just before a Service Instance is destroyed.
+This handler should do any cleanup for any resources that were used in the onCreateService() method.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
@@ -334,7 +340,8 @@ public class ServiceContainer : ServiceContainerBase</code></pre>
       <tr>
         <td><span class="xref">ServiceContext</span></td>
         <td><span class="parametername">serviceContext</span></td>
-        <td></td>
+        <td><p>Holds all information on the state of the service at the start of the execution.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -349,7 +356,11 @@ public class ServiceContainer : ServiceContainerBase</code></pre>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnInvoke_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke*"></a>
   <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnInvoke_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_ArmoniK_DevelopmentKit_Worker_Symphony_TaskContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnInvoke(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext,ArmoniK.DevelopmentKit.Worker.Symphony.TaskContext)">OnInvoke(SessionContext, TaskContext)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The middleware triggers the invocation of this handler every time a task input is
+sent to the service to be processed.
+The actual service logic should be implemented in this method. This is the only
+method that is mandatory for the application developer to implement.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
@@ -368,12 +379,14 @@ public class ServiceContainer : ServiceContainerBase</code></pre>
       <tr>
         <td><span class="xref">SessionContext</span></td>
         <td><span class="parametername">sessionContext</span></td>
-        <td></td>
+        <td><p>Holds all information on the state of the session at the start of the execution such as session ID.</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">TaskContext</span></td>
         <td><span class="parametername">taskContext</span></td>
-        <td></td>
+        <td><p>Holds all information on the state of the task such as the task ID and the payload.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -403,7 +416,8 @@ public class ServiceContainer : ServiceContainerBase</code></pre>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionEnter_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter*"></a>
   <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionEnter_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionEnter(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)">OnSessionEnter(SessionContext)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>This handler is executed once after the callback OnCreateService and before the OnInvoke</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
@@ -422,7 +436,8 @@ public class ServiceContainer : ServiceContainerBase</code></pre>
       <tr>
         <td><span class="xref">SessionContext</span></td>
         <td><span class="parametername">sessionContext</span></td>
-        <td></td>
+        <td><p>Holds all information on the state of the session at the start of the execution.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -437,7 +452,9 @@ public class ServiceContainer : ServiceContainerBase</code></pre>
   </span>
   <a id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionLeave_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave*"></a>
   <h4 id="ArmoniK_Samples_Symphony_Packages_ServiceContainer_OnSessionLeave_ArmoniK_DevelopmentKit_Worker_Symphony_SessionContext_" data-uid="ArmoniK.Samples.Symphony.Packages.ServiceContainer.OnSessionLeave(ArmoniK.DevelopmentKit.Worker.Symphony.SessionContext)">OnSessionLeave(SessionContext)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The middleware triggers the invocation of this handler to unbind the Service Instance from its owning Session.
+This handler should do any cleanup for any resources that were used in the onSessionEnter() method.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
@@ -456,7 +473,8 @@ public class ServiceContainer : ServiceContainerBase</code></pre>
       <tr>
         <td><span class="xref">SessionContext</span></td>
         <td><span class="parametername">sessionContext</span></td>
-        <td></td>
+        <td><p>Holds all information on the state of the session at the start of the execution such as session ID.</p>
+</td>
       </tr>
     </tbody>
   </table>

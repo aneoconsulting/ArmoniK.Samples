@@ -55,46 +55,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.GridServer.Client.Services.ServiceContainer.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.GridServer.Client.Services.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.GridServer.Client.Services.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.GridServer.Common.SelectExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.GridServer.Common.SelectExtensions.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.GridServer.Common.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.GridServer.Common.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.yml",
       "output": {
         ".html": {
