@@ -81,11 +81,11 @@ namespace Armonik.Samples.StressTests.Client.Metrics
 
 
     public Dictionary<KpiKeys, string> Kpi      { get; set; } = new();
-    public IList<TaskDetailed>              TasksRaw { get; set; } = new List<TaskDetailed>();
+    public IList<TaskDetailed>         TasksRaw { get; set; } = new List<TaskDetailed>();
 
-    private async IAsyncEnumerable<TaskDetailed> RetrieveAllTasksStats(ChannelBase                   channel,
-                                                                       Filters filter,
-                                                                       ListTasksRequest.Types.Sort   sort)
+    private async IAsyncEnumerable<TaskDetailed> RetrieveAllTasksStats(ChannelBase                 channel,
+                                                                       Filters                     filter,
+                                                                       ListTasksRequest.Types.Sort sort)
     {
       var               read       = 0;
       var               page       = 0;
@@ -94,7 +94,7 @@ namespace Armonik.Samples.StressTests.Client.Metrics
 
       while ((res = await taskClient.ListTasksAsync(new ListTasksRequest
                                                     {
-                                                      Filters   = filter,
+                                                      Filters  = filter,
                                                       Sort     = sort,
                                                       PageSize = 50,
                                                       Page     = page,
@@ -124,29 +124,29 @@ namespace Armonik.Samples.StressTests.Client.Metrics
                                                           new Filters
                                                           {
                                                             Or =
-                                                          {
-                                                            new FiltersAnd
                                                             {
-                                                              And =
+                                                              new FiltersAnd
                                                               {
-                                                                new FilterField
+                                                                And =
                                                                 {
-                                                                  Field = new TaskField
-                                                                          {
-                                                                            TaskSummaryField = new TaskSummaryField
-                                                                                               {
-                                                                                                 Field = TaskSummaryEnumField.SessionId,
-                                                                                               },
-                                                                          },
-                                                                  FilterString = new FilterString
-                                                                                 {
-                                                                                   Operator = FilterStringOperator.Equal,
-                                                                                   Value    = sessionId,
-                                                                                 },
+                                                                  new FilterField
+                                                                  {
+                                                                    Field = new TaskField
+                                                                            {
+                                                                              TaskSummaryField = new TaskSummaryField
+                                                                                                 {
+                                                                                                   Field = TaskSummaryEnumField.SessionId,
+                                                                                                 },
+                                                                            },
+                                                                    FilterString = new FilterString
+                                                                                   {
+                                                                                     Operator = FilterStringOperator.Equal,
+                                                                                     Value    = sessionId,
+                                                                                   },
+                                                                  },
                                                                 },
                                                               },
                                                             },
-                                                          },
                                                           },
                                                           new ListTasksRequest.Types.Sort
                                                           {
