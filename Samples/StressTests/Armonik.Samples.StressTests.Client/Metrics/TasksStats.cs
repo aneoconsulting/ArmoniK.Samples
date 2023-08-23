@@ -25,8 +25,8 @@
 using System.Text;
 using System.Text.Json;
 
-using Armonik.Api.Grpc.V1.SortDirection;
-
+using ArmoniK.Api.gRPC.V1;
+using ArmoniK.Api.gRPC.V1.SortDirection;
 using ArmoniK.Api.gRPC.V1.Tasks;
 using ArmoniK.DevelopmentKit.Client.Common;
 
@@ -81,11 +81,11 @@ namespace Armonik.Samples.StressTests.Client.Metrics
 
 
     public Dictionary<KpiKeys, string> Kpi      { get; set; } = new();
-    public IList<TaskRaw>              TasksRaw { get; set; } = new List<TaskRaw>();
+    public IList<TaskDetailed>         TasksRaw { get; set; } = new List<TaskDetailed>();
 
-    private async IAsyncEnumerable<TaskRaw> RetrieveAllTasksStats(ChannelBase                   channel,
-                                                                  ListTasksRequest.Types.Filter filter,
-                                                                  ListTasksRequest.Types.Sort   sort)
+    private async IAsyncEnumerable<TaskDetailed> RetrieveAllTasksStats(ChannelBase                 channel,
+                                                                       Filters                     filter,
+                                                                       ListTasksRequest.Types.Sort sort)
     {
       var               read       = 0;
       var               page       = 0;
@@ -94,7 +94,7 @@ namespace Armonik.Samples.StressTests.Client.Metrics
 
       while ((res = await taskClient.ListTasksAsync(new ListTasksRequest
                                                     {
-                                                      Filter   = filter,
+                                                      Filters  = filter,
                                                       Sort     = sort,
                                                       PageSize = 50,
                                                       Page     = page,
@@ -121,16 +121,42 @@ namespace Armonik.Samples.StressTests.Client.Metrics
                                         string      sessionId)
     {
       await foreach (var taskRaw in RetrieveAllTasksStats(channel,
-                                                          new ListTasksRequest.Types.Filter
+                                                          new Filters
                                                           {
-                                                            SessionId = sessionId,
+                                                            Or =
+                                                            {
+                                                              new FiltersAnd
+                                                              {
+                                                                And =
+                                                                {
+                                                                  new FilterField
+                                                                  {
+                                                                    Field = new TaskField
+                                                                            {
+                                                                              TaskSummaryField = new TaskSummaryField
+                                                                                                 {
+                                                                                                   Field = TaskSummaryEnumField.SessionId,
+                                                                                                 },
+                                                                            },
+                                                                    FilterString = new FilterString
+                                                                                   {
+                                                                                     Operator = FilterStringOperator.Equal,
+                                                                                     Value    = sessionId,
+                                                                                   },
+                                                                  },
+                                                                },
+                                                              },
+                                                            },
                                                           },
                                                           new ListTasksRequest.Types.Sort
                                                           {
                                                             Direction = SortDirection.Asc,
                                                             Field = new TaskField
                                                                     {
-                                                                      TaskSummaryField = TaskSummaryField.TaskId,
+                                                                      TaskSummaryField = new TaskSummaryField
+                                                                                         {
+                                                                                           Field = TaskSummaryEnumField.TaskId,
+                                                                                         },
                                                                     },
                                                           })
                        .ConfigureAwait(false))
