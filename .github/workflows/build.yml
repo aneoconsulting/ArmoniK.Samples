@@ -144,13 +144,39 @@ jobs:
           - helloworld
           - multipleresults
     steps:
-      - uses: aneoconsulting/ArmoniK@main
-        id: deploy-infra
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          ingress: 'None'
-          worker-image: dockerhubaneo/armonik_demo_${{ matrix.demo }}_worker
-          worker-tag: ${{ needs.versionning.outputs.version }}
-          core-tag: 0.14.2
+          ref: ${{ github.ref }}
+
+      - name: Install Dependencies
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        with:
+            docker: true
+            terraform: true
+            k3s: true
+            aws: true
+
+      - name: Checkout Infra
+        uses: actions/checkout@v3
+        with:
+            repository: aneoconsulting/ArmoniK
+            path: infra
+
+      - name: Change version
+        run: |
+            cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
+            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"]' > .versions.tfvars.json
+            mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
+
+      - id: deploy
+        name: Deploy
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        with:
+            working-directory: ${{ github.workspace }}/infra
+            type: localhost
+            ext-csharp-version: 0.12.2
+            core-version: 0.15.0
          
       - name: Run Demo Client
         run: |
@@ -158,7 +184,7 @@ jobs:
          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
          export Grpc__Endpoint=http://$CPIP:$CPPort
 
-         docker run --rm dockerhubaneo/armonik_demo_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }} --endpoint $Grpc__Endpoint
+         docker run --rm dockerhubaneo/armonik_demo_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }} --endpoint $Grpc__Endpoint --partition ${{ matrix.demo }}
 
   testInfraWorker:
     needs:
@@ -177,7 +203,7 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@db/addWorkerImageSelection
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
         with:
           docker: true
           terraform: true
@@ -192,12 +218,12 @@ jobs:
 
       - id: deploy
         name: Deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@db/addWorkerImageSelection
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
-          ext-csharp-version: 0.12.0
-          core-version: 0.14.2
+          ext-csharp-version: 0.12.2
+          core-version: 0.15.0
 
       - name: Run SymphonyLike
         run: |
@@ -254,7 +280,7 @@ jobs:
           
       - name: Destroy deployment
         if: success() || failure()
-        uses: aneoconsulting/ArmoniK.Action.Deploy/destroy@db/addWorkerImageSelection
+        uses: aneoconsulting/ArmoniK.Action.Deploy/destroy@main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
