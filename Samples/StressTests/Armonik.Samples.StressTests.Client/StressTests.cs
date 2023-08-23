@@ -28,6 +28,7 @@ using System.Text;
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Client.Common;
 using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
+using ArmoniK.DevelopmentKit.Client.Common.Status;
 using ArmoniK.DevelopmentKit.Client.Unified.Factory;
 using ArmoniK.DevelopmentKit.Client.Unified.Services.Submitter;
 using ArmoniK.DevelopmentKit.Common;
@@ -78,8 +79,8 @@ namespace Armonik.Samples.StressTests.Client
 
       Logger = factory.CreateLogger<StressTests>();
 
-      Service = ServiceFactory.CreateService(Props,
-                                             factory);
+      Service = (Service)ServiceFactory.CreateService(Props,
+                                                      factory);
 
       ResultHandle = new ResultForStressTestsHandler(Logger);
     }

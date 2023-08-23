@@ -31,11 +31,9 @@ var arguments = new Docopt().Apply(usage,
                                    version: "Large Payloads",
                                    exit: true)!;
 
-var nbTasks = arguments["<nbTasks>"]
-  .AsInt;
+var nbTasks = arguments["<nbTasks>"].AsInt;
 
-var payloadSizeByte = arguments["<sizeKb>"]
-                        .AsInt * 10;
+var payloadSizeByte = arguments["<sizeKb>"].AsInt * 10;
 
 var rnd = new Random();
 

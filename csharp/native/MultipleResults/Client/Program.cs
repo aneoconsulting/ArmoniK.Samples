@@ -40,7 +40,7 @@ using Google.Protobuf.WellKnownTypes;
 using static System.Console;
 
 
-namespace ArmoniK.Samples.HelloWorld.Client
+namespace ArmoniK.Samples.MultipleResults.Client
 {
   internal class Program
   {
