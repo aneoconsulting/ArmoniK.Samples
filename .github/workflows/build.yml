@@ -176,7 +176,7 @@ jobs:
             working-directory: ${{ github.workspace }}/infra
             type: localhost
             ext-csharp-version: 0.12.2
-            core-version: 0.15.0
+            core-version: 0.18.0
          
       - name: Run Demo Client
         run: |

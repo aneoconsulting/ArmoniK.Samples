@@ -23,16 +23,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
+using ArmoniK.Api.Client;
 using ArmoniK.Api.Client.Options;
 using ArmoniK.Api.Client.Submitter;
 using ArmoniK.Api.gRPC.V1;
+using ArmoniK.Api.gRPC.V1.Events;
 using ArmoniK.Api.gRPC.V1.Results;
-using ArmoniK.Api.gRPC.V1.Submitter;
+using ArmoniK.Api.gRPC.V1.Sessions;
+using ArmoniK.Api.gRPC.V1.Tasks;
 
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -64,10 +69,16 @@ namespace ArmoniK.Samples.HelloWorld.Client
                                                      });
 
       // Create client for task submission
-      var submitterClient = new Submitter.SubmitterClient(channel);
+      var taskClient = new Tasks.TasksClient(channel);
 
       // Create client for result creation
       var resultClient = new Results.ResultsClient(channel);
+
+      // Create client for session creation
+      var sessionClient = new Sessions.SessionsClient(channel);
+
+      // Create client for events listening
+      var eventClient = new Events.EventsClient(channel);
 
       // Default task options that will be used by each task if not overwritten when submitting tasks
       var taskOptions = new TaskOptions
@@ -79,16 +90,18 @@ namespace ArmoniK.Samples.HelloWorld.Client
                         };
 
       // Request for session creation with default task options and allowed partitions for the session
-      var createSessionReply = submitterClient.CreateSession(new CreateSessionRequest
+      var createSessionReply = sessionClient.CreateSession(new CreateSessionRequest
+                                                           {
+                                                             DefaultTaskOption = taskOptions,
+                                                             PartitionIds =
                                                              {
-                                                               DefaultTaskOption = taskOptions,
-                                                               PartitionIds =
-                                                               {
-                                                                 partition,
-                                                               },
-                                                             });
+                                                               partition,
+                                                             },
+                                                           });
 
-      // Create the result id
+      WriteLine($"sessionId: {createSessionReply.SessionId}");
+
+      // Create the result metadata and keep the id for task submission
       var resultId = resultClient.CreateResultsMetaData(new CreateResultsMetaDataRequest
                                                         {
                                                           SessionId = createSessionReply.SessionId,
@@ -96,77 +109,62 @@ namespace ArmoniK.Samples.HelloWorld.Client
                                                           {
                                                             new CreateResultsMetaDataRequest.Types.ResultCreate
                                                             {
-                                                              Name = Guid.NewGuid()
-                                                                         .ToString(),
+                                                              Name = "Result",
                                                             },
                                                           },
                                                         })
-                                 .Results.First()
+                                 .Results.Single()
                                  .ResultId;
 
-      // Task request with payload for the task
-      // Also contains the list of results that will be created by the task
-      var taskRequest = new TaskRequest
-                        {
-                          ExpectedOutputKeys =
-                          {
-                            resultId,
-                          },
-                          // Avoid unnecessary copy but data could be modified during sending if the
-                          // reference to the object is still available
-                          // This is not the case here
-                          Payload = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes("Hello")),
-                        };
+      // Create the payload metadata (a result) and upload data at the same time
+      var payloadId = resultClient.CreateResults(new CreateResultsRequest
+                                                 {
+                                                   SessionId = createSessionReply.SessionId,
+                                                   Results =
+                                                   {
+                                                     new CreateResultsRequest.Types.ResultCreate
+                                                     {
+                                                       Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes("Hello")),
+                                                       Name = "Payload",
+                                                     },
+                                                   },
+                                                 })
+                                  .Results.Single()
+                                  .ResultId;
 
-      var createTaskReply = await submitterClient.CreateTasksAsync(createSessionReply.SessionId,
-                                                                   null,
-                                                                   new[]
-                                                                   {
-                                                                     taskRequest,
-                                                                   })
-                                                 .ConfigureAwait(false);
+      // Submit task with payload and result ids
+      var submitTasksResponse = taskClient.SubmitTasks(new SubmitTasksRequest
+                                                       {
+                                                         SessionId = createSessionReply.SessionId,
+                                                         TaskCreations =
+                                                         {
+                                                           new SubmitTasksRequest.Types.TaskCreation
+                                                           {
+                                                             PayloadId = payloadId,
+                                                             ExpectedOutputKeys =
+                                                             {
+                                                               resultId,
+                                                             },
+                                                           },
+                                                         },
+                                                       });
 
-      WriteLine($"sessionId: {createSessionReply.SessionId}");
+      WriteLine($"Task id {submitTasksResponse.TaskInfos.Single().TaskId}");
 
+      // Wait for task end and result availability
+      await eventClient.WaitForResultsAsync(createSessionReply.SessionId,
+                                            new List<string>
+                                            {
+                                              resultId,
+                                            },
+                                            CancellationToken.None);
 
-      // Result request that the describes the result we want
-      var resultRequest = new ResultRequest
-                          {
-                            ResultId = resultId,
-                            Session  = createSessionReply.SessionId,
-                          };
+      // Download result
+      var result = await resultClient.DownloadResultData(createSessionReply.SessionId,
+                                                         resultId,
+                                                         CancellationToken.None);
 
-      // Blocking call that waits for the availability of the result
-      var availabilityReply = submitterClient.WaitForAvailability(resultRequest);
-
-      // Process the result according the the result of the wait
-      switch (availabilityReply.TypeCase)
-      {
-        // In this case, the reply is not properly completed by the control plane
-        case AvailabilityReply.TypeOneofCase.None:
-          throw new Exception("Issue with Server !");
-
-        // The result is available and we can retrieve it
-        case AvailabilityReply.TypeOneofCase.Ok:
-          // Download the result from the control plane, convert it from byte to string and print it on the console
-          var result = await submitterClient.GetResultAsync(resultRequest)
-                                            .ConfigureAwait(false);
-          WriteLine($"resultId: {resultId}, data: {Encoding.ASCII.GetString(result)}");
-
-          break;
-
-        // The result is in error, meaning the task responsible to create it encountered an error
-        case AvailabilityReply.TypeOneofCase.Error:
-          throw new Exception($"Task in Error - {availabilityReply.Error.TaskId} : {availabilityReply.Error.Errors}");
-
-        // The task was not completed, should not happen since we wait for the availability of the result
-        case AvailabilityReply.TypeOneofCase.NotCompletedTask:
-          throw new Exception($"Task not completed - result id {resultId}");
-
-        // An unexpected response was received
-        default:
-          throw new ArgumentOutOfRangeException(nameof(availabilityReply.TypeCase));
-      }
+      WriteLine($"resultId: {resultId}, data: {Encoding.ASCII.GetString(result)}");
     }
 
     public static async Task<int> Main(string[] args)
