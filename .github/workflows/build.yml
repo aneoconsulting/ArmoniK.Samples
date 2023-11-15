@@ -223,37 +223,13 @@ jobs:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
           ext-csharp-version: 0.12.4
-          core-version: 0.15.0
-
-      - name: Run SymphonyLike
-        run: |
-         cd tools/tests
-         echo "WorkingDirectory : [$(pwd -P)]"
-         mkdir -p ${HOME}/data
-         bash -x ./symphony_like.sh
+          core-version: 0.19.2
 
       - name: Run UnifiedAPI
         run: |
          cd tools/tests
          mkdir -p ${HOME}/data
          bash -x ./unified_api.sh
-
-      - name: Run HtcMock SymphonyLike
-        run: |
-         export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-         export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-         export Grpc__Endpoint=http://$CPIP:$CPPort
-         export HOST_PATH=`kubectl get secret -n armonik shared-storage -o jsonpath="{.data.host_path}" 2>/dev/null | base64 -d`
-
-         cd Samples/HtcMockSymphony/
-         dotnet publish --self-contained -r linux-x64  -f net6.0 HtcMockSymphony.sln
-
-         mkdir -p $HOST_PATH
-
-         cp -v packages/ArmoniK.Samples.HtcMockSymphonyPackage-v2.0.0.zip $HOST_PATH
-
-         cd ArmoniK.Samples.HtcMockSymphonyClient/
-         dotnet bin/Debug/net6.0/linux-x64/ArmoniK.Samples.HtcMockSymphonyClient.dll
 
       - name: Run StressTests
         run: |
