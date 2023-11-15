@@ -3,24 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SymphonyLike", "SymphonyLike", "{AE299B0C-CA72-4FE3-BCED-D1C6B26644BC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.SymphonyPackage", "Samples\SymphonyLike\ArmoniK.Samples.SymphonyPackage\ArmoniK.Samples.SymphonyPackage.csproj", "{961C09CC-FC2E-4251-B44B-E1EBCCFD75BE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.SymphonyClient", "Samples\SymphonyLike\ArmoniK.Samples.SymphonyClient\ArmoniK.Samples.SymphonyClient.csproj", "{7CE0E402-FBB6-4880-8906-CAC3CDD3BD0A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.Symphony.Common", "Samples\SymphonyLike\ArmoniK.Samples.Symphony.Common\ArmoniK.Samples.Symphony.Common.csproj", "{E89DB7A5-43D4-43EA-B6B5-3C21B8EB8617}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F7E8B81F-D83B-4B8E-9092-49E8357E86BA}"
 	ProjectSection(SolutionItems) = preProject
 		nuget.config = nuget.config
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.HtcMockSymphonyClient", "Samples\HtcMockSymphony\ArmoniK.Samples.HtcMockSymphonyClient\ArmoniK.Samples.HtcMockSymphonyClient.csproj", "{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.HtcMockSymphonyPackage", "Samples\HtcMockSymphony\ArmoniK.Samples.HtcMockSymphonyPackage\ArmoniK.Samples.HtcMockSymphonyPackage.csproj", "{084D60CD-805D-400F-983F-6D859639A189}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HtcMockSymphonyLike", "HtcMockSymphonyLike", "{520D6737-D634-4C00-8F60-242DCD12A5C5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnifiedAPI", "UnifiedAPI", "{1F9CEB6C-F49B-482B-9588-820CF5EB99C2}"
 EndProject
@@ -46,26 +32,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{961C09CC-FC2E-4251-B44B-E1EBCCFD75BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{961C09CC-FC2E-4251-B44B-E1EBCCFD75BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{961C09CC-FC2E-4251-B44B-E1EBCCFD75BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{961C09CC-FC2E-4251-B44B-E1EBCCFD75BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7CE0E402-FBB6-4880-8906-CAC3CDD3BD0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7CE0E402-FBB6-4880-8906-CAC3CDD3BD0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7CE0E402-FBB6-4880-8906-CAC3CDD3BD0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7CE0E402-FBB6-4880-8906-CAC3CDD3BD0A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E89DB7A5-43D4-43EA-B6B5-3C21B8EB8617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E89DB7A5-43D4-43EA-B6B5-3C21B8EB8617}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E89DB7A5-43D4-43EA-B6B5-3C21B8EB8617}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E89DB7A5-43D4-43EA-B6B5-3C21B8EB8617}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604}.Release|Any CPU.Build.0 = Release|Any CPU
-		{084D60CD-805D-400F-983F-6D859639A189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{084D60CD-805D-400F-983F-6D859639A189}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{084D60CD-805D-400F-983F-6D859639A189}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{084D60CD-805D-400F-983F-6D859639A189}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D3581C3A-C6F9-476E-AEEF-A057CBB78411}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D3581C3A-C6F9-476E-AEEF-A057CBB78411}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3581C3A-C6F9-476E-AEEF-A057CBB78411}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -95,11 +61,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{961C09CC-FC2E-4251-B44B-E1EBCCFD75BE} = {AE299B0C-CA72-4FE3-BCED-D1C6B26644BC}
-		{7CE0E402-FBB6-4880-8906-CAC3CDD3BD0A} = {AE299B0C-CA72-4FE3-BCED-D1C6B26644BC}
-		{E89DB7A5-43D4-43EA-B6B5-3C21B8EB8617} = {AE299B0C-CA72-4FE3-BCED-D1C6B26644BC}
-		{1AA1D60D-F592-48D0-9E44-A4F7F66F9604} = {520D6737-D634-4C00-8F60-242DCD12A5C5}
-		{084D60CD-805D-400F-983F-6D859639A189} = {520D6737-D634-4C00-8F60-242DCD12A5C5}
 		{D3581C3A-C6F9-476E-AEEF-A057CBB78411} = {1F9CEB6C-F49B-482B-9588-820CF5EB99C2}
 		{82C18CD4-1B67-4DE0-AA3A-BDDC72BAD1DF} = {1F9CEB6C-F49B-482B-9588-820CF5EB99C2}
 		{7BD32AA7-C56B-4999-B81D-04BE0475B656} = {1F9CEB6C-F49B-482B-9588-820CF5EB99C2}
