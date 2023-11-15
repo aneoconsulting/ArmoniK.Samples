@@ -84,66 +84,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMockSymphony.Packages.ServiceContainer.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMockSymphony.Packages.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMockSymphony.Packages.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMockSymphonyClient.HtcMockSymphonyClient.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HtcMockSymphonyClient.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HtcMockSymphonyClient.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.Symphony.Packages.ServiceContainer.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.Symphony.Packages.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.Symphony.Packages.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.yml",
       "output": {
         ".html": {
@@ -198,36 +138,6 @@
       "output": {
         ".html": {
           "relative_path": "api/Armonik.Samples.StressTests.Worker.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Armonik.Samples.Symphony.Common.ClientPayload.TaskType.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Armonik.Samples.Symphony.Common.ClientPayload.TaskType.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Armonik.Samples.Symphony.Common.ClientPayload.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Armonik.Samples.Symphony.Common.ClientPayload.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Armonik.Samples.Symphony.Common.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Armonik.Samples.Symphony.Common.html"
         }
       },
       "version": ""
