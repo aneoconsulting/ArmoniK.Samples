@@ -56,14 +56,6 @@ jobs:
         echo SNAPSHOT => ${{ steps.snapshot.outputs.version }} >> $GITHUB_STEP_SUMMARY
         echo RELEASE   => ${{ steps.release.outputs.version }} >> $GITHUB_STEP_SUMMARY
 
-    - name: Validate tag
-      run : test ${{ steps.release.outputs.version }} == ${{ github.ref_name }}
-
-    - name: Delete tag if invalid
-      if: failure() || cancelled()
-      run : git push origin -d ${{ github.ref_name }}
-
-
   buildImages:
     runs-on: ubuntu-latest
     needs:
