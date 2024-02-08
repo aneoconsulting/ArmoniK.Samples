@@ -29,9 +29,10 @@ using System.Linq;
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Client.Common;
 using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
+using ArmoniK.DevelopmentKit.Client.Common.Status;
+using ArmoniK.DevelopmentKit.Client.Common.Submitter;
 using ArmoniK.DevelopmentKit.Client.Unified.Factory;
 using ArmoniK.DevelopmentKit.Client.Unified.Services.Admin;
-using ArmoniK.DevelopmentKit.Client.Unified.Services.Submitter;
 using ArmoniK.DevelopmentKit.Common;
 
 using Google.Protobuf.WellKnownTypes;
@@ -85,7 +86,7 @@ namespace ArmoniK.Samples.Client
 
     public TaskOptions TaskOptions { get; set; }
 
-    private Service Service { get; }
+    private ISubmitterService Service { get; }
 
     internal void LargePayloadSubmit(long nbTasks          = 100,
                                      int  nbElement        = 64000,
