@@ -28,8 +28,9 @@ using System.Text;
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Client.Common;
 using ArmoniK.DevelopmentKit.Client.Common.Exceptions;
+using ArmoniK.DevelopmentKit.Client.Common.Status;
+using ArmoniK.DevelopmentKit.Client.Common.Submitter;
 using ArmoniK.DevelopmentKit.Client.Unified.Factory;
-using ArmoniK.DevelopmentKit.Client.Unified.Services.Submitter;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.Samples.Common;
 
@@ -44,6 +45,8 @@ namespace Armonik.Samples.StressTests.Client
 {
   internal class StressTests
   {
+    private readonly ChannelPool channelPool_;
+
     public StressTests(IConfiguration configuration,
                        ILoggerFactory factory,
                        string         partition,
@@ -76,7 +79,11 @@ namespace Armonik.Samples.StressTests.Client
                 TimeTriggerBuffer    = TimeSpan.FromSeconds(10),
               };
 
+
       Logger = factory.CreateLogger<StressTests>();
+
+      channelPool_ = ClientServiceConnector.ControlPlaneConnectionPool(Props,
+                                                                       factory);
 
       Service = ServiceFactory.CreateService(Props,
                                              factory);
@@ -92,7 +99,7 @@ namespace Armonik.Samples.StressTests.Client
 
     public TaskOptions TaskOptions { get; set; }
 
-    private Service Service { get; }
+    private ISubmitterService Service { get; }
 
     internal void LargePayloadSubmit(int    nbTasks          = 100,
                                      long   nbInputBytes     = 64000,
@@ -127,7 +134,8 @@ namespace Armonik.Samples.StressTests.Client
                                  workloadTimeInMs,
                                  Props);
 
-      stats.GetAllStats(Service.GetChannel(),
+      using var channel = channelPool_.GetChannel();
+      stats.GetAllStats(channel,
                         Service.SessionId,
                         dt,
                         DateTime.Now)

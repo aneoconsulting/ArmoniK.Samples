@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.Worker.Unified" Version="0.12.5" />
+    <PackageReference Include="Armonik.DevelopmentKit.Worker.Unified" Version="0.14.1" />
   </ItemGroup>
 
   <ItemGroup>
