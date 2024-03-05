@@ -16,7 +16,7 @@ jobs:
       release: ${{ steps.release.outputs.version }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       with:
         ref: ${{ github.ref }}
         fetch-depth: 0
@@ -77,19 +77,19 @@ jobs:
           path : ./csharp/native/MultipleResults/Client/Dockerfile
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       with:
         ref: ${{ github.ref }}
         submodules: true
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 # v3
 
     - name: Set up Docker Buildx
       id: buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@0d103c3126aa41d772a8362f6aa67afac040f80c # v3
 
     - name: login
-      uses: docker/login-action@v2
+      uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3
       with:
         username: ${{ secrets.DOCKER_HUB_LOGIN }}
         password: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -98,7 +98,7 @@ jobs:
       run: echo ${{ steps.buildx.outputs.platforms }}
 
     - name: Build and push
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56 # v5
       with:
         file: ${{ matrix.path }}
         context: ./csharp/native
@@ -118,7 +118,7 @@ jobs:
       GENRELEASE: ${{ needs.versionning.outputs.release }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       with:
         ref: ${{ github.ref }}
         submodules: true
