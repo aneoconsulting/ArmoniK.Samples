@@ -12,6 +12,11 @@ redis = {}
 # Uncomment this to have minio S3 enabled instead of hostpath shared_storage
 #minio_s3_fs = {} # Shared storage
 
+# Queue
+# Uncomment either the `activemq` or the `rabbitmq` parameter
+activemq = {}
+#rabbitmq = {}
+
 metrics_exporter = {
   extra_conf = {
     MongoDB__AllowInsecureTls              = true
@@ -53,30 +58,6 @@ admin_gui = {
   requests = {
     cpu    = "50m"
     memory = "50Mi"
-  }
-}
-
-# Old GUI
-admin_old_gui = {
-  api = {
-    limits = {
-      cpu    = "1000m"
-      memory = "1024Mi"
-    }
-    requests = {
-      cpu    = "50m"
-      memory = "50Mi"
-    }
-  }
-  old = {
-    limits = {
-      cpu    = "1000m"
-      memory = "1024Mi"
-    }
-    requests = {
-      cpu    = "50m"
-      memory = "50Mi"
-    }
   }
 }
 
