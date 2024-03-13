@@ -63,9 +63,9 @@ function SSLConnection()
     export Grpc__mTLS="true"
     export Grpc__Endpoint=https://$CPIP:$CPPort
     export Grpc__SSLValidation="disable"
-    export Grpc__CaCert=${BASEDIR}/../../../../infrastructure/quick-deploy/localhost/armonik/generated/certificates/ingress/ca.crt
-    export Grpc__ClientCert=${BASEDIR}/../../../../infrastructure/quick-deploy/localhost/armonik/generated/certificates/ingress/client.crt
-    export Grpc__ClientKey=${BASEDIR}/../../../../infrastructure/quick-deploy/localhost/armonik/generated/certificates/ingress/client.key
+    export Grpc__CaCert=${BASEDIR}/../../../../infrastructure/quick-deploy/localhost/generated/certificates/ingress/ca.crt
+    export Grpc__ClientCert=${BASEDIR}/../../../../infrastructure/quick-deploy/localhost/generated/certificates/ingress/client.crt
+    export Grpc__ClientKey=${BASEDIR}/../../../../infrastructure/quick-deploy/localhost/generated/certificates/ingress/client.key
 }
 
 function GetGrpcEndPointFromFile()
