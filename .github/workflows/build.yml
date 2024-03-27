@@ -176,7 +176,7 @@ jobs:
             working-directory: ${{ github.workspace }}/infra
             type: localhost
             ext-csharp-version: 0.14.2
-            core-version: 0.23.0
+            core-version: 0.23.2
          
       - name: Run Demo Client
         run: |
@@ -223,7 +223,7 @@ jobs:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
           ext-csharp-version: 0.14.2
-          core-version: 0.23.0
+          core-version: 0.23.2
 
       - name: Run UnifiedAPI
         run: |
