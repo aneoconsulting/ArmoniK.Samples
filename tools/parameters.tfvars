@@ -12,6 +12,11 @@ redis = {}
 # Uncomment this to have minio S3 enabled instead of hostpath shared_storage
 #minio_s3_fs = {} # Shared storage
 
+# Queue
+# Uncomment either the `activemq` or the `rabbitmq` parameter
+activemq = {}
+#rabbitmq = {}
+
 metrics_exporter = {
   extra_conf = {
     MongoDB__AllowInsecureTls              = true
