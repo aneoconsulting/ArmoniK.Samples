@@ -56,30 +56,6 @@ admin_gui = {
   }
 }
 
-# Old GUI
-admin_old_gui = {
-  api = {
-    limits = {
-      cpu    = "1000m"
-      memory = "1024Mi"
-    }
-    requests = {
-      cpu    = "50m"
-      memory = "50Mi"
-    }
-  }
-  old = {
-    limits = {
-      cpu    = "1000m"
-      memory = "1024Mi"
-    }
-    requests = {
-      cpu    = "50m"
-      memory = "50Mi"
-    }
-  }
-}
-
 # Parameters of the compute plane
 compute_plane = {
   # Default partition that uses the C# extension for the worker
