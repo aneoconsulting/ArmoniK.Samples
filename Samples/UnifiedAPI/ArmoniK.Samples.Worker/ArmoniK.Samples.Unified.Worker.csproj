@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.Worker.Unified" Version="0.14.5" />
+    <PackageReference Include="Armonik.DevelopmentKit.Worker.Unified" Version="0.14.6" />
   </ItemGroup>
 
   <ItemGroup>
