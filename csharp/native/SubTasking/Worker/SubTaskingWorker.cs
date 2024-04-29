@@ -261,9 +261,9 @@ namespace ArmoniK.Samples.SubTasking.Worker
 
       var restultsArray = new List<string>();
 
-      foreach (var expectedResult in taskHandler.ExpectedResults)
+      foreach (var dependency in taskHandler.DataDependencies.Values)
       {
-        var result = Encoding.ASCII.GetString(taskHandler.DataDependencies[expectedResult]);
+        var result = Encoding.ASCII.GetString(dependency);
         restultsArray.Add($"{result}_joined");
       }
 
