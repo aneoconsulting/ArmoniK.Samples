@@ -204,6 +204,17 @@ namespace ArmoniK.Samples.SubTasking.Worker
 
       var subTaskResultId = taskHandler.ExpectedResults.Single();
 
+      CreateResultsResponse payload = await taskHandler.CreateResultsAsync(
+        new List<CreateResultsRequest.Types.ResultCreate>
+        {
+               new CreateResultsRequest.Types.ResultCreate
+              {
+                Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes($"Submiting Joiner")),
+                Name = "Payload",
+              }
+        }
+      );
+
       await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>
           {
             new SubmitTasksRequest.Types.TaskCreation
