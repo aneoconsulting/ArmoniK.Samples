@@ -87,19 +87,26 @@ namespace ArmoniK.Samples.SubTasking.Worker
       };
     }
 
-    private static async Task ExecuteFunction(string functionName, object[] parameters)
+    private async Task ExecuteFunction(string functionName, object[] parameters)
     {
-      MethodInfo method = typeof(SubTaskingWorker).GetMethod(name: functionName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
-
+      MethodInfo method = typeof(SubTaskingWorker).GetMethod(functionName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
       if (method != null)
       {
-        method.Invoke(null, parameters);
+        if (method.ReturnType == typeof(Task))
+        {
+          await (Task)method.Invoke(this, parameters);  // Asynchronously invoke the method on 'this' instance
+        }
+        else
+        {
+          method.Invoke(this, parameters);  // Synchronously invoke the method
+        }
       }
       else
       {
         Console.WriteLine($"No method found with the name {functionName}");
       }
     }
+
 
     public async Task Launch(ITaskHandler taskHandler)
     {
