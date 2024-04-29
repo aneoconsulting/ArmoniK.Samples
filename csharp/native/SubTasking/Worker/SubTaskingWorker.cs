@@ -42,6 +42,7 @@ using Google.Protobuf;
 using System.Reflection;
 using Google.Protobuf.Collections;
 using System.Threading.Channels;
+using Microsoft.AspNetCore.Http;
 
 namespace ArmoniK.Samples.SubTasking.Worker
 {
@@ -65,7 +66,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
       try
       {
         var useCase = taskHandler.TaskOptions.Options["UseCase"];
-
+        logger_.Log(LogLevel.Debug, $"Got Here - useCase: {useCase}");
         await ExecuteFunction(useCase, new object[] { taskHandler });
       }
       catch (Exception e)
@@ -105,8 +106,8 @@ namespace ArmoniK.Samples.SubTasking.Worker
       try
       {
         var resultIds = await SubmitWorkers(taskHandler);
+        logger_.Log(LogLevel.Debug, $"Got Here - resultIds: {resultIds}");
         await SubmitJoiner(taskHandler, resultIds);
-
       }
       catch (Exception e)
       {
@@ -116,6 +117,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
 
     public async Task<List<string>> SubmitWorkers(ITaskHandler taskHandler)
     {
+      logger_.Log(LogLevel.Debug, $"Submitting Workers");
       var input = taskHandler.Payload.Select(b => (int)b).ToList();
 
       var resultId = taskHandler.ExpectedResults.Single();
@@ -178,6 +180,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
 
     public async Task SubmitJoiner(ITaskHandler taskHandler, List<string> expectedOutputIds)
     {
+      logger_.Log(LogLevel.Debug, $"Submitting Joiner");
       var taskOptions = new TaskOptions
       {
         MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
@@ -246,6 +249,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
 
     public async Task Joiner(ITaskHandler taskHandler)
     {
+      logger_.Log(LogLevel.Debug, $"Starting Joiner useCase");
       var resultId = taskHandler.ExpectedResults.Single();
 
       var restultsArray = new List<string>();

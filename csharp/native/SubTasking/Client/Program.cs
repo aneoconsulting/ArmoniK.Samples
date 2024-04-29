@@ -89,7 +89,7 @@ namespace ArmoniK.Samples.SubTasking.Client
             {
               new MapField<string, string>
               {
-                { "UseCase", "SubmitWorkers" }
+                { "UseCase", "Launch" }
               }
             }
       };
