@@ -211,7 +211,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
           }
         );
 
-      var subTaskResultId = taskHandler.ExpectedResults.Single();
+      var subTaskResultId = subTaskResult.Results.Single();
 
       CreateResultsResponse payload = await taskHandler.CreateResultsAsync(
         new List<CreateResultsRequest.Types.ResultCreate>
