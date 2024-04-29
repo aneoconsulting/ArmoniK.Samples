@@ -25,6 +25,5 @@
 using ArmoniK.Api.Worker.Utils;
 using ArmoniK.Samples.SubTasking.Worker;
 
-// Create the application and register the hello world example worker implementation
 WorkerServer.Create<SubTaskingWorker>()
             .Run();

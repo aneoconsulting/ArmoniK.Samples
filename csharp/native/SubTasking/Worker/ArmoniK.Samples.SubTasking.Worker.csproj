@@ -7,19 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Program.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Dockerfile" />
   </ItemGroup>
 
   <ItemGroup>
     <ApplicationDefinition Include="Dockerfile" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Program.cs" />
   </ItemGroup>
 
   <ItemGroup>

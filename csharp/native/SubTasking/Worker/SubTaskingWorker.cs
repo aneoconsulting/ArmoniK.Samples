@@ -88,7 +88,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
 
     private static async Task ExecuteFunction(string functionName, object[] parameters)
     {
-      MethodInfo method = typeof(Program).GetMethod(name: functionName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+      MethodInfo method = typeof(SubTaskingWorker).GetMethod(name: functionName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 
       if (method != null)
       {
