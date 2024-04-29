@@ -215,10 +215,13 @@ namespace ArmoniK.Samples.SubTasking.Worker
         }
       );
 
+      var payloadId = payload.Results.Single().ResultId;
+
       await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>
           {
             new SubmitTasksRequest.Types.TaskCreation
             {
+              PayloadId = payloadId,
               ExpectedOutputKeys =
               {
                 subTaskResultId,
