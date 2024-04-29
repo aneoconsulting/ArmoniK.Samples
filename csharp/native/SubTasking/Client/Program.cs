@@ -129,7 +129,7 @@ namespace ArmoniK.Samples.SubTasking.Client
         {
           new CreateResultsRequest.Types.ResultCreate
           {
-            Data = UnsafeByteOperations.UnsafeWrap(input.Select(i => (byte)i).ToArray()),
+            Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes("Hello")),
             Name = "Payload",
           },
         },
@@ -170,9 +170,14 @@ namespace ArmoniK.Samples.SubTasking.Client
                                                          resultId,
                                                          CancellationToken.None);
 
-      var resultNumeric = result.Select(b => (int)b).ToList();
+      string[] strings = Encoding.ASCII.GetString(result).Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-      Console.WriteLine($"resultId: {resultId}, data: {resultNumeric}");
+      foreach (var str in strings)
+      {
+        Console.WriteLine($"resultId:{str}");
+      }
+
+
     }
 
     public static async Task<int> Main(string[] args)
