@@ -66,7 +66,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
       try
       {
         var useCase = taskHandler.TaskOptions.Options["UseCase"];
-        logger_.Log(LogLevel.Debug, $"Got Here - useCase: {useCase}");
+        logger_.Log(LogLevel.Debug, $"Starting Execution for useCase: {useCase}");
         await ExecuteFunction(useCase, new object[] { taskHandler });
       }
       catch (Exception e)
@@ -94,11 +94,11 @@ namespace ArmoniK.Samples.SubTasking.Worker
       {
         if (method.ReturnType == typeof(Task))
         {
-          await (Task)method.Invoke(this, parameters);  // Asynchronously invoke the method on 'this' instance
+          await (Task)method.Invoke(this, parameters); 
         }
         else
         {
-          method.Invoke(this, parameters);  // Synchronously invoke the method
+          method.Invoke(this, parameters);  
         }
       }
       else
@@ -112,13 +112,13 @@ namespace ArmoniK.Samples.SubTasking.Worker
     {
       try
       {
+        logger_.Log(LogLevel.Debug, $"Launching workers");
         var resultIds = await SubmitWorkers(taskHandler);
-        logger_.Log(LogLevel.Debug, $"Got Here - resultIds: {resultIds}");
         await SubmitJoiner(taskHandler, resultIds);
       }
       catch (Exception e)
       {
-        Console.WriteLine($"{e.Message}");
+        logger_.Log(LogLevel.Error, $"{e.Message}");
       }
     }
 
@@ -160,7 +160,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
            {
                new CreateResultsRequest.Types.ResultCreate
               {
-                Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes($"Hello_pai_{taskHandler.TaskId}")),
+                Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes($"Hello_FatherId_{taskHandler.TaskId}")),
                 Name = "Payload",
               }
            }
@@ -214,24 +214,10 @@ namespace ArmoniK.Samples.SubTasking.Worker
 
       var subTaskResultId = taskHandler.ExpectedResults.Single();
 
-      CreateResultsResponse payload = await taskHandler.CreateResultsAsync(
-         new List<CreateResultsRequest.Types.ResultCreate>
-           {
-               new CreateResultsRequest.Types.ResultCreate
-              {
-                Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes($"Hello_pai_{taskHandler.TaskId}")),
-                Name = "Payload",
-              }
-           }
-      );
-
-      var payloadId = payload.Results.Single().ResultId;
-
       var submitTasksResponse = await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>
           {
             new SubmitTasksRequest.Types.TaskCreation
             {
-              PayloadId = payloadId,
               ExpectedOutputKeys =
               {
                 subTaskResultId,
@@ -250,7 +236,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
       var resultId = taskHandler.ExpectedResults.Single();
       // We the result of the task using through the handler
       await taskHandler.SendResult(resultId,
-                                   Encoding.ASCII.GetBytes($"{input}_filho_{taskHandler.TaskId}"))
+                                   Encoding.ASCII.GetBytes($"{input}_SonId_{taskHandler.TaskId}"))
                        .ConfigureAwait(false);
     }
 
@@ -264,7 +250,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
       foreach (var dependency in taskHandler.DataDependencies.Values)
       {
         var result = Encoding.ASCII.GetString(dependency);
-        restultsArray.Add($"{result}_joined");
+        restultsArray.Add($"{result}_Joined");
       }
 
       await taskHandler.SendResult(resultId,
