@@ -182,10 +182,10 @@ namespace ArmoniK.Samples.SubTasking.Client
       // Define the options for the application with their description and default value
       var endpoint = new Option<string>("--endpoint",
                                         description: "Endpoint for the connection to ArmoniK control plane.",
-                                        getDefaultValue: () => "http://172.22.89.16:5001");
+                                        getDefaultValue: () => "http://localhost:5001");
       var partition = new Option<string>("--partition",
                                          description: "Name of the partition to which submit tasks.",
-                                         getDefaultValue: () => "subtaskingworker");
+                                         getDefaultValue: () => "default");
       // Describe the application and its purpose
       var rootCommand =
         new
