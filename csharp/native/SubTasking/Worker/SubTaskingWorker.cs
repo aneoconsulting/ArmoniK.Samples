@@ -126,6 +126,8 @@ namespace ArmoniK.Samples.SubTasking.Worker
     {
       logger_.Log(LogLevel.Debug, $"Submitting Workers");
 
+      var input = Encoding.ASCII.GetString(taskHandler.Payload);
+
       var taskOptions = new TaskOptions
       {
         MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
@@ -157,7 +159,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
            {
                new CreateResultsRequest.Types.ResultCreate
               {
-                Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes($"Hello_FatherId_{taskHandler.TaskId}")),
+                Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes($"{input}_FatherId_{taskHandler.TaskId}")),
                 Name = "Payload",
               }
            }
