@@ -204,24 +204,10 @@ namespace ArmoniK.Samples.SubTasking.Worker
 
       var subTaskResultId = taskHandler.ExpectedResults.Single();
 
-      CreateResultsResponse payload = await taskHandler.CreateResultsAsync(
-        new List<CreateResultsRequest.Types.ResultCreate>
-        {
-               new CreateResultsRequest.Types.ResultCreate
-              {
-                Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes($"Hello_pai_{taskHandler.TaskId}")),
-                Name = "Payload",
-              }
-        }
-      );
-
-      var payloadId = payload.Results.Single().ResultId;
-
-      var submitTasksResponse = await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>
+      await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>
           {
             new SubmitTasksRequest.Types.TaskCreation
             {
-              PayloadId = payloadId,
               ExpectedOutputKeys =
               {
                 subTaskResultId,
