@@ -202,16 +202,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
             }
       };
 
-      var subTaskResult = await taskHandler.CreateResultsMetaDataAsync(
-          new List<CreateResultsMetaDataRequest.Types.ResultCreate>{
-              new CreateResultsMetaDataRequest.Types.ResultCreate
-              {
-                Name = Guid.NewGuid().ToString()
-              }
-          }
-        );
-
-      var subTaskResultId = subTaskResult.Results.Single();
+      var subTaskResultId = taskHandler.ExpectedResults.Single();
 
       CreateResultsResponse payload = await taskHandler.CreateResultsAsync(
         new List<CreateResultsRequest.Types.ResultCreate>
