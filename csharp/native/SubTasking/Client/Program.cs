@@ -57,8 +57,7 @@ namespace ArmoniK.Samples.SubTasking.Client
     /// <exception cref="Exception">Issues with results from tasks</exception>
     /// <exception cref="ArgumentOutOfRangeException">Unknown response type from control plane</exception>
     internal static async Task Run(string endpoint,
-                                   string partition,
-                                   List<int> input)
+                                   string partition)
     {
       // Create gRPC channel to connect with ArmoniK control plane
       var channel = GrpcChannelFactory.CreateChannel(new GrpcClient
@@ -166,18 +165,16 @@ namespace ArmoniK.Samples.SubTasking.Client
                                             CancellationToken.None);
 
       // Download result
-      var result = await resultClient.DownloadResultData(createSessionReply.SessionId,
+      var resultByteArray = await resultClient.DownloadResultData(createSessionReply.SessionId,
                                                          resultId,
                                                          CancellationToken.None);
 
-      string[] strings = Encoding.ASCII.GetString(result).Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+      string[] stringArray = Encoding.ASCII.GetString(resultByteArray).Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-      foreach (var str in strings)
+      foreach (var result in stringArray)
       {
-        Console.WriteLine($"resultId:{str}");
+        Console.WriteLine($"{result}");
       }
-
-
     }
 
     public static async Task<int> Main(string[] args)
@@ -189,24 +186,19 @@ namespace ArmoniK.Samples.SubTasking.Client
       var partition = new Option<string>("--partition",
                                          description: "Name of the partition to which submit tasks.",
                                          getDefaultValue: () => "subtaskingworker");
-      var input = new Option<List<int>>("--input",
-                                        description: "Input list.",
-                                        getDefaultValue: () => new List<int>() { 1, 2, 3, 4 });
       // Describe the application and its purpose
       var rootCommand =
         new
-          RootCommand($"Hello World demo for ArmoniK.\nIt sends a task to ArmoniK in the given partition <{partition.Name}>. The task receives a list of integers as input and, for the result that will be returned by the task, append the word 'World' and the resultID to the input. Then, the client retrieves and prints the result of the task.\nArmoniK endpoint location is provided through <{endpoint.Name}>");
+          RootCommand($"SubTasking demo for ArmoniK.\n It sends a task to ArmoniK in the given partition <{partition.Name}>. The task creates some subtasks and, for the result with an array of subtasks Ids will be returned. Then, the client retrieves and prints the result of the task parsing the result.\nArmoniK endpoint location is provided through <{endpoint.Name}>");
 
       // Add the options to the parser
       rootCommand.AddOption(endpoint);
       rootCommand.AddOption(partition);
-      rootCommand.AddOption(input);
 
       // Configure the handler to call the function that will do the work
       rootCommand.SetHandler(Run,
                              endpoint,
-                             partition,
-                             input);
+                             partition);
 
       // Parse the command line parameters and call the function that represents the application
       return await rootCommand.InvokeAsync(args);
