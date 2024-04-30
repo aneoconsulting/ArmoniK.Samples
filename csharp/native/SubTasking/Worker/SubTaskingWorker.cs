@@ -26,23 +26,12 @@ using ArmoniK.Api.Common.Channel.Utils;
 using ArmoniK.Api.Common.Utils;
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.Api.Worker.Worker;
-
-using Microsoft.Extensions.Logging;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using ArmoniK.Api.gRPC.V1.Agent;
 using Google.Protobuf.WellKnownTypes;
-using System.Collections.Concurrent;
 using Google.Protobuf;
-using System.Reflection;
 using Google.Protobuf.Collections;
-using System.Threading.Channels;
-using Microsoft.AspNetCore.Http;
 
 namespace ArmoniK.Samples.SubTasking.Worker
 {
@@ -65,9 +54,27 @@ namespace ArmoniK.Samples.SubTasking.Worker
                                               ("taskId", taskHandler.TaskId));
       try
       {
+        // We may use TaskOptions.Options to send a field UseCase where we inform
+        // what should be executed
         var useCase = taskHandler.TaskOptions.Options["UseCase"];
-        logger_.Log(LogLevel.Debug, $"Starting Execution for useCase: {useCase}");
-        await ExecuteFunction(useCase, new object[] { taskHandler });
+
+        switch (useCase)
+        {
+          case "Launch":
+            await Launch(taskHandler); break;
+          case "Joiner":
+            await Joiner(taskHandler); break;
+          case "HelloWorker":
+            await HelloWorker(taskHandler); break;
+          default:
+            return new Output
+            {
+              Error = new Output.Types.Error
+              {
+                Details = "UseCase not found",
+              },
+            };
+        }
       }
       catch (Exception e)
       {
@@ -86,40 +93,12 @@ namespace ArmoniK.Samples.SubTasking.Worker
         Ok = new Api.gRPC.V1.Empty(),
       };
     }
-
-    private async Task ExecuteFunction(string functionName, object[] parameters)
-    {
-      MethodInfo method = typeof(SubTaskingWorker).GetMethod(functionName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-      if (method != null)
-      {
-        if (method.ReturnType == typeof(Task))
-        {
-          await (Task)method.Invoke(this, parameters); 
-        }
-        else
-        {
-          method.Invoke(this, parameters);  
-        }
-      }
-      else
-      {
-        Console.WriteLine($"No method found with the name {functionName}");
-      }
-    }
-
-
+    // Launching helloWorkers and joiner, both are tasks created by our primary task
     public async Task Launch(ITaskHandler taskHandler)
     {
-      try
-      {
         logger_.Log(LogLevel.Debug, $"Launching workers");
         var resultIds = await SubmitWorkers(taskHandler);
         await SubmitJoiner(taskHandler, resultIds);
-      }
-      catch (Exception e)
-      {
-        logger_.Log(LogLevel.Error, $"{e.Message}");
-      }
     }
 
     public async Task<List<string>> SubmitWorkers(ITaskHandler taskHandler)
