@@ -116,6 +116,12 @@ jobs:
         -  img : dockerhubaneo/armonik_demo_multipleresults_worker
            path: ./csharp/native/MultipleResults/Worker/Dockerfile
            ctx: csharp/native/
+        -  img : dockerhubaneo/armonik_demo_subtasking_client
+           path: ./csharp/native/SubTasking/Client/Dockerfile
+           ctx: csharp/native/
+        -  img : dockerhubaneo/armonik_demo_subtasking_worker
+           path: ./csharp/native/SubTasking/Worker/Dockerfile
+           ctx: csharp/native/
 
     steps:
     - name: Checkout
@@ -143,6 +149,7 @@ jobs:
         demo:
           - helloworld
           - multipleresults
+          - subtasking
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4

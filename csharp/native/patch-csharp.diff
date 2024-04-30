@@ -1,0 +1,556 @@
+diff --git a/csharp/native/SubTasking/Client/ArmoniK.Samples.SubTasking.Client/Program.cs b/csharp/native/SubTasking/Client/ArmoniK.Samples.SubTasking.Client/Program.cs
+index fe4810a..ff74e1a 100644
+--- a/csharp/native/SubTasking/Client/ArmoniK.Samples.SubTasking.Client/Program.cs
++++ b/csharp/native/SubTasking/Client/ArmoniK.Samples.SubTasking.Client/Program.cs
+@@ -24,6 +24,7 @@
+ 
+ 
+ using System.Text;
++
+ using ArmoniK.Api.Client;
+ using ArmoniK.Api.Client.Options;
+ using ArmoniK.Api.Client.Submitter;
+@@ -34,14 +35,8 @@ using ArmoniK.Api.gRPC.V1.Sessions;
+ using ArmoniK.Api.gRPC.V1.Tasks;
+ 
+ using Google.Protobuf;
+-using Google.Protobuf.WellKnownTypes;
+-using System.Collections;
+ using Google.Protobuf.Collections;
+-using System.Threading.Tasks;
+-using System;
+-using System.CommandLine;
+-using Microsoft.Extensions.Options;
+-
++using Google.Protobuf.WellKnownTypes;
+ 
+ namespace ArmoniK.Samples.SubTasking.Client
+ {
+@@ -62,9 +57,9 @@ namespace ArmoniK.Samples.SubTasking.Client
+     {
+       // Create gRPC channel to connect with ArmoniK control plane
+       var channel = GrpcChannelFactory.CreateChannel(new GrpcClient
+-      {
+-        Endpoint = endpoint,
+-      });
++                                                     {
++                                                       Endpoint = endpoint,
++                                                     });
+ 
+       // Create client for task submission
+       var taskClient = new Tasks.TasksClient(channel);
+@@ -80,80 +75,81 @@ namespace ArmoniK.Samples.SubTasking.Client
+ 
+       // Default task options that will be used by each task if not overwritten when submitting tasks
+       var taskOptions = new TaskOptions
+-      {
+-        MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
+-        MaxRetries = 2,
+-        Priority = 1,
+-        PartitionId = partition,
+-        Options =
+-            {
+-              new MapField<string, string>
+-              {
+-                { "UseCase", "Launch" }
+-              }
+-            }
+-      };
++                        {
++                          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
++                          MaxRetries  = 2,
++                          Priority    = 1,
++                          PartitionId = partition,
++                          Options =
++                          {
++                            new MapField<string, string>
++                            {
++                              {
++                                "UseCase", "Launch"
++                              },
++                            },
++                          },
++                        };
+ 
+       // Request for session creation with default task options and allowed partitions for the session
+       var createSessionReply = sessionClient.CreateSession(new CreateSessionRequest
+-      {
+-        DefaultTaskOption = taskOptions,
+-        PartitionIds =
+-        {
+-          partition,
+-        },
+-      });
++                                                           {
++                                                             DefaultTaskOption = taskOptions,
++                                                             PartitionIds =
++                                                             {
++                                                               partition,
++                                                             },
++                                                           });
+ 
+       Console.WriteLine($"sessionId: {createSessionReply.SessionId}");
+ 
+       // Create the result metadata and keep the id for task submission
+       var resultId = resultClient.CreateResultsMetaData(new CreateResultsMetaDataRequest
+-      {
+-        SessionId = createSessionReply.SessionId,
+-        Results =
+-        {
+-          new CreateResultsMetaDataRequest.Types.ResultCreate
+-          {
+-            Name = "Result",
+-          },
+-        },
+-      })
+-      .Results.Single()
+-      .ResultId;
++                                                        {
++                                                          SessionId = createSessionReply.SessionId,
++                                                          Results =
++                                                          {
++                                                            new CreateResultsMetaDataRequest.Types.ResultCreate
++                                                            {
++                                                              Name = "Result",
++                                                            },
++                                                          },
++                                                        })
++                                 .Results.Single()
++                                 .ResultId;
+ 
+       // Create the payload metadata (a result) and upload data at the same time
+       var payloadId = resultClient.CreateResults(new CreateResultsRequest
+-      {
+-        SessionId = createSessionReply.SessionId,
+-        Results =
+-        {
+-          new CreateResultsRequest.Types.ResultCreate
+-          {
+-            Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes("Hello")),
+-            Name = "Payload",
+-          },
+-        },
+-      })
+-      .Results.Single()
+-      .ResultId;
++                                                 {
++                                                   SessionId = createSessionReply.SessionId,
++                                                   Results =
++                                                   {
++                                                     new CreateResultsRequest.Types.ResultCreate
++                                                     {
++                                                       Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes("Hello")),
++                                                       Name = "Payload",
++                                                     },
++                                                   },
++                                                 })
++                                  .Results.Single()
++                                  .ResultId;
+ 
+       // Submit task with payload and result ids
+       var submitTasksResponse = taskClient.SubmitTasks(new SubmitTasksRequest
+-      {
+-        SessionId = createSessionReply.SessionId,
+-        TaskCreations =
+-          {
+-            new SubmitTasksRequest.Types.TaskCreation
+-            {
+-              PayloadId = payloadId,
+-              ExpectedOutputKeys =
+-              {
+-                resultId,
+-              },
+-            },
+-          },
+-      }
+-      );
++                                                       {
++                                                         SessionId = createSessionReply.SessionId,
++                                                         TaskCreations =
++                                                         {
++                                                           new SubmitTasksRequest.Types.TaskCreation
++                                                           {
++                                                             PayloadId = payloadId,
++                                                             ExpectedOutputKeys =
++                                                             {
++                                                               resultId,
++                                                             },
++                                                           },
++                                                         },
++                                                       });
+ 
+       Console.WriteLine($"Task id {submitTasksResponse.TaskInfos.Single().TaskId}");
+ 
+@@ -161,16 +157,21 @@ namespace ArmoniK.Samples.SubTasking.Client
+       await eventClient.WaitForResultsAsync(createSessionReply.SessionId,
+                                             new List<string>
+                                             {
+-                                                resultId,
++                                              resultId,
+                                             },
+                                             CancellationToken.None);
+ 
+       // Download result
+       var resultByteArray = await resultClient.DownloadResultData(createSessionReply.SessionId,
+-                                                         resultId,
+-                                                         CancellationToken.None);
+-
+-      string[] stringArray = Encoding.ASCII.GetString(resultByteArray).Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
++                                                                  resultId,
++                                                                  CancellationToken.None);
++
++      var stringArray = Encoding.ASCII.GetString(resultByteArray)
++                                .Split(new[]
++                                       {
++                                         '\n',
++                                       },
++                                       StringSplitOptions.RemoveEmptyEntries);
+ 
+       foreach (var result in stringArray)
+       {
+diff --git a/csharp/native/SubTasking/Worker/ArmoniK.Samples.SubTasking.Worker/SubTaskingWorker.cs b/csharp/native/SubTasking/Worker/ArmoniK.Samples.SubTasking.Worker/SubTaskingWorker.cs
+index d2e5329..3795b3a 100644
+--- a/csharp/native/SubTasking/Worker/ArmoniK.Samples.SubTasking.Worker/SubTaskingWorker.cs
++++ b/csharp/native/SubTasking/Worker/ArmoniK.Samples.SubTasking.Worker/SubTaskingWorker.cs
+@@ -22,16 +22,19 @@
+ // You should have received a copy of the GNU Affero General Public License
+ // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
++using System.Text;
++
+ using ArmoniK.Api.Common.Channel.Utils;
+ using ArmoniK.Api.Common.Utils;
+ using ArmoniK.Api.gRPC.V1;
++using ArmoniK.Api.gRPC.V1.Agent;
+ using ArmoniK.Api.Worker.Worker;
+-using System.Text;
+ 
+-using ArmoniK.Api.gRPC.V1.Agent;
+-using Google.Protobuf.WellKnownTypes;
+ using Google.Protobuf;
+ using Google.Protobuf.Collections;
++using Google.Protobuf.WellKnownTypes;
++
++using Empty = ArmoniK.Api.gRPC.V1.Empty;
+ 
+ namespace ArmoniK.Samples.SubTasking.Worker
+ {
+@@ -42,7 +45,8 @@ namespace ArmoniK.Samples.SubTasking.Worker
+     /// </summary>
+     /// <param name="loggerFactory">Factory to create loggers</param>
+     /// <param name="provider">gRPC channel provider to send tasks and results to ArmoniK Scheduler</param>
+-    public SubTaskingWorker(ILoggerFactory loggerFactory, GrpcChannelProvider provider)
++    public SubTaskingWorker(ILoggerFactory      loggerFactory,
++                            GrpcChannelProvider provider)
+       : base(loggerFactory,
+              provider)
+       => logger_ = loggerFactory.CreateLogger<SubTaskingWorker>();
+@@ -50,8 +54,8 @@ namespace ArmoniK.Samples.SubTasking.Worker
+     public override async Task<Output> Process(ITaskHandler taskHandler)
+     {
+       using var scopedLog = logger_.BeginNamedScope("Execute task",
+-                                              ("sessionId", taskHandler.SessionId),
+-                                              ("taskId", taskHandler.TaskId));
++                                                    ("sessionId", taskHandler.SessionId),
++                                                    ("taskId", taskHandler.TaskId));
+       try
+       {
+         // We may use TaskOptions.Options to send a field UseCase where we inform
+@@ -61,19 +65,22 @@ namespace ArmoniK.Samples.SubTasking.Worker
+         switch (useCase)
+         {
+           case "Launch":
+-            await Launch(taskHandler); break;
++            await Launch(taskHandler);
++            break;
+           case "Joiner":
+-            await Joiner(taskHandler); break;
++            await Joiner(taskHandler);
++            break;
+           case "HelloWorker":
+-            await HelloWorker(taskHandler); break;
++            await HelloWorker(taskHandler);
++            break;
+           default:
+             return new Output
+-            {
+-              Error = new Output.Types.Error
+-              {
+-                Details = "UseCase not found",
+-              },
+-            };
++                   {
++                     Error = new Output.Types.Error
++                             {
++                               Details = "UseCase not found",
++                             },
++                   };
+         }
+       }
+       catch (Exception e)
+@@ -81,135 +88,145 @@ namespace ArmoniK.Samples.SubTasking.Worker
+         logger_.LogError(e,
+                          "Error during task computing.");
+         return new Output
+-        {
+-          Error = new Output.Types.Error
+-          {
+-            Details = e.Message,
+-          },
+-        };
++               {
++                 Error = new Output.Types.Error
++                         {
++                           Details = e.Message,
++                         },
++               };
+       }
++
+       return new Output
+-      {
+-        Ok = new Api.gRPC.V1.Empty(),
+-      };
++             {
++               Ok = new Empty(),
++             };
+     }
++
+     // Launching helloWorkers and joiner, both are tasks created by our primary task
+     public async Task Launch(ITaskHandler taskHandler)
+     {
+-      logger_.Log(LogLevel.Debug, $"Launching workers");
++      logger_.Log(LogLevel.Debug,
++                  "Launching workers");
+       var resultIds = await SubmitWorkers(taskHandler);
+-      await SubmitJoiner(taskHandler, resultIds);
++      await SubmitJoiner(taskHandler,
++                         resultIds);
+     }
+ 
+     public async Task<List<string>> SubmitWorkers(ITaskHandler taskHandler)
+     {
+-      logger_.Log(LogLevel.Debug, $"Submitting Workers");
++      logger_.Log(LogLevel.Debug,
++                  "Submitting Workers");
+ 
+       var input = Encoding.ASCII.GetString(taskHandler.Payload);
+ 
+       var taskOptions = new TaskOptions
+-      {
+-        MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
+-        MaxRetries = 2,
+-        Priority = 1,
+-        PartitionId = taskHandler.TaskOptions.PartitionId,
+-        Options =
+-            {
+-              new MapField<string, string>
+-              {
+-                { "UseCase", "HelloWorker" }
+-              }
+-            }
+-      };
+-
+-      var subTaskResults = await taskHandler.CreateResultsMetaDataAsync(
+-          Enumerable.Range(1, 5).Select(i =>
+-            new CreateResultsMetaDataRequest.Types.ResultCreate
+-            {
+-              Name = Guid.NewGuid() + "_" + i
+-            }).ToList()
+-            );
++                        {
++                          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
++                          MaxRetries  = 2,
++                          Priority    = 1,
++                          PartitionId = taskHandler.TaskOptions.PartitionId,
++                          Options =
++                          {
++                            new MapField<string, string>
++                            {
++                              {
++                                "UseCase", "HelloWorker"
++                              },
++                            },
++                          },
++                        };
++
++      var subTaskResults = await taskHandler.CreateResultsMetaDataAsync(Enumerable.Range(1,
++                                                                                         5)
++                                                                                  .Select(i => new CreateResultsMetaDataRequest.Types.ResultCreate
++                                                                                               {
++                                                                                                 Name = Guid.NewGuid() + "_" + i,
++                                                                                               })
++                                                                                  .ToList());
+ 
+       var subTasksResultIds = subTaskResults.Results.Select(result => result.ResultId)
+-                                .ToList();
+-
+-      CreateResultsResponse payload = await taskHandler.CreateResultsAsync(
+-         new List<CreateResultsRequest.Types.ResultCreate>
+-           {
+-               new CreateResultsRequest.Types.ResultCreate
+-              {
+-                Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes($"{input}_FatherId_{taskHandler.TaskId}")),
+-                Name = "Payload",
+-              }
+-           }
+-      );
+-
+-      var payloadId = payload.Results.Single().ResultId;
+-
+-      var submitTasksResponse = await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>
+-          (
+-           subTasksResultIds
+-            .Select(subTaskId => new SubmitTasksRequest.Types.TaskCreation
+-            {
+-              PayloadId = payloadId,
+-              ExpectedOutputKeys = { subTaskId }
+-            })
+-            .ToList()
+-          ),
+-        taskOptions
+-      );
++                                            .ToList();
+ 
+-      return subTasksResultIds;
++      var payload = await taskHandler.CreateResultsAsync(new List<CreateResultsRequest.Types.ResultCreate>
++                                                         {
++                                                           new()
++                                                           {
++                                                             Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes($"{input}_FatherId_{taskHandler.TaskId}")),
++                                                             Name = "Payload",
++                                                           },
++                                                         });
++
++      var payloadId = payload.Results.Single()
++                             .ResultId;
+ 
++      var submitTasksResponse = await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>(subTasksResultIds
++                                                                                                                   .Select(subTaskId
++                                                                                                                             => new SubmitTasksRequest.Types.TaskCreation
++                                                                                                                                {
++                                                                                                                                  PayloadId = payloadId,
++                                                                                                                                  ExpectedOutputKeys =
++                                                                                                                                  {
++                                                                                                                                    subTaskId,
++                                                                                                                                  },
++                                                                                                                                })
++                                                                                                                   .ToList()),
++                                                                   taskOptions);
++
++      return subTasksResultIds;
+     }
+ 
+-    public async Task SubmitJoiner(ITaskHandler taskHandler, List<string> expectedOutputIds)
++    public async Task SubmitJoiner(ITaskHandler taskHandler,
++                                   List<string> expectedOutputIds)
+     {
+-      logger_.Log(LogLevel.Debug, $"Submitting Joiner");
++      logger_.Log(LogLevel.Debug,
++                  "Submitting Joiner");
+       var taskOptions = new TaskOptions
+-      {
+-        MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
+-        MaxRetries = 2,
+-        Priority = 1,
+-        PartitionId = taskHandler.TaskOptions.PartitionId,
+-        Options =
+-            {
+-              new MapField<string, string>
+-              {
+-                { "UseCase", "Joiner" }
+-              }
+-            }
+-      };
++                        {
++                          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
++                          MaxRetries  = 2,
++                          Priority    = 1,
++                          PartitionId = taskHandler.TaskOptions.PartitionId,
++                          Options =
++                          {
++                            new MapField<string, string>
++                            {
++                              {
++                                "UseCase", "Joiner"
++                              },
++                            },
++                          },
++                        };
+ 
+       var subTaskResultId = taskHandler.ExpectedResults.Single();
+ 
+-      CreateResultsResponse payload = await taskHandler.CreateResultsAsync(
+-        new List<CreateResultsRequest.Types.ResultCreate>
+-        {
+-               new CreateResultsRequest.Types.ResultCreate
+-              {
+-                Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes($"Submiting Joiner")),
+-                Name = "Payload",
+-              }
+-        }
+-      );
++      var payload = await taskHandler.CreateResultsAsync(new List<CreateResultsRequest.Types.ResultCreate>
++                                                         {
++                                                           new()
++                                                           {
++                                                             Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes("Submiting Joiner")),
++                                                             Name = "Payload",
++                                                           },
++                                                         });
+ 
+-      var payloadId = payload.Results.Single().ResultId;
++      var payloadId = payload.Results.Single()
++                             .ResultId;
+ 
+       await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>
+-          {
+-            new SubmitTasksRequest.Types.TaskCreation
+-            {
+-              PayloadId = payloadId,
+-              ExpectedOutputKeys =
+-              {
+-                subTaskResultId,
+-              },
+-              DataDependencies = { expectedOutputIds },
+-            }
+-          },
+-        taskOptions
+-      );
++                                         {
++                                           new()
++                                           {
++                                             PayloadId = payloadId,
++                                             ExpectedOutputKeys =
++                                             {
++                                               subTaskResultId,
++                                             },
++                                             DataDependencies =
++                                             {
++                                               expectedOutputIds,
++                                             },
++                                           },
++                                         },
++                                         taskOptions);
+     }
+ 
+     public async Task HelloWorker(ITaskHandler taskHandler)
+@@ -225,7 +242,8 @@ namespace ArmoniK.Samples.SubTasking.Worker
+ 
+     public async Task Joiner(ITaskHandler taskHandler)
+     {
+-      logger_.Log(LogLevel.Debug, $"Starting Joiner useCase");
++      logger_.Log(LogLevel.Debug,
++                  "Starting Joiner useCase");
+       var resultId = taskHandler.ExpectedResults.Single();
+ 
+       var restultsArray = new List<string>();
+@@ -237,7 +255,8 @@ namespace ArmoniK.Samples.SubTasking.Worker
+       }
+ 
+       await taskHandler.SendResult(resultId,
+-       restultsArray.SelectMany(s => Encoding.ASCII.GetBytes(s + "\n")).ToArray());
++                                   restultsArray.SelectMany(s => Encoding.ASCII.GetBytes(s + "\n"))
++                                                .ToArray());
+     }
+   }
+ }
