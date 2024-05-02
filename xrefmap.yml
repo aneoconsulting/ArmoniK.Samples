@@ -322,6 +322,50 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process
   nameWithType: MultipleResultsWorker.Process
+- uid: ArmoniK.Samples.SubTasking.Worker
+  name: ArmoniK.Samples.SubTasking.Worker
+  href: api/ArmoniK.Samples.SubTasking.Worker.html
+  commentId: N:ArmoniK.Samples.SubTasking.Worker
+  fullName: ArmoniK.Samples.SubTasking.Worker
+  nameWithType: ArmoniK.Samples.SubTasking.Worker
+- uid: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker
+  name: SubTaskingWorker
+  href: api/ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.html
+  commentId: T:ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker
+  fullName: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker
+  nameWithType: SubTaskingWorker
+- uid: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name: SubTaskingWorker(ILoggerFactory, GrpcChannelProvider)
+  href: api/ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.html#ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_
+  commentId: M:ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name.vb: New(ILoggerFactory, GrpcChannelProvider)
+  fullName: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.SubTaskingWorker(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  fullName.vb: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  nameWithType: SubTaskingWorker.SubTaskingWorker(ILoggerFactory, GrpcChannelProvider)
+  nameWithType.vb: SubTaskingWorker.New(ILoggerFactory, GrpcChannelProvider)
+- uid: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.#ctor*
+  name: SubTaskingWorker
+  href: api/ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.html#ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker__ctor_
+  commentId: Overload:ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.SubTaskingWorker
+  fullName.vb: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.New
+  nameWithType: SubTaskingWorker.SubTaskingWorker
+  nameWithType.vb: SubTaskingWorker.New
+- uid: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  name: Process(ITaskHandler)
+  href: api/ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.html#ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker_Process_ArmoniK_Api_Worker_Worker_ITaskHandler_
+  commentId: M:ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  fullName: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  nameWithType: SubTaskingWorker.Process(ITaskHandler)
+- uid: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.Process*
+  name: Process
+  href: api/ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.html#ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker_Process_
+  commentId: Overload:ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.Process
+  isSpec: "True"
+  fullName: ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.Process
+  nameWithType: SubTaskingWorker.Process
 - uid: ArmoniK.Samples.Unified.Worker.Services
   name: ArmoniK.Samples.Unified.Worker.Services
   href: api/ArmoniK.Samples.Unified.Worker.Services.html
