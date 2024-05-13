@@ -252,15 +252,15 @@ references:
   commentId: T:ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker
   fullName: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker
   nameWithType: HelloWorldWorker
-- uid: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  name: HelloWorldWorker(ILoggerFactory, GrpcChannelProvider)
-  href: api/ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.html#ArmoniK_Samples_HelloWorld_Worker_HelloWorldWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_
-  commentId: M:ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  name.vb: New(ILoggerFactory, GrpcChannelProvider)
-  fullName: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.HelloWorldWorker(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  fullName.vb: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  nameWithType: HelloWorldWorker.HelloWorldWorker(ILoggerFactory, GrpcChannelProvider)
-  nameWithType.vb: HelloWorldWorker.New(ILoggerFactory, GrpcChannelProvider)
+- uid: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name: HelloWorldWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  href: api/ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.html#ArmoniK_Samples_HelloWorld_Worker_HelloWorldWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Options_ComputePlane_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_
+  commentId: M:ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name.vb: New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  fullName: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.HelloWorldWorker(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  fullName.vb: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  nameWithType: HelloWorldWorker.HelloWorldWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  nameWithType.vb: HelloWorldWorker.New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
 - uid: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.#ctor*
   name: HelloWorldWorker
   href: api/ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.html#ArmoniK_Samples_HelloWorld_Worker_HelloWorldWorker__ctor_
@@ -290,15 +290,15 @@ references:
   commentId: T:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker
   fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker
   nameWithType: MultipleResultsWorker
-- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  name: MultipleResultsWorker(ILoggerFactory, GrpcChannelProvider)
-  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html#ArmoniK_Samples_HelloWorld_Worker_MultipleResultsWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_
-  commentId: M:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  name.vb: New(ILoggerFactory, GrpcChannelProvider)
-  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.MultipleResultsWorker(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  fullName.vb: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  nameWithType: MultipleResultsWorker.MultipleResultsWorker(ILoggerFactory, GrpcChannelProvider)
-  nameWithType.vb: MultipleResultsWorker.New(ILoggerFactory, GrpcChannelProvider)
+- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name: MultipleResultsWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html#ArmoniK_Samples_HelloWorld_Worker_MultipleResultsWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Options_ComputePlane_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_
+  commentId: M:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name.vb: New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.MultipleResultsWorker(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  fullName.vb: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  nameWithType: MultipleResultsWorker.MultipleResultsWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  nameWithType.vb: MultipleResultsWorker.New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
 - uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor*
   name: MultipleResultsWorker
   href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html#ArmoniK_Samples_HelloWorld_Worker_MultipleResultsWorker__ctor_
