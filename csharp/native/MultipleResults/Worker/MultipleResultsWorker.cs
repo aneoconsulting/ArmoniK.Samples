@@ -27,6 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ArmoniK.Api.Common.Channel.Utils;
+using ArmoniK.Api.Common.Options;
 using ArmoniK.Api.Common.Utils;
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.Api.Worker.Worker;
@@ -41,10 +42,13 @@ namespace ArmoniK.Samples.HelloWorld.Worker
     ///   Initializes an instance of <see cref="MultipleResultsWorker" />
     /// </summary>
     /// <param name="loggerFactory">Factory to create loggers</param>
+    /// <param name="computePlane">Compute Plane</param>
     /// <param name="provider">gRPC channel provider to send tasks and results to ArmoniK Scheduler</param>
     public MultipleResultsWorker(ILoggerFactory      loggerFactory,
+                                 ComputePlane        computePlane,
                                  GrpcChannelProvider provider)
       : base(loggerFactory,
+             computePlane,
              provider)
       => logger_ = loggerFactory.CreateLogger<MultipleResultsWorker>();
 
