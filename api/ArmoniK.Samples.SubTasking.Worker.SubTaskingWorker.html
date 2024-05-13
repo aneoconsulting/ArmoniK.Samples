@@ -93,13 +93,13 @@
       <span class="xref">WorkerStreamWrapper.DisposeAsync()</span>
     </div>
     <div>
-      <a class="xref" href="https://github.com/grpc/grpc-dotnet/blob/feat/subtasking-example/src/Grpc.Core.Api/ServerCallContext.cs">WorkerStreamWrapper.Process(ProcessRequest, ServerCallContext)</a>
+      <a class="xref" href="https://github.com/grpc/grpc-dotnet/blob/main/src/Grpc.Core.Api/ServerCallContext.cs">WorkerStreamWrapper.Process(ProcessRequest, ServerCallContext)</a>
     </div>
     <div>
-      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">WorkerStreamWrapper.ProcessAsync(ITaskHandler, CancellationToken)</a>
+      <span class="xref">WorkerStreamWrapper.Process(ITaskHandler)</span>
     </div>
     <div>
-      <a class="xref" href="https://github.com/grpc/grpc-dotnet/blob/feat/subtasking-example/src/Grpc.Core.Api/ServerCallContext.cs">WorkerStreamWrapper.HealthCheck(Empty, ServerCallContext)</a>
+      <a class="xref" href="https://github.com/grpc/grpc-dotnet/blob/main/src/Grpc.Core.Api/ServerCallContext.cs">WorkerStreamWrapper.HealthCheck(Empty, ServerCallContext)</a>
     </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
@@ -133,20 +133,19 @@
 </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/feat/subtasking-example/apiSpec/new?filename=ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.%23ctor(Microsoft.Extensions.Logging.ILoggerFactory%2CArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Options_ComputePlane_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.%23ctor(Microsoft.Extensions.Logging.ILoggerFactory%2CArmoniK.Api.Common.Options.ComputePlane%2CArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/feat/subtasking-example/csharp/native/SubTasking/Worker/SubTaskingWorker.cs/#L54">View Source</a>
+    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/main/csharp/native/SubTasking/Worker/SubTaskingWorker.cs/#L57">View Source</a>
   </span>
   <a id="ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker__ctor_" data-uid="ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.#ctor*"></a>
-  <h4 id="ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_" data-uid="ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)">SubTaskingWorker(ILoggerFactory, GrpcChannelProvider)</h4>
+  <h4 id="ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Options_ComputePlane_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_" data-uid="ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)">SubTaskingWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)</h4>
   <div class="markdown level1 summary"><p>Initializes an instance of <a class="xref" href="ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.html">SubTaskingWorker</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Obsolete&quot;)]
-public SubTaskingWorker(ILoggerFactory loggerFactory, GrpcChannelProvider provider)</code></pre>
+    <pre><code class="lang-csharp hljs">public SubTaskingWorker(ILoggerFactory loggerFactory, ComputePlane computePlane, GrpcChannelProvider provider)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-condensed">
@@ -165,6 +164,12 @@ public SubTaskingWorker(ILoggerFactory loggerFactory, GrpcChannelProvider provid
 </td>
       </tr>
       <tr>
+        <td><span class="xref">ComputePlane</span></td>
+        <td><span class="parametername">computePlane</span></td>
+        <td><p>Compute Plane</p>
+</td>
+      </tr>
+      <tr>
         <td><span class="xref">GrpcChannelProvider</span></td>
         <td><span class="parametername">provider</span></td>
         <td><p>gRPC channel provider to send tasks and results to ArmoniK Scheduler</p>
@@ -176,19 +181,19 @@ public SubTaskingWorker(ILoggerFactory loggerFactory, GrpcChannelProvider provid
 </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/feat/subtasking-example/apiSpec/new?filename=ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker_Process_ArmoniK_Api_Worker_Worker_ITaskHandler_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker_ProcessAsync_ArmoniK_Api_Worker_Worker_ITaskHandler_System_Threading_CancellationToken_.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.ProcessAsync(ArmoniK.Api.Worker.Worker.ITaskHandler%2CSystem.Threading.CancellationToken)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/feat/subtasking-example/csharp/native/SubTasking/Worker/SubTaskingWorker.cs/#L61">View Source</a>
+    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/main/csharp/native/SubTasking/Worker/SubTaskingWorker.cs/#L73">View Source</a>
   </span>
-  <a id="ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker_Process_" data-uid="ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.Process*"></a>
-  <h4 id="ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker_Process_ArmoniK_Api_Worker_Worker_ITaskHandler_" data-uid="ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)">Process(ITaskHandler)</h4>
-  <div class="markdown level1 summary"><p>User defined computations</p>
+  <a id="ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker_ProcessAsync_" data-uid="ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.ProcessAsync*"></a>
+  <h4 id="ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker_ProcessAsync_ArmoniK_Api_Worker_Worker_ITaskHandler_System_Threading_CancellationToken_" data-uid="ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.ProcessAsync(ArmoniK.Api.Worker.Worker.ITaskHandler,System.Threading.CancellationToken)">ProcessAsync(ITaskHandler, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Function that represents the processing of a task.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override Task&lt;Output&gt; Process(ITaskHandler taskHandler)</code></pre>
+    <pre><code class="lang-csharp hljs">public override Task&lt;Output&gt; ProcessAsync(ITaskHandler taskHandler, CancellationToken cancellationToken)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-condensed">
@@ -203,8 +208,13 @@ public SubTaskingWorker(ILoggerFactory loggerFactory, GrpcChannelProvider provid
       <tr>
         <td><span class="xref">ITaskHandler</span></td>
         <td><span class="parametername">taskHandler</span></td>
-        <td><p>Handler to access input data and task capabilities</p>
+        <td><p>Handler that holds the payload, the task metadata and helpers to submit tasks and results</p>
 </td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
       </tr>
     </tbody>
   </table>
@@ -219,29 +229,13 @@ public SubTaskingWorker(ILoggerFactory loggerFactory, GrpcChannelProvider provid
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<span class="xref">Output</span>&gt;</td>
-        <td><p>The output of the computational task</p>
+        <td><p>An <span class="xref">ArmoniK.Api.gRPC.V1.Output</span> representing the status of the current task. This is the final step of the task.</p>
 </td>
       </tr>
     </tbody>
   </table>
   <h5 class="overrides">Overrides</h5>
-  <div><span class="xref">ArmoniK.Api.Worker.Worker.WorkerStreamWrapper.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)</span></div>
-  <h5 class="exceptions">Exceptions</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Condition</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://github.com/grpc/grpc-dotnet/blob/feat/subtasking-example/src/Grpc.Core.Api/RpcException.cs">RpcException</a></td>
-        <td><p>when method is not overwritten</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
+  <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">WorkerStreamWrapper.ProcessAsync(ITaskHandler, CancellationToken)</a></div>
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iasyncdisposable">IAsyncDisposable</a>
@@ -255,10 +249,10 @@ public SubTaskingWorker(ILoggerFactory loggerFactory, GrpcChannelProvider provid
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/feat/subtasking-example/apiSpec/new?filename=ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Edit this page</a>
+                    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/new/main/apiSpec/new?filename=ArmoniK_Samples_SubTasking_Worker_SubTaskingWorker.md&amp;value=---%0Auid%3A%20ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Edit this page</a>
                   </li>
                   <li>
-                    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/feat/subtasking-example/csharp/native/SubTasking/Worker/SubTaskingWorker.cs/#L47" class="contribution-link">View Source</a>
+                    <a href="https://github.com/aneoconsulting/ArmoniK.Samples/blob/main/csharp/native/SubTasking/Worker/SubTaskingWorker.cs/#L49" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
