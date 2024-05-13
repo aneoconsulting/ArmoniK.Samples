@@ -1,7 +1,6 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HelloWorld", "HelloWorld", "{439390A1-3362-4C08-B1D6-9E77A2F26F68}"
 EndProject
@@ -15,13 +14,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmoniK.Samples.MultipleRes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmoniK.Samples.MultipleResults.Worker", "MultipleResults\Worker\ArmoniK.Samples.MultipleResults.Worker.csproj", "{A89EEA37-8C8C-4198-BCB2-3F4754C89B9A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SubTasking", "SubTasking", "{9DAFB1A5-261F-4FAF-BFBC-6D6CC40745A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.SubTasking.Client", "SubTasking\Client\ArmoniK.Samples.SubTasking.Client.csproj", "{4239FDD7-FD9C-4A45-A6D2-5539EDEF0A3A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.SubTasking.Worker", "SubTasking\Worker\ArmoniK.Samples.SubTasking.Worker.csproj", "{52337672-4D34-43CC-A329-A1D4BFED75A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{170840AA-06C2-4500-B39A-7C450F2A621E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -40,11 +42,27 @@ Global
 		{A89EEA37-8C8C-4198-BCB2-3F4754C89B9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A89EEA37-8C8C-4198-BCB2-3F4754C89B9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A89EEA37-8C8C-4198-BCB2-3F4754C89B9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4239FDD7-FD9C-4A45-A6D2-5539EDEF0A3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4239FDD7-FD9C-4A45-A6D2-5539EDEF0A3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4239FDD7-FD9C-4A45-A6D2-5539EDEF0A3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4239FDD7-FD9C-4A45-A6D2-5539EDEF0A3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52337672-4D34-43CC-A329-A1D4BFED75A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52337672-4D34-43CC-A329-A1D4BFED75A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52337672-4D34-43CC-A329-A1D4BFED75A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52337672-4D34-43CC-A329-A1D4BFED75A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{170840AA-06C2-4500-B39A-7C450F2A621E} = {439390A1-3362-4C08-B1D6-9E77A2F26F68}
 		{1B25C224-688F-4F3F-84F2-FD8547D52D01} = {439390A1-3362-4C08-B1D6-9E77A2F26F68}
 		{70BC0F55-D5D8-4700-926D-73F170F4A41D} = {E7483F60-CD9D-4DA9-813C-811CCC0A1076}
 		{A89EEA37-8C8C-4198-BCB2-3F4754C89B9A} = {E7483F60-CD9D-4DA9-813C-811CCC0A1076}
+		{4239FDD7-FD9C-4A45-A6D2-5539EDEF0A3A} = {9DAFB1A5-261F-4FAF-BFBC-6D6CC40745A7}
+		{52337672-4D34-43CC-A329-A1D4BFED75A1} = {9DAFB1A5-261F-4FAF-BFBC-6D6CC40745A7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {45373606-CD20-466E-9453-F54C280DDCA2}
 	EndGlobalSection
 EndGlobal
