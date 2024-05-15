@@ -79,6 +79,10 @@ jobs:
           path: ./csharp/native/SubTasking/Worker/Dockerfile
         - img : dockerhubaneo/armonik_demo_subtasking_client
           path : ./csharp/native/SubTasking/Client/Dockerfile
+        - img : dockerhubaneo/armonik_demo_linearsubtasking_worker
+          path: ./csharp/native/LinearSubTasking/Worker/Dockerfile
+        - img : dockerhubaneo/armonik_demo_linearsubtasking_client
+          path : ./csharp/native/LinearSubTasking/Client/Dockerfile
     steps:
     - name: Checkout
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
