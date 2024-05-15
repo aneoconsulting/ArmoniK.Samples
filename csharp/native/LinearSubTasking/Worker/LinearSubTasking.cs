@@ -10,17 +10,19 @@ using ArmoniK.Api.Worker.Worker;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
+using Empty = ArmoniK.Api.gRPC.V1.Empty;
+
 namespace ArmoniK.Samples.LinearSubTasking.Worker
 {
   public class SubTaskingWorker : WorkerStreamWrapper
   {
-    public SubTaskingWorker(ILoggerFactory loggerFactory,
-                            ComputePlane computePlane,
+    public SubTaskingWorker(ILoggerFactory      loggerFactory,
+                            ComputePlane        computePlane,
                             GrpcChannelProvider provider)
       : base(loggerFactory,
              computePlane,
              provider)
-    => logger_ = loggerFactory.CreateLogger<SubTaskingWorker>();
+      => logger_ = loggerFactory.CreateLogger<SubTaskingWorker>();
 
     /// <summary>
     ///   Function that represents the processing of a task.
@@ -32,13 +34,14 @@ namespace ArmoniK.Samples.LinearSubTasking.Worker
     public override async Task<Output> Process(ITaskHandler taskHandler)
     {
       using var scopedLog = logger_.BeginNamedScope("Execute task",
-                                              ("sessionId", taskHandler.SessionId),
-                                              ("taskId", taskHandler.TaskId));
+                                                    ("sessionId", taskHandler.SessionId),
+                                                    ("taskId", taskHandler.TaskId));
 
       try
       {
         // We convert the binary payload from the handler back to the string sent by the client
-        var input = BitConverter.ToInt32(taskHandler.Payload, 1);
+        var input = BitConverter.ToInt32(taskHandler.Payload,
+                                         0);
 
         // We get the result that the task should produce
         // The handler has this information
@@ -49,12 +52,16 @@ namespace ArmoniK.Samples.LinearSubTasking.Worker
         if (input > 1)
         {
           input = input - 2;
-          await SubmitWorkers(taskHandler, input, resultId);
+          await SubmitWorkers(taskHandler,
+                              input,
+                              resultId);
         }
         else if (input < 0)
         {
           input = input + 2;
-          await SubmitWorkers(taskHandler, input, resultId);
+          await SubmitWorkers(taskHandler,
+                              input,
+                              resultId);
         }
         else
         {
@@ -72,17 +79,18 @@ namespace ArmoniK.Samples.LinearSubTasking.Worker
         logger_.LogError(e,
                          "Error during task computing.");
         return new Output
-        {
-          Error = new Output.Types.Error
-          {
-            Details = e.Message,
-          },
-        };
+               {
+                 Error = new Output.Types.Error
+                         {
+                           Details = e.Message,
+                         },
+               };
       }
+
       return new Output
-      {
-        Ok = new Api.gRPC.V1.Empty(),
-      };
+             {
+               Ok = new Empty(),
+             };
     }
 
     /// <summary>
@@ -94,44 +102,46 @@ namespace ArmoniK.Samples.LinearSubTasking.Worker
     /// <returns>
     ///   An <see cref="Output" /> representing the status of the current task. This is the final step of the task.
     /// </returns>
-    private async Task<string> SubmitWorkers(ITaskHandler taskHandler, int input,string subResultId)
+    private async Task<string> SubmitWorkers(ITaskHandler taskHandler,
+                                             int          input,
+                                             string       subResultId)
     {
       // Default task options that will be used by each task if not overwritten when submitting tasks
       var taskOptions = new TaskOptions
-      {
-        MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
-        MaxRetries = 2,
-        Priority = 1,
-        PartitionId = taskHandler.TaskOptions.PartitionId,
-      };
+                        {
+                          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
+                          MaxRetries  = 2,
+                          Priority    = 1,
+                          PartitionId = taskHandler.TaskOptions.PartitionId,
+                        };
       Console.WriteLine($"Entered in Submit Worker input :{input}");
 
       // Create the payload metadata (a result) and upload data at the same time
-      var payload = await taskHandler.CreateResultsAsync(
-        new List<CreateResultsRequest.Types.ResultCreate>
-      {
-        new CreateResultsRequest.Types.ResultCreate
-        {
-          Data = UnsafeByteOperations.UnsafeWrap(BitConverter.GetBytes(input)),
-          Name = "Payload",
-        },
-      });
+      var payload = await taskHandler.CreateResultsAsync(new List<CreateResultsRequest.Types.ResultCreate>
+                                                         {
+                                                           new()
+                                                           {
+                                                             Data = UnsafeByteOperations.UnsafeWrap(BitConverter.GetBytes(input)),
+                                                             Name = "Payload",
+                                                           },
+                                                         });
 
-      var payloadId = payload.Results.Single().ResultId;
+      var payloadId = payload.Results.Single()
+                             .ResultId;
 
       // Submit task with payload and result id
-      var subtask = await taskHandler.SubmitTasksAsync(
-        new List<SubmitTasksRequest.Types.TaskCreation>
-      {
-        new SubmitTasksRequest.Types.TaskCreation
-        {
-          PayloadId = payloadId,
-          ExpectedOutputKeys =
-          {
-            subResultId,
-          },
-        },
-      }, taskOptions);
+      var subtask = await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>
+                                                       {
+                                                         new()
+                                                         {
+                                                           PayloadId = payloadId,
+                                                           ExpectedOutputKeys =
+                                                           {
+                                                             subResultId,
+                                                           },
+                                                         },
+                                                       },
+                                                       taskOptions);
       return subResultId;
     }
   }
