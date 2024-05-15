@@ -1,6 +1,6 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 
 #ARG TNAME="ArmoniK.Samples.DynamicSubmission.Worker" TPATH="DynamicSubmission/Worker/"
 
@@ -8,16 +8,16 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["SubTasking/Worker/ArmoniK.Samples.SubTasking.Worker.csproj", "SubTasking/Worker/"]
-RUN dotnet restore "SubTasking/Worker/ArmoniK.Samples.SubTasking.Worker.csproj"
+COPY ["LinearSubTasking/Worker/ArmoniK.Samples.LinearSubTasking.Worker.csproj", "LinearSubTasking/Worker/"]
+RUN dotnet restore "LinearSubTasking/Worker/ArmoniK.Samples.LinearSubTasking.Worker.csproj"
 COPY . .
-WORKDIR "/src/SubTasking/Worker/"
-RUN dotnet build "ArmoniK.Samples.SubTasking.Worker.csproj" -c Release -o /app/build
+WORKDIR "/src/LinearSubTasking/Worker/"
+RUN dotnet build "ArmoniK.Samples.LinearSubTasking.Worker.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ArmoniK.Samples.SubTasking.Worker.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "ArmoniK.Samples.LinearSubTasking.Worker.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
@@ -26,4 +26,4 @@ RUN groupadd --gid 5000 armonikuser && useradd --home-dir /home/armonikuser --cr
 RUN mkdir /cache && chown armonikuser: /cache
 USER armonikuser
 EXPOSE 1080
-ENTRYPOINT ["dotnet", "ArmoniK.Samples.SubTasking.Worker.dll"]
+ENTRYPOINT ["dotnet", "ArmoniK.Samples.LinearSubTasking.Worker.dll"]

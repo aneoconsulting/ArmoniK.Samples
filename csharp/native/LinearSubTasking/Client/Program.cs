@@ -37,7 +37,6 @@ using ArmoniK.Api.gRPC.V1.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
-
 using static System.Console;
 
 
@@ -45,7 +44,6 @@ namespace ArmoniK.Samples.SubmitTask.Client
 {
   internal class Program
   {
-
     /// <summary>
     ///   Method for sending task and retrieving their results from ArmoniK
     /// </summary>
@@ -58,13 +56,14 @@ namespace ArmoniK.Samples.SubmitTask.Client
     /// <exception cref="Exception">Issues with results from tasks</exception>
     /// <exception cref="ArgumentOutOfRangeException">Unknown response type from control plane</exception>
     internal static async Task Run(string endpoint,
-                                   string partition, int integer)
+                                   string partition,
+                                   int    integer)
     {
       // Create gRPC channel to connect with ArmoniK control plane
       var channel = GrpcChannelFactory.CreateChannel(new GrpcClient
-      {
-        Endpoint = endpoint,
-      });
+                                                     {
+                                                       Endpoint = endpoint,
+                                                     });
 
       // Create client for task submission
       var taskClient = new Tasks.TasksClient(channel);
@@ -80,45 +79,45 @@ namespace ArmoniK.Samples.SubmitTask.Client
 
       // Default task options that will be used by each task if not overwritten when submitting tasks
       var taskOptions = new TaskOptions
-      {
-        MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
-        MaxRetries = 2,
-        Priority = 1,
-        PartitionId = partition,
-      };
+                        {
+                          MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
+                          MaxRetries  = 2,
+                          Priority    = 1,
+                          PartitionId = partition,
+                        };
 
       // Request for session creation with default task options and allowed partitions for the session
       var createSessionReply = sessionClient.CreateSession(new CreateSessionRequest
-      {
-        DefaultTaskOption = taskOptions,
-        PartitionIds =
+                                                           {
+                                                             DefaultTaskOption = taskOptions,
+                                                             PartitionIds =
                                                              {
                                                                partition,
                                                              },
-      });
+                                                           });
 
       WriteLine($"sessionId: {createSessionReply.SessionId}");
 
       // Create the result metadata and keep the id for task submission
       var resultId = resultClient.CreateResultsMetaData(new CreateResultsMetaDataRequest
-      {
-        SessionId = createSessionReply.SessionId,
-        Results =
+                                                        {
+                                                          SessionId = createSessionReply.SessionId,
+                                                          Results =
                                                           {
                                                             new CreateResultsMetaDataRequest.Types.ResultCreate
                                                             {
                                                               Name = "Result",
                                                             },
                                                           },
-      })
+                                                        })
                                  .Results.Single()
                                  .ResultId;
 
       // Create the payload metadata (a result) and upload data at the same time
       var payloadId = resultClient.CreateResults(new CreateResultsRequest
-      {
-        SessionId = createSessionReply.SessionId,
-        Results =
+                                                 {
+                                                   SessionId = createSessionReply.SessionId,
+                                                   Results =
                                                    {
                                                      new CreateResultsRequest.Types.ResultCreate
                                                      {
@@ -126,15 +125,15 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                                        Name = "Payload",
                                                      },
                                                    },
-      })
+                                                 })
                                   .Results.Single()
                                   .ResultId;
 
       // Submit task with payload and result ids
       var submitTasksResponse = taskClient.SubmitTasks(new SubmitTasksRequest
-      {
-        SessionId = createSessionReply.SessionId,
-        TaskCreations =
+                                                       {
+                                                         SessionId = createSessionReply.SessionId,
+                                                         TaskCreations =
                                                          {
                                                            new SubmitTasksRequest.Types.TaskCreation
                                                            {
@@ -145,7 +144,7 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                                              },
                                                            },
                                                          },
-      });
+                                                       });
 
       WriteLine($"Task id {submitTasksResponse.TaskInfos.Single().TaskId}");
 
@@ -156,6 +155,7 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                               resultId,
                                             },
                                             CancellationToken.None);
+      WriteLine($"resultId: {resultId}");
 
       // Download result
       var result = await resultClient.DownloadResultData(createSessionReply.SessionId,
@@ -167,8 +167,6 @@ namespace ArmoniK.Samples.SubmitTask.Client
 
     public static async Task<int> Main(string[] args)
     {
-      WriteLine($"integer data: {args[5]}");
-
       // Define the options for the application with their description and default value
       var endpoint = new Option<string>("--endpoint",
                                         description: "Endpoint for the connection to ArmoniK control plane.",
@@ -177,13 +175,13 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                          description: "Name of the partition to which submit tasks.",
                                          getDefaultValue: () => "default");
       var integer = new Option<int>("--integer",
-                                description: "integer to % 2.",
-                                getDefaultValue: () =>  0);
+                                    description: "integer to % 2.",
+                                    getDefaultValue: () => 3);
 
       // Describe the application and its purpose
       var rootCommand =
-         new
-           RootCommand($"Calculate the result of integer % 2 with subtask example for ArmoniK.\nIt sends a task to ArmoniK with integer in input and create a new subtask for each substraction of 2 while the result is superior to 1 ");
+        new
+          RootCommand("Calculate the result of integer % 2 with subtask example for ArmoniK.\nIt sends a task to ArmoniK with integer in input and create a new subtask for each substraction of 2 while the result is superior to 1 ");
       // Add the options to the parser
       rootCommand.AddOption(endpoint);
       rootCommand.AddOption(partition);
@@ -191,12 +189,11 @@ namespace ArmoniK.Samples.SubmitTask.Client
 
       // Configure the handler to call the function that will do the work
       rootCommand.SetHandler(Run,
-                              endpoint,
-                              partition,
-                              integer);
+                             endpoint,
+                             partition,
+                             integer);
       // Parse the command line parameters and call the function that represents the application
       return await rootCommand.InvokeAsync(args);
     }
   }
 }
-
