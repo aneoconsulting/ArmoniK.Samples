@@ -181,7 +181,7 @@ namespace ArmoniK.Samples.SubmitTask.Client
       // Describe the application and its purpose
       var rootCommand =
         new
-          RootCommand("Calculate the result of integer % 2 with subtask example for ArmoniK.\nIt sends a task to ArmoniK with integer in input and create a new subtask for each substraction of 2 while the result is superior to 1 ");
+          RootCommand("Calculate the result of integer % 2 with subtask example for ArmoniK.\nIt sends a task to ArmoniK with integer an as input and create a new subtask. At each subtask creation the number 2 is substract to the input integer as long as the result is greater than 1.");
       // Add the options to the parser
       rootCommand.AddOption(endpoint);
       rootCommand.AddOption(partition);
