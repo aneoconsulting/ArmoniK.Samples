@@ -25,6 +25,6 @@
 using ArmoniK.Api.Worker.Utils;
 using ArmoniK.Samples.LinearSubTasking.Worker;
 
-// Create the application and register thesubmit task example worker implementation
+// Create the application and register the submit task example worker implementation
 WorkerServer.Create<SubTaskingWorker>()
             .Run();

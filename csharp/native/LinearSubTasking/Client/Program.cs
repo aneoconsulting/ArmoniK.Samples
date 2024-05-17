@@ -22,8 +22,14 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+using System;
+using System.Collections.Generic;
 using System.CommandLine;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 using ArmoniK.Api.Client;
 using ArmoniK.Api.Client.Options;
@@ -113,6 +119,9 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                  .Results.Single()
                                  .ResultId;
 
+      WriteLine($"resultId: {resultId}");
+
+
       // Create the payload metadata (a result) and upload data at the same time
       var payloadId = resultClient.CreateResults(new CreateResultsRequest
                                                  {
@@ -146,7 +155,7 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                                          },
                                                        });
 
-      WriteLine($"Task id {submitTasksResponse.TaskInfos.Single().TaskId}");
+      WriteLine($"Task id: {submitTasksResponse.TaskInfos.Single().TaskId}");
 
       // Wait for task end and result availability
       await eventClient.WaitForResultsAsync(createSessionReply.SessionId,
@@ -155,8 +164,6 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                               resultId,
                                             },
                                             CancellationToken.None);
-      WriteLine($"resultId: {resultId}");
-
       // Download result
       var result = await resultClient.DownloadResultData(createSessionReply.SessionId,
                                                          resultId,
@@ -181,7 +188,7 @@ namespace ArmoniK.Samples.SubmitTask.Client
       // Describe the application and its purpose
       var rootCommand =
         new
-          RootCommand("Calculate the result of integer % 2 with subtask example for ArmoniK.\nIt sends a task to ArmoniK with integer an as input and create a new subtask. At each subtask creation the number 2 is substract to the input integer as long as the result is greater than 1.");
+          RootCommand("Calculate the result of integer % 2 with subtask example for ArmoniK.\nIt sends a task to ArmoniK with integer an as input and create a new subtask. At each subtask creation the number 2 is substracted to the input integer as long as the result is greater than 1.");
       // Add the options to the parser
       rootCommand.AddOption(endpoint);
       rootCommand.AddOption(partition);

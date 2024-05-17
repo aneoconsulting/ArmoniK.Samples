@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 using ArmoniK.Api.Common.Channel.Utils;
 using ArmoniK.Api.Common.Options;
@@ -9,6 +13,8 @@ using ArmoniK.Api.Worker.Worker;
 
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+
+using Microsoft.Extensions.Logging;
 
 using Empty = ArmoniK.Api.gRPC.V1.Empty;
 
@@ -49,26 +55,25 @@ namespace ArmoniK.Samples.LinearSubTasking.Worker
         var resultId = taskHandler.ExpectedResults.Single();
 
         // We send a task to the worker while the result is different of 0 or 1
-        if (input > 1)
+        if (input != 0 && input != 1)
         {
-          input = input - 2;
-          await SubmitWorkers(taskHandler,
-                              input,
-                              resultId);
+          input = input > 1
+                    ? input - 2
+                    : input + 2;
         }
-        else if (input < 0)
-        {
-          input = input + 2;
-          await SubmitWorkers(taskHandler,
-                              input,
-                              resultId);
-        }
-        else
+
+        if (input == 0 || input == 1)
         {
           // We get the result of the task using through the handler
           await taskHandler.SendResult(resultId,
                                        Encoding.ASCII.GetBytes($"{input} {resultId}"))
                            .ConfigureAwait(false);
+        }
+        else
+        {
+          await SubmitWorkers(taskHandler,
+                              input,
+                              resultId);
         }
       }
       // If there is an exception, we put the task in error
