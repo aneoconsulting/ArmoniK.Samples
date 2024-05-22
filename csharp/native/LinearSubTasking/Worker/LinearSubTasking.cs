@@ -63,7 +63,7 @@ namespace ArmoniK.Samples.LinearSubTasking.Worker
         }
         //The new input is different of 0 or 1
         //We need to do an other substraction
-        //We submit a new task with the new input
+        //We submit a new task with the new value of input
         if (input != 0 && input != 1)
         {
           // Default task options that will be used by each task if not overwritten when submitting tasks
@@ -106,6 +106,7 @@ namespace ArmoniK.Samples.LinearSubTasking.Worker
         else
         {
           // We get the result of the task using through the handler
+          // We send the final result to the client
           await taskHandler.SendResult(resultId,
                                        Encoding.ASCII.GetBytes($"{input}"))
                            .ConfigureAwait(false);

@@ -159,7 +159,7 @@ namespace ArmoniK.Samples.SubmitTask.Client
       await eventClient.WaitForResultsAsync(createSessionReply.SessionId,
                                             new List<string>
                                             {
-                                              resultId,
+                    resultId,
                                             },
                                             CancellationToken.None);
       // Download result
@@ -167,14 +167,17 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                                          resultId,
                                                          CancellationToken.None);
 
-      var res = Encoding.ASCII.GetString(result);
+      var res            = int.Parse(Encoding.ASCII.GetString(result));
       var expectedResult = integer % 2;
-      expectedResult = expectedResult < 0? expectedResult * -1 : expectedResult;
+      expectedResult = expectedResult < 0
+                         ? expectedResult * -1
+                         : expectedResult;
 
-      if (res != expectedResult.ToString())
+      if (res != expectedResult)
       {
         throw new ArithmeticException($"The result of {integer} % 2 is not equal to {Encoding.ASCII.GetString(result)} but to {expectedResult}");
       }
+
       Console.WriteLine($"resultId: {resultId}, data: {res}");
     }
 
