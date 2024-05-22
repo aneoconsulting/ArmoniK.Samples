@@ -322,6 +322,50 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process
   nameWithType: MultipleResultsWorker.Process
+- uid: ArmoniK.Samples.LinearSubTasking.Worker
+  name: ArmoniK.Samples.LinearSubTasking.Worker
+  href: api/ArmoniK.Samples.LinearSubTasking.Worker.html
+  commentId: N:ArmoniK.Samples.LinearSubTasking.Worker
+  fullName: ArmoniK.Samples.LinearSubTasking.Worker
+  nameWithType: ArmoniK.Samples.LinearSubTasking.Worker
+- uid: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker
+  name: SubTaskingWorker
+  href: api/ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.html
+  commentId: T:ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker
+  fullName: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker
+  nameWithType: SubTaskingWorker
+- uid: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name: SubTaskingWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  href: api/ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.html#ArmoniK_Samples_LinearSubTasking_Worker_SubTaskingWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Options_ComputePlane_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_
+  commentId: M:ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name.vb: New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  fullName: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.SubTaskingWorker(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  fullName.vb: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  nameWithType: SubTaskingWorker.SubTaskingWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  nameWithType.vb: SubTaskingWorker.New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+- uid: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.#ctor*
+  name: SubTaskingWorker
+  href: api/ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.html#ArmoniK_Samples_LinearSubTasking_Worker_SubTaskingWorker__ctor_
+  commentId: Overload:ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.SubTaskingWorker
+  fullName.vb: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.New
+  nameWithType: SubTaskingWorker.SubTaskingWorker
+  nameWithType.vb: SubTaskingWorker.New
+- uid: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  name: Process(ITaskHandler)
+  href: api/ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.html#ArmoniK_Samples_LinearSubTasking_Worker_SubTaskingWorker_Process_ArmoniK_Api_Worker_Worker_ITaskHandler_
+  commentId: M:ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  fullName: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  nameWithType: SubTaskingWorker.Process(ITaskHandler)
+- uid: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.Process*
+  name: Process
+  href: api/ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.html#ArmoniK_Samples_LinearSubTasking_Worker_SubTaskingWorker_Process_
+  commentId: Overload:ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.Process
+  isSpec: "True"
+  fullName: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.Process
+  nameWithType: SubTaskingWorker.Process
 - uid: ArmoniK.Samples.SubTasking.Worker
   name: ArmoniK.Samples.SubTasking.Worker
   href: api/ArmoniK.Samples.SubTasking.Worker.html

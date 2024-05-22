@@ -84,6 +84,26 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.LinearSubTasking.Worker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.LinearSubTasking.Worker.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.yml",
       "output": {
         ".html": {
