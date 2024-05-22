@@ -43,12 +43,10 @@ using ArmoniK.Api.gRPC.V1.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
-using static System.Console;
-
 
 namespace ArmoniK.Samples.SubmitTask.Client
 {
-  internal class Program
+  internal static class Program
   {
     /// <summary>
     ///   Method for sending task and retrieving their results from ArmoniK
@@ -102,7 +100,7 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                                              },
                                                            });
 
-      WriteLine($"sessionId: {createSessionReply.SessionId}");
+      Console.WriteLine($"sessionId: {createSessionReply.SessionId}");
 
       // Create the result metadata and keep the id for task submission
       var resultId = resultClient.CreateResultsMetaData(new CreateResultsMetaDataRequest
@@ -119,7 +117,7 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                  .Results.Single()
                                  .ResultId;
 
-      WriteLine($"resultId: {resultId}");
+      Console.WriteLine($"resultId: {resultId}");
 
 
       // Create the payload metadata (a result) and upload data at the same time
@@ -155,7 +153,7 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                                          },
                                                        });
 
-      WriteLine($"Task id: {submitTasksResponse.TaskInfos.Single().TaskId}");
+      Console.WriteLine($"Task id: {submitTasksResponse.TaskInfos.Single().TaskId}");
 
       // Wait for task end and result availability
       await eventClient.WaitForResultsAsync(createSessionReply.SessionId,
@@ -169,7 +167,15 @@ namespace ArmoniK.Samples.SubmitTask.Client
                                                          resultId,
                                                          CancellationToken.None);
 
-      WriteLine($"resultId: {resultId}, data: {Encoding.ASCII.GetString(result)}");
+      var res = Encoding.ASCII.GetString(result);
+      var expectedResult = integer % 2;
+      expectedResult = expectedResult < 0? expectedResult * -1 : expectedResult;
+
+      if (res != expectedResult.ToString())
+      {
+        throw new ArithmeticException($"The result of {integer} % 2 is not equal to {Encoding.ASCII.GetString(result)} but to {expectedResult}");
+      }
+      Console.WriteLine($"resultId: {resultId}, data: {res}");
     }
 
     public static async Task<int> Main(string[] args)
