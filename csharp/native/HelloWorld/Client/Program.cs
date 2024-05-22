@@ -47,7 +47,7 @@ using static System.Console;
 
 namespace ArmoniK.Samples.HelloWorld.Client
 {
-  internal class Program
+  internal static class Program
   {
     /// <summary>
     ///   Method for sending task and retrieving their results from ArmoniK

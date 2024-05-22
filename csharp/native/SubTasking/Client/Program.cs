@@ -46,7 +46,7 @@ using Google.Protobuf.WellKnownTypes;
 
 namespace ArmoniK.Samples.SubTasking.Client
 {
-  internal class Program
+  internal static class Program
   {
     /// <summary>
     ///   Method for sending task and retrieving their results from ArmoniK

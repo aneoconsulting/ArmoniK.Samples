@@ -46,7 +46,7 @@ using static System.Console;
 
 namespace ArmoniK.Samples.MultipleResults.Client
 {
-  internal class Program
+  internal static class Program
   {
     /// <summary>
     ///   Method for sending task and retrieving their results from ArmoniK
