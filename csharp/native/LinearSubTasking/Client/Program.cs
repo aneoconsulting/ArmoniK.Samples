@@ -43,7 +43,6 @@ using ArmoniK.Api.gRPC.V1.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
-
 namespace ArmoniK.Samples.SubmitTask.Client
 {
   internal static class Program
