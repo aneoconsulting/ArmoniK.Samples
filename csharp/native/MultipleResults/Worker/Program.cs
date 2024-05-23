@@ -23,7 +23,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using ArmoniK.Api.Worker.Utils;
-using ArmoniK.Samples.HelloWorld.Worker;
+using ArmoniK.Samples.MultipleResults.Worker;
 
 // Create the application and register the hello world example worker implementation
 WorkerServer.Create<MultipleResultsWorker>()

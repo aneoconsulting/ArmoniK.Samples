@@ -34,7 +34,7 @@ using ArmoniK.Api.Worker.Worker;
 
 using Microsoft.Extensions.Logging;
 
-namespace ArmoniK.Samples.HelloWorld.Worker
+namespace ArmoniK.Samples.MultipleResults.Worker
 {
   public class MultipleResultsWorker : WorkerStreamWrapper
   {
