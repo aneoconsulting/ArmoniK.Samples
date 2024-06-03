@@ -1,3 +1,4 @@
+
 // This file is part of the ArmoniK project
 //
 // Copyright (C) ANEO, 2021-$CURRENT_YEAR$. All rights reserved.
@@ -23,6 +24,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 
 using ArmoniK.Api.gRPC.V1;
@@ -113,6 +115,7 @@ namespace Armonik.Samples.StressTests.Client
                                                               1        / 3.0))
                                         .ToArray();
 
+      Logger.LogInformation($"Using client version: {Assembly.GetAssembly(typeof(IServiceInvocationHandler))?.GetName().Version}");
       Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbInputBytes / 1024.0} KB Total : {nbTasks * nbInputBytes / 1024.0} KB...   ===");
       var sw = Stopwatch.StartNew();
       var dt = DateTime.Now;
