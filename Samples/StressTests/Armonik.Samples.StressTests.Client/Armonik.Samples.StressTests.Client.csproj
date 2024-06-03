@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -8,7 +8,7 @@
     </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Armonik.DevelopmentKit.Client.Unified" Version="0.14.6" />
+    <PackageReference Include="Armonik.DevelopmentKit.Client.Unified" Version="0.14.7-01466g59235c58.6.59235c58" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="7.0.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />

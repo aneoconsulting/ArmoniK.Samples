@@ -102,7 +102,7 @@ namespace Armonik.Samples.StressTests.Client
     private ISubmitterService Service { get; }
 
     internal void LargePayloadSubmit(int    nbTasks          = 100,
-                                     long   nbInputBytes     = 64000,
+                                     long   nbInputBytes     = 256000,
                                      long   nbOutputBytes    = 8,
                                      int    workloadTimeInMs = 1,
                                      string jsonPath         = "")
