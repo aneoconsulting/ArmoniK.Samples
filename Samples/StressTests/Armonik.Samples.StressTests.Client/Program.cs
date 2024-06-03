@@ -91,7 +91,7 @@ namespace ArmoniK.Samples.Client
                                               () => "",
                                               "specify the partition to use for the session."),
                            new Option<int>("--nbTaskPerBuffer",
-                                           () => 50,
+                                           () => 10,
                                            "specify the number of task per buffer"),
                            new Option<int>("--nbBufferPerChannel",
                                            () => 5,
