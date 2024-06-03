@@ -114,8 +114,11 @@ namespace Armonik.Samples.StressTests.Client
                                         .Select(x => Math.Pow(42.0 * 8 / nbInputBytes,
                                                               1        / 3.0))
                                         .ToArray();
-
-      Logger.LogInformation($"Using client version: {Assembly.GetAssembly(typeof(IServiceInvocationHandler))?.GetName().FullName}");
+      var assembly = Assembly.GetAssembly(typeof(IServiceInvocationHandler));
+      var attributes = assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute),
+                                                    false);
+      var informationalVersion = (AssemblyInformationalVersionAttribute)attributes[0];
+      Logger.LogInformation($"Using client version: {informationalVersion.InformationalVersion}");
       Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbInputBytes / 1024.0} KB Total : {nbTasks * nbInputBytes / 1024.0} KB...   ===");
       var sw = Stopwatch.StartNew();
       var dt = DateTime.Now;
