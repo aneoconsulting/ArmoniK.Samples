@@ -30,9 +30,9 @@ using ArmoniK.Api.gRPC.V1.SortDirection;
 using ArmoniK.Api.gRPC.V1.Tasks;
 using ArmoniK.DevelopmentKit.Client.Common;
 
-using Google.Protobuf.WellKnownTypes;
-
 using Grpc.Core;
+
+using Google.Protobuf.WellKnownTypes;
 
 namespace Armonik.Samples.StressTests.Client.Metrics
 {
