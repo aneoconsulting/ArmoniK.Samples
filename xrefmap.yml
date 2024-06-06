@@ -284,44 +284,6 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.Process
   nameWithType: HelloWorldWorker.Process
-- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker
-  name: MultipleResultsWorker
-  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html
-  commentId: T:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker
-  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker
-  nameWithType: MultipleResultsWorker
-- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  name: MultipleResultsWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
-  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html#ArmoniK_Samples_HelloWorld_Worker_MultipleResultsWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Options_ComputePlane_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_
-  commentId: M:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  name.vb: New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
-  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.MultipleResultsWorker(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  fullName.vb: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
-  nameWithType: MultipleResultsWorker.MultipleResultsWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
-  nameWithType.vb: MultipleResultsWorker.New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
-- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor*
-  name: MultipleResultsWorker
-  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html#ArmoniK_Samples_HelloWorld_Worker_MultipleResultsWorker__ctor_
-  commentId: Overload:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.#ctor
-  isSpec: "True"
-  name.vb: New
-  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.MultipleResultsWorker
-  fullName.vb: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.New
-  nameWithType: MultipleResultsWorker.MultipleResultsWorker
-  nameWithType.vb: MultipleResultsWorker.New
-- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
-  name: Process(ITaskHandler)
-  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html#ArmoniK_Samples_HelloWorld_Worker_MultipleResultsWorker_Process_ArmoniK_Api_Worker_Worker_ITaskHandler_
-  commentId: M:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
-  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
-  nameWithType: MultipleResultsWorker.Process(ITaskHandler)
-- uid: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process*
-  name: Process
-  href: api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html#ArmoniK_Samples_HelloWorld_Worker_MultipleResultsWorker_Process_
-  commentId: Overload:ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process
-  isSpec: "True"
-  fullName: ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.Process
-  nameWithType: MultipleResultsWorker.Process
 - uid: ArmoniK.Samples.LinearSubTasking.Worker
   name: ArmoniK.Samples.LinearSubTasking.Worker
   href: api/ArmoniK.Samples.LinearSubTasking.Worker.html
@@ -366,6 +328,50 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.Process
   nameWithType: SubTaskingWorker.Process
+- uid: ArmoniK.Samples.MultipleResults.Worker
+  name: ArmoniK.Samples.MultipleResults.Worker
+  href: api/ArmoniK.Samples.MultipleResults.Worker.html
+  commentId: N:ArmoniK.Samples.MultipleResults.Worker
+  fullName: ArmoniK.Samples.MultipleResults.Worker
+  nameWithType: ArmoniK.Samples.MultipleResults.Worker
+- uid: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker
+  name: MultipleResultsWorker
+  href: api/ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.html
+  commentId: T:ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker
+  fullName: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker
+  nameWithType: MultipleResultsWorker
+- uid: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name: MultipleResultsWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  href: api/ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.html#ArmoniK_Samples_MultipleResults_Worker_MultipleResultsWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Options_ComputePlane_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_
+  commentId: M:ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name.vb: New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  fullName: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.MultipleResultsWorker(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  fullName.vb: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  nameWithType: MultipleResultsWorker.MultipleResultsWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  nameWithType.vb: MultipleResultsWorker.New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+- uid: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.#ctor*
+  name: MultipleResultsWorker
+  href: api/ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.html#ArmoniK_Samples_MultipleResults_Worker_MultipleResultsWorker__ctor_
+  commentId: Overload:ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.MultipleResultsWorker
+  fullName.vb: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.New
+  nameWithType: MultipleResultsWorker.MultipleResultsWorker
+  nameWithType.vb: MultipleResultsWorker.New
+- uid: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  name: Process(ITaskHandler)
+  href: api/ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.html#ArmoniK_Samples_MultipleResults_Worker_MultipleResultsWorker_Process_ArmoniK_Api_Worker_Worker_ITaskHandler_
+  commentId: M:ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  fullName: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  nameWithType: MultipleResultsWorker.Process(ITaskHandler)
+- uid: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.Process*
+  name: Process
+  href: api/ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.html#ArmoniK_Samples_MultipleResults_Worker_MultipleResultsWorker_Process_
+  commentId: Overload:ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.Process
+  isSpec: "True"
+  fullName: ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.Process
+  nameWithType: MultipleResultsWorker.Process
 - uid: ArmoniK.Samples.SubTasking.Worker
   name: ArmoniK.Samples.SubTasking.Worker
   href: api/ArmoniK.Samples.SubTasking.Worker.html

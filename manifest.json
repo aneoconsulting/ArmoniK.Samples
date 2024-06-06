@@ -64,16 +64,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ArmoniK.Samples.HelloWorld.Worker.MultipleResultsWorker.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/ArmoniK.Samples.HelloWorld.Worker.yml",
       "output": {
         ".html": {
@@ -98,6 +88,26 @@
       "output": {
         ".html": {
           "relative_path": "api/ArmoniK.Samples.LinearSubTasking.Worker.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.MultipleResults.Worker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.MultipleResults.Worker.html"
         }
       },
       "version": ""
