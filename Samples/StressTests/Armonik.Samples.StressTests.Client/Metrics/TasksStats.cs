@@ -32,8 +32,6 @@ using ArmoniK.DevelopmentKit.Client.Common;
 
 using Google.Protobuf.WellKnownTypes;
 
-using Grpc.Core;
-
 namespace Armonik.Samples.StressTests.Client.Metrics
 {
   internal class TasksStats
