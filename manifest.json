@@ -54,6 +54,46 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.DynamicSubmission.Common.Table.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.DynamicSubmission.Common.Table.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.DynamicSubmission.Common.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.DynamicSubmission.Common.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ArmoniK.Samples.DynamicSubmission.Worker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ArmoniK.Samples.DynamicSubmission.Worker.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.yml",
       "output": {
         ".html": {

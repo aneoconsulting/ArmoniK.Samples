@@ -240,6 +240,167 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Common.Utils.PeriodicInfo
   nameWithType: Utils.PeriodicInfo
+- uid: ArmoniK.Samples.DynamicSubmission.Common
+  name: ArmoniK.Samples.DynamicSubmission.Common
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.html
+  commentId: N:ArmoniK.Samples.DynamicSubmission.Common
+  fullName: ArmoniK.Samples.DynamicSubmission.Common
+  nameWithType: ArmoniK.Samples.DynamicSubmission.Common
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table
+  name: Table
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html
+  commentId: T:ArmoniK.Samples.DynamicSubmission.Common.Table
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table
+  nameWithType: Table
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.#ctor
+  name: Table()
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table__ctor
+  commentId: M:ArmoniK.Samples.DynamicSubmission.Common.Table.#ctor
+  name.vb: New()
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Table()
+  fullName.vb: ArmoniK.Samples.DynamicSubmission.Common.Table.New()
+  nameWithType: Table.Table()
+  nameWithType.vb: Table.New()
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.#ctor(System.UInt32,System.UInt32)
+  name: Table(uint, uint)
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table__ctor_System_UInt32_System_UInt32_
+  commentId: M:ArmoniK.Samples.DynamicSubmission.Common.Table.#ctor(System.UInt32,System.UInt32)
+  name.vb: New(UInteger, UInteger)
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Table(uint, uint)
+  fullName.vb: ArmoniK.Samples.DynamicSubmission.Common.Table.New(UInteger, UInteger)
+  nameWithType: Table.Table(uint, uint)
+  nameWithType.vb: Table.New(UInteger, UInteger)
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.#ctor(System.UInt32,System.UInt32,System.UInt32)
+  name: Table(uint, uint, uint)
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table__ctor_System_UInt32_System_UInt32_System_UInt32_
+  commentId: M:ArmoniK.Samples.DynamicSubmission.Common.Table.#ctor(System.UInt32,System.UInt32,System.UInt32)
+  name.vb: New(UInteger, UInteger, UInteger)
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Table(uint, uint, uint)
+  fullName.vb: ArmoniK.Samples.DynamicSubmission.Common.Table.New(UInteger, UInteger, UInteger)
+  nameWithType: Table.Table(uint, uint, uint)
+  nameWithType.vb: Table.New(UInteger, UInteger, UInteger)
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.#ctor*
+  name: Table
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table__ctor_
+  commentId: Overload:ArmoniK.Samples.DynamicSubmission.Common.Table.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Table
+  fullName.vb: ArmoniK.Samples.DynamicSubmission.Common.Table.New
+  nameWithType: Table.Table
+  nameWithType.vb: Table.New
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.Deserialize(System.Byte[])
+  name: Deserialize(byte[])
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table_Deserialize_System_Byte___
+  commentId: M:ArmoniK.Samples.DynamicSubmission.Common.Table.Deserialize(System.Byte[])
+  name.vb: Deserialize(Byte())
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Deserialize(byte[])
+  fullName.vb: ArmoniK.Samples.DynamicSubmission.Common.Table.Deserialize(Byte())
+  nameWithType: Table.Deserialize(byte[])
+  nameWithType.vb: Table.Deserialize(Byte())
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.Deserialize*
+  name: Deserialize
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table_Deserialize_
+  commentId: Overload:ArmoniK.Samples.DynamicSubmission.Common.Table.Deserialize
+  isSpec: "True"
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Deserialize
+  nameWithType: Table.Deserialize
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.Serialize
+  name: Serialize()
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table_Serialize
+  commentId: M:ArmoniK.Samples.DynamicSubmission.Common.Table.Serialize
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Serialize()
+  nameWithType: Table.Serialize()
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.Serialize*
+  name: Serialize
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table_Serialize_
+  commentId: Overload:ArmoniK.Samples.DynamicSubmission.Common.Table.Serialize
+  isSpec: "True"
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Serialize
+  nameWithType: Table.Serialize
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.Size
+  name: Size
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table_Size
+  commentId: P:ArmoniK.Samples.DynamicSubmission.Common.Table.Size
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Size
+  nameWithType: Table.Size
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.Size*
+  name: Size
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table_Size_
+  commentId: Overload:ArmoniK.Samples.DynamicSubmission.Common.Table.Size
+  isSpec: "True"
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Size
+  nameWithType: Table.Size
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.Threshold
+  name: Threshold
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table_Threshold
+  commentId: P:ArmoniK.Samples.DynamicSubmission.Common.Table.Threshold
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Threshold
+  nameWithType: Table.Threshold
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.Threshold*
+  name: Threshold
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table_Threshold_
+  commentId: Overload:ArmoniK.Samples.DynamicSubmission.Common.Table.Threshold
+  isSpec: "True"
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Threshold
+  nameWithType: Table.Threshold
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.Values
+  name: Values
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table_Values
+  commentId: P:ArmoniK.Samples.DynamicSubmission.Common.Table.Values
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Values
+  nameWithType: Table.Values
+- uid: ArmoniK.Samples.DynamicSubmission.Common.Table.Values*
+  name: Values
+  href: api/ArmoniK.Samples.DynamicSubmission.Common.Table.html#ArmoniK_Samples_DynamicSubmission_Common_Table_Values_
+  commentId: Overload:ArmoniK.Samples.DynamicSubmission.Common.Table.Values
+  isSpec: "True"
+  fullName: ArmoniK.Samples.DynamicSubmission.Common.Table.Values
+  nameWithType: Table.Values
+- uid: ArmoniK.Samples.DynamicSubmission.Worker
+  name: ArmoniK.Samples.DynamicSubmission.Worker
+  href: api/ArmoniK.Samples.DynamicSubmission.Worker.html
+  commentId: N:ArmoniK.Samples.DynamicSubmission.Worker
+  fullName: ArmoniK.Samples.DynamicSubmission.Worker
+  nameWithType: ArmoniK.Samples.DynamicSubmission.Worker
+- uid: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker
+  name: DynamicSubmissionWorker
+  href: api/ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.html
+  commentId: T:ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker
+  fullName: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker
+  nameWithType: DynamicSubmissionWorker
+- uid: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name: DynamicSubmissionWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  href: api/ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.html#ArmoniK_Samples_DynamicSubmission_Worker_DynamicSubmissionWorker__ctor_Microsoft_Extensions_Logging_ILoggerFactory_ArmoniK_Api_Common_Options_ComputePlane_ArmoniK_Api_Common_Channel_Utils_GrpcChannelProvider_
+  commentId: M:ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,ArmoniK.Api.Common.Options.ComputePlane,ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  name.vb: New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  fullName: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.DynamicSubmissionWorker(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  fullName.vb: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.New(Microsoft.Extensions.Logging.ILoggerFactory, ArmoniK.Api.Common.Options.ComputePlane, ArmoniK.Api.Common.Channel.Utils.GrpcChannelProvider)
+  nameWithType: DynamicSubmissionWorker.DynamicSubmissionWorker(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+  nameWithType.vb: DynamicSubmissionWorker.New(ILoggerFactory, ComputePlane, GrpcChannelProvider)
+- uid: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.#ctor*
+  name: DynamicSubmissionWorker
+  href: api/ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.html#ArmoniK_Samples_DynamicSubmission_Worker_DynamicSubmissionWorker__ctor_
+  commentId: Overload:ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.DynamicSubmissionWorker
+  fullName.vb: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.New
+  nameWithType: DynamicSubmissionWorker.DynamicSubmissionWorker
+  nameWithType.vb: DynamicSubmissionWorker.New
+- uid: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  name: Process(ITaskHandler)
+  href: api/ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.html#ArmoniK_Samples_DynamicSubmission_Worker_DynamicSubmissionWorker_Process_ArmoniK_Api_Worker_Worker_ITaskHandler_
+  commentId: M:ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  fullName: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.Process(ArmoniK.Api.Worker.Worker.ITaskHandler)
+  nameWithType: DynamicSubmissionWorker.Process(ITaskHandler)
+- uid: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.Process*
+  name: Process
+  href: api/ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.html#ArmoniK_Samples_DynamicSubmission_Worker_DynamicSubmissionWorker_Process_
+  commentId: Overload:ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.Process
+  isSpec: "True"
+  fullName: ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.Process
+  nameWithType: DynamicSubmissionWorker.Process
 - uid: ArmoniK.Samples.HelloWorld.Worker
   name: ArmoniK.Samples.HelloWorld.Worker
   href: api/ArmoniK.Samples.HelloWorld.Worker.html
