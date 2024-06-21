@@ -36,7 +36,11 @@ using ArmoniK.Samples.Common;
 
 using Armonik.Samples.StressTests.Client.Metrics;
 
+using ArmoniK.Utils;
+
 using Google.Protobuf.WellKnownTypes;
+
+using Grpc.Net.Client;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -45,7 +49,7 @@ namespace Armonik.Samples.StressTests.Client
 {
   internal class StressTests
   {
-    private readonly ChannelPool channelPool_;
+    private readonly ObjectPool<GrpcChannel> channelPool_;
 
     public StressTests(IConfiguration configuration,
                        ILoggerFactory factory,
@@ -134,7 +138,7 @@ namespace Armonik.Samples.StressTests.Client
                                  workloadTimeInMs,
                                  Props);
 
-      using var channel = channelPool_.GetChannel();
+      using var channel = channelPool_.Get();
       stats.GetAllStats(channel,
                         Service.SessionId,
                         dt,
@@ -175,21 +179,17 @@ namespace Armonik.Samples.StressTests.Client
                                               Logger.LogInformation($"Got {ResultHandle.NbResults} results. All tasks submitted ? {(indexTask == nbTasks).ToString()}");
                                             },
                                             elapsed);
+      var taskIds = Enumerable.Range(0,
+                                     nbTasks)
+                              .ParallelSelect(new ParallelTaskOptions(-1),
+                                              idx => Service.SubmitAsync("ComputeWorkLoad",
+                                                                         Utils.ParamsHelper(inputArrayOfBytes,
+                                                                                            nbOutputBytes,
+                                                                                            workloadTimeInMs),
+                                                                         ResultHandle))
+                              .ToHashSetAsync()
+                              .Result;
 
-      var result = Enumerable.Range(0,
-                                    nbTasks)
-                             .Chunk(nbTasks / Props.MaxParallelChannels)
-                             .AsParallel()
-                             .Select(subInt => subInt.Select(idx => Service.SubmitAsync("ComputeWorkLoad",
-                                                                                        Utils.ParamsHelper(inputArrayOfBytes,
-                                                                                                           nbOutputBytes,
-                                                                                                           workloadTimeInMs),
-                                                                                        ResultHandle))
-                                                     .ToList());
-
-      var taskIds = result.SelectMany(t => Task.WhenAll(t)
-                                               .Result)
-                          .ToHashSet();
 
       indexTask = taskIds.Count();
 
