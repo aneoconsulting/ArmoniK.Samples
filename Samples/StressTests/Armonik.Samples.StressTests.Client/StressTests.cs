@@ -33,6 +33,9 @@ using ArmoniK.DevelopmentKit.Client.Common.Submitter;
 using ArmoniK.DevelopmentKit.Client.Unified.Factory;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.Samples.Common;
+using ArmoniK.Utils;
+
+using Grpc.Net.Client;
 
 using Armonik.Samples.StressTests.Client.Metrics;
 
@@ -41,11 +44,12 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
+
 namespace Armonik.Samples.StressTests.Client
 {
   internal class StressTests
   {
-    private readonly ChannelPool channelPool_;
+    private readonly ObjectPool<GrpcChannel>? channelPool_;
 
     public StressTests(IConfiguration configuration,
                        ILoggerFactory factory,
