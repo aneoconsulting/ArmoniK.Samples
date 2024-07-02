@@ -4,7 +4,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["SubTasking/Worker/ArmoniK.Samples.SubTasking.Worker.csproj", "SubTasking/Worker/"]
 RUN dotnet restore "SubTasking/Worker/ArmoniK.Samples.SubTasking.Worker.csproj"
