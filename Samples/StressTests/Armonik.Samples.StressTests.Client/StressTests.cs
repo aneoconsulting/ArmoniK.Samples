@@ -1,6 +1,6 @@
 // This file is part of the ArmoniK project
 //
-// Copyright (C) ANEO, 2021-$CURRENT_YEAR$. All rights reserved.
+// Copyright (C) ANEO, 2021-2024. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -33,17 +33,17 @@ using ArmoniK.DevelopmentKit.Client.Common.Submitter;
 using ArmoniK.DevelopmentKit.Client.Unified.Factory;
 using ArmoniK.DevelopmentKit.Common;
 using ArmoniK.Samples.Common;
-using ArmoniK.Utils;
-
-using Grpc.Net.Client;
 
 using Armonik.Samples.StressTests.Client.Metrics;
 
+using ArmoniK.Utils;
+
 using Google.Protobuf.WellKnownTypes;
+
+using Grpc.Net.Client;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
 
 namespace Armonik.Samples.StressTests.Client
 {
