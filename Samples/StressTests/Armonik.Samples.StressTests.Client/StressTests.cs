@@ -138,7 +138,7 @@ namespace Armonik.Samples.StressTests.Client
                                  workloadTimeInMs,
                                  Props);
 
-      using var channel = channelPool_.GetChannel();
+      using var channel = channelPool_.Get();
       stats.GetAllStats(channel,
                         Service.SessionId,
                         dt,
