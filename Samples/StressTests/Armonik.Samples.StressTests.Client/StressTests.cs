@@ -1,6 +1,6 @@
 // This file is part of the ArmoniK project
 //
-// Copyright (C) ANEO, 2021-$CURRENT_YEAR$. All rights reserved.
+// Copyright (C) ANEO, 2021-2024. All rights reserved.
 //   W. Kirschenmann   <wkirschenmann@aneo.fr>
 //   J. Gurhem         <jgurhem@aneo.fr>
 //   D. Dubuc          <ddubuc@aneo.fr>
@@ -36,7 +36,11 @@ using ArmoniK.Samples.Common;
 
 using Armonik.Samples.StressTests.Client.Metrics;
 
+using ArmoniK.Utils;
+
 using Google.Protobuf.WellKnownTypes;
+
+using Grpc.Net.Client;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -45,7 +49,7 @@ namespace Armonik.Samples.StressTests.Client
 {
   internal class StressTests
   {
-    private readonly ChannelPool channelPool_;
+    private readonly ObjectPool<GrpcChannel>? channelPool_;
 
     public StressTests(IConfiguration configuration,
                        ILoggerFactory factory,
@@ -134,7 +138,7 @@ namespace Armonik.Samples.StressTests.Client
                                  workloadTimeInMs,
                                  Props);
 
-      using var channel = channelPool_.GetChannel();
+      using var channel = channelPool_.Get();
       stats.GetAllStats(channel,
                         Service.SessionId,
                         dt,
