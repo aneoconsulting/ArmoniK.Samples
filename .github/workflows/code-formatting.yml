@@ -51,3 +51,40 @@ jobs:
       with:
         name: patch-csharp
         path: ./patch-csharp.diff
+
+  format-python:
+    name: Check linting and formatting
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        with:
+          fetch-depth: 0
+
+      - name: install uv
+        run: python3 -m pip install uv
+
+      - name: Install dependencies
+        run: python3 -m uv pip install ruff
+
+      - name: Lint
+        run: python3 -m ruff check .
+
+      - name: Check format
+        run: python3 -m ruff format .
+
+      - name: Check Diff
+        run: |
+          DIFF="$(git diff --name-only)"
+
+          if [ -z "$DIFF" ]; then
+            echo "OK: Format is clean"
+          else
+            echo "Error: Format was not clean"
+            echo "List of files:"
+            echo "$DIFF"
+            git diff
+            exit 1
+          fi
