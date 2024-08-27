@@ -196,8 +196,7 @@ jobs:
         with:
             working-directory: ${{ github.workspace }}/infra
             type: localhost
-            ext-csharp-version: 0.18.0
-            core-version: 0.24.2
+            log-suffix: ${{ matrix.demo }}
          
       - name: Run Demo Client
         run: |
@@ -217,6 +216,8 @@ jobs:
 
       fail-fast: false
     runs-on: ubuntu-latest
+    env:
+      ARMONIK_SHARED_HOST_PATH: ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data/
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
@@ -243,19 +244,17 @@ jobs:
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
-          ext-csharp-version: 0.18.0
-          core-version: 0.24.2
+          shared-data-folder: ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data/
+          log-suffix: infraWorker
 
       - name: Run UnifiedAPI
         run: |
          cd tools/tests
-         mkdir -p ${HOME}/data
          bash -x ./unified_api.sh
 
       - name: Run StressTests
         run: |
          cd tools/tests
-         mkdir -p ${HOME}/data
          bash -x ./stress-tests.sh -- stressTest ${{ matrix.scenario }}
       - name: Copy logs
         if: always()
@@ -263,7 +262,7 @@ jobs:
         run: |
           set -e
           mkdir -p /tmp/armoniklogs
-          sudo cp -rL /var/log/pods/armonik_* /tmp/armoniklogs
+          sudo find /var/log/pods/ -maxdepth 1 -iname 'armonik_*' -exec cp -rL '{}' /tmp/armoniklogs/ ';'
           sudo chown $USER -R /tmp/armoniklogs
           find /tmp/armoniklogs -name "*.log"
 
