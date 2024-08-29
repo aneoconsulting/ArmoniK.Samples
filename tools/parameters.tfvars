@@ -370,25 +370,37 @@ ingress = {
   generate_client_cert = false
 }
 
-extra_conf = {
+configurations = {
   core = {
-    Amqp__AllowHostMismatch                    = true
-    Amqp__MaxPriority                          = "10"
-    Amqp__MaxRetries                           = "5"
-    Amqp__QueueStorage__LockRefreshPeriodicity = "00:00:45"
-    Amqp__QueueStorage__PollPeriodicity        = "00:00:10"
-    Amqp__QueueStorage__LockRefreshExtension   = "00:02:00"
-    MongoDB__TableStorage__PollingDelayMin     = "00:00:01"
-    MongoDB__TableStorage__PollingDelayMax     = "00:00:10"
-    MongoDB__AllowInsecureTls                  = true
-    MongoDB__TableStorage__PollingDelay        = "00:00:01"
-    MongoDB__DataRetention                     = "10.00:00:00"
-    Redis__Timeout                             = 30000
-    Redis__SslHost                             = "127.0.0.1"
+    env = {
+      Amqp__AllowHostMismatch                    = true
+      Amqp__MaxPriority                          = "10"
+      Amqp__MaxRetries                           = "5"
+      Amqp__QueueStorage__LockRefreshPeriodicity = "00:00:45"
+      Amqp__QueueStorage__PollPeriodicity        = "00:00:10"
+      Amqp__QueueStorage__LockRefreshExtension   = "00:02:00"
+      MongoDB__TableStorage__PollingDelayMin     = "00:00:01"
+      MongoDB__TableStorage__PollingDelayMax     = "00:00:10"
+      MongoDB__AllowInsecureTls                  = true
+      MongoDB__TableStorage__PollingDelay        = "00:00:01"
+      MongoDB__DataRetention                     = "1.00:00:00"
+      Redis__Timeout                             = 30000
+      Redis__SslHost                             = "127.0.0.1"
+      Redis__TtlTimeSpan                         = "1.00:00:00"
+      Submitter__DeletePayload                   = true
+    }
   }
   control = {
-    Submitter__MaxErrorAllowed = 50
+    env = {
+      Submitter__MaxErrorAllowed = 50
+    }
   }
+  worker = {
+    env = {
+      target_zip_path = "/tmp"
+    }
+  }
+  jobs = { env = { MongoDB__DataRetention = "1.00:00:00" } }
 }
 
 environment_description = {
@@ -396,4 +408,8 @@ environment_description = {
   version     = "0.0.0"
   description = "Local development environment"
   color       = "blue"
+}
+
+static = {
+  gui_configuration = {}
 }
