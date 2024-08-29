@@ -244,7 +244,7 @@ jobs:
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
-          shared-data-folder: ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data/
+          shared-data-folder: ${{ env.ARMONIK_SHARED_HOST_PATH }}
           log-suffix: infraWorker
 
       - name: Run UnifiedAPI
