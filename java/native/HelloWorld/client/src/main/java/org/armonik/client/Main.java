@@ -25,20 +25,18 @@ import io.grpc.ManagedChannelBuilder;
 
 public class Main {
         public static void main(String[] args) throws InterruptedException {
+
                 // Creating a managed channel to connect to the server
                 ManagedChannel managedChannel = ManagedChannelBuilder.forAddress("::ffff:172.30.37.125", 5001)
                                 .usePlaintext()
+                                .intercept()
                                 .build();
 
                 // Creating a synchronous session to interact with sessions
                 SessionsBlockingStub sessionClient = SessionsGrpc.newBlockingStub(managedChannel);
 
-                // SessionClient sessionClient = new SessionClient(managedChannel);
-
                 // Creating a synchronous task client for task submission
                 TasksBlockingStub taskClient = TasksGrpc.newBlockingStub(managedChannel);
-
-                // TaskClient taskClient = new TaskClient(managedChannel);
 
                 // Define the payload to send
                 byte[] payload = new byte[0];
@@ -56,7 +54,6 @@ public class Main {
                                 .putOptions("PayloadSize", String.valueOf(payload.length))
                                 .putOptions("ResultSize", "10")
                                 .build();
-
                 // Creating a session and obtaining its ID
                 String sessionId = sessionClient.createSession(CreateSessionRequest.newBuilder()
                                 .setDefaultTaskOption(taskOptions)
