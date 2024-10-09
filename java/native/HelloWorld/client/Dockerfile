@@ -1,11 +1,14 @@
-# Use the OpenJDK image as the base image
-FROM openjdk:24-slim
+# First Stage: Build the application
+FROM maven:3.9.9-amazoncorretto-17-alpine AS build
+WORKDIR /build
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Set the working directory inside the container
+# Second Stage: Runtime environment (use JRE for a smaller image)
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-
-# Copy the application JAR file into the container
-COPY target/java-client-sample-0.1.0.jar /app/client.jar
+COPY --from=build /build/target/java-client-sample-0.1.0.jar /app/client.jar
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "/app/client.jar"]
