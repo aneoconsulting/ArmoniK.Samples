@@ -32,6 +32,9 @@ public class Main implements Runnable {
         @Option(names = "--endpoint", description = "Endpoint for the connection to ArmoniK control plane. Format: http://<host>:<port>", defaultValue = "http://localhost:5001")
         private String endpoint;
 
+        @Option(names = "--partition", description = "Name of the partition to which submit tasks.", defaultValue = "bench")
+        private String partition;
+
         public static void main(String[] args) throws InterruptedException {
                 int exitCode = new CommandLine(new Main()).execute(args);
                 System.exit(exitCode);
@@ -64,7 +67,7 @@ public class Main implements Runnable {
                         byte[] payload = new byte[0];
 
                         // Define the partition
-                        String partitionId = "bench";
+                        String partitionId = partition;
 
                         // Defining options for the task
                         TaskOptions taskOptions = TaskOptions.newBuilder()
@@ -73,7 +76,7 @@ public class Main implements Runnable {
                                         .setPriority(1)
                                         .setPartitionId(partitionId)
                                         .putOptions("PayloadSize", String.valueOf(payload.length))
-                                        .putOptions("ResultSize", "10")
+                                        .putOptions("ResultSize", "1")
                                         .build();
                         // Creating a session and obtaining its ID
                         String sessionId = sessionClient.createSession(CreateSessionRequest.newBuilder()
@@ -158,7 +161,13 @@ public class Main implements Runnable {
                                 binaryStringBuilder.append(binaryString);
                         }
                         String result = binaryStringBuilder.toString();
-                        System.out.println("DATA DOWNLOADED: " + result);
+                        int maxCharactersToPrint = 100;
+                        String limitedResult = result.length() > maxCharactersToPrint
+                                        ? result.substring(0, maxCharactersToPrint)
+                                        : result;
+
+                        System.out.println("DATA DOWNLOADED (first " + maxCharactersToPrint + " characters): "
+                                        + limitedResult);
 
                 } catch (MalformedURLException e) {
                         System.err.println("Invalid endpoint format. Expected format: http://<host>:<port>");
