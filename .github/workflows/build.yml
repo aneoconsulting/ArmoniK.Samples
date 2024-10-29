@@ -199,8 +199,8 @@ jobs:
         with:
             working-directory: ${{ github.workspace }}/infra
             type: localhost
-            ext-csharp-version: 0.18.0
-            core-version: 0.24.4
+            ext-csharp-version: 0.12.11
+            core-version: 0.27.1
             log-suffix: ${{ matrix.demo }}
          
       - name: Run Demo Client
@@ -244,8 +244,8 @@ jobs:
         with:
             working-directory: ${{ github.workspace }}/infra
             type: localhost
-            ext-csharp-version: 0.18.0
-            core-version: 0.24.4
+            ext-csharp-version: 0.12.11
+            core-version: 0.27.1
             log-suffix: javaHelloWorld
       
       - name: Run Demo java Client
@@ -293,8 +293,8 @@ jobs:
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
-          ext-csharp-version: 0.18.0
-          core-version: 0.24.4
+          ext-csharp-version: 0.12.11
+          core-version: 0.27.1
           shared-data-folder: ${{ env.ARMONIK_SHARED_HOST_PATH }}
           log-suffix: infraWorker
 
