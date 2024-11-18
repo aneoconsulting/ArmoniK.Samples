@@ -16,7 +16,6 @@ def processor(task_handler: TaskHandler) -> Output:
     using recursive subtasking to handle large exponents.
     """
     logger.info("Handling the Task")
-
     payload = task_handler.payload
     payload = payload.decode().split(",")
 
@@ -37,42 +36,30 @@ def processor(task_handler: TaskHandler) -> Output:
                 "Negative exponent detected, will compute reciprocal at the end"
             )
 
-        # Handle special cases
-        if base == 0 and exponent == 0:
-            result = 1  # Define 0^0 as 1
-            logger.info(f"Computed {base}^{exponent} = {result}")
-            task_handler.send_results(
-                {task_handler.expected_results[0]: str(result).encode()}
-            )
-            return Output()
-        elif base == 0:
-            if exponent > 0:
-                result = 0
-                logger.info(f"Computed {base}^{exponent} = {result}")
-                task_handler.send_results(
-                    {task_handler.expected_results[0]: str(result).encode()}
-                )
-                return Output()
-            else:
-                error_message = "Undefined result: 0 raised to a negative exponent."
-                logger.error(error_message)
-                task_handler.send_results(
-                    {task_handler.expected_results[0]: error_message.encode()}
-                )
-                return Output()
-
-        # Base cases
         if exponent == 0:
             result = 1
-            if negative_exponent:
-                result = 1 / result
             logger.info(
                 f"Computed {base}^{'-' if negative_exponent else ''}{exponent} = {result}"
             )
             task_handler.send_results(
                 {task_handler.expected_results[0]: str(result).encode()}
             )
-        elif exponent == 1:
+
+        if base == 0:
+            if exponent > 0:
+                result = 0
+                logger.info(f"Computed {base}^{exponent} = {result}")
+                task_handler.send_results(
+                    {task_handler.expected_results[0]: str(result).encode()}
+                )
+            else:
+                error_message = "Undefined result: 0 raised to a negative exponent."
+                logger.error(error_message)
+                task_handler.send_results(
+                    {task_handler.expected_results[0]: error_message.encode()}
+                )
+
+        elif exponent == 1 and base != 0:
             result = base
             if negative_exponent:
                 result = 1 / result
@@ -93,9 +80,8 @@ def processor(task_handler: TaskHandler) -> Output:
                 {task_handler.expected_results[0]: str(result).encode()}
             )
         else:
-            # Exponent > 2, proceed with subtasking
             parallel_tasks = None
-            even = exponent % 2 == 0
+            odd = exponent % 2 != 0
             if exponent % 2 == 0:
                 parallel_tasks = exponent // 2
             else:
@@ -111,7 +97,7 @@ def processor(task_handler: TaskHandler) -> Output:
                 new_payload = task_handler.create_results(
                     {
                         "payload": f"{base},{2}".encode(),
-                        "aggregation_payload": f"{base},{even},{negative_exponent}".encode(),
+                        "aggregation_payload": f"{base},{odd},{negative_exponent}".encode(),
                     }
                 )
 
@@ -121,42 +107,36 @@ def processor(task_handler: TaskHandler) -> Output:
                 )
                 subtasks.append(subtask)
 
+            sub_results_ids = [
+                new_results[f"sub_result_{i}"].result_id for i in range(parallel_tasks)
+            ]
             aggregate = TaskDefinition(
                 new_payload["aggregation_payload"].result_id,
                 task_handler.expected_results,
-                data_dependencies=[
-                    new_results[f"sub_result_{i}"].result_id
-                    for i in range(parallel_tasks)
-                ],
+                data_dependencies=sub_results_ids,
             )
             subtasks.append(aggregate)
             task_handler.submit_tasks(subtasks)
     else:
-        # Continue processing after subtask completion
         logger.info("Processing subtask result")
-        # Retrieve sub_result from data dependencies
-        print("task_handler.data_dependencies:", task_handler.data_dependencies)
-        sub_results = [
-            int.from_bytes(v, "little") for v in task_handler.data_dependencies.values()
-        ]
-        logger.info(f"Retrieved subtask result: {sub_results}")
-        logger.info(f"Expected results: {task_handler.expected_results}")
-        print("sub_results:", sub_results)
+        keys = list(task_handler.data_dependencies.keys())
+        sub_results = []
+        for key in keys:
+            sub_results.append(int(task_handler.data_dependencies[key].decode()))
+
         result = 1
         for sub_result in sub_results:
             result *= sub_result
+
         logger.info(f"Computed result: {result}")
 
-        options = task_handler.aggregation_payload.decode().split(",")
+        options = task_handler.payload.decode().split(",")
         base = int(options[0])
-        even = options[1] == "True"
+        odd = options[1] == "True"
         negative_exponent = options[2] == "True"
 
-        # Compute the result
-        logger.info(f"Sub_result squared: {result}")
-
         # If exponent was odd, multiply by base once more
-        if not even:
+        if odd:
             result *= base
             logger.info(f"Multiplied by base due to odd exponent: {result}")
 
@@ -170,7 +150,7 @@ def processor(task_handler: TaskHandler) -> Output:
         task_handler.send_results(
             {task_handler.expected_results[0]: str(result).encode()}
         )
-        return Output()
+    return Output()
 
 
 def main():
