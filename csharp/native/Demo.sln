@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -33,6 +33,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.DynamicSubmission.Worker", "DynamicSubmission\Worker\ArmoniK.Samples.DynamicSubmission.Worker.csproj", "{E4D6823B-A818-4467-B754-35080A4A604A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArmoniK.Samples.DynamicSubmission.Common", "DynamicSubmission\Common\ArmoniK.Samples.DynamicSubmission.Common.csproj", "{B8F50D13-B9BD-4032-B2EB-F0D401626E64}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LinearMultiplicationSubTasking", "LinearMultiplicationSubTasking", "{673EEF0E-75FD-4AF3-870C-2DFA1F355ADE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmoniK.Samples.LinearMultiplicationSubTasking.Worker", "LinearMultiplicationSubTasking\Worker\ArmoniK.Samples.LinearMultiplicationSubTasking.Worker.csproj", "{311D68A3-8B9F-4875-BDD8-1B5DE5ED7944}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmoniK.Samples.LinearMultiplicationSubTasking.Client", "LinearMultiplicationSubTasking\Client\ArmoniK.Samples.LinearMultiplicationSubTasking.Client.csproj", "{8DC51753-FF8F-46A8-8C9F-D537A1874624}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,6 +90,14 @@ Global
 		{B8F50D13-B9BD-4032-B2EB-F0D401626E64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8F50D13-B9BD-4032-B2EB-F0D401626E64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8F50D13-B9BD-4032-B2EB-F0D401626E64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{311D68A3-8B9F-4875-BDD8-1B5DE5ED7944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{311D68A3-8B9F-4875-BDD8-1B5DE5ED7944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{311D68A3-8B9F-4875-BDD8-1B5DE5ED7944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{311D68A3-8B9F-4875-BDD8-1B5DE5ED7944}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DC51753-FF8F-46A8-8C9F-D537A1874624}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DC51753-FF8F-46A8-8C9F-D537A1874624}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DC51753-FF8F-46A8-8C9F-D537A1874624}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DC51753-FF8F-46A8-8C9F-D537A1874624}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +114,8 @@ Global
 		{BB7CE522-FD6A-4A57-8800-FC38784B3086} = {E828F881-9FE4-4705-9E3F-11E5F28920B4}
 		{E4D6823B-A818-4467-B754-35080A4A604A} = {E828F881-9FE4-4705-9E3F-11E5F28920B4}
 		{B8F50D13-B9BD-4032-B2EB-F0D401626E64} = {E828F881-9FE4-4705-9E3F-11E5F28920B4}
+		{311D68A3-8B9F-4875-BDD8-1B5DE5ED7944} = {673EEF0E-75FD-4AF3-870C-2DFA1F355ADE}
+		{8DC51753-FF8F-46A8-8C9F-D537A1874624} = {673EEF0E-75FD-4AF3-870C-2DFA1F355ADE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45373606-CD20-466E-9453-F54C280DDCA2}

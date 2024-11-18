@@ -45,7 +45,7 @@ control_plane = {
     cpu    = "50m"
     memory = "50Mi"
   }
-  default_partition = "default"
+  default_partition = "helloworld"
 }
 
 # Parameters of admin GUI
