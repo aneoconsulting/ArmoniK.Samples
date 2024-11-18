@@ -37,5 +37,5 @@ Create a partition named "subtaskpower" with the worker's image in the terraform
 Run the Client with the name of the partition:
 
 ```bash
-python client.py --partition subtaskpower 3 4
+python client.py --partition "subtaskpower" --base 2 --exponent 11 --endpoint "172.30.209.227:5001"
 ```
