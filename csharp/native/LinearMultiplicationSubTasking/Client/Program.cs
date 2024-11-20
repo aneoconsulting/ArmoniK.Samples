@@ -30,13 +30,13 @@ namespace ArmoniK.Samples.LinearMultiplicationSubTasking.Client
         Endpoint = endpoint,
       });
 
-      // Create clients for the different services
+      // Creation of the clients
       var taskClient = new Tasks.TasksClient(channel);
       var resultClient = new Results.ResultsClient(channel);
       var sessionClient = new Sessions.SessionsClient(channel);
       var eventClient = new Events.EventsClient(channel);
 
-      // Configure the task options for the session
+      // Configuration for the task
       var taskOptions = new TaskOptions
       {
         MaxDuration = Duration.FromTimeSpan(TimeSpan.FromHours(1)),
@@ -45,19 +45,24 @@ namespace ArmoniK.Samples.LinearMultiplicationSubTasking.Client
         PartitionId = partition,
       };
 
-      // Create the session
+      // Session creation
       var createSessionReply = sessionClient.CreateSession(new CreateSessionRequest
       {
         DefaultTaskOption = taskOptions,
         PartitionIds = { partition },
       });
 
-      Console.WriteLine($"Session created : {createSessionReply.SessionId}");
-      // Parameters to send to the worker
-      var parameters = new List<int> { x, y };
+      Console.WriteLine($"Session created: {createSessionReply.SessionId}");
 
-      var jsonString = JsonSerializer.Serialize(parameters);
-      var jsonBytes = Encoding.ASCII.GetBytes(jsonString);
+      // Retrieve the sign of the result
+      int sign = ((x < 0) ^ (y < 0)) ? -1 : 1;
+      int absX = Math.Abs(x);
+      int absY = Math.Abs(y);
+
+      // Payload contains x, y as the parameters to multiply, z as the result and sign as the sign of the result
+      var payload = new int[] { absX, absY, 0, sign };
+      var payloadBytes = payload.SelectMany(BitConverter.GetBytes).ToArray();
+      Console.WriteLine($"Sending payload: x = {x}, y = {y}, z = 0, sign = {sign}");
 
       // Creation of the metadata for the result
       var resultId = resultClient.CreateResultsMetaData(new CreateResultsMetaDataRequest
@@ -71,10 +76,9 @@ namespace ArmoniK.Samples.LinearMultiplicationSubTasking.Client
                     },
                 },
       }).Results.Single().ResultId;
+      Console.WriteLine($"Expected resultId : {resultId}");
 
-      Console.WriteLine($"Result ID : {resultId}");
-
-      // Creation of the metadata for the payload
+      // Creation of the payload for the task and its ID
       var payloadId = resultClient.CreateResults(new CreateResultsRequest
       {
         SessionId = createSessionReply.SessionId,
@@ -82,13 +86,12 @@ namespace ArmoniK.Samples.LinearMultiplicationSubTasking.Client
                 {
                     new CreateResultsRequest.Types.ResultCreate
                     {
-                        Data = UnsafeByteOperations.UnsafeWrap(jsonBytes),
+                        Data = UnsafeByteOperations.UnsafeWrap(payloadBytes),
                         Name = "Payload",
                     },
                 },
       }).Results.Single().ResultId;
-
-      Console.WriteLine($"Payload ID : {payloadId}");
+      Console.WriteLine($"Payload created : {payloadId}");
 
       // Submit the task to the worker
       var submitTasksResponse = taskClient.SubmitTasks(new SubmitTasksRequest
@@ -102,66 +105,53 @@ namespace ArmoniK.Samples.LinearMultiplicationSubTasking.Client
                         ExpectedOutputKeys = { resultId },
                     },
                 },
+
       });
-
       var taskId = submitTasksResponse.TaskInfos.Single().TaskId;
-      Console.WriteLine($"Task Submitted : {taskId}");
+      Console.WriteLine($"Submitted task : {taskId}");
 
-      // Wait for the result from the worker
+      // Waiting for the result to be available
       await eventClient.WaitForResultsAsync(createSessionReply.SessionId, new List<string> { resultId }, 100, 1, CancellationToken.None);
 
-      // Download the result 
+      // Download the result when available
       var resultData = await resultClient.DownloadResultData(createSessionReply.SessionId, resultId, CancellationToken.None);
-
 
       if (resultData == null || !resultData.Any())
       {
-        throw new Exception("No results available.");
+        throw new Exception("No result available.");
       }
 
-      // Get the string result
-      string resultString = Encoding.ASCII.GetString(resultData);
-      Console.WriteLine($"Raw result: {resultString}");
-      // Parse it & compare to expected result
-      var totalResult = int.Parse(resultString);
-      var expectedResult = x * Math.Abs(y);
+      var finalResult = BitConverter.ToInt32(resultData, 0);
+      var expectedResult = x * y;
+      Console.WriteLine($"Final result from Worker: {finalResult}, Expected result: {expectedResult}");
 
-      // Negative case
-      if (y < 0)
+      if (finalResult != expectedResult)
       {
-        totalResult = -totalResult;
-      }
-
-      Console.WriteLine($"Total result: {totalResult}, Expected result: {expectedResult}");
-
-      if (totalResult != expectedResult)
-      {
-        throw new ArithmeticException($"Calculated result {totalResult} does not match expected result {expectedResult}");
+        throw new ArithmeticException($"Calculated result {finalResult} does not match expected result {expectedResult}");
       }
     }
 
     public static async Task<int> Main(string[] args)
     {
       var endpoint = new Option<string>("--endpoint",
-                                          description: "Endpoint for the connection to ArmoniK control plane.",
-                                        getDefaultValue: () => "http://localhost:5001");
+                                         description: "Endpoint for the connection to ArmoniK control plane.",
+                                       getDefaultValue: () => "http://localhost:5001");
       var partition = new Option<string>("--partition",
                                          description: "Partition name in which you can submit tasks.",
                                          getDefaultValue: () => "multiplicate");
       var x = new Option<int>("--x",
                               description: "First integer to multiply.",
-                              getDefaultValue: () => 2);
+                              getDefaultValue: () => 6);
       var y = new Option<int>("--y",
                               description: "Second integer to multiply.",
-                              getDefaultValue: () => 30);
+                              getDefaultValue: () => -7);
 
       var rootCommand = new RootCommand("Client used to multiply x and y in ArmoniK.")
-                  {
-                      endpoint, partition, x, y
-                  };
+            {
+                endpoint, partition, x, y
+            };
 
       rootCommand.SetHandler(Run, endpoint, partition, x, y);
-
       return await rootCommand.InvokeAsync(args);
     }
   }
