@@ -1,9 +1,9 @@
 import logging
-import os
 import sys
-import grpc
 
-from armonik.worker import ArmoniKWorker, TaskHandler, ClefLogger
+from armonik.worker import TaskHandler, ClefLogger
+# This import should be fixed in future versions of the API
+from armonik.worker.worker import armonik_worker
 from armonik.common import Output
 from pathlib import Path
 
@@ -11,13 +11,15 @@ from pathlib import Path
 common_path = Path(__file__).resolve().parent.parent / "common"
 sys.path.append(str(common_path))
 
-
 from common import NameIdDict
 
+
+# Create Seq compatible logger
 ClefLogger.setup_logging(logging.INFO)
+logger = ClefLogger.getLogger("ArmoniKWorker")
 
 
-# Task processing
+@armonik_worker()
 def processor(task_handler: TaskHandler) -> Output:
     """
     Processes a task by appending 'world!' to the input string and sending the result.
@@ -47,56 +49,5 @@ def processor(task_handler: TaskHandler) -> Output:
     return Output()
 
 
-def main():
-    """
-    Initializes and starts the ArmoniK worker.
-
-    This function creates defines the communication endpoints
-    for the agent and worker, and starts the worker. The worker connects to the agent
-    and begins processing tasks using the specified processor function.
-
-    Environment Variables:
-        ComputePlane__WorkerChannel__SocketType (str): The socket type for worker communication ('unixdomainsocket' or 'tcp').
-        ComputePlane__WorkerChannel__Address (str): The address for the worker endpoint.
-        ComputePlane__AgentChannel__SocketType (str): The socket type for agent communication ('unixdomainsocket' or 'tcp').
-        ComputePlane__AgentChannel__Address (str): The address for the agent endpoint.
-
-    Example:
-        python worker.py
-    """
-    # Create Seq compatible logger
-    logger = ClefLogger.getLogger("ArmoniKWorker")
-
-    # Define agent-worker communication endpoints
-    worker_scheme = (
-        "unix://"
-        if os.getenv("ComputePlane__WorkerChannel__SocketType", "unixdomainsocket")
-        == "unixdomainsocket"
-        else "http://"
-    )
-    agent_scheme = (
-        "unix://"
-        if os.getenv("ComputePlane__AgentChannel__SocketType", "unixdomainsocket")
-        == "unixdomainsocket"
-        else "http://"
-    )
-    worker_endpoint = worker_scheme + os.getenv(
-        "ComputePlane__WorkerChannel__Address", "/cache/armonik_worker.sock"
-    )
-    agent_endpoint = agent_scheme + os.getenv(
-        "ComputePlane__AgentChannel__Address", "/cache/armonik_agent.sock"
-    )
-
-    # Start worker
-    logger.info("Started new worker!")
-    # Use options to fix Unix socket connection on localhost (cf: <GitHub>)
-    with grpc.insecure_channel(
-        agent_endpoint, options=(("grpc.default_authority", "localhost"),)
-    ) as agent_channel:
-        worker = ArmoniKWorker(agent_channel, processor, logger=logger)
-        logger.info("Worker Connected")
-        worker.start(worker_endpoint)
-
-
 if __name__ == "__main__":
-    main()
+    processor.run()
