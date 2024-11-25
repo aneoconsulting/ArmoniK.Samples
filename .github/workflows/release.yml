@@ -87,6 +87,8 @@ jobs:
           path: ./csharp/native/DynamicSubmission/Worker/Dockerfile
         - img : dockerhubaneo/armonik_demo_dynamicsubmission_client
           path : ./csharp/native/DynamicSubmission/Client/Dockerfile
+        - img : dockerhubaneo/armonik_demo_linearmultiplicationsubtasking_client
+          path : ./csharp/native/LinearMultiplicationSubTasking/Client/Dockerfile
     steps:
     - name: Checkout
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
