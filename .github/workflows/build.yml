@@ -104,6 +104,9 @@ jobs:
       fail-fast: true
       matrix:
         include:
+        -  img : dockerhubaneo/armonik_demo_linearmultiplicationsubtasking_client
+           path: ./csharp/native/LinearMultiplicationSubTasking/Client/Dockerfile
+           ctx: csharp/native/
         -  img : dockerhubaneo/armonik_demo_helloworld_client
            path: ./csharp/native/HelloWorld/Client/Dockerfile
            ctx: csharp/native/
@@ -167,6 +170,7 @@ jobs:
           - subtasking
           - linearsubtasking
           - dynamicsubmission
+          - linearmultiplicationsubtasking
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
@@ -190,7 +194,7 @@ jobs:
       - name: Change version
         run: |
             cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
-            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]' > .versions.tfvars.json
+            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearmultiplicationsubtasking_worker"] ' > .versions.tfvars.json
             mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
 
       - id: deploy
