@@ -238,6 +238,12 @@ jobs:
             repository: aneoconsulting/ArmoniK
             path: infra
 
+      - name: Change version
+        run: |
+            cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
+            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]' > .versions.tfvars.json
+            mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
+
       - id: deploy
         name: Deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
@@ -257,6 +263,7 @@ jobs:
        
   testInfraWorker:
     needs:
+      - versionning
       - buildProjects
     strategy:
       matrix:
@@ -286,6 +293,12 @@ jobs:
         with:
           repository: aneoconsulting/ArmoniK
           path: infra
+
+      - name: Change version
+        run: |
+            cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
+            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]' > .versions.tfvars.json
+            mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
 
       - id: deploy
         name: Deploy
