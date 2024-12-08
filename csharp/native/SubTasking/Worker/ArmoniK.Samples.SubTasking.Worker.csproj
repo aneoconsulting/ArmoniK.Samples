@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ArmoniK.Api.Worker" Version="3.21.0" />
+    <PackageReference Include="ArmoniK.Api.Worker" Version="3.22.0" />
   </ItemGroup>
 
 </Project>
