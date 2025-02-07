@@ -17,47 +17,8 @@
     <dependency>
             <groupId>fr.aneo</groupId>
             <artifactId>armonik-java</artifactId>
-            <version>3.21.0</version>
+            <version>3.24.0-jdjavaworker.5.8780265</version>
     </dependency>
-        <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-netty</artifactId>
-            <version>1.62.2</version>
-        </dependency>
-        
-        <dependency>
-    <groupId>io.grpc</groupId>
-    <artifactId>grpc-netty-shaded</artifactId>
-    <version>1.62.2</version>
-</dependency>
-
-        <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-protobuf</artifactId>
-            <version>1.62.2</version>
-        </dependency>
-        <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-stub</artifactId>
-            <version>1.62.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-            <version>1.3.2</version>
-        </dependency>
-
-        <!-- <dependency>  <groupId>io.netty</groupId>  
-        <artifactId>netty-transport-native-epoll</artifactId>  
-        <version>4.1.116.Final</version>  
-        <classifier>linux-x86_64</classifier>
-        </dependency>
-        <dependency>
-    <groupId>io.netty</groupId>
-    <artifactId>netty-transport-native-unix-common</artifactId>
-    <version>4.1.116.Final</version>
-</dependency> -->
 
     </dependencies>
 
@@ -100,19 +61,14 @@
     </build>
     
 
-
     <dependencyManagement>
-    
-
-        <dependencies>
+            <dependencies>
 
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>2.0.13</version>
             </dependency>
-
-        
 
             <dependency>
                 <groupId>com.google.errorprone</groupId>
