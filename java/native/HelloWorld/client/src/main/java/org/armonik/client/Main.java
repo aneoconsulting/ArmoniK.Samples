@@ -2,6 +2,7 @@ package org.armonik.client;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
 
 import armonik.api.grpc.v1.Objects.TaskOptions;
+import armonik.api.grpc.v1.results.ResultsCommon;
 import armonik.api.grpc.v1.results.ResultsCommon.CreateResultsRequest;
 import armonik.api.grpc.v1.results.ResultsCommon.CreateResultsRequest.ResultCreate;
 import armonik.api.grpc.v1.results.ResultsCommon.ResultRaw;
@@ -64,7 +66,7 @@ public class Main implements Runnable {
                         TasksBlockingStub taskClient = TasksGrpc.newBlockingStub(managedChannel);
 
                         // Define the payload to send
-                        byte[] payload = new byte[0];
+                        byte[] payload = "Hello".getBytes();
 
                         // Define the partition
                         String partitionId = partition;
@@ -87,25 +89,25 @@ public class Main implements Runnable {
 
                         // Create client for result creation
                         ResultClient resultClient = new ResultClient(managedChannel);
+                        List<ResultsCommon.ResultRaw> results = resultClient.createResultsMetaData(sessionId,
+                                        List.of("output"));
 
                         // Create the payload metadata (a result) and upload data at the same time
-                        List<ResultRaw> results = resultClient.createResults(
+                        String payloadId = resultClient.createResults(
                                         CreateResultsRequest.newBuilder()
                                                         .setSessionId(sessionId)
                                                         .addResults(ResultCreate.newBuilder()
                                                                         .setName("Payload")
                                                                         .setData(ByteString.copyFrom(payload))
                                                                         .build())
-                                                        .build());
-
-                        System.out.println(">> RESULTS RAW: ");
-                        results.forEach(System.out::println);
+                                                        .build())
+                                        .get(0).getResultId();
 
                         List<TaskCreation> taskCreations = new ArrayList<>();
                         for (ResultRaw resultRaw : results) {
                                 TaskCreation taskCreation = TaskCreation
                                                 .newBuilder()
-                                                .setPayloadId(resultRaw.getResultId())
+                                                .setPayloadId(payloadId)
                                                 .addExpectedOutputKeys(resultRaw.getResultId())
                                                 .build();
                                 taskCreations.add(taskCreation);
@@ -168,6 +170,8 @@ public class Main implements Runnable {
 
                         System.out.println("DATA DOWNLOADED (first " + maxCharactersToPrint + " characters): "
                                         + limitedResult);
+                        String data = new String(bytes.get(0), StandardCharsets.UTF_8);
+                        System.out.println("Data received: " + data);
 
                 } catch (MalformedURLException e) {
                         System.err.println("Invalid endpoint format. Expected format: http://<host>:<port>");
