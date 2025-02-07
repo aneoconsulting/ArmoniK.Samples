@@ -17,7 +17,7 @@
     <dependency>
             <groupId>fr.aneo</groupId>
             <artifactId>armonik-java</artifactId>
-            <version>3.24.0-jdjavaworker.5.8780265</version>
+            <version>3.24.0</version>
     </dependency>
 
     </dependencies>
