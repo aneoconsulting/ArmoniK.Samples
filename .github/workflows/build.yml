@@ -207,6 +207,7 @@ jobs:
             log-suffix: ${{ matrix.demo }}
          
       - name: Run Demo Client
+        timeout-minutes: 10
         run: |
          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
@@ -258,6 +259,7 @@ jobs:
             log-suffix: javaHelloWorld
       
       - name: Run Demo java Client
+        timeout-minutes: 10
         run: |
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
@@ -315,11 +317,13 @@ jobs:
           log-suffix: infraWorker
 
       - name: Run UnifiedAPI
+        timeout-minutes: 15
         run: |
          cd tools/tests
          bash -x ./unified_api.sh
 
       - name: Run StressTests
+        timeout-minutes: 15
         run: |
          cd tools/tests
          bash -x ./stress-tests.sh -- stressTest ${{ matrix.scenario }}
