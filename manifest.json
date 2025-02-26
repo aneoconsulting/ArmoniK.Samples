@@ -10,7 +10,11 @@
           "relative_path": "api/ArmoniK.Samples.Common.ClientPayload.TaskType.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.Common.ClientPayload.TaskType",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -20,7 +24,11 @@
           "relative_path": "api/ArmoniK.Samples.Common.ClientPayload.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.Common.ClientPayload",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -30,7 +38,11 @@
           "relative_path": "api/ArmoniK.Samples.Common.SelectExtensions.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.Common.SelectExtensions",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -40,7 +52,11 @@
           "relative_path": "api/ArmoniK.Samples.Common.Utils.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.Common.Utils",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -50,7 +66,11 @@
           "relative_path": "api/ArmoniK.Samples.Common.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.Common",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -60,7 +80,11 @@
           "relative_path": "api/ArmoniK.Samples.DynamicSubmission.Common.Table.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.DynamicSubmission.Common.Table",
+      "Summary": "<p sourcefile=\"api/ArmoniK.Samples.DynamicSubmission.Common.Table.yml\" sourcestartlinenumber=\"1\">Represents a Table with a sequence of numerical values.\nThis class is used by both the worker and the client to manage and manipulate table data.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -70,7 +94,11 @@
           "relative_path": "api/ArmoniK.Samples.DynamicSubmission.Common.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.DynamicSubmission.Common",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -80,7 +108,11 @@
           "relative_path": "api/ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.DynamicSubmission.Worker.DynamicSubmissionWorker",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -90,7 +122,11 @@
           "relative_path": "api/ArmoniK.Samples.DynamicSubmission.Worker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.DynamicSubmission.Worker",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -100,7 +136,11 @@
           "relative_path": "api/ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.HelloWorld.Worker.HelloWorldWorker",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -110,7 +150,11 @@
           "relative_path": "api/ArmoniK.Samples.HelloWorld.Worker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.HelloWorld.Worker",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -120,7 +164,11 @@
           "relative_path": "api/ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.LinearSubTasking.Worker.SubTaskingWorker",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -130,7 +178,11 @@
           "relative_path": "api/ArmoniK.Samples.LinearSubTasking.Worker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.LinearSubTasking.Worker",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -140,7 +192,11 @@
           "relative_path": "api/ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.MultipleResults.Worker.MultipleResultsWorker",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -150,7 +206,11 @@
           "relative_path": "api/ArmoniK.Samples.MultipleResults.Worker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.MultipleResults.Worker",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -160,7 +220,11 @@
           "relative_path": "api/ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.SubTasking.Worker.SubTaskingWorker",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -170,7 +234,11 @@
           "relative_path": "api/ArmoniK.Samples.SubTasking.Worker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.SubTasking.Worker",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -180,7 +248,11 @@
           "relative_path": "api/ArmoniK.Samples.Unified.Worker.Services.ServiceApps.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.Unified.Worker.Services.ServiceApps",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -190,7 +262,11 @@
           "relative_path": "api/ArmoniK.Samples.Unified.Worker.Services.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "ArmoniK.Samples.Unified.Worker.Services",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -200,7 +276,11 @@
           "relative_path": "api/Armonik.Samples.StressTests.Client.Metrics.Formatting.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Armonik.Samples.StressTests.Client.Metrics.Formatting",
+      "Summary": "<p sourcefile=\"api/Armonik.Samples.StressTests.Client.Metrics.Formatting.yml\" sourcestartlinenumber=\"1\">Enumeration of jsonPath to print metrics</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -210,7 +290,11 @@
           "relative_path": "api/Armonik.Samples.StressTests.Client.Metrics.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Armonik.Samples.StressTests.Client.Metrics",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -220,7 +304,11 @@
           "relative_path": "api/Armonik.Samples.StressTests.Worker.ServiceApps.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Armonik.Samples.StressTests.Worker.ServiceApps",
+      "Summary": null
     },
     {
       "type": "ManagedReference",
@@ -230,7 +318,11 @@
           "relative_path": "api/Armonik.Samples.StressTests.Worker.html"
         }
       },
-      "version": ""
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Armonik.Samples.StressTests.Worker",
+      "Summary": null
     },
     {
       "type": "Conceptual",
