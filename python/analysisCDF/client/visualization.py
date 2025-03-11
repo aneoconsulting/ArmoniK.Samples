@@ -46,7 +46,7 @@ def generate_latency_percentile_graph(results: List[Dict[str, Any]]) -> None:
         title="End-to-End Latency Distribution",
         xaxis=dict(title="End-to-end latency (seconds)", range=[0, 7], dtick=0.25),
         yaxis=dict(title="Percentile (CDF)", range=[0, 1]),
-        legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01),
+        legend=dict(yanchor="top", y=1, xanchor="right", x=1),  # Changed here
         grid=dict(rows=1, columns=1),
     )
 
@@ -131,7 +131,7 @@ def generate_throughput_graph(results: List[Dict[str, Any]]) -> None:
             title={"text": "Frequency", "font": {"size": 18}}, tickfont={"size": 14}
         ),
         barmode="overlay",
-        legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01, font={"size": 14}),
+        legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.01, font={"size": 14}),
         height=600,
         width=900,
     )

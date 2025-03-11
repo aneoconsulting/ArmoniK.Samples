@@ -1,3 +1,4 @@
 armonik
 matplotlib
 plotly
+dotenv
