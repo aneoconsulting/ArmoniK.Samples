@@ -1,0 +1,4 @@
+armonik
+matplotlib
+plotly
+dotenv
