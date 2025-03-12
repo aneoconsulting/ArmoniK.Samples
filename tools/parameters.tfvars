@@ -363,6 +363,7 @@ compute_plane = {
   helloworldjava = {
     # number of replicas for each deployment of compute plane
     replicas = 0
+    socket_type = "tcp"
     # ArmoniK polling agent
     polling_agent = {
       limits = {
