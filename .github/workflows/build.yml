@@ -375,7 +375,7 @@ jobs:
         
       - name: Deploy Docker Build
         run: |
-          docker build -t armonik_python_helloworld:latest -f python/hello-world/Dockerfile python/hello-world/client/
+          docker build -t armonik_python_helloworld:latest -f python/hello-world/Dockerfile python/hello-world/
           docker build -t armonik_python_subtasking:latest -f python/subtasking/Dockerfile python/subtasking/
       
       - name: Change version
