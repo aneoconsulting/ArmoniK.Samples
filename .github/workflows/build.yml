@@ -137,6 +137,12 @@ jobs:
         -  img : dockerhubaneo/armonik_demo_java_client
            path: ./java/native/HelloWorld/client/Dockerfile
            ctx: java/native/HelloWorld/client/
+        -  img : armonik_worker
+           path: ./python/hello-world/Dockerfile
+           ctx: python/subtasking/
+        -  img : dockerhubaneo/armonik_test_python:latest
+           path: ./python/subtasking/Dockerfile
+           ctx: python/subtasking/
 
     steps:
     - name: Checkout
@@ -344,3 +350,75 @@ jobs:
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
+
+  testPythonHelloWorld:
+    runs-on: ubuntu-latest
+    needs:
+      - versionning
+      - buildImages
+    strategy:
+      fail-fast: false
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: ${{ github.ref }}
+    
+      - name: Install Dependencies
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        with:
+            docker: true
+            terraform: true
+            k3s: true
+            aws: true
+            
+      - name: Checkout Infra
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+            repository: aneoconsulting/ArmoniK
+            path: infra
+        
+      - name: Change version
+        run: |
+            cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
+            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["armonik-worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_test_python:latest"]' > .versions.tfvars.json
+            mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
+      
+      - id: deploy
+        name: Deploy
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        with:
+            working-directory: ${{ github.workspace }}/infra
+            type: localhost
+            ext-csharp-version: 0.18.0
+            core-version: 0.24.4
+            log-suffix: pythonHelloWorld
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+      
+      - name: Run Demo Helloworld
+        run: |
+          cd client
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r client-requirements.txt
+          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
+          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
+          export Grpc__Endpoint=http://$CPIP:$CPPort
+          python client.py --partition helloworld --endpoint $Grpc__Endpoint
+      
+      - name: Run Demo Subtasking
+        run: |
+          python -m venv ./armonik
+          source ./armonik/bin/activate
+          python -m pip install -r requirements.txt
+          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
+          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
+          export Grpc__Endpoint=http://$CPIP:$CPPort
+          python client.py --partition testpython --endpoint $Grpc__Endpoint 100
+
