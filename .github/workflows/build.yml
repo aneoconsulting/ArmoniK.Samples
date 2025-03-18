@@ -140,10 +140,10 @@ jobs:
         -  img : dockerhubaneo/armonik_demo_java_worker
            path: ./java/native/HelloWorld/worker/Dockerfile
            ctx: java/native/HelloWorld/worker/
-        -  img : armonik_python_helloworld
+        -  img : dockerhubaneo/armonik_python_helloworld
            path: ./python/hello-world/Dockerfile
            ctx: ./python/hello-world/
-        -  img : armonik_python_subtasking
+        -  img : dockerhubaneo/armonik_python_subtasking
            path: ./python/subtasking/Dockerfile
            ctx: ./python/subtasking/
 
@@ -199,7 +199,7 @@ jobs:
       - name: Change version
         run: |
             cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
-            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_java_worker"] | .armonik_images.samples+=["armonik_python_helloworld"] | .armonik_images.samples+=["armonik_python_subtasking"]' > .versions.tfvars.json
+            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_java_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_python_helloworld"] | .armonik_images.samples+=["dockerhubaneo/armonik_python_subtasking"]' > .versions.tfvars.json
             mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
 
       - id: deploy
@@ -251,7 +251,7 @@ jobs:
       - name: Change version
         run: |
             cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
-            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_java_worker"] | .armonik_images.samples+=["armonik_python_helloworld"] | .armonik_images.samples+=["armonik_python_subtasking"]' > .versions.tfvars.json
+            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_java_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_python_helloworld"] | .armonik_images.samples+=["dockerhubaneo/armonik_python_subtasking"]' > .versions.tfvars.json
             mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
 
       - id: deploy
@@ -306,7 +306,7 @@ jobs:
       - name: Change version
         run: |
             cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
-            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_java_worker"] | .armonik_images.samples+=["armonik_python_helloworld"] | .armonik_images.samples+=["armonik_python_subtasking"]' > .versions.tfvars.json
+            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_java_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_python_helloworld"] | .armonik_images.samples+=["dockerhubaneo/armonik_python_subtasking"]' > .versions.tfvars.json
             mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
 
       - id: deploy
@@ -393,7 +393,7 @@ jobs:
       - name: Change version
         run: |
           cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
-          cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_java_worker"] | .armonik_images.samples+=["armonik_python_helloworld"] | .armonik_images.samples+=["armonik_python_subtasking"]' > .versions.tfvars.json
+          cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_java_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_python_helloworld"] | .armonik_images.samples+=["dockerhubaneo/armonik_python_subtasking"]' > .versions.tfvars.json
           mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
 
       - id: deploy

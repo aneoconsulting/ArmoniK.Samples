@@ -429,7 +429,7 @@ compute_plane = {
     # ArmoniK workers
     worker = [
       {
-        image = "armonik_python_helloworld"
+        image = "dockerhubaneo/armonik_python_helloworld"
         tag   = "latest"
         limits = {
           cpu    = "1000m"
@@ -480,7 +480,7 @@ compute_plane = {
     # ArmoniK workers
     worker = [
       {
-        image = "armonik_python_subtasking"
+        image = "dockerhubaneo/armonik_python_subtasking"
         tag   = "latest"
         limits = {
           cpu    = "1000m"
