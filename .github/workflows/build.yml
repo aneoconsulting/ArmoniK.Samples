@@ -404,18 +404,10 @@ jobs:
             ext-csharp-version: 0.18.0
             core-version: 0.24.4
             log-suffix: pythonHelloWorld
-        
-      - name: Debug
-        run: |
-          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-          echo $CPIP
-          echo $CPPort
       
       - name: Run Demo Helloworld
         timeout-minutes: 10
         run: |
-          sleep 30
           cd python/hello-world/client
           python -m venv .venv
           source .venv/bin/activate
@@ -423,9 +415,7 @@ jobs:
           pip install -r client-requirements.txt
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-          echo $CPIP
-          echo $CPPort
-          export Grpc__Endpoint=http://$CPIP:$CPPort
+          export Grpc__Endpoint=$CPIP:$CPPort
           python client.py --endpoint $Grpc__Endpoint --partition hellopython
       
       - name: Run Demo Subtasking
@@ -437,6 +427,6 @@ jobs:
           python -m pip install -r requirements.txt
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-          export Grpc__Endpoint=http://$CPIP:$CPPort
+          export Grpc__Endpoint=$CPIP:$CPPort
           python client.py --endpoint $Grpc__Endpoint --partition subtaskingpython 100
 
