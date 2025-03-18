@@ -391,9 +391,9 @@ jobs:
       
       - name: Change version
         run: |
-            cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
-            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_java_worker"]' > .versions.tfvars.json
-            mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
+          cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
+          cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_java_worker"]' > .versions.tfvars.json
+          mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
 
       - id: deploy
         name: Deploy
@@ -404,6 +404,8 @@ jobs:
             ext-csharp-version: 0.18.0
             core-version: 0.24.4
             log-suffix: pythonHelloWorld
+        
+      - name: Debug
         run: |
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
