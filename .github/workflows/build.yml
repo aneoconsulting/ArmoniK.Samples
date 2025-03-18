@@ -390,6 +390,8 @@ jobs:
         with:
             working-directory: ${{ github.workspace }}/infra
             type: localhost
+            ext-csharp-version: 0.18.0
+            core-version: 0.24.4
             log-suffix: pythonHelloWorld
 
       - name: Set up Python
