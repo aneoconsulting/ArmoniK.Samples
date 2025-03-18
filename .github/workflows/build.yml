@@ -411,6 +411,8 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install --upgrade pip
+          pip install grpcio==1.62.3
+          pip install grpcio-tools==1.62.3
           pip install -r client-requirements.txt
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
@@ -423,6 +425,8 @@ jobs:
           python -m venv ./armonik
           source ./armonik/bin/activate
           pip install --upgrade pip
+          pip install grpcio==1.62.3
+          pip install grpcio-tools==1.62.3
           python -m pip install -r requirements.txt
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
