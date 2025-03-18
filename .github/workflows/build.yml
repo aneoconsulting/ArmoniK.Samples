@@ -415,7 +415,7 @@ jobs:
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
           export Grpc__Endpoint=http://$CPIP:$CPPort
-          python client.py --partition hellopython --endpoint $Grpc__Endpoint
+          python client.py --endpoint $Grpc__Endpoint --partition hellopython
       
       - name: Run Demo Subtasking
         run: |
@@ -427,5 +427,5 @@ jobs:
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
           export Grpc__Endpoint=http://$CPIP:$CPPort
-          python client.py --partition subtaskingpython --endpoint $Grpc__Endpoint 100
+          python client.py --endpoint $Grpc__Endpoint --partition subtaskingpython 100
 
