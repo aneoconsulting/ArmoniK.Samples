@@ -259,11 +259,14 @@ jobs:
       - name: Run Demo java Client
         timeout-minutes: 10
         run: |
+          sleep 30
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
+          echo "CPIP: $CPIP"
+          echo "CPPort: $CPPort"
           export Grpc__Endpoint=http://$CPIP:$CPPort
           docker run --rm dockerhubaneo/armonik_demo_java_client:${{ needs.versionning.outputs.version }} --endpoint $Grpc__Endpoint --partition helloworldjava
-       
+  
   testInfraWorker:
     needs:
       - versionning
