@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Duration;
@@ -22,7 +23,6 @@ import armonik.api.grpc.v1.tasks.TasksCommon.SubmitTasksRequest.TaskCreation;
 import armonik.api.grpc.v1.tasks.TasksGrpc;
 import armonik.api.grpc.v1.tasks.TasksGrpc.TasksBlockingStub;
 import armonik.client.event.EventClient;
-import armonik.client.event.util.records.EventSubscriptionResponseRecord;
 import armonik.client.result.ResultClient;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -140,43 +140,21 @@ public class Main implements Runnable {
                         List<String> resultsIds = results.stream().map(ResultRaw::getResultId).toList();
 
                         // getting events
-                        List<EventSubscriptionResponseRecord> records = eventClient.getEventResponseRecords(sessionId,
-                                        resultsIds);
+                        CompletableFuture<Void> future = eventClient.waitForResultsAsync(sessionId, resultsIds, 100, 3);
 
-                        records.forEach(record -> {
-                                System.out.println("Task Status Update: " + record.taskStatusUpdate());
-                                System.out.println("Result Status Update: " + record.resultStatusUpdate());
-                                System.out.println("Result Owner Update: " + record.resultOwnerUpdate());
-                                System.out.println("New Task: " + record.newTask());
-                                System.out.println("New Result: " + record.newResult());
-                        });
-                        records.forEach(System.out::println);
+                        future.thenRun(() -> {
+                                System.out.println("All results are completed!");
+                            }).join();
 
                         System.out.println(
                                         "DOWNLOADING DATA FOR SESSION-ID: " + sessionId + " AND RESULT-ID:"
                                                         + results.get(0).getResultId());
                         List<byte[]> bytes = resultClient.downloadResultData(sessionId, results.get(0).getResultId());
-                        StringBuilder binaryStringBuilder = new StringBuilder();
-                        for (byte b : bytes.get(0)) {
-                                String binaryString = String.format("%8s", Integer.toBinaryString(b & 0xFF))
-                                                .replace(' ', '0');
-                                binaryStringBuilder.append(binaryString);
-                        }
-                        String result = binaryStringBuilder.toString();
-                        int maxCharactersToPrint = 100;
-                        String limitedResult = result.length() > maxCharactersToPrint
-                                        ? result.substring(0, maxCharactersToPrint)
-                                        : result;
-
-                        System.out.println("DATA DOWNLOADED (first " + maxCharactersToPrint + " characters): "
-                                        + limitedResult);
                         String data = new String(bytes.get(0), StandardCharsets.UTF_8);
                         System.out.println("Data received: " + data);
 
                 } catch (MalformedURLException e) {
                         System.err.println("Invalid endpoint format. Expected format: http://<host>:<port>");
-                        e.printStackTrace();
-                } catch (InterruptedException e) {
                         e.printStackTrace();
                 }
 

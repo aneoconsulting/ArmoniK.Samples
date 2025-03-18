@@ -410,6 +410,7 @@ compute_plane = {
       ]
     }
   },
+
   # Default partition that uses the C# extension for the worker
   hellopython = {
     # number of replicas for each deployment of compute plane
