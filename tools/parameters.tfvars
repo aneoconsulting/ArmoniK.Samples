@@ -430,7 +430,6 @@ compute_plane = {
     worker = [
       {
         image = "dockerhubaneo/armonik_python_helloworld"
-        tag   = "latest"
         limits = {
           cpu    = "1000m"
           memory = "1024Mi"
@@ -481,7 +480,6 @@ compute_plane = {
     worker = [
       {
         image = "dockerhubaneo/armonik_python_subtasking"
-        tag   = "latest"
         limits = {
           cpu    = "1000m"
           memory = "1024Mi"
