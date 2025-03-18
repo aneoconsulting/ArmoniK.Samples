@@ -371,7 +371,13 @@ jobs:
             terraform: true
             k3s: true
             aws: true
-            
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.3'
+          architecture: 'x64'
+
       - name: Checkout Infra
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
@@ -398,12 +404,6 @@ jobs:
             ext-csharp-version: 0.18.0
             core-version: 0.24.4
             log-suffix: pythonHelloWorld
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12.3'
-          architecture: 'x64'
       
       - name: Run Demo Helloworld
         run: |
@@ -411,8 +411,6 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install --upgrade pip
-          pip install grpcio==1.62.3
-          pip install grpcio-tools==1.62.3
           pip install -r client-requirements.txt
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
@@ -425,8 +423,6 @@ jobs:
           python -m venv ./armonik
           source ./armonik/bin/activate
           pip install --upgrade pip
-          pip install grpcio==1.62.3
-          pip install grpcio-tools==1.62.3
           python -m pip install -r requirements.txt
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
