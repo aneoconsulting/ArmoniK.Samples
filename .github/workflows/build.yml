@@ -384,7 +384,10 @@ jobs:
             repository: aneoconsulting/ArmoniK
             path: infra
         
-
+      - name: Deploy Docker Build
+        run: |
+          docker build -t armonik_python_helloworld:latest -f python/hello-world/Dockerfile python/hello-world/
+          docker build -t armonik_python_subtasking:latest -f python/subtasking/Dockerfile python/subtasking/
       
       - name: Change version
         run: |
@@ -405,7 +408,6 @@ jobs:
       - name: Run Demo Helloworld
         timeout-minutes: 10
         run: |
-          docker build -t armonik_python_helloworld:latest -f python/hello-world/Dockerfile python/hello-world/
           cd python/hello-world/
           python -m venv .venv
           source .venv/bin/activate
@@ -414,13 +416,12 @@ jobs:
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
           export Grpc__Endpoint=$CPIP:$CPPort
-          echo $Grpc_Endpoint
+          echo $Grpc__Endpoint
           python client/client.py --endpoint $Grpc__Endpoint --partition hellopython
       
       - name: Run Demo Subtasking
         timeout-minutes: 10
         run: |
-          docker build -t armonik_python_subtasking:latest -f python/subtasking/Dockerfile python/subtasking/
           cd python/subtasking
           python -m venv ./armonik
           source ./armonik/bin/activate
