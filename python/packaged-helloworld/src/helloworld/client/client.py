@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 common_path = Path(__file__).resolve().parent.parent / "common"
 sys.path.append(str(common_path))
 
-from common.common import NameIdDict
+from common import NameIdDict
 
 
 def run(endpoint: str, partition: str) -> None:

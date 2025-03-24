@@ -21,6 +21,7 @@ Homepage = "https://github.com/aneoconsulting/ArmoniK.Samples/tree/main/python/h
 
 [tool.setuptools]
 include-package-data = true
+dynamic = {version = {attr = "helloworld.__version__"}}
 
 [tool.setuptools.packages.find]
 where= ["src"]
