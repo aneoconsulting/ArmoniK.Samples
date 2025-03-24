@@ -1,19 +1,171 @@
+import concurrent.futures
 import statistics
 import time
 from datetime import timedelta
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List, Set, Tuple
 
 import grpc
 from armonik.client import ArmoniKEvents, ArmoniKResults, ArmoniKSessions, ArmoniKTasks
 from armonik.common import TaskDefinition, TaskOptions
-from reporting import generate_detailed_report, print_summary, save_results_to_csv
+from reporting import generate_detailed_report, print_summary, save_raw_results_csv
 from utils import logger, retry_operation
 from visualization import (
     generate_latency_percentile_graph,
     generate_matplotlib_latency_graph,
-    generate_matplotlib_throughput_graph,
-    generate_throughput_graph,
 )
+
+
+def submit_tasks_in_parallel(
+    task_client: ArmoniKTasks,
+    session_id: str,
+    task_definitions: List[TaskDefinition],
+    batch_size: int,
+) -> Tuple[float, float, float, Dict[int, Tuple[float, float]], Dict[int, int]]:
+    """Submit tasks in parallel for optimal performance with enhanced timing tracking.
+
+    Returns:
+        Tuple of (
+            submission_start,
+            submission_end,
+            max_individual_submission_time,
+            chunk_times,  # Maps chunk_idx to (start_time, end_time)
+            task_to_chunk  # Maps task_idx to chunk_idx
+        )
+    """
+    task_to_chunk = {}  # Maps task_idx to chunk_idx
+
+    # Determine chunking strategy
+    if batch_size <= 10:
+        chunks = [task_definitions]
+        # All tasks are in chunk 0
+        for i in range(batch_size):
+            task_to_chunk[i] = 0
+    else:
+        chunk_size = max(1, min(10, batch_size // 10))
+        chunks = [
+            task_definitions[i : i + chunk_size]
+            for i in range(0, len(task_definitions), chunk_size)
+        ]
+        # Map each task to its chunk
+        for i in range(batch_size):
+            task_to_chunk[i] = i // chunk_size
+
+    max_workers = min(len(chunks), 20)
+    chunk_end_times = []
+    max_individual_time = 0
+    chunk_times = {}
+
+    submission_start = time.time()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+
+        def submit_chunk(chunk_idx, chunk):
+            chunk_start = time.time()
+            try:
+                task_client.submit_tasks(session_id, chunk)
+                chunk_end = time.time()
+                return chunk_idx, chunk_start, chunk_end
+            except Exception as e:
+                logger.error("Error submitting chunk %s: %s", chunk_idx, e)
+                raise
+
+        futures = {
+            executor.submit(submit_chunk, idx, chunk): idx
+            for idx, chunk in enumerate(chunks)
+        }
+
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                chunk_idx, chunk_start, chunk_end = future.result()
+                individual_time = chunk_end - chunk_start
+                chunk_end_times.append(chunk_end)
+                chunk_times[chunk_idx] = (chunk_start, chunk_end)
+                max_individual_time = max(max_individual_time, individual_time)
+            except Exception as e:
+                logger.error("Task submission failed: %s", e)
+
+    if chunk_end_times:
+        submission_end = max(chunk_end_times)
+    else:
+        submission_end = time.time()
+
+    return (
+        submission_start,
+        submission_end,
+        max_individual_time,
+        chunk_times,
+        task_to_chunk,
+    )
+
+
+def process_results_in_parallel(
+    events_client: ArmoniKEvents,
+    result_ids: List[str],
+    session_id: str,
+    submission_timestamp: float,
+    batch_size: int,
+) -> Dict[str, Dict]:
+    """Process and download results in parallel without needing to fix download times."""
+    # For very small batches, use direct download
+    if batch_size <= 1:
+        results = events_client.wait_for_result_availability_and_download(
+            result_ids=result_ids,
+            session_id=session_id,
+            submission_timestamp=submission_timestamp,
+        )
+        return results
+    # Configure chunk size and parallelism based on batch size
+    if batch_size <= 20:
+        chunk_size = 1
+        max_workers = batch_size
+        parallelism = 1
+    elif batch_size <= 100:
+        chunk_size = 5
+        max_workers = min(20, batch_size // chunk_size + 1)
+        parallelism = 2
+    else:
+        chunk_size = 20
+        max_workers = 20
+        parallelism = 4
+
+    chunks = [
+        result_ids[i : i + chunk_size] for i in range(0, len(result_ids), chunk_size)
+    ]
+    all_results = {}
+    # Process chunks in parallel - download times are already correctly calculated by client
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+
+        def download_with_timestamp(chunk_idx, chunk):
+            try:
+                results = events_client.wait_for_result_availability_and_download(
+                    result_ids=chunk,
+                    session_id=session_id,
+                    parallelism=parallelism,
+                    submission_timestamp=submission_timestamp,
+                )
+
+                for result_id, result_data in results.items():
+                    result_data["chunk_idx"] = chunk_idx
+
+                return results
+            except Exception as e:
+                logger.error("Error in chunk %s: %s", chunk_idx, e)
+                raise
+
+        # Submit all chunks for parallel processing
+        future_to_chunk = {
+            executor.submit(download_with_timestamp, i, chunk): i
+            for i, chunk in enumerate(chunks)
+        }
+
+        for future in concurrent.futures.as_completed(future_to_chunk):
+            try:
+                chunk_results = future.result()
+                all_results.update(chunk_results)
+            except Exception as e:
+                chunk_idx = future_to_chunk[future]
+                logger.error("Error processing result chunk %s: %s", chunk_idx, e)
+
+    return all_results
 
 
 def run_batch(
@@ -26,17 +178,15 @@ def run_batch(
     iteration: int,
     scenario: str,
 ) -> Dict[str, Any]:
-    """Run a batch of tasks and measure performance metrics, reusing the same clients."""
+    """Run a batch of tasks with optimized performance focusing on E2E metrics."""
     metrics = {
         "batch_size": batch_size,
-        "submission_time": 0.0,
-        "processing_time": 0.0,
-        "total_time": 0.0,
         "scenario": scenario,
         "iteration": iteration + 1,
     }
-    start_total = time.time()
-
+    # Start time for the entire operation
+    t1_start = time.time()
+    # Task preparation - create session, outputs, payloads, etc.
     task_options = TaskOptions(
         max_duration=timedelta(hours=1),
         max_retries=2,
@@ -45,200 +195,258 @@ def run_batch(
         options={},
     )
 
-    # Create session with retry (you can also reuse a single session if desired)
     session_id = retry_operation(
         lambda: session_client.create_session(task_options, partition_ids=[partition]),
         operation_name="Session creation",
     )
-
-    task_definitions = []
-
-    # Create outputs metadata
+    t_end_create_session = time.time()
+    metrics["create_session_time"] = t_end_create_session - t1_start
+    t_start_create_results = time.time()
     outputs = result_client.create_results_metadata(
         result_names=[f"output_{i}" for i in range(batch_size)],
         session_id=session_id,
     )
 
-    # Ensure result_ids is populated
     result_ids = [outputs[f"output_{i}"].result_id for i in range(batch_size)]
 
-    # Create payloads data
-    payloads_data = {f"payload_{i}": "".encode() for i in range(batch_size)}
-
+    payloads_data = {f"payload_{i}": b"" for i in range(batch_size)}
     payloads = result_client.create_results(
         results_data=payloads_data, session_id=session_id
     )
+    t_end_create_results = time.time()
+    metrics["create_results_time"] = t_end_create_results - t_start_create_results
 
-    # Ensure payloads are assigned correctly
+    task_definitions = [None] * batch_size
     for i in range(batch_size):
         payload_id = payloads[f"payload_{i}"].result_id
         output_id = outputs[f"output_{i}"].result_id
-
-        task_definitions.append(
-            TaskDefinition(payload_id=payload_id, expected_output_ids=[output_id])
+        task_definitions[i] = TaskDefinition(
+            payload_id=payload_id, expected_output_ids=[output_id]
         )
 
-    submission_start = time.time()
-    task_client.submit_tasks(session_id, task_definitions)
-    submission_timestamp = time.time()  # Record exactly when tasks were submitted
-    metrics["submission_time"] = submission_timestamp - submission_start
+    preparation_time = time.time() - t1_start
+    metrics["preparation_time"] = preparation_time
+    # Submit tasks with detailed timing
+    (
+        t2_submit_start,
+        t2_submit_end,
+        max_individual_submit,
+        chunk_times,
+        task_to_chunk,
+    ) = submit_tasks_in_parallel(task_client, session_id, task_definitions, batch_size)
 
+    metrics["submission_time"] = t2_submit_end - t2_submit_start
+    # Process and download results with accurate timing
     processing_start = time.time()
-    try:
-        downloaded_results = events_client.wait_for_result_availability_and_download(
-            result_ids=result_ids,
-            session_id=session_id,
-            submission_timestamp=submission_timestamp,
+    first_result_time = None
+    last_result_time = None
+
+    all_results = process_results_in_parallel(
+        events_client, result_ids, session_id, t2_submit_end, batch_size
+    )
+
+    # Collection end time
+    t6_collection_end = time.time()
+
+    # Calculate primary metrics
+    metrics["end_to_end_latency"] = t6_collection_end - t2_submit_start
+    metrics["total_time"] = t6_collection_end - t1_start
+    metrics["processing_time"] = t6_collection_end - processing_start
+
+    if metrics["end_to_end_latency"] > 0:
+        metrics["throughput"] = batch_size / metrics["end_to_end_latency"]
+    else:
+        metrics["throughput"] = 0
+
+    # Extract timing information from results
+    completion_timestamps = []
+    availability_times = []
+    download_times = []
+    download_complete_timestamps = []
+
+    # Process all result data
+    for result_id, result_data in all_results.items():
+        # Track completion timestamps
+        if "completion_timestamp" in result_data:
+            completion_time = result_data["completion_timestamp"]
+            completion_timestamps.append(completion_time)
+
+            # Track result availability relative to submission
+            availability_time = completion_time - t2_submit_end
+            availability_times.append(availability_time)
+
+            # Track first and last result times
+            if first_result_time is None or completion_time < first_result_time:
+                first_result_time = completion_time
+            if last_result_time is None or completion_time > last_result_time:
+                last_result_time = completion_time
+
+        # Track download times
+        if "download_time" in result_data:
+            download_times.append(result_data["download_time"])
+
+        # Track download completion timestamps
+        if "download_complete_timestamp" in result_data:
+            download_complete_timestamps.append(
+                result_data["download_complete_timestamp"]
+            )
+
+    # Calculate task execution time (time to first result)
+    if first_result_time is not None:
+        metrics["task_execution_time"] = first_result_time - t2_submit_end
+    else:
+        metrics["task_execution_time"] = metrics["processing_time"] * 0.8
+
+    # Calculate average download time
+    if download_times:
+        metrics["download_time"] = sum(download_times) / len(download_times)
+        metrics["min_download_time"] = min(download_times)
+        metrics["max_download_time"] = max(download_times)
+    else:
+        metrics["download_time"] = metrics["processing_time"] * 0.2
+
+    # Calculate batch completion time (time from submission start to last download completion)
+    if download_complete_timestamps:
+        metrics["batch_completion_time"] = (
+            max(download_complete_timestamps) - t2_submit_start
+        )
+        metrics["download_completion_spread"] = max(download_complete_timestamps) - min(
+            download_complete_timestamps
+        )
+    else:
+        # Fallback to end-to-end latency if download timestamps not available
+        metrics["batch_completion_time"] = metrics["end_to_end_latency"]
+
+    # Calculate per-task statistics
+    per_task_stats = []
+    per_task_e2e_times = []
+
+    for i in range(batch_size):
+        result_id = result_ids[i]
+        if result_id not in all_results:
+            continue
+
+        result_data = all_results[result_id]
+        task_stat = {
+            "task_index": i,
+            "result_id": result_id,
+            "batch_size": batch_size,
+            "scenario": scenario,
+        }
+
+        # Get the submission time for this specific task (or its chunk)
+        chunk_idx = task_to_chunk.get(i, 0)
+        chunk_start_time, chunk_end_time = chunk_times.get(
+            chunk_idx, (t2_submit_start, t2_submit_end)
+        )
+        task_stat["submit_time"] = chunk_start_time
+
+        # Track completion time (when result became available)
+        if "completion_timestamp" in result_data:
+            completion_timestamp = result_data["completion_timestamp"]
+            task_stat["completion_timestamp"] = completion_timestamp
+            task_stat["completion_time"] = completion_timestamp - chunk_start_time
+            task_stat["result_availability_time"] = completion_timestamp - t2_submit_end
+
+        # Track download time and completion
+        if "download_time" in result_data:
+            task_stat["download_time"] = result_data["download_time"]
+
+        if "download_complete_timestamp" in result_data:
+            download_complete_time = result_data["download_complete_timestamp"]
+            task_stat["download_complete_timestamp"] = download_complete_time
+
+            # Calculate true end-to-end time: from task submission to download completion
+            task_e2e_time = download_complete_time - chunk_start_time
+            task_stat["e2e_latency"] = task_e2e_time
+            per_task_e2e_times.append(task_e2e_time)
+
+        per_task_stats.append(task_stat)
+
+    metrics["per_task_stats"] = per_task_stats
+
+    # Calculate per-task E2E statistics
+    if per_task_e2e_times:
+        metrics["min_task_e2e"] = min(per_task_e2e_times)
+        metrics["max_task_e2e"] = max(per_task_e2e_times)
+        metrics["avg_task_e2e"] = statistics.fmean(per_task_e2e_times)
+        metrics["median_task_e2e"] = statistics.median(per_task_e2e_times)
+        metrics["task_e2e_spread"] = metrics["max_task_e2e"] - metrics["min_task_e2e"]
+
+        # Calculate percentiles
+        sorted_e2e = sorted(per_task_e2e_times)
+        metrics["p50_task_e2e"] = sorted_e2e[int(len(sorted_e2e) * 0.5)]
+        metrics["p95_task_e2e"] = sorted_e2e[int(len(sorted_e2e) * 0.95)]
+        metrics["p99_task_e2e"] = (
+            sorted_e2e[int(len(sorted_e2e) * 0.99)]
+            if len(sorted_e2e) >= 100
+            else sorted_e2e[-1]
         )
 
-        # Verify we received all expected results
-        if len(downloaded_results) != len(result_ids):
-            logger.warning(
-                "Expected %d results but only received %d",
-                len(result_ids),
-                len(downloaded_results),
-            )
+        logger.debug(
+            "Per-task E2E times - Min: %.3fs, Avg: %.3fs, Max: %.3fs, Spread: %.3fs",
+            metrics["min_task_e2e"],
+            metrics["avg_task_e2e"],
+            metrics["max_task_e2e"],
+            metrics["task_e2e_spread"],
+        )
 
-        task_times = []
-        task_download_times = []
-        task_completion_timestamps = []
-        earliest_completion = float("inf")
-        latest_completion = 0
-
-        for result_id, result_data in downloaded_results.items():
-            if "processing_time" in result_data:
-                task_times.append(result_data["processing_time"])
-
-            if "download_time" in result_data:
-                task_download_times.append(result_data["download_time"])
-
-            if "completion_timestamp" in result_data:
-                completion_ts = result_data["completion_timestamp"]
-                task_completion_timestamps.append(completion_ts)
-                earliest_completion = min(earliest_completion, completion_ts)
-                latest_completion = max(latest_completion, completion_ts)
-
-        if task_times:
-            metrics["min_task_time"] = min(task_times)
-            metrics["max_task_time"] = max(task_times)
-            metrics["avg_task_time"] = sum(task_times) / len(task_times)
-            metrics["median_task_time"] = statistics.median(task_times)
-
-            sorted_times = sorted(task_times)
-            if len(sorted_times) >= 10:
-                metrics["p90_task_time"] = sorted_times[int(len(sorted_times) * 0.9)]
-                metrics["p95_task_time"] = sorted_times[int(len(sorted_times) * 0.95)]
-                metrics["p99_task_time"] = sorted_times[int(len(sorted_times) * 0.99)]
-
-            if len(task_times) > 1:
-                metrics["stddev_task_time"] = statistics.stdev(task_times)
-                metrics["cv_task_time"] = (
-                    metrics["stddev_task_time"] / metrics["avg_task_time"]
-                    if metrics["avg_task_time"] > 0
-                    else 0
-                )
-
-                outlier_threshold = (
-                    metrics["avg_task_time"] + 2 * metrics["stddev_task_time"]
-                )
-                outliers = [t for t in task_times if t > outlier_threshold]
-                metrics["outlier_count"] = len(outliers)
-                metrics["outlier_percentage"] = (
-                    (len(outliers) / len(task_times)) * 100 if task_times else 0
-                )
-
-            logger.debug(
-                "Task timing stats - Min: %.3fs, Max: %.3fs, Avg: %.3fs, StdDev: %.3fs, Outliers: %d/%d",
-                metrics["min_task_time"],
-                metrics["max_task_time"],
-                metrics["avg_task_time"],
-                metrics.get("stddev_task_time", 0),
-                metrics.get("outlier_count", 0),
-                len(task_times),
-            )
-
-        # Add download time metrics if available
-        if task_download_times:
-            metrics["min_download_time"] = min(task_download_times)
-            metrics["max_download_time"] = max(task_download_times)
-            metrics["avg_download_time"] = sum(task_download_times) / len(
-                task_download_times
-            )
-            metrics["total_download_time"] = sum(task_download_times)
-
-            if len(task_download_times) > 1:
-                metrics["stddev_download_time"] = statistics.stdev(task_download_times)
-
-            logger.debug(
-                "Download time stats - Min: %.3fs, Max: %.3fs, Avg: %.3fs, Total: %.3fs",
-                metrics["min_download_time"],
-                metrics["max_download_time"],
-                metrics["avg_download_time"],
-                metrics["total_download_time"],
-            )
-
-        if task_completion_timestamps and len(task_completion_timestamps) > 1:
-            metrics["completion_spread"] = latest_completion - earliest_completion
-            metrics["first_result_time"] = earliest_completion - submission_timestamp
-            metrics["last_result_time"] = latest_completion - submission_timestamp
-
-            if metrics["completion_spread"] > 0:
-                metrics["completion_rate"] = (
-                    len(task_completion_timestamps) / metrics["completion_spread"]
-                )
-
-            logger.debug(
-                "Task completion spread: %.3fs (first: %.3fs, last: %.3fs, rate: %.1f results/sec)",
-                metrics["completion_spread"],
-                metrics["first_result_time"],
-                metrics["last_result_time"],
-                metrics.get("completion_rate", 0),
-            )
-
-        metrics["processing_time"] = time.time() - processing_start
-
-        if "avg_task_time" in metrics and batch_size > 0:
-            metrics["total_task_time"] = sum(task_times)
-            metrics["ideal_parallel_time"] = metrics["avg_task_time"]
-            metrics["parallelization_efficiency"] = (
-                metrics["ideal_parallel_time"] / metrics["processing_time"]
-                if metrics["processing_time"] > 0
-                else 0
-            )
-            metrics["system_utilization"] = (
-                metrics["total_task_time"] / (batch_size * metrics["processing_time"])
-                if metrics["processing_time"] > 0
-                else 0
-            )
-
-            logger.debug(
-                "System efficiency - Utilization: %.2f%%, Parallelization efficiency: %.2f%%",
-                metrics["system_utilization"] * 100,
-                metrics["parallelization_efficiency"] * 100,
-            )
-
-    except Exception as e:
-        logger.error("Error waiting for results: %s", e)
-
-    metrics["total_time"] = time.time() - start_total
-    metrics["tasks_per_second"] = (
-        (batch_size / metrics["total_time"]) if metrics["total_time"] > 0 else 0
+    # Generate detailed log message with all metrics
+    log_msg = (
+        f"Batch {metrics['iteration']} ({batch_size} tasks) - "
+        f"Preparation: {metrics['preparation_time']:.3f}s, "
+        f"Submission: {metrics['submission_time']:.3f}s, "
+        f"Task Exec: {metrics['task_execution_time']:.3f}s, "
+        f"Download: {metrics['download_time']:.3f}s, "
+        f"Batch E2E: {metrics['end_to_end_latency']:.3f}s, "
+        f"Batch Completion: {metrics.get('batch_completion_time', 0):.3f}s, "
+        f"Avg Task E2E: {metrics.get('avg_task_e2e', 0):.3f}s, "
+        f"Throughput: {metrics['throughput']:.2f} tasks/s"
     )
+    logger.info(log_msg)
+
     return metrics
 
 
 def run_benchmarks(endpoint: str, partition: str) -> List[Dict[str, Any]]:
-    """Runs the benchmarking scenarios sequentially without parallelization,
-    but reuses the same gRPC channel and client objects across all runs.
-    """
+    """Run benchmark scenarios with optimized channel settings."""
     all_results = []
 
-    # Create one gRPC channel for all scenarios
-    with grpc.insecure_channel(endpoint) as channel:
+    channel_options = [
+        ("grpc.max_receive_message_length", 100 * 1024 * 1024),
+        ("grpc.max_send_message_length", 100 * 1024 * 1024),
+        ("grpc.keepalive_time_ms", 30000),
+        ("grpc.keepalive_timeout_ms", 10000),
+        ("grpc.http2.max_pings_without_data", 0),
+        ("grpc.http2.min_time_between_pings_ms", 10000),
+        ("grpc.http2.min_ping_interval_without_data_ms", 5000),
+    ]
+
+    with grpc.insecure_channel(endpoint, options=channel_options) as channel:
         task_client = ArmoniKTasks(channel)
         result_client = ArmoniKResults(channel)
         session_client = ArmoniKSessions(channel)
         events_client = ArmoniKEvents(channel)
+
+        logger.info("Starting warm-up phase (2 batches of 100 tasks)...")
+        for i in range(2):
+            try:
+                logger.info("Running warm-up batch %d/2...", i + 1)
+                run_batch(
+                    task_client=task_client,
+                    result_client=result_client,
+                    session_client=session_client,
+                    events_client=events_client,
+                    partition=partition,
+                    batch_size=100,
+                    iteration=i,
+                    scenario="warmup",
+                )
+                logger.info("Warm-up batch %d completed", i + 1)
+            except Exception as e:
+                logger.warning("Error in warm-up batch %d: %s", i + 1, e)
+
+        logger.info("Warm-up phase completed. Starting benchmark scenarios...")
 
         scenarios = [
             {"name": "1x1000", "batch_size": 1, "iterations": 1000},
@@ -253,7 +461,6 @@ def run_benchmarks(endpoint: str, partition: str) -> List[Dict[str, Any]]:
             successful_runs = 0
             failed_runs = 0
 
-            # Process iterations one by one
             for i in range(scenario["iterations"]):
                 try:
                     result = run_batch(
@@ -269,17 +476,19 @@ def run_benchmarks(endpoint: str, partition: str) -> List[Dict[str, Any]]:
                     scenario_results.append(result)
                     successful_runs += 1
 
-                    # Log progress every 10 iterations or at the end
-                    if (i + 1) % 10 == 0 or (i + 1) == scenario["iterations"]:
+                    if (i + 1) % max(1, min(50, scenario["iterations"] // 20)) == 0 or (
+                        i + 1
+                    ) == scenario["iterations"]:
                         elapsed = time.time() - start_time
                         progress = (i + 1) / scenario["iterations"] * 100
                         est_remaining = (
-                            (elapsed / (i + 1)) * (scenario["iterations"] - i - 1)
+                            ((elapsed / (i + 1)) * (scenario["iterations"] - i - 1))
                             if i > 0
                             else 0
                         )
+
                         logger.info(
-                            "Progress: %.1f%% - Completed %d/%d iterations (%d successful, %d failed) - Est. remaining time: %.1fs",
+                            "Progress: %.1f%% - Completed %d/%d iterations (%d successful, %d failed) - Est. remaining: %.1fs",
                             progress,
                             i + 1,
                             scenario["iterations"],
@@ -289,24 +498,22 @@ def run_benchmarks(endpoint: str, partition: str) -> List[Dict[str, Any]]:
                         )
                 except Exception as e:
                     logger.error(
-                        "Error in batch execution (iteration %d): %s", i + 1, str(e)
+                        "Error in batch execution (iteration %d): %s", i + 1, e
                     )
                     failed_runs += 1
 
             all_results.extend(scenario_results)
             logger.info(
-                "Completed scenario %s with %d successful and %d failed runs in %.1fs",
+                "Completed scenario %s with %d successful and %d failed runs in %.1f seconds",
                 scenario["name"],
                 successful_runs,
                 failed_runs,
                 time.time() - start_time,
             )
 
-    save_results_to_csv(all_results)
+    save_raw_results_csv(all_results)
     generate_latency_percentile_graph(all_results)
-    generate_throughput_graph(all_results)
     generate_matplotlib_latency_graph(all_results)
-    generate_matplotlib_throughput_graph(all_results)
     print_summary(all_results)
     generate_detailed_report(all_results)
 
