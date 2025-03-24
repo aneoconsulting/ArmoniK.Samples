@@ -203,7 +203,7 @@ jobs:
             working-directory: ${{ github.workspace }}/infra
             type: localhost
             ext-csharp-version: 0.18.0
-            core-version: b074b61c471627f5382d9abc684ce0e7e2f9c3a4
+            core-version: 2cb6681519c62b119908e2293f4fb946092475a6
             log-suffix: ${{ matrix.demo }}
          
       - name: Run Demo Client
