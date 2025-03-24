@@ -7,7 +7,6 @@ build-backend = "setuptools.build_meta"
 name = "helloworld"
 version = "0.0.1"
 description = "Sample python with simple a basic task"
-readme = "README.md"
 requires-python = ">= 3.7"
 keywords = ["ArmoniK", "Python", "Aneo"]
 dependencies = [
