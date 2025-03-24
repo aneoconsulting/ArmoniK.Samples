@@ -1,4 +1,5 @@
 import csv
+import os
 import time
 from typing import Any, Dict, List
 
@@ -9,6 +10,10 @@ def save_results_to_csv(results: List[Dict[str, Any]]) -> None:
     """Save benchmark results to a CSV file with all captured metrics."""
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     filename = f"benchmark_results_{timestamp}.csv"
+
+    # Create directory for results if it doesn't exist
+    os.makedirs("benchmark_results", exist_ok=True)
+    filepath = os.path.join("benchmark_results", filename)
 
     # Get all possible field names from all results (metrics may vary between runs)
     fieldnames = set()
@@ -21,9 +26,12 @@ def save_results_to_csv(results: List[Dict[str, Any]]) -> None:
         "batch_size",
         "iteration",
         "submission_time",
+        "task_execution_time",  # Add task execution time to core fields
+        "download_time",
         "processing_time",
         "total_time",
         "tasks_per_second",
+        "true_end_to_end_latency",
     ]
 
     # Add task timing fields
@@ -58,14 +66,6 @@ def save_results_to_csv(results: List[Dict[str, Any]]) -> None:
         "completion_rate",
     ]
 
-    # Add system efficiency fields
-    efficiency_fields = [
-        "total_task_time",
-        "ideal_parallel_time",
-        "parallelization_efficiency",
-        "system_utilization",
-    ]
-
     # Sort the fields in a logical order
     ordered_fieldnames = []
     for field_list in [
@@ -73,7 +73,6 @@ def save_results_to_csv(results: List[Dict[str, Any]]) -> None:
         task_timing_fields,
         download_fields,
         completion_fields,
-        efficiency_fields,
     ]:
         for field in field_list:
             if field in fieldnames:
@@ -83,13 +82,13 @@ def save_results_to_csv(results: List[Dict[str, Any]]) -> None:
     # Add any remaining fields
     ordered_fieldnames.extend(sorted(fieldnames))
 
-    with open(filename, "w", newline="", encoding="utf-8") as csvfile:
+    with open(filepath, "w", newline="", encoding="utf-8") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=ordered_fieldnames)
         writer.writeheader()
         for result in results:
             writer.writerow(result)
 
-    logger.info("Detailed results saved to %s", filename)
+    logger.info("Detailed results saved to %s", filepath)
 
     # Also save a simplified version with just core metrics for easy analysis
     save_simplified_results(results, timestamp)
@@ -97,22 +96,25 @@ def save_results_to_csv(results: List[Dict[str, Any]]) -> None:
 
 def save_simplified_results(results: List[Dict[str, Any]], timestamp: str) -> None:
     """Save a simplified version of the results with just the core metrics."""
-    filename = f"simplified_results_{timestamp}.csv"
+    os.makedirs("benchmark_results", exist_ok=True)
+    filepath = os.path.join("benchmark_results", f"simplified_results_{timestamp}.csv")
 
     core_fields = [
         "scenario",
         "batch_size",
         "iteration",
         "submission_time",
+        "task_execution_time",  # Include task execution time in simplified results
+        "download_time",
         "processing_time",
         "total_time",
+        "true_end_to_end_latency",
         "tasks_per_second",
         "avg_task_time",
         "p95_task_time",
-        "system_utilization",
     ]
 
-    with open(filename, "w", newline="", encoding="utf-8") as csvfile:
+    with open(filepath, "w", newline="", encoding="utf-8") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=core_fields)
         writer.writeheader()
         for result in results:
@@ -120,7 +122,7 @@ def save_simplified_results(results: List[Dict[str, Any]], timestamp: str) -> No
             row = {field: result.get(field, "") for field in core_fields}
             writer.writerow(row)
 
-    logger.info("Simplified results saved to %s", filename)
+    logger.info("Simplified results saved to %s", filepath)
 
 
 def print_summary(results: List[Dict[str, Any]]) -> None:
@@ -145,12 +147,34 @@ def print_summary(results: List[Dict[str, Any]]) -> None:
         avg_submission = sum(
             r.get("submission_time", 0) for r in scenario_results
         ) / len(scenario_results)
+
+        # Add task execution time to summary
+        avg_task_exec = sum(
+            r.get("task_execution_time", 0) for r in scenario_results
+        ) / len(scenario_results)
+
+        # Add download time to summary
+        avg_download_time = sum(
+            r.get("download_time", 0) for r in scenario_results
+        ) / len(scenario_results)
+
         avg_processing = sum(
             r.get("processing_time", 0) for r in scenario_results
         ) / len(scenario_results)
+
         avg_total = sum(r.get("total_time", 0) for r in scenario_results) / len(
             scenario_results
         )
+
+        # True end-to-end latency if available
+        if any("true_end_to_end_latency" in r for r in scenario_results):
+            avg_e2e = sum(
+                r.get("true_end_to_end_latency", r.get("total_time", 0))
+                for r in scenario_results
+            ) / len(scenario_results)
+        else:
+            avg_e2e = avg_total
+
         avg_throughput = sum(
             r["batch_size"] / r["total_time"]
             for r in scenario_results
@@ -158,10 +182,15 @@ def print_summary(results: List[Dict[str, Any]]) -> None:
         ) / len(scenario_results)
 
         print("TIMING METRICS:")
-        print(f"  Submission time: {avg_submission:.4f}s")
-        print(f"  Processing time: {avg_processing:.4f}s")
-        print(f"  Total latency:   {avg_total:.4f}s")
-        print(f"  Throughput:      {avg_throughput:.2f} tasks/sec")
+        print(f"  Submission time:     {avg_submission:.4f}s")
+        print(
+            f"  Task execution time: {avg_task_exec:.4f}s  (submission to results available)"
+        )
+        print(f"  Download time:       {avg_download_time:.4f}s")
+        print(f"  Processing time:     {avg_processing:.4f}s")
+        print(f"  Total latency:       {avg_total:.4f}s")
+        print(f"  End-to-end:          {avg_e2e:.4f}s")
+        print(f"  Throughput:          {avg_throughput:.2f} tasks/sec")
 
         # Task processing metrics (if available)
         if any("avg_task_time" in r for r in scenario_results):
@@ -199,7 +228,6 @@ def print_summary(results: List[Dict[str, Any]]) -> None:
                 print(f"  Min task time:   {avg_min:.4f}s")
                 print(f"  Max task time:   {avg_max:.4f}s")
 
-        # Download metrics (if available)
         if any("avg_download_time" in r for r in scenario_results):
             download_times = [r for r in scenario_results if "avg_download_time" in r]
             avg_download = sum(
@@ -209,38 +237,14 @@ def print_summary(results: List[Dict[str, Any]]) -> None:
             print("\nDOWNLOAD METRICS:")
             print(f"  Avg download:    {avg_download:.4f}s")
 
-        # System efficiency metrics (if available)
-        if any("system_utilization" in r for r in scenario_results):
-            efficiency_results = [
-                r for r in scenario_results if "system_utilization" in r
-            ]
-            avg_utilization = sum(
-                r.get("system_utilization", 0) for r in efficiency_results
-            ) / len(efficiency_results)
-            avg_efficiency = (
-                sum(
-                    r.get("parallelization_efficiency", 0)
-                    for r in efficiency_results
-                    if "parallelization_efficiency" in r
-                )
-                / len(
-                    [r for r in efficiency_results if "parallelization_efficiency" in r]
-                )
-                if any("parallelization_efficiency" in r for r in efficiency_results)
-                else 0
-            )
-
-            print("\nEFFICIENCY METRICS:")
-            print(f"  System utilization:      {avg_utilization*100:.2f}%")
-            print(f"  Parallelization eff.:    {avg_efficiency*100:.2f}%")
-
     print("\n" + "=" * 80)
 
 
 def generate_detailed_report(results: List[Dict[str, Any]]) -> None:
     """Generate a detailed HTML report with metrics breakdown."""
     timestamp = time.strftime("%Y%m%d_%H%M%S")
-    filename = f"detailed_report_{timestamp}.html"
+    os.makedirs("benchmark_results", exist_ok=True)
+    filepath = os.path.join("benchmark_results", f"detailed_report_{timestamp}.html")
 
     # Simple HTML report template
     html_content = f"""
@@ -289,39 +293,34 @@ def generate_detailed_report(results: List[Dict[str, Any]]) -> None:
         # Add rows for key metrics
         metrics = [
             ("Total Time (s)", "total_time"),
+            ("End-to-End Latency (s)", "true_end_to_end_latency"),
+            (
+                "Task Execution Time (s)",
+                "task_execution_time",
+            ),  # Add task execution time to report
+            ("Download Time (s)", "download_time"),
             ("Processing Time (s)", "processing_time"),
             ("Submission Time (s)", "submission_time"),
             ("Tasks per Second", "tasks_per_second"),
             ("Task Time (s)", "avg_task_time"),
             ("Download Time (s)", "avg_download_time"),
-            (
-                "System Utilization",
-                "system_utilization",
-                100,
-            ),  # Multiply by 100 for percentage
-            (
-                "Parallelization Efficiency",
-                "parallelization_efficiency",
-                100,
-            ),  # Multiply by 100 for percentage
         ]
 
-        for label, key, *args in metrics:
-            multiplier = args[0] if args else 1
+        for label, key in metrics:
             if any(key in r for r in scenario_results):
                 valid_results = [r[key] for r in scenario_results if key in r]
                 if valid_results:
-                    avg_val = sum(valid_results) / len(valid_results) * multiplier
-                    min_val = min(valid_results) * multiplier
-                    max_val = max(valid_results) * multiplier
+                    avg_val = sum(valid_results) / len(valid_results)
+                    min_val = min(valid_results)
+                    max_val = max(valid_results)
 
                     # Calculate P95
                     sorted_vals = sorted(valid_results)
                     p95_idx = int(len(sorted_vals) * 0.95)
                     p95_val = (
-                        sorted_vals[p95_idx] * multiplier
+                        sorted_vals[p95_idx]
                         if p95_idx < len(sorted_vals)
-                        else sorted_vals[-1] * multiplier
+                        else sorted_vals[-1]
                     )
 
                     html_content += f"""
@@ -346,7 +345,27 @@ def generate_detailed_report(results: List[Dict[str, Any]]) -> None:
     """
 
     # Write HTML file
-    with open(filename, "w") as f:
+    with open(filepath, "w") as f:
         f.write(html_content)
 
-    logger.info("Detailed HTML report generated: %s", filename)
+    logger.info("Detailed HTML report generated: %s", filepath)
+
+
+def save_raw_results_csv(results: List[Dict[str, Any]]) -> None:
+    """Save completely raw results with all fields included, for detailed analysis."""
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    os.makedirs("benchmark_results", exist_ok=True)
+    filepath = os.path.join("benchmark_results", f"raw_results_{timestamp}.csv")
+
+    # Get all fields from all results
+    all_fields = set()
+    for result in results:
+        all_fields.update(result.keys())
+
+    with open(filepath, "w", newline="", encoding="utf-8") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=sorted(all_fields))
+        writer.writeheader()
+        for result in results:
+            writer.writerow(result)
+
+    logger.info("Raw results saved to %s", filepath)

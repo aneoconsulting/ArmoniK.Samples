@@ -1,4 +1,6 @@
-armonik
 matplotlib
 plotly
 dotenv
+--extra-index-url https://test.pypi.org/simple/
+--trusted-host test.pypi.org
+armonik==3.25.1.dev3677
