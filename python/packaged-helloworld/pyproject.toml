@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-hello-world = "helloworld.client.client:main"
+helloworld = "helloworld.client.client:main"
 
 [project.urls]
 Homepage = "https://github.com/aneoconsulting/ArmoniK.Samples/tree/main/python/hello-world"
