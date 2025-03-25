@@ -8,30 +8,33 @@ This project contains a worker and a client to interact with ArmoniK's Control P
 
 1. Build the Docker image for the worker:
     ```bash
-    docker build -t armonik-worker -f Dockerfile .
+    docker build -t dockerhubaneo/armonik_demo_python_helloworld -f Dockerfile .
     ```
 
-2. Deploy ArmoniK locally by following the instructions at [ArmoniK Documentation](https://aneoconsulting.github.io/ArmoniK/). Ensure you create a new partition named "helloworld" with the worker's image.
+2. Deploy ArmoniK locally by following the instructions at [ArmoniK Documentation](https://aneoconsulting.github.io/ArmoniK/). Ensure you create a new partition named "helloworldpython" with the worker's image. If the deployement was successful, you should get an ip and a port that will be used as the endpoint in order to run the client.
 
-3. Move to the `client` folder and create a virtual environment:
+3. Create and activate a virtual environment and build the package:
     ```bash
-    cd client
     python -m venv .venv
-    ```
-
-4. Activate the virtual environment:
-    ```bash
-    source .venv/bin/activate
-    ```
-
-5. Install the client dependencies:
-    ```bash
-    pip install -r client-requirements.txt
+    . .venv/bin/activate
+    pip install -U pip setuptools && pip install .
     ```
 
 ## Usage
 
-Run the Client with the name of the partition and the endpoint obtained after ArmoniK's deployment:
+The package build will produce a script `helloworld` that you can use directly to run the Client. Use the name of the partition and the endpoint obtained after ArmoniK's deployment:
+
+    ```bash
+    helloworld --partition helloworldpython --endpoint <ip>:port
+    ```
+
+You should get an output as follows:
 
 ```bash
-python client.py --partition helloworld --endpoint <ip>:port
+<TIME> - INFO - sessionId: id
+<TIME> - INFO - data uploaded
+<TIME> - INFO - payload uploaded
+<TIME> - INFO - tasks submitted
+<TIME> - INFO - resultId: id, data: Hello world!
+<TIME> - INFO - End Connection!
+```
