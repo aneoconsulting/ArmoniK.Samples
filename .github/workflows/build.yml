@@ -421,9 +421,8 @@ jobs:
         run: |
           cd python/hello-world/
           python -m venv .venv
-          source .venv/bin/activate
-          pip install --upgrade pip
-          pip install -r client/client-requirements.txt
+          . .venv/bin/activate
+          pip install --upgrade pip setuptools && pip install -r client/client-requirements.txt
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
           export Grpc__Endpoint=$CPIP:$CPPort
@@ -435,7 +434,7 @@ jobs:
         run: |
           cd python/subtasking
           python -m venv ./armonik
-          source ./armonik/bin/activate
+          . ./armonik/bin/activate
           pip install --upgrade pip
           python -m pip install -r requirements.txt
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
