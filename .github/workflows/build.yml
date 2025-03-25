@@ -407,15 +407,7 @@ jobs:
             working-directory: ${{ github.workspace }}/infra
             type: localhost
             log-suffix: pythonHelloWorld
-      
-      - name: Run Demo
-        timeout-minutes: 10
-        run: |
-          cd python/${{ matrix.demo}}
-          python -m venv .venv
-          source 
-
-
+            
       - name: Run Demo Helloworld
         timeout-minutes: 10
         run: |
