@@ -25,16 +25,8 @@ dynamic = {version = {attr = "helloworld.__version__"}}
 
 [tool.setuptools.packages.find]
 where= ["src"]
-exclude=['tests']
 
 [project.optional-dependencies]
-tests = [
-  'coverage',
-  'pytest',
-  'pytest-cov',
-  'pytest-benchmark[histogram]',
-  'requests',
-]
 dev = [
   'mypy',
 ]
