@@ -108,23 +108,25 @@ namespace ArmoniK.Samples.DynamicSubmission.Worker
                                                                                                           .AsIList();
           logger_.LogDebug("Created ResultsMetaData for Sub-workers");
 
-          var payloadIds = (await taskHandler.CreateResultsAsync(inputs.Select((table,
-                                                                                i) => new CreateResultsRequest.Types.ResultCreate
-                                                                                      {
-                                                                                        Data = UnsafeByteOperations.UnsafeWrap(table.Serialize()),
-                                                                                        Name = "Payload_" + (i + 1),
-                                                                                      }))).Results.Select(data => data.ResultId);
-          logger_.LogDebug("Created Results Async for Sub-workers Submit Tasks Async ");
+          var payloadIds = await taskHandler.CreateResultsAsync(inputs.Select((table,
+                                                                               i) => new CreateResultsRequest.Types.ResultCreate
+                                                                                     {
+                                                                                       Data = UnsafeByteOperations.UnsafeWrap(table.Serialize()),
+                                                                                       Name = $"Payload_{i + 1}",
+                                                                                     }));
 
-          await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>(subTaskResultIds.Zip(payloadIds)
-                                                                                                             .Select(tuple => new SubmitTasksRequest.Types.TaskCreation
-                                                                                                                              {
-                                                                                                                                PayloadId = tuple.Second,
-                                                                                                                                ExpectedOutputKeys =
-                                                                                                                                {
-                                                                                                                                  tuple.First,
-                                                                                                                                },
-                                                                                                                              })),
+          logger_.LogDebug("Created Results Async for Sub-workers Submit Tasks Async");
+
+          await taskHandler.SubmitTasksAsync(subTaskResultIds.Zip(payloadIds.Results.Select(result => result.ResultId),
+                                                                  (subTaskId,
+                                                                   payloadId) => new SubmitTasksRequest.Types.TaskCreation
+                                                                                 {
+                                                                                   PayloadId = payloadId,
+                                                                                   ExpectedOutputKeys =
+                                                                                   {
+                                                                                     subTaskId,
+                                                                                   },
+                                                                                 }),
                                              taskOptions);
           logger_.LogDebug("Sub-workers submitted");
 
