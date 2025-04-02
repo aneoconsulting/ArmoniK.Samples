@@ -91,6 +91,7 @@ def run(endpoint: str, partition: str , size: int, tile: int) -> None:
                     data_dep.append(task[0][1])
                 result_data = tasks_dict_encoded
             else:
+                # Adding a mark to catch if the last one need a different tile size
                 if i == N and size%tile:
                     result_data = (tasks_list[i][0][0] + '-').encode("utf-8")
                 else:
