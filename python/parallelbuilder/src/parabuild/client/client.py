@@ -16,11 +16,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# common_path = Path(__file__).resolve().parent.parent / "common"
-# sys.path.append(str(common_path))
-
-# from common import NameIdDict
-
 def run(endpoint: str, partition: str , size: int, tile: int) -> None:
 
     with grpc.insecure_channel(endpoint) as channel:
@@ -32,8 +27,6 @@ def run(endpoint: str, partition: str , size: int, tile: int) -> None:
         session_client = ArmoniKSessions(channel)
 
         events_client = ArmoniKEvents(channel)
-
-        N = (size//tile)+1 if size%tile else size//tile
 
         default_task_options = TaskOptions(
             max_duration=timedelta(seconds=300),
@@ -52,32 +45,33 @@ def run(endpoint: str, partition: str , size: int, tile: int) -> None:
         if size > 1000 or size <= tile:
             raise Exception("Error size")
 
-        # Compute the number of subtask needed to fill the array
+        # Compute the number of subtask needed to fill the final list
         N = (size//tile)+1 if size%tile else size//tile
 
         # Assign a name for each task, including the init and final
         result_tasks_names = ["t" + str(i) for i in range(N+2)]
         payload_tasks_names = ["p" + str(i) for i in range (N+2)]
 
-        result_names = ["tasks_dict"] + result_tasks_names + payload_tasks_names
+        result_names = ["subtask_dict"] + result_tasks_names + payload_tasks_names
 
         results = result_client.create_results_metadata(
             result_names, session_id=session_id
         )
         
-        # Create a list of tasks, where a task is [[name, id], [payload_name, payload_id]] 
-        # and a dict for filling the list during last task
+        # Create a list of dictionnaries and a dict for filling the list during last task
         tasks_list = []
-        tasks_dict = {}
+        subtask_dict = {}
         for i in range(N+2):
-            task_name = result_tasks_names[i]
-            payload_name = payload_tasks_names[i]
-            tasks_list.append([[task_name, results[task_name].result_id], [payload_name, results[payload_name].result_id]])
+            tasks_list.append({
+                "result name" : result_tasks_names[i], 
+                "result id" : results[result_tasks_names[i]].result_id, 
+                "payload name" : payload_tasks_names[i], 
+                "payload id" : results[payload_tasks_names[i]].result_id})
 
         for i in range(1,N+1):
-            tasks_dict[tasks_list[i][0][0]] = tasks_list[i][0][1]
+            subtask_dict[tasks_list[i]["result name"]] = tasks_list[i]["result id"]
 
-        tasks_dict_encoded = json.dumps(tasks_dict).encode("utf-8")
+        subtask_dict_encoded = json.dumps(subtask_dict).encode("utf-8")
 
         # Upload payloads and fill the tasks definition list
         tasks_def = []
@@ -88,26 +82,26 @@ def run(endpoint: str, partition: str , size: int, tile: int) -> None:
             elif i == N+1:
                 last_dep = tasks_list[1:-1]
                 for task in last_dep:
-                    data_dep.append(task[0][1])
-                result_data = tasks_dict_encoded
+                    data_dep.append(task["result id"])
+                result_data = subtask_dict_encoded
             else:
-                # Adding a mark to catch if the last one need a different tile size
+                # Adding a mark to catch if the last one need a different length
                 if i == N and size%tile:
-                    result_data = (tasks_list[i][0][0] + '-').encode("utf-8")
+                    result_data = (tasks_list[i]["result name"] + '-').encode("utf-8")
                 else:
-                    result_data =tasks_list[i][0][0].encode("utf-8")
-                data_dep = [tasks_list[0][0][1]]
+                    result_data =tasks_list[i]["result name"].encode("utf-8")
+                data_dep = [tasks_list[0]["result id"]]
             
             result_client.upload_result_data(
-                result_id=tasks_list[i][1][1],
+                result_id=tasks_list[i]["payload id"],
                 session_id=session_id,
                 result_data=result_data
             )
 
             tasks_def.append(TaskDefinition(
                 data_dependencies=data_dep,
-                expected_output_ids=[tasks_list[i][0][1]],
-                payload_id=tasks_list[i][1][1],
+                expected_output_ids=[tasks_list[i]["result id"]],
+                payload_id=tasks_list[i]["payload id"],
             ))
         logger.info("Payloads uploaded")
 
@@ -119,24 +113,21 @@ def run(endpoint: str, partition: str , size: int, tile: int) -> None:
 
         try:
             events_client.wait_for_result_availability(
-                result_ids=tasks_list[N+1][0][1], session_id=session_id
+                result_ids=tasks_list[N+1]["result id"], session_id=session_id
             )
         except Exception as e:
             logger.error(f"An error occurred: {e}")
 
         try:
             serialized_result = result_client.download_result_data(
-                tasks_list[N+1][0][1], session_id
+                tasks_list[N+1]["result id"], session_id
             )
             final_result = json.loads(serialized_result.decode("utf-8"))
-            logger.info(f"resultId: {tasks_list[N+1][0][1]}, data: {final_result}")
+            logger.info(f"resultId: {tasks_list[N+1]["result id"]}, data: {final_result}")
         except Exception as e:
             logger.error(f"An error occurred: {e.details()}")
 
-        # session_client.close_session(session_id)
-
-        # session_client.purge_session(session_id)
-        # session_client.delete_session(session_id)
+        session_client.close_session(session_id)
 
     logger.info("End Connection!")
 

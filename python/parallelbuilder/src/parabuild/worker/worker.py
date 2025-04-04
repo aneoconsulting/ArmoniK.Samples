@@ -2,17 +2,11 @@ import logging
 import sys
 import random
 import json
-
 from armonik.worker import TaskHandler, ClefLogger
 # This import should be fixed in future versions of the API
 from armonik.worker.worker import armonik_worker
 from armonik.common import Output
 from pathlib import Path
-
-common_path = Path(__file__).resolve().parent.parent / "common"
-sys.path.append(str(common_path))
-
-from common import NameIdDict
 
 ClefLogger.setup_logging(logging.INFO)
 logger = ClefLogger.getLogger("ArmoniKWorker")
@@ -35,7 +29,7 @@ def processor(task_handler: TaskHandler) -> Output:
         # Init task
         taks_init_id = task_handler.expected_results.pop(0)
 
-        init = b"init"
+        init = b""
 
         task_handler.send_results({taks_init_id: init})
 

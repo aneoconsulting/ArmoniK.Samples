@@ -4,9 +4,10 @@ build-backend = "setuptools.build_meta"
 
 
 [project]
-name = "tiles"
+name = "ParallelBuilder"
 version = "0.0.1"
-description = "Sample python where you can build a list with tiles built in parallel"
+description = "Sample python where you can build a list with sub-lists built in parallel"
+readme = {file = "README.txt", content-type = "text/markdown"}
 requires-python = ">= 3.7"
 keywords = ["ArmoniK", "Python", "Aneo"]
 dependencies = [
@@ -14,7 +15,7 @@ dependencies = [
 ]
 
 [project.scripts]
-tiles = "tiles.client.client:main"
+parabuild = "parabuild.client.client:main"
 
 [tool.setuptools]
 include-package-data = true
