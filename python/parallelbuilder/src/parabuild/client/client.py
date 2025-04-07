@@ -16,7 +16,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def run(endpoint: str, partition: str , size: int, tile: int) -> None:
+def run(endpoint: str, partition: str , list: int, segment: int) -> None:
 
     with grpc.insecure_channel(endpoint) as channel:
         # Initialize ArmoniK's side
@@ -33,7 +33,7 @@ def run(endpoint: str, partition: str , size: int, tile: int) -> None:
             priority=1,
             max_retries=5,
             partition_id=partition,
-            options={"size": str(size), "tile": str(tile)}
+            options={"list": str(list), "segment": str(segment)}
         )
 
         session_id = session_client.create_session(
@@ -42,11 +42,11 @@ def run(endpoint: str, partition: str , size: int, tile: int) -> None:
         )
         print(f"Session {session_id} has been created")
         
-        if size > 1000 or size <= tile:
+        if list > 1000 or list < segment:
             raise Exception("Error size")
 
         # Compute the number of subtask needed to fill the final list
-        N = (size//tile)+1 if size%tile else size//tile
+        N = (list//segment)+1 if list%segment else list//segment
 
         # Assign a name for each task, including the init and final
         result_tasks_names = ["t" + str(i) for i in range(N+2)]
@@ -86,7 +86,7 @@ def run(endpoint: str, partition: str , size: int, tile: int) -> None:
                 result_data = subtask_dict_encoded
             else:
                 # Adding a mark to catch if the last one need a different length
-                if i == N and size%tile:
+                if i == N and list%segment:
                     result_data = (tasks_list[i]["result name"] + '-').encode("utf-8")
                 else:
                     result_data =tasks_list[i]["result name"].encode("utf-8")
@@ -139,10 +139,10 @@ def main() -> None:
         args: Command-line arguments.
 
     Example:
-        python client.py --endpoint 172.24.55.197:5001 --partition default
+        python client.py --endpoint <ip>:<port> --partition default
     """
     parser = argparse.ArgumentParser(
-        description="Simple tasks, the first one randomly choose a seed and the next one produce a output sting depending on the result of the last task\n"
+        description="Simple tasks, the first one randomly choose a seed and the next one produce a output string depending on the result of the last task\n"
     )
     connection_args = parser.add_argument_group(
         title="Connection", 
@@ -151,7 +151,6 @@ def main() -> None:
     connection_args.add_argument(
         "--endpoint",
         type=str,
-        default="172.24.55.197:5001",
         help="Endpoint for the connection to ArmoniK control plane.",
     )
     armonik_args = parser.add_argument_group(
@@ -165,21 +164,21 @@ def main() -> None:
         help="Name of the partition to which submit tasks.",
     )
     parser.add_argument(
-        "-s",
-        "--size",
-        help="Define the size of the array",
+        "-l",
+        "--list",
+        help="Define the length of the list",
         type=int,
         default=3,
     )
     parser.add_argument(
-        "-t",
-        "--tile",
-        help="Define the size of the tiles",
+        "-s",
+        "--segment",
+        help="Define the length of the segment",
         type=int,
         default=1,
     )
     parsed_args = parser.parse_args()
-    run(parsed_args.endpoint, parsed_args.partition, parsed_args.size, parsed_args.tile)
+    run(parsed_args.endpoint, parsed_args.partition, parsed_args.list, parsed_args.segment)
 
 if __name__ == "__main__":
     main()

@@ -4,9 +4,9 @@
 
 This project contains a worker and a client to interact with ArmoniK's Control Plane. The worker processes tasks sent by the Agent, transforming input data and sending results back to it.
 
-In this case, the aim is to build a list made up of sub-lists created asynchronously. Given the length of the list and the length of the sub-list, the client creates an amount of tasks. Each of these will create its own sub-list and when this is done, the role of the output task is to aggregate all the sub-lists and output the final list.
+In this case, the aim is to build a list made up of segments created asynchronously. Given the length of the list and the length of the segments, the client creates an amount of tasks. Each of these will create its own segment and when this is done, the role of the output task is to aggregate all the segments and output the final list.
 
-For example, if you choose s=10 and t=3, the pipeline will look like this:
+For example, if you choose a list and segments with respective lengths of 10 and 3, the pipeline will look like this:
 
 ```mermaid
 
@@ -42,7 +42,7 @@ graph LR
 
 ## Usage
 
-Run the Client with the name of the partition and the endpoint obtained after deployement. You have to specify the size of the final liste (-s) and the size of your sub-lists (-t).
+Run the Client with the name of the partition and the endpoint obtained after deployement. You have to specify the length of the final liste (-l) and the size of your segments (-s).
 
 ```bash
 parabuild --partition parabuildpython --endpoint <ip>:<port> -s 100 -t 15

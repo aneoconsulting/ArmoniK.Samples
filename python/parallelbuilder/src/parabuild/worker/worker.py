@@ -16,14 +16,14 @@ def processor(task_handler: TaskHandler) -> Output:
     logger = ClefLogger.getLogger("ArmoniKWorker")
     logger.info("Handeling the Task")
     payload = task_handler.payload
-    size = task_handler.task_options.options.get("size", None)
-    tile = task_handler.task_options.options.get("tile", None)
+    list = task_handler.task_options.options.get("list", None)
+    segment = task_handler.task_options.options.get("segment", None)
 
-    if size is None or tile is None:
-            raise Exception("Size or number of tile is not specified")
+    if list is None or segment is None:
+            raise Exception("List or segment length are not specified")
     else:
-        size = int(size)
-        tile = int(tile)
+        list = int(list)
+        segment = int(segment)
 
     if (len(payload) == 0):
         # Init task
@@ -38,10 +38,10 @@ def processor(task_handler: TaskHandler) -> Output:
         string = payload.decode("utf-8")
 
         if string[-1] == "-":
-            N = size%tile
+            N = list%segment
             string = string[:-1]
         else:
-            N = tile
+            N = segment
         num = string[1:]
         sublist = []
 
