@@ -142,7 +142,7 @@ def main() -> None:
         python client.py --endpoint <ip>:<port> --partition default
     """
     parser = argparse.ArgumentParser(
-        description="Simple tasks, the first one randomly choose a seed and the next one produce a output string depending on the result of the last task\n"
+        description="Simple tasks to build a list made up of segments created asynchronously."
     )
     connection_args = parser.add_argument_group(
         title="Connection", 
