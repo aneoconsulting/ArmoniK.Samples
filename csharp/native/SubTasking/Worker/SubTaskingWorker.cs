@@ -81,6 +81,7 @@ namespace ArmoniK.Samples.SubTasking.Worker
         // We may use TaskOptions.Options to send a field UseCase where we inform
         // what should be executed
         var useCase = taskHandler.TaskOptions.Options["UseCase"];
+        logger_.LogDebug("Start task");
 
         switch (useCase)
         {
@@ -158,27 +159,30 @@ namespace ArmoniK.Samples.SubTasking.Worker
       var subTasksResultIds = subTaskResults.Results.Select(result => result.ResultId)
                                             .ToList();
 
-      var payload = await taskHandler.CreateResultsAsync(new List<CreateResultsRequest.Types.ResultCreate>
-                                                         {
-                                                           new()
-                                                           {
-                                                             Data = UnsafeByteOperations.UnsafeWrap(Encoding.ASCII.GetBytes($"{input}_FatherId_{taskHandler.TaskId}")),
-                                                             Name = "Payload",
-                                                           },
-                                                         });
+      var payloads = await taskHandler.CreateResultsAsync(Enumerable.Range(1,
+                                                                           5)
+                                                                    .Select(i => new CreateResultsRequest.Types.ResultCreate
+                                                                                 {
+                                                                                   Data =
+                                                                                     UnsafeByteOperations
+                                                                                       .UnsafeWrap(Encoding.ASCII.GetBytes($"{input}_FatherId_{taskHandler.TaskId}")),
+                                                                                   Name = $"Payload_{i}",
+                                                                                 }));
 
-      var payloadId = payload.Results.Single()
-                             .ResultId;
+      var payloadIds = payloads.Results.Select(result => result.ResultId)
+                               .ToList();
 
-      await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>(subTasksResultIds.Select(subTaskId => new SubmitTasksRequest.Types.TaskCreation
-                                                                                                                               {
-                                                                                                                                 PayloadId = payloadId,
-                                                                                                                                 ExpectedOutputKeys =
-                                                                                                                                 {
-                                                                                                                                   subTaskId,
-                                                                                                                                 },
-                                                                                                                               })
-                                                                                                          .ToList()),
+      await taskHandler.SubmitTasksAsync(new List<SubmitTasksRequest.Types.TaskCreation>(payloadIds.Zip(subTasksResultIds,
+                                                                                                        (payloadId,
+                                                                                                         subTaskId) => new SubmitTasksRequest.Types.TaskCreation
+                                                                                                                       {
+                                                                                                                         PayloadId = payloadId,
+                                                                                                                         ExpectedOutputKeys =
+                                                                                                                         {
+                                                                                                                           subTaskId,
+                                                                                                                         },
+                                                                                                                       })
+                                                                                                   .ToList()),
                                          taskOptions);
 
       return subTasksResultIds;

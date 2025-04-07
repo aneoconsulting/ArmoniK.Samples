@@ -31,7 +31,7 @@ This project contains a worker and a client to interact with ArmoniK's Control P
 
 ## Usage
 
-Run the Client with the name of the partition:
+Run the Client with the name of the partition and the endpoint obtained after ArmoniK's deployment:
 
 ```bash
-python client.py --partition helloworld
+python client.py --partition helloworld --endpoint <ip>:port
