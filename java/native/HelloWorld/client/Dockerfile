@@ -6,7 +6,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Second Stage: Runtime environment (use JRE for a smaller image)
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17.0.15_6-jre-alpine
 WORKDIR /app
 COPY --from=build /build/target/java-client-sample-0.1.0.jar /app/client.jar
 
