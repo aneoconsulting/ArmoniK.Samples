@@ -42,6 +42,8 @@ using ArmoniK.Api.gRPC.V1.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
+using Microsoft.Extensions.Configuration;
+
 using static System.Console;
 
 
@@ -62,11 +64,17 @@ namespace ArmoniK.Samples.HelloWorld.Client
     internal static async Task Run(string endpoint,
                                    string partition)
     {
+      var builder       = new ConfigurationBuilder().AddEnvironmentVariables();
+      var configuration = builder.Build();
+
+      var options = configuration.GetSection(GrpcClient.SettingSection)
+                                 .Get<GrpcClient>() ?? new GrpcClient();
+
+      // Use grpc options with entrypoint from command line
+      options.Endpoint = endpoint;
+
       // Create gRPC channel to connect with ArmoniK control plane
-      var channel = GrpcChannelFactory.CreateChannel(new GrpcClient
-                                                     {
-                                                       Endpoint = endpoint,
-                                                     });
+      var channel = GrpcChannelFactory.CreateChannel(options!);
 
       // Create client for task submission
       var taskClient = new Tasks.TasksClient(channel);
