@@ -87,7 +87,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4
       with:
-        dotnet-version: 6.x
+        dotnet-version: 8.x
 
     - name: Build the package
       run: |

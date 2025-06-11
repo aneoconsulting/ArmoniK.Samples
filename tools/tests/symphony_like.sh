@@ -7,7 +7,7 @@ NC='\033[0m' # No Color
 DRY_RUN="${DRY_RUN:-0}"
 
 configuration="Debug"
-FRAMEWORK="net6.0"
+FRAMEWORK="net8.0"
 OUTPUT_JSON="nofile"
 TO_BUCKET=false
 TO_DIRECTORY=true
@@ -117,8 +117,8 @@ function deploy() {
 function execute() {
   echo "cd ${TestDir}/${RELATIVE_CLIENT}/"
   cd "${TestDir}/${RELATIVE_CLIENT}/"
-  echo dotnet run -r linux-x64 -f net6.0 -c ${configuration} $@
-  dotnet run -r linux-x64 -f net6.0 -c ${configuration} $@
+  echo dotnet run -r linux-x64 -f ${FRAMEWORK} -c ${configuration} $@
+  dotnet run -r linux-x64 -f ${FRAMEWORK} -c ${configuration} $@
 }
 
 function usage() {
