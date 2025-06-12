@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm","wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "ParallelBuilder"
+version = "0.0.1"
+description = "Sample python where you can build a list with sub-lists built in parallel"
+readme = {file = "README.txt", content-type = "text/markdown"}
+requires-python = ">= 3.7"
+keywords = ["ArmoniK", "Python", "Aneo"]
+dependencies = [
+    "armonik>=3.25.0"
+]
+
+[project.scripts]
+parabuild = "parabuild.client.client:main"
+
+[tool.setuptools]
+include-package-data = true
+dynamic = {version = {attr = "undecided.__version__"}}
+
+[tool.setuptools.packages.find]
+where= ["src"]
+
+[project.optional-dependencies]
+tests = [
+  'coverage',
+  'pytest',
+  'pytest-cov',
+  'pytest-benchmark[histogram]',
+  'requests',
+]
+dev = [
+  'mypy',
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
