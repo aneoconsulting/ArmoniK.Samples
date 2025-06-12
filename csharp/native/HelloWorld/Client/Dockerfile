@@ -18,4 +18,3 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ArmoniK.Samples.HelloWorld.Client.dll"]
-
