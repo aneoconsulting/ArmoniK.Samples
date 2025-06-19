@@ -66,7 +66,7 @@ compute_plane = {
   # Default partition that uses the C# extension for the worker
   default = {
     # number of replicas for each deployment of compute plane
-    replicas = 0
+    replicas = 1
     # ArmoniK polling agent
     polling_agent = {
       limits = {
@@ -81,6 +81,7 @@ compute_plane = {
     # ArmoniK workers
     worker = [
       {
+        //tag = "0.18.3-01824g78011c8c.4.sha.78011c8c"
         image = "dockerhubaneo/armonik_worker_dll"
         limits = {
           cpu    = "1000m"

@@ -156,9 +156,53 @@ namespace ArmoniK.Samples.Client
                               numberTaskOption);
 
 
+      var additionCommand = new Command("addition",
+                                        "Addition test with healthcheck after 10 calls");
+      var addTaskOption = new Option<int>("--nbTask",
+                                          () => 20,
+                                          "Number of tasks to execute"); // Default 20
+      var addProgressiveOption = new Option<bool>("--progressive",
+                                                  () => false,
+                                                  "Progressive test");
+      var twoNumbersOption = new Option<bool>("--two",
+                                              () => false,
+                                              "Two numbers addition test");
+
+      additionCommand.Add(addTaskOption);
+      additionCommand.Add(addProgressiveOption);
+      additionCommand.Add(twoNumbersOption);
+
+      additionCommand.SetHandler((nbTask,
+                                  progressive,
+                                  twoNumbers) =>
+                                 {
+                                   logger_.LogInformation("Running Addition test with HealthCheck (10 calls limit, worker restart)");
+
+                                   using var test = new AdditionTest(configuration_,
+                                                                     factory);
+
+                                   if (progressive)
+                                   {
+                                     test.ProgressiveTest();
+                                   }
+                                   else if (twoNumbers)
+                                   {
+                                     test.TwoNumbersTest(nbTask);
+                                   }
+                                   else
+                                   {
+                                     test.SimpleAdditionTest(nbTask);
+                                   }
+                                 },
+                                 addTaskOption,
+                                 addProgressiveOption,
+                                 twoNumbersOption);
+
+
       rootCommand.Add(pTaskCommand);
       rootCommand.Add(simpleTestCommand);
       rootCommand.Add(nTaskCommand);
+      rootCommand.Add(additionCommand); // Keep the command but with disabled functionality
 
       //Default without parameters
       rootCommand.SetHandler(() =>
