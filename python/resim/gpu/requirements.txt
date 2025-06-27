@@ -1,0 +1,15 @@
+# ArmoniK Python SDK
+armonik==3.17.0
+
+# Core dependencies
+numpy>=1.21.0
+grpcio>=1.50.0
+grpcio-tools>=1.50.0
+protobuf>=4.21.0
+
+# GPU dependencies - use compatible versions
+numba>=0.56.0
+cuda-python==11.8.0
+
+# Logging
+structlog>=22.1.0
