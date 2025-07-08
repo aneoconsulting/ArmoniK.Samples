@@ -16,10 +16,10 @@ using Microsoft.Extensions.Logging;
 
 namespace ArmoniK.Samples.Client
 {
-  internal class AdditionTest : IDisposable
+  internal class HealthCheckTest : IDisposable
   {
-    public AdditionTest(IConfiguration configuration,
-                        ILoggerFactory factory)
+    public HealthCheckTest(IConfiguration configuration,
+                           ILoggerFactory factory)
     {
       TaskOptions = new TaskOptions
                     {
@@ -38,16 +38,16 @@ namespace ArmoniK.Samples.Client
 
       Props = new Properties(configuration,
                              TaskOptions);
-      Logger       = factory.CreateLogger<AdditionTest>();
+      Logger       = factory.CreateLogger<HealthCheckTest>();
       Service      = ServiceFactory.CreateService(Props);
       ResultHandle = new ResultHandler(Logger);
     }
 
-    private ResultHandler         ResultHandle { get; }
-    public  ILogger<AdditionTest> Logger       { get; set; }
-    public  Properties            Props        { get; set; }
-    public  TaskOptions           TaskOptions  { get; set; }
-    private ISubmitterService     Service      { get; }
+    private ResultHandler            ResultHandle { get; }
+    public  ILogger<HealthCheckTest> Logger       { get; set; }
+    public  Properties               Props        { get; set; }
+    public  TaskOptions              TaskOptions  { get; set; }
+    private ISubmitterService        Service      { get; }
 
     public void Dispose()
       => Service?.Dispose();
@@ -107,11 +107,11 @@ namespace ArmoniK.Samples.Client
 
     private class ResultHandler : IServiceInvocationHandler
     {
-      private readonly ILogger<AdditionTest> _logger;
-      private volatile int                   _nbErrors;
-      private volatile int                   _nbResults;
+      private readonly ILogger<HealthCheckTest> _logger;
+      private volatile int                      _nbErrors;
+      private volatile int                      _nbResults;
 
-      public ResultHandler(ILogger<AdditionTest> logger)
+      public ResultHandler(ILogger<HealthCheckTest> logger)
         => _logger = logger;
 
       public int NbResults

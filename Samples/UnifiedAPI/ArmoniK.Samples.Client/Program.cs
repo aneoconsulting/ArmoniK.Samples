@@ -178,8 +178,8 @@ namespace ArmoniK.Samples.Client
                                  {
                                    logger_.LogInformation("Running Addition test with HealthCheck (10 calls limit, worker restart)");
 
-                                   using var test = new AdditionTest(configuration_,
-                                                                     factory);
+                                   using var test = new HealthCheckTest(configuration_,
+                                                                        factory);
 
                                    if (progressive)
                                    {

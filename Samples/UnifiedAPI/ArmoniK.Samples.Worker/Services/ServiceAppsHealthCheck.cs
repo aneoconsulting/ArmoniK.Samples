@@ -13,13 +13,13 @@ using Serilog.Extensions.Logging;
 
 namespace ArmoniK.Samples.Unified.Worker.Services
 {
-  public class ServiceAppsAddition : TaskSubmitterWorkerService, ICheckHealth
+  public class ServiceAppsHealthCheck : TaskSubmitterWorkerService, ICheckHealth
   {
-    private const    int                          MAX_CALLS = 10; // Worker becomes unhealthy after 10 calls
-    private static   int                          _callCount;
-    private readonly ILogger<ServiceAppsAddition> _logger;
+    private const    int                             MAX_CALLS = 10; // Worker becomes unhealthy after 10 calls
+    private static   int                             _callCount;
+    private readonly ILogger<ServiceAppsHealthCheck> _logger;
 
-    public ServiceAppsAddition()
+    public ServiceAppsHealthCheck()
     {
       var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                                               .AddJsonFile("appsettings.json",
@@ -42,8 +42,8 @@ namespace ArmoniK.Samples.Unified.Worker.Services
                                         logProvider,
                                       });
 
-      _logger = factory.CreateLogger<ServiceAppsAddition>();
-      _logger.LogError("ServiceAppsAddition started");
+      _logger = factory.CreateLogger<ServiceAppsHealthCheck>();
+      _logger.LogError("HealthCheckApps started");
     }
 
     public bool CheckHealth()
@@ -76,7 +76,7 @@ namespace ArmoniK.Samples.Unified.Worker.Services
     public string TestWorkerIdentity()
     {
       _logger.LogError("Worker identity test");
-      return "ServiceAppsAddition working";
+      return "HealthCheckApps working";
     }
 
     public string GetCallCount()
