@@ -1,0 +1,10 @@
+[project]
+name = "pymonik-jax-gpu"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10.2"
+dependencies = [
+    "jax[cpu,cuda12]>=0.6.1",
+    "pymonik>=0.2.2",
+]
