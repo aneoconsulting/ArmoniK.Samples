@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm","wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "helloworld"
+version = "0.0.1"
+description = "Sample python with simple a basic task"
+requires-python = ">= 3.7"
+keywords = ["ArmoniK", "Python", "Aneo"]
+dependencies = [
+    "armonik>=3.25.0"
+]
+
+[project.scripts]
+helloworld = "helloworld.client.client:main"
+
+[project.urls]
+Homepage = "https://github.com/aneoconsulting/ArmoniK.Samples/tree/main/python/hello-world"
+
+[tool.setuptools]
+include-package-data = true
+dynamic = {version = {attr = "helloworld.__version__"}}
+
+[tool.setuptools.packages.find]
+where= ["src"]
+
+[project.optional-dependencies]
+dev = [
+  'mypy',
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
