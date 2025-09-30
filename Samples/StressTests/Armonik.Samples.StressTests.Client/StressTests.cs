@@ -22,6 +22,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Text;
 
@@ -126,9 +127,59 @@ namespace Armonik.Samples.StressTests.Client
                                        nbOutputBytes,
                                        workloadTimeInMs);
       Logger.LogInformation($"{nbTasks}/{nbTasks} tasks Submitted in : {sw.ElapsedMilliseconds / 1000.0:0.00} secs with Total bytes {nbTasks * nbInputBytes / 1024.0:0.00} KB");
+      
+      var waitSw = Stopwatch.StartNew();
       ResultHandle.WaitForResult(nbTasks,
                                  new CancellationToken())
                   .Wait();
+      waitSw.Stop();
+
+      Logger.LogInformation($"=== FINAL RESULTS ===");
+      Logger.LogInformation($"Waited {waitSw.ElapsedMilliseconds / 1000.0:0.00} seconds for results");
+      Logger.LogInformation($"Submitted tasks: {ResultHandle.SubmittedTaskIds?.Count ?? 0}");
+      Logger.LogInformation($"Received callbacks: {ResultHandle.ReceivedTaskCount}");
+      Logger.LogInformation($"Success results: {ResultHandle.NbResults}");
+      Logger.LogInformation($"Error results: {ResultHandle.NbErrors}");
+      Logger.LogInformation($"Total processed: {ResultHandle.NbResults + ResultHandle.NbErrors}");
+      
+      // Debug discrepancy
+      var expectedTotal = ResultHandle.ReceivedTaskCount;
+      var actualTotal = ResultHandle.NbResults + ResultHandle.NbErrors;
+      if (expectedTotal != actualTotal)
+      {
+        Logger.LogError($"DISCREPANCY: Expected {expectedTotal} results based on callbacks, but got {actualTotal} in counters!");
+      }
+
+      // Check for missing tasks and display their IDs
+      var totalReceived = ResultHandle.NbResults + ResultHandle.NbErrors;
+      var missingCount = nbTasks - totalReceived;
+      
+      if (missingCount > 0)
+      {
+        Logger.LogWarning($"MISSING TASKS: {missingCount} tasks did not complete out of {nbTasks} submitted");
+        var missingIds = ResultHandle.GetMissingIds().ToList();
+        if (missingIds.Count > 0)
+        {
+          Logger.LogWarning($"Missing Task IDs ({missingIds.Count} identified):");
+          foreach (var missingId in missingIds.Take(20)) // Show first 20
+          {
+            Logger.LogWarning($"  Missing Task ID: {missingId}");
+          }
+          if (missingIds.Count > 20)
+          {
+            Logger.LogWarning($"  ... and {missingIds.Count - 20} more missing task IDs");
+          }
+        }
+        else
+        {
+          Logger.LogWarning("Could not identify specific missing task IDs (callback system issue)");
+        }
+      }
+      else
+      {
+        Logger.LogInformation("All tasks completed successfully - no missing tasks detected");
+      }
+
       periodicInfo.Dispose();
       var sb = new StringBuilder();
 
@@ -180,23 +231,19 @@ namespace Armonik.Samples.StressTests.Client
                                             },
                                             elapsed);
 
-      var result = Enumerable.Range(0,
-                                    nbTasks)
-                             .Chunk(nbTasks / Props.MaxParallelChannels)
-                             .AsParallel()
-                             .Select(subInt => subInt.Select(idx => Service.SubmitAsync("ComputeWorkLoad",
-                                                                                        Utils.ParamsHelper(inputArrayOfBytes,
-                                                                                                           nbOutputBytes,
-                                                                                                           workloadTimeInMs),
-                                                                                        ResultHandle))
-                                                     .ToList());
+      var taskIds = Service.Submit("ComputeWorkLoad",
+                                   Enumerable.Range(0, nbTasks)
+                                             .Select(_ => Utils.ParamsHelper(inputArrayOfBytes,
+                                                                             nbOutputBytes,
+                                                                             workloadTimeInMs)),
+                                   ResultHandle)
+                           .ToHashSet();
 
-      var taskIds = result.SelectMany(t => Task.WhenAll(t)
-                                               .Result)
-                          .ToHashSet();
+      // Store submitted task IDs for missing task detection
+      ResultHandle.SubmittedTaskIds = taskIds;
+      Logger.LogInformation($"Registered {taskIds.Count} task IDs for tracking");
 
       indexTask = taskIds.Count();
-
 
       return periodicInfo;
     }
@@ -209,9 +256,18 @@ namespace Armonik.Samples.StressTests.Client
       public ResultForStressTestsHandler(ILogger<StressTests> Logger)
         => Logger_ = Logger;
 
-      public int    NbResults { get; private set; }
-      public int    NbErrors  { get; private set; }
+      private int nbResults_;
+      private int nbErrors_;
+      
+      public int NbResults => nbResults_;
+      public int NbErrors => nbErrors_;
       public double Total     { get; private set; }
+
+      // Track submitted and received task IDs for missing task detection
+      public ISet<string> SubmittedTaskIds { get; set; } = new HashSet<string>();
+      private readonly ConcurrentDictionary<string, byte> receivedTaskIds_ = new ConcurrentDictionary<string, byte>();
+      
+      public int ReceivedTaskCount => receivedTaskIds_.Count;
 
       /// <summary>
       ///   The callBack method which has to be implemented to retrieve error or exception
@@ -222,17 +278,35 @@ namespace Armonik.Samples.StressTests.Client
                               string                     taskId)
 
       {
-        NbErrors++;
+        try 
+        {
+          Logger_.LogDebug($"HandleError called for task {taskId}: {e.Message}");
+          
+          Interlocked.Increment(ref nbErrors_);
+          Logger_.LogDebug($"Error count incremented to {nbErrors_} for task {taskId}");
 
-        if (e.StatusCode == ArmonikStatusCode.TaskCancelled)
-        {
-          Logger_.LogWarning($"Warning from {taskId} : " + e.Message);
+          // Track this task as received (even if error)
+          if (!string.IsNullOrEmpty(taskId))
+          {
+            receivedTaskIds_.TryAdd(taskId, 0);
+            Logger_.LogDebug($"Task {taskId} marked as received (error). Total received: {receivedTaskIds_.Count}");
+          }
+
+          if (e.StatusCode == ArmonikStatusCode.TaskCancelled)
+          {
+            Logger_.LogWarning($"Warning from {taskId} : " + e.Message);
+          }
+          else
+          {
+            Logger_.LogError($"Error from {taskId} : " + e.Message);
+            throw new ApplicationException($"Error from {taskId}",
+                                           e);
+          }
         }
-        else
+        catch (Exception ex)
         {
-          Logger_.LogError($"Error from {taskId} : " + e.Message);
-          throw new ApplicationException($"Error from {taskId}",
-                                         e);
+          Logger_.LogError($"Exception in HandleError for task {taskId}: {ex}");
+          throw;
         }
       }
 
@@ -245,27 +319,66 @@ namespace Armonik.Samples.StressTests.Client
                                  string taskId)
 
       {
-        switch (response)
+        try 
         {
-          case double[] doubles:
-            Total += doubles.Sum();
-            break;
-          case null:
-            Logger_.LogInformation("Task finished but nothing returned in Result");
-            break;
-        }
+          Logger_.LogDebug($"HandleResponse called for task {taskId}");
+          
+          switch (response)
+          {
+            case double[] doubles:
+              Total += doubles.Sum();
+              break;
+            case null:
+              Logger_.LogInformation("Task finished but nothing returned in Result");
+              break;
+          }
 
-        NbResults++;
+          // Track this task as received (success)
+          if (!string.IsNullOrEmpty(taskId))
+          {
+            receivedTaskIds_.TryAdd(taskId, 0);
+            Logger_.LogDebug($"Task {taskId} marked as received (success). Total received: {receivedTaskIds_.Count}");
+          }
+
+          Interlocked.Increment(ref nbResults_);
+          Logger_.LogDebug($"Result count incremented to {nbResults_} for task {taskId}");
+        }
+        catch (Exception ex)
+        {
+          Logger_.LogError($"Exception in HandleResponse for task {taskId}: {ex}");
+          throw;
+        }
       }
 
       public async Task WaitForResult(int               nbTasks,
                                       CancellationToken token)
       {
-        while (NbResults + NbErrors < nbTasks && !token.IsCancellationRequested)
+        var timeout = TimeSpan.FromMinutes(10);
+        var sw = Stopwatch.StartNew();
+        
+        while (NbResults + NbErrors < nbTasks && !token.IsCancellationRequested && sw.Elapsed < timeout)
         {
           await Task.Delay(TimeSpan.FromMilliseconds(100),
                            token);
         }
+        
+        if (sw.Elapsed >= timeout)
+        {
+          Logger_.LogWarning($"Timeout reached after {timeout.TotalMinutes} minutes. Got {NbResults + NbErrors}/{nbTasks} results");
+        }
+      }
+
+      /// <summary>
+      /// Get the list of submitted task IDs that were never received as callbacks
+      /// </summary>
+      public IEnumerable<string> GetMissingIds()
+      {
+        if (SubmittedTaskIds == null || SubmittedTaskIds.Count == 0)
+        {
+          return Enumerable.Empty<string>();
+        }
+
+        return SubmittedTaskIds.Where(id => !receivedTaskIds_.ContainsKey(id));
       }
     }
   }
