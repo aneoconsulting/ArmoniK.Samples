@@ -38,8 +38,8 @@ namespace ArmoniK.Samples.Client
 {
   internal class Program
   {
-    private static IConfiguration   configuration_;
-    private static ILogger<Program> logger_;
+  private static IConfiguration?   _configuration_;
+  private static ILogger<Program>? _logger_;
 
     private static async Task Main(string[] args)
     {
@@ -59,7 +59,7 @@ namespace ArmoniK.Samples.Client
                                       new LoggerFilterOptions().AddFilter("Grpc",
                                                                           LogLevel.Error));
 
-      logger_ = factory.CreateLogger<Program>();
+      _logger_ = factory.CreateLogger<Program>();
 
       var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                                               .AddJsonFile("appsettings.json",
@@ -67,7 +67,7 @@ namespace ArmoniK.Samples.Client
                                                            false)
                                               .AddEnvironmentVariables();
 
-      configuration_ = builder.Build();
+      _configuration_ = builder.Build();
 
 
       var rootCommand = new RootCommand("Samples for unifiedAPI: Binary for simple tests and quick benchmarks");
@@ -102,23 +102,39 @@ namespace ArmoniK.Samples.Client
                            new Option<string>("--jsonPath",
                                               () => "",
                                               "specify the jsonPath to get metrics. Options are Raw or Json"),
+                           new Option<int>("--submissionDelayMs",
+                                           () => 0,
+                                           "specify the delay in milliseconds between task submissions (0 = no delay, submit all at once)"),
+                           new Option<int>("--payloadVariation",
+                                           () => 0,
+                                           "specify the payload size variation in percent (0-100, 0 = no variation)"),
+                           new Option<int>("--outputVariation",
+                                           () => 0,
+                                           "specify the output size variation in percent (0-100, 0 = no variation)"),
+                           new Option<string>("--variationDistribution",
+                                              () => "uniform",
+                                              "specify the distribution type for size variation: uniform, gaussian, exponential"),
                          };
 
       pTaskCommand.Handler = CommandHandler.Create((ContainerOptions options) =>
                                                    {
-                                                     logger_.LogInformation("Option Parallel task Run");
-                                                     logger_.LogInformation($"--nbTask              = {options.NbTask}");
-                                                     logger_.LogInformation($"--nbInputBytes        = {options.NbInputBytes}");
-                                                     logger_.LogInformation($"--nbOutputBytes       = {options.NbOutputBytes}");
-                                                     logger_.LogInformation($"--workLoadTimeInMs    = {options.WorkLoadTimeInMs}");
-                                                     logger_.LogInformation($"--partition           = {options.Partition}");
-                                                     logger_.LogInformation($"--nbTaskPerBuffer     = {options.NbTaskPerBuffer}");
-                                                     logger_.LogInformation($"--nbBufferPerChannel  = {options.NbBufferPerChannel}");
-                                                     logger_.LogInformation($"--nbChannel           = {options.NbChannel}");
-                                                     logger_.LogInformation($"--jsonPath            = {options.JsonPath}");
+                                                     _logger_.LogInformation("Option Parallel task Run");
+                                                     _logger_.LogInformation($"--nbTask              = {options.NbTask}");
+                                                     _logger_.LogInformation($"--nbInputBytes        = {options.NbInputBytes}");
+                                                     _logger_.LogInformation($"--nbOutputBytes       = {options.NbOutputBytes}");
+                                                     _logger_.LogInformation($"--workLoadTimeInMs    = {options.WorkLoadTimeInMs}");
+                                                     _logger_.LogInformation($"--partition           = {options.Partition}");
+                                                     _logger_.LogInformation($"--nbTaskPerBuffer     = {options.NbTaskPerBuffer}");
+                                                     _logger_.LogInformation($"--nbBufferPerChannel  = {options.NbBufferPerChannel}");
+                                                     _logger_.LogInformation($"--nbChannel           = {options.NbChannel}");
+                                                     _logger_.LogInformation($"--jsonPath            = {options.JsonPath}");
+                                                     _logger_.LogInformation($"--submissionDelayMs   = {options.SubmissionDelayMs}");
+                                                     _logger_.LogInformation($"--payloadVariation    = {options.PayloadVariation}%");
+                                                     _logger_.LogInformation($"--outputVariation     = {options.OutputVariation}%");
+                                                     _logger_.LogInformation($"--variationDistribution = {options.VariationDistribution}");
 
 
-                                                     var test1 = new StressTests(configuration_,
+                                                     var test1 = new StressTests(_configuration_,
                                                                                  factory,
                                                                                  options.Partition,
                                                                                  options.NbTaskPerBuffer,
@@ -130,15 +146,58 @@ namespace ArmoniK.Samples.Client
                                                                               options.NbInputBytes,
                                                                               options.NbOutputBytes,
                                                                               options.WorkLoadTimeInMs,
-                                                                              options.JsonPath);
+                                                                              options.JsonPath,
+                                                                              options.SubmissionDelayMs,
+                                                                              options.PayloadVariation,
+                                                                              options.OutputVariation,
+                                                                              options.VariationDistribution);
                                                    });
 
+      // Advanced comprehensive stress test command
+      var advancedTestCommand = new Command("advancedTest",
+                                           "Execute comprehensive stress test suite with multiple scenarios and detailed reporting")
+                               {
+                                 new Option<string>("--partition",
+                                                    () => "",
+                                                    "specify the partition to use for the session."),
+                                 new Option<int>("--nbTaskPerBuffer",
+                                                 () => 50,
+                                                 "specify the number of task per buffer"),
+                                 new Option<int>("--nbBufferPerChannel",
+                                                 () => 5,
+                                                 "specify the number of concurrent buffer per channel"),
+                                 new Option<int>("--nbChannel",
+                                                 () => 5,
+                                                 "specify the number of Grpc Channel"),
+                               };
+
+      advancedTestCommand.Handler = CommandHandler.Create((AdvancedContainerOptions options) =>
+                                                          {
+                                                            _logger_.LogInformation("Advanced Comprehensive Stress Test Suite");
+                                                            _logger_.LogInformation($"--partition           = {options.Partition}");
+                                                            _logger_.LogInformation($"--nbTaskPerBuffer     = {options.NbTaskPerBuffer}");
+                                                            _logger_.LogInformation($"--nbBufferPerChannel  = {options.NbBufferPerChannel}");
+                                                            _logger_.LogInformation($"--nbChannel           = {options.NbChannel}");
+
+                                                            var advancedTest = new AdvancedStressTests(_configuration_,
+                                                                                                       factory,
+                                                                                                       options.Partition,
+                                                                                                       options.NbTaskPerBuffer,
+                                                                                                       options.NbBufferPerChannel,
+                                                                                                       options.NbChannel);
+
+                                                            return advancedTest.RunComprehensiveStressTest();
+                                                          });
+
       rootCommand.Add(pTaskCommand);
+      rootCommand.Add(advancedTestCommand);
 
       //Default without parameters
       rootCommand.SetHandler(() =>
                              {
-                               logger_.LogError("Please select one stress test to execute");
+                               _logger_.LogError("Please select one stress test to execute:");
+                               _logger_.LogError("  stressTest     - Single scenario stress test");
+                               _logger_.LogError("  advancedTest   - Comprehensive stress test suite with reporting");
                              });
 
       await rootCommand.InvokeAsync(args);
@@ -146,15 +205,27 @@ namespace ArmoniK.Samples.Client
 
     public class ContainerOptions
     {
-      public int    NbTask             { get; set; }
-      public long   NbInputBytes       { get; set; }
-      public long   NbOutputBytes      { get; set; }
-      public int    WorkLoadTimeInMs   { get; set; }
-      public string Partition          { get; set; }
+      public int    NbTask                 { get; set; }
+      public long   NbInputBytes           { get; set; }
+      public long   NbOutputBytes          { get; set; }
+      public int    WorkLoadTimeInMs       { get; set; }
+      public string Partition              { get; set; } = string.Empty;
+      public int    NbTaskPerBuffer        { get; set; }
+      public int    NbBufferPerChannel     { get; set; }
+      public int    NbChannel              { get; set; }
+      public string JsonPath               { get; set; } = string.Empty;
+      public int    SubmissionDelayMs      { get; set; }
+      public int    PayloadVariation       { get; set; }
+      public int    OutputVariation        { get; set; }
+      public string VariationDistribution  { get; set; } = "uniform";
+    }
+
+    public class AdvancedContainerOptions
+    {
+      public string Partition          { get; set; } = string.Empty;
       public int    NbTaskPerBuffer    { get; set; }
       public int    NbBufferPerChannel { get; set; }
       public int    NbChannel          { get; set; }
-      public string JsonPath           { get; set; }
     }
   }
 }

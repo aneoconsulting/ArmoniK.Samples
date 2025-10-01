@@ -106,142 +106,227 @@ namespace Armonik.Samples.StressTests.Client
 
     private ISubmitterService Service { get; }
 
-    internal void LargePayloadSubmit(int    nbTasks          = 100,
-                                     long   nbInputBytes     = 64000,
-                                     long   nbOutputBytes    = 8,
-                                     int    workloadTimeInMs = 1,
-                                     string jsonPath         = "")
+    internal void LargePayloadSubmit(int    nbTasks               = 100,
+                                     long   nbInputBytes          = 64000,
+                                     long   nbOutputBytes         = 8,
+                                     int    workloadTimeInMs      = 1,
+                                     string jsonPath              = "",
+                                     int    submissionDelayMs     = 0,
+                                     int    payloadVariation      = 0,
+                                     int    outputVariation       = 0,
+                                     string variationDistribution = "uniform")
     {
-      var inputArrayOfBytes = Enumerable.Range(0,
-                                               (int)(nbInputBytes / 8))
-                                        .Select(x => Math.Pow(42.0 * 8 / nbInputBytes,
-                                                              1        / 3.0))
-                                        .ToArray();
+      // Test initialization
+      var testStartTime = DateTime.Now;
+      var testId = Guid.NewGuid().ToString("N")[..8];
+      
+      StressTestLogging.LogTestHeader(Logger, testId, nbTasks, nbInputBytes, nbOutputBytes, workloadTimeInMs);
+      
+      // Log variation settings if enabled
+      if (payloadVariation > 0 || outputVariation > 0)
+      {
+        Logger.LogInformation("Payload Variability Configuration:");
+        if (payloadVariation > 0)
+        {
+          Logger.LogInformation($"  Input size variation : ±{payloadVariation}% (base: {nbInputBytes / 1024.0:N1} KB)");
+        }
+        if (outputVariation > 0)
+        {
+          Logger.LogInformation($"  Output size variation: ±{outputVariation}% (base: {nbOutputBytes / 1024.0:N1} KB)");
+        }
+        Logger.LogInformation($"  Distribution type    : {variationDistribution}");
+      }
 
-      Logger.LogInformation($"===  Running from {nbTasks} tasks with payload by task {nbInputBytes / 1024.0} KB Total : {nbTasks * nbInputBytes / 1024.0} KB...   ===");
-      var sw = Stopwatch.StartNew();
-      var dt = DateTime.Now;
-
+      // Phase 1: Task Submission
+      Logger.LogInformation("Phase 1: Starting task submission...");
+      var submissionSw = Stopwatch.StartNew();
+      
       var periodicInfo = ComputeVector(nbTasks,
-                                       inputArrayOfBytes,
+                                       nbInputBytes,
                                        nbOutputBytes,
-                                       workloadTimeInMs);
-      Logger.LogInformation($"{nbTasks}/{nbTasks} tasks Submitted in : {sw.ElapsedMilliseconds / 1000.0:0.00} secs with Total bytes {nbTasks * nbInputBytes / 1024.0:0.00} KB");
+                                       workloadTimeInMs,
+                                       submissionDelayMs,
+                                       payloadVariation,
+                                       outputVariation,
+                                       variationDistribution);
       
+      submissionSw.Stop();
+  StressTestLogging.LogSubmissionComplete(Logger, nbTasks, nbInputBytes, submissionSw);
+
+      // Phase 2: Task Execution and Results Collection
+      Logger.LogInformation("Phase 2: Waiting for task completion...");
       var waitSw = Stopwatch.StartNew();
-      ResultHandle.WaitForResult(nbTasks,
-                                 new CancellationToken())
-                  .Wait();
+      
+      ResultHandle.WaitForResult(nbTasks, new CancellationToken()).Wait();
+      
       waitSw.Stop();
-
-      Logger.LogInformation($"=== FINAL RESULTS ===");
-      Logger.LogInformation($"Waited {waitSw.ElapsedMilliseconds / 1000.0:0.00} seconds for results");
-      Logger.LogInformation($"Submitted tasks: {ResultHandle.SubmittedTaskIds?.Count ?? 0}");
-      Logger.LogInformation($"Received callbacks: {ResultHandle.ReceivedTaskCount}");
-      Logger.LogInformation($"Success results: {ResultHandle.NbResults}");
-      Logger.LogInformation($"Error results: {ResultHandle.NbErrors}");
-      Logger.LogInformation($"Total processed: {ResultHandle.NbResults + ResultHandle.NbErrors}");
-      
-      // Debug discrepancy
-      var expectedTotal = ResultHandle.ReceivedTaskCount;
-      var actualTotal = ResultHandle.NbResults + ResultHandle.NbErrors;
-      if (expectedTotal != actualTotal)
-      {
-        Logger.LogError($"DISCREPANCY: Expected {expectedTotal} results based on callbacks, but got {actualTotal} in counters!");
-      }
-
-      // Check for missing tasks and display their IDs
-      var totalReceived = ResultHandle.NbResults + ResultHandle.NbErrors;
-      var missingCount = nbTasks - totalReceived;
-      
-      if (missingCount > 0)
-      {
-        Logger.LogWarning($"MISSING TASKS: {missingCount} tasks did not complete out of {nbTasks} submitted");
-        var missingIds = ResultHandle.GetMissingIds().ToList();
-        if (missingIds.Count > 0)
-        {
-          Logger.LogWarning($"Missing Task IDs ({missingIds.Count} identified):");
-          foreach (var missingId in missingIds.Take(20)) // Show first 20
-          {
-            Logger.LogWarning($"  Missing Task ID: {missingId}");
-          }
-          if (missingIds.Count > 20)
-          {
-            Logger.LogWarning($"  ... and {missingIds.Count - 20} more missing task IDs");
-          }
-        }
-        else
-        {
-          Logger.LogWarning("Could not identify specific missing task IDs (callback system issue)");
-        }
-      }
-      else
-      {
-        Logger.LogInformation("All tasks completed successfully - no missing tasks detected");
-      }
-
       periodicInfo.Dispose();
-      var sb = new StringBuilder();
 
-      var stats = new TasksStats(nbTasks,
-                                 nbInputBytes,
-                                 nbOutputBytes,
-                                 workloadTimeInMs,
-                                 Props);
+      // Phase 3: Results Analysis
+      Logger.LogInformation("Phase 3: Analyzing results...");
+  StressTestLogging.LogResultsAnalysis(Logger, nbTasks, waitSw, ResultHandle.NbResults, ResultHandle.NbErrors);
 
-      using var channel = channelPool_.Get();
-      stats.GetAllStats(channel,
-                        Service.SessionId,
-                        dt,
-                        DateTime.Now)
-           .Wait();
+      // Phase 4: Performance Statistics
+      Logger.LogInformation("Phase 4: Gathering performance statistics...");
+  StressTestLogging.LogPerformanceStatistics(Logger, nbTasks, nbInputBytes, nbOutputBytes, workloadTimeInMs, testStartTime, jsonPath);
 
+      // Phase 5: JSON Report Generation
       if (!string.IsNullOrEmpty(jsonPath))
       {
-        stats.PrintToJson(jsonPath)
-             .Wait();
+        Logger.LogInformation("Phase 5: Generating JSON report...");
+        try
+        {
+          var taskStats = new TasksStats(nbTasks, taskOptions, Service.TasksClient.Channel, Service.SessionId);
+          await taskStats.PrintToJson(jsonPath);
+          Logger.LogInformation($"JSON report saved to: {jsonPath}");
+        }
+        catch (Exception ex)
+        {
+          Logger.LogError(ex, $"Failed to generate JSON report at {jsonPath}");
+        }
       }
 
-      Logger.LogInformation(stats.PrintToText()
-                                 .Result);
-
-
       Service.Dispose();
+  StressTestLogging.LogTestFooter(Logger, testId, DateTime.Now - testStartTime);
     }
+
+    // Logging methods moved to StressTestLogging.cs
 
     /// <summary>
     ///   The first test developed to validate dependencies subTasking
     /// </summary>
     /// <param name="nbTasks">The number of task to submit</param>
-    /// <param name="nbInputBytes">The number of element n x M in the vector</param>
-    /// <param name="nbOutputBytes">The number of bytes to expect as result</param>
+    /// <param name="nbInputBytes">The base number of bytes for input payload</param>
+    /// <param name="nbOutputBytes">The base number of bytes for output payload</param>
     /// <param name="workloadTimeInMs">The time spent to compute task</param>
-    private IDisposable ComputeVector(int      nbTasks,
-                                      double[] inputArrayOfBytes,
-                                      long     nbOutputBytes    = 8,
-                                      int      workloadTimeInMs = 1)
+    /// <param name="submissionDelayMs">The delay in milliseconds between task submissions (0 = no delay)</param>
+    /// <param name="payloadVariation">Payload size variation in percent (0-100)</param>
+    /// <param name="outputVariation">Output size variation in percent (0-100)</param>
+    /// <param name="variationDistribution">Distribution type: uniform, gaussian, exponential</param>
+    private IDisposable ComputeVector(int    nbTasks,
+                                      long   nbInputBytes,
+                                      long   nbOutputBytes       = 8,
+                                      int    workloadTimeInMs    = 1,
+                                      int    submissionDelayMs   = 0,
+                                      int    payloadVariation    = 0,
+                                      int    outputVariation     = 0,
+                                      string variationDistribution = "uniform")
     {
       var       indexTask = 0;
       const int elapsed   = 30;
 
-
       var periodicInfo = Utils.PeriodicInfo(() =>
                                             {
-                                              Logger.LogInformation($"Got {ResultHandle.NbResults} results. All tasks submitted ? {(indexTask == nbTasks).ToString()}");
+                                              var completed = ResultHandle.NbResults + ResultHandle.NbErrors;
+                                              var completionRate = indexTask > 0 ? (completed * 100.0 / indexTask) : 0;
+                                              var throughput = completed / Math.Max(1, elapsed);
+                                              
+                                              Logger.LogInformation($"Progress Update          : {completed}/{indexTask} tasks ({completionRate:N1}%) - Rate: {throughput:N1}/sec");
                                             },
                                             elapsed);
 
-      var taskIds = Service.Submit("ComputeWorkLoad",
-                                   Enumerable.Range(0, nbTasks)
-                                             .Select(_ => Utils.ParamsHelper(inputArrayOfBytes,
-                                                                             nbOutputBytes,
-                                                                             workloadTimeInMs)),
-                                   ResultHandle)
-                           .ToHashSet();
+      Logger.LogInformation("Submitting tasks to ArmoniK...");
+      
+      // Create payload generator with variation support
+      var payloadGenerator = new PayloadGenerator(nbInputBytes, payloadVariation, variationDistribution, Logger);
+      var outputGenerator = new PayloadGenerator(nbOutputBytes, outputVariation, variationDistribution, Logger);
+      
+      HashSet<string> taskIds;
+      
+      // Determine submission mode based on delay and variation
+      bool needsIterativeSubmission = submissionDelayMs > 0 || payloadVariation > 0 || outputVariation > 0;
+      
+      if (!needsIterativeSubmission)
+      {
+        // Fast path: No delay, no variation - submit all tasks at once
+        var basePayload = payloadGenerator.GeneratePayload();
+        // Ensure bench workers receive the payload size via TaskOptions
+        try
+        {
+          TaskOptions.Options["PayloadSize"] = nbInputBytes.ToString();
+        }
+        catch
+        {
+          throw new ApplicationException("TaskOptions.Options map is not available"); 
+        }
+        taskIds = Service.Submit("ComputeWorkLoad",
+                                 Enumerable.Range(0, nbTasks)
+                                           .Select(_ => Utils.ParamsHelper(basePayload,
+                                                                           nbOutputBytes,
+                                                                           workloadTimeInMs)),
+                                 ResultHandle)
+                         .ToHashSet();
+      }
+      else
+      {
+        // Iterative submission: with delay and/or variation
+        if (submissionDelayMs > 0)
+        {
+          Logger.LogInformation($"Submission Mode          : Throttled ({submissionDelayMs} ms delay between tasks)");
+        }
+        if (payloadVariation > 0 || outputVariation > 0)
+        {
+          Logger.LogInformation($"Submission Mode          : Variable payloads (input: ±{payloadVariation}%, output: ±{outputVariation}%)");
+        }
+        
+        taskIds = new HashSet<string>();
+        
+        for (int i = 0; i < nbTasks; i++)
+        {
+          // Generate variable payloads for each task
+          var taskInputPayload = payloadGenerator.GeneratePayload();
+          var taskOutputSize = outputGenerator.GenerateSize();
+
+          // Compute generated input size from payload array structure (generator uses size/8)
+          var taskInputSize = (long)taskInputPayload.Length * 8L;
+
+          // Ensure bench workers receive the payload size via TaskOptions for this submission
+          try
+          {
+            TaskOptions.Options["PayloadSize"] = taskInputSize.ToString();
+          }
+          catch
+          {
+            // ignore if map not available for some reason
+          }
+          
+          var batchTaskIds = Service.Submit("ComputeWorkLoad",
+                                           new[] { Utils.ParamsHelper(taskInputPayload,
+                                                                     taskOutputSize,
+                                                                     workloadTimeInMs) },
+                                           ResultHandle);
+          
+          foreach (var id in batchTaskIds)
+          {
+            taskIds.Add(id);
+          }
+          
+          indexTask = i + 1;
+          
+          // Apply delay between submissions (except after the last task)
+          if (submissionDelayMs > 0 && i < nbTasks - 1)
+          {
+            Thread.Sleep(submissionDelayMs);
+          }
+          
+          // Log progress every 100 tasks or at completion
+          if ((i + 1) % 100 == 0 || i == nbTasks - 1)
+          {
+            Logger.LogInformation($"Submission Progress      : {i + 1}/{nbTasks} tasks submitted ({(i + 1) * 100.0 / nbTasks:N1}%)");
+          }
+        }
+        
+        // Log statistics about generated sizes
+        if (payloadVariation > 0 || outputVariation > 0)
+        {
+          payloadGenerator.LogStatistics("Input Payload");
+          outputGenerator.LogStatistics("Output Size");
+        }
+      }
 
       // Store submitted task IDs for missing task detection
       ResultHandle.SubmittedTaskIds = taskIds;
-      Logger.LogInformation($"Registered {taskIds.Count} task IDs for tracking");
+      Logger.LogInformation($"Task Registration        : {taskIds.Count:N0} task IDs registered for tracking");
 
       indexTask = taskIds.Count();
 
@@ -280,27 +365,31 @@ namespace Armonik.Samples.StressTests.Client
       {
         try 
         {
-          Logger_.LogDebug($"HandleError called for task {taskId}: {e.Message}");
-          
-          Interlocked.Increment(ref nbErrors_);
-          Logger_.LogDebug($"Error count incremented to {nbErrors_} for task {taskId}");
-
           // Track this task as received (even if error)
           if (!string.IsNullOrEmpty(taskId))
           {
             receivedTaskIds_.TryAdd(taskId, 0);
-            Logger_.LogDebug($"Task {taskId} marked as received (error). Total received: {receivedTaskIds_.Count}");
           }
+
+          Interlocked.Increment(ref nbErrors_);
 
           if (e.StatusCode == ArmonikStatusCode.TaskCancelled)
           {
-            Logger_.LogWarning($"Warning from {taskId} : " + e.Message);
+            Logger_.LogWarning($"Task cancelled           : {taskId} - {e.Message}");
           }
           else
           {
-            Logger_.LogError($"Error from {taskId} : " + e.Message);
-            throw new ApplicationException($"Error from {taskId}",
-                                           e);
+            // Log full exception details (stack trace, status code) to help debugging why tasks are retried.
+            try
+            {
+              Logger_.LogError(e, $"Task error               : {taskId} - StatusCode={e.StatusCode} - Message={e.Message}");
+            }
+            catch
+            {
+              // Fallback to simple message if structured logging fails
+              Logger_.LogError($"Task error               : {taskId} - {e.Message} (StatusCode={e.StatusCode})");
+            }
+            // Do not throw here: keep collecting other results and let the harness report failures.
           }
         }
         catch (Exception ex)
@@ -315,21 +404,19 @@ namespace Armonik.Samples.StressTests.Client
       /// </summary>
       /// <param name="response">The object receive from the server as result the method called by the client</param>
       /// <param name="taskId">The task identifier which has invoke the response callBack</param>
-      public void HandleResponse(object response,
+      public void HandleResponse(object? response,
                                  string taskId)
 
       {
         try 
         {
-          Logger_.LogDebug($"HandleResponse called for task {taskId}");
-          
           switch (response)
           {
             case double[] doubles:
               Total += doubles.Sum();
               break;
             case null:
-              Logger_.LogInformation("Task finished but nothing returned in Result");
+              Logger_.LogDebug($"Task {taskId} completed with no result data");
               break;
           }
 
@@ -337,11 +424,9 @@ namespace Armonik.Samples.StressTests.Client
           if (!string.IsNullOrEmpty(taskId))
           {
             receivedTaskIds_.TryAdd(taskId, 0);
-            Logger_.LogDebug($"Task {taskId} marked as received (success). Total received: {receivedTaskIds_.Count}");
           }
 
           Interlocked.Increment(ref nbResults_);
-          Logger_.LogDebug($"Result count incremented to {nbResults_} for task {taskId}");
         }
         catch (Exception ex)
         {
@@ -355,16 +440,31 @@ namespace Armonik.Samples.StressTests.Client
       {
         var timeout = TimeSpan.FromMinutes(10);
         var sw = Stopwatch.StartNew();
+        var lastLogTime = DateTime.Now;
+        var lastCount = 0;
         
         while (NbResults + NbErrors < nbTasks && !token.IsCancellationRequested && sw.Elapsed < timeout)
         {
-          await Task.Delay(TimeSpan.FromMilliseconds(100),
-                           token);
+          await Task.Delay(TimeSpan.FromMilliseconds(100), token);
+          
+          // Log progress every 30 seconds
+          if (DateTime.Now - lastLogTime > TimeSpan.FromSeconds(30))
+          {
+            var currentCount = NbResults + NbErrors;
+            var rate = (currentCount - lastCount) / 30.0;
+            var remaining = nbTasks - currentCount;
+            var eta = rate > 0 ? TimeSpan.FromSeconds(remaining / rate) : TimeSpan.Zero;
+            
+            Logger_.LogInformation($"Execution Progress       : {currentCount}/{nbTasks} tasks ({currentCount * 100.0 / nbTasks:N1}%) - Rate: {rate:N1}/sec - ETA: {eta:mm\\:ss}");
+            
+            lastLogTime = DateTime.Now;
+            lastCount = currentCount;
+          }
         }
         
         if (sw.Elapsed >= timeout)
         {
-          Logger_.LogWarning($"Timeout reached after {timeout.TotalMinutes} minutes. Got {NbResults + NbErrors}/{nbTasks} results");
+          Logger_.LogWarning($"Execution timeout reached: {timeout.TotalMinutes} minutes - {NbResults + NbErrors}/{nbTasks} results received");
         }
       }
 

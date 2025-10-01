@@ -282,7 +282,7 @@ namespace Armonik.Samples.StressTests.Client.Metrics
     }
 
 
-    public async Task<string> PrintToText()
+    public Task<string> PrintToText()
     {
       var sb = new StringBuilder();
       sb.Append("========      Statistics and performance      ========" + Environment.NewLine);
@@ -319,7 +319,7 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       sb.Append($"Number of pod used               : {Kpi[KpiKeys.NB_POD_USED]}" + Environment.NewLine);
       sb.Append($"Total time                       : {Kpi[KpiKeys.TOTAL_TIME]}"  + Environment.NewLine);
 
-      return sb.ToString();
+      return Task.FromResult(sb.ToString());
     }
   }
 }
