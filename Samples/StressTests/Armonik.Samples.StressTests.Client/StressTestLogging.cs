@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-namespace Armonik.Samples.StressTests.Client
+namespace ArmoniK.Samples.StressTests.Client
 {
   internal static class StressTestLogging
   {
@@ -17,33 +18,62 @@ namespace Armonik.Samples.StressTests.Client
       logger.LogInformation("================================================================================");
     }
 
+    public static void LogAdvancedParameters(ILogger logger, int submissionDelayMs, int payloadVariation, int outputVariation, string variationDistribution)
+    {
+      logger.LogInformation($"Advanced parameters: submissionDelayMs={submissionDelayMs}, payloadVariation={payloadVariation}%, outputVariation={outputVariation}%, variationDistribution={variationDistribution}");
+    }
+
     public static void LogSubmissionComplete(ILogger logger, int nbTasks, long nbInputBytes, Stopwatch submissionSw)
     {
       logger.LogInformation($"Submission completed: {nbTasks:N0} tasks in {submissionSw.Elapsed.TotalSeconds:N2} s");
       logger.LogInformation($"Total data submitted: {nbTasks * nbInputBytes / 1024.0 / 1024.0:N2} MB");
     }
 
-    public static void LogResultsAnalysis(ILogger logger, int nbTasks, Stopwatch waitSw, int nbResults, int nbErrors)
+    public static void LogPeriodicInfo(ILogger logger, int nbResults, bool allSubmitted)
     {
-      var missing = nbTasks - (nbResults + nbErrors);
-      logger.LogInformation($"Results collected: {nbResults}/{nbTasks} success, {nbErrors} errors, {missing} missing");
-      logger.LogInformation($"Wait duration: {waitSw.Elapsed.TotalSeconds:N2} s");
+      logger.LogInformation($"Got {nbResults} results. All tasks submitted ? {allSubmitted}");
     }
 
-    public static void LogTestFooter(ILogger logger, string testId, TimeSpan totalDuration)
+    public static void LogFinalResults(ILogger logger, TimeSpan waitDuration, int submittedTasks, int receivedCallbacks, int nbResults, int nbErrors)
     {
-      logger.LogInformation($"Test {testId} finished in {totalDuration.TotalSeconds:N2} s");
+      logger.LogInformation("=== FINAL RESULTS ===");
+      logger.LogInformation($"Waited {waitDuration.TotalSeconds:N2} seconds for results");
+      logger.LogInformation($"Submitted tasks: {submittedTasks}");
+      logger.LogInformation($"Received callbacks: {receivedCallbacks}");
+      logger.LogInformation($"Success results: {nbResults}");
+      logger.LogInformation($"Error results: {nbErrors}");
+      logger.LogInformation($"Total processed: {nbResults + nbErrors}");
     }
 
-    public static void LogPerformanceStatistics(ILogger logger, int nbTasks, long nbInputBytes, long nbOutputBytes, int workloadTimeInMs, DateTime testStartTime, string jsonPath)
+    public static void LogDiscrepancy(ILogger logger, int expectedTotal, int actualTotal)
     {
-      var elapsed = DateTime.Now - testStartTime;
-      logger.LogInformation($"Performance for {nbTasks} tasks over {elapsed.TotalSeconds:N1} s");
-      logger.LogInformation($"  Input size: {nbInputBytes / 1024.0:N1} KB, Output size: {nbOutputBytes / 1024.0:N1} KB");
-      if (!string.IsNullOrEmpty(jsonPath))
+      logger.LogError($"DISCREPANCY: Expected {expectedTotal} results based on callbacks, but got {actualTotal} in counters!");
+    }
+
+    public static void LogMissingTasks(ILogger logger, int missingCount, IReadOnlyList<string> missingIds)
+    {
+      logger.LogWarning($"MISSING TASKS: {missingCount} tasks did not complete");
+      if (missingIds != null && missingIds.Count > 0)
       {
-        logger.LogInformation($"JSON report path: {jsonPath}");
+        logger.LogWarning($"Missing Task IDs ({missingIds.Count} identified):");
+        for (int i = 0; i < Math.Min(20, missingIds.Count); i++)
+        {
+          logger.LogWarning($"  Missing Task ID: {missingIds[i]}");
+        }
+        if (missingIds.Count > 20)
+        {
+          logger.LogWarning($"  ... and {missingIds.Count - 20} more missing task IDs");
+        }
       }
+      else
+      {
+        logger.LogWarning("Could not identify specific missing task IDs (callback system issue)");
+      }
+    }
+
+    public static void LogRegisteredTaskIds(ILogger logger, int count)
+    {
+      logger.LogInformation($"Registered {count} task IDs for tracking");
     }
   }
 }

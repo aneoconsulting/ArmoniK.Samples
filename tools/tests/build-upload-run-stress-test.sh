@@ -11,6 +11,7 @@ SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 REPO_ROOT=$(cd "$SCRIPT_DIR/../.." && pwd)
 
 DEFAULT_PACKAGE_NAME="Armonik.Samples.StressTests.Worker-v1.0.0-700.zip"
+# TODO Change the default bucket if needed for the time being
 DEFAULT_BUCKET="nicodl-aneo-gcsfs"
 
 usage() {
@@ -194,9 +195,6 @@ fi
 
 echo "Starting stress test runner with: ${RUNNER_ARGS[*]}"
 RUNNER_SCRIPT="$SCRIPT_DIR/run-stress-tests.sh"
-if [[ ! -x "$RUNNER_SCRIPT" ]]; then
-  chmod +x "$RUNNER_SCRIPT" || true
-fi
 
 "$RUNNER_SCRIPT" "${RUNNER_ARGS[@]}"
 

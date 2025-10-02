@@ -60,11 +60,11 @@ show_usage() {
     echo "  help           Show this help message"
     echo ""
     echo "Options:"
-    echo "  --partition <name>           Partition name (default: empty)"
+    echo "  --partition <name>           Partition name (default: 'default')"
     echo "  --tasks-per-buffer <num>     Tasks per buffer (default: 50)"
     echo "  --buffers-per-channel <num>  Buffers per channel (default: 5)"
     echo "  --channels <num>             Number of channels (default: 5)"
-    echo "  --endpoint <url>             ArmoniK control plane endpoint (default: http://35.187.116.120:5001)"
+    echo "  --endpoint <url>             ArmoniK control plane endpoint "
     echo ""
     echo "Basic test additional options:"
     echo "  --tasks <num>                Number of tasks (default: 1000)"
@@ -82,7 +82,7 @@ show_usage() {
     echo ""
     echo "Examples:"
     echo "  $0 basic --tasks 2000 --workload-ms 50"
-    echo "  $0 --endpoint http://35.187.116.120:5001 basic --tasks 1000"
+    echo "  $0 --endpoint <url> basic --tasks 1000"
     echo "  $0 basic --tasks 5000 --payload-kb 1024 --workload-ms 10 --report ./report.json"
     echo "  $0 basic --tasks 1000 --submission-delay-ms 100 --report ./throttled.json"
     echo "  $0 basic --tasks 2000 --payload-kb 512 --payload-variation 30 --output-variation 20"
@@ -151,8 +151,9 @@ check_prerequisites() {
 }
 
 # Function to set up endpoint
+# TODO be sure to change the endpoint if needed
 setup_endpoint() {
-    local default_endpoint="http://35.187.116.120:5001"
+    local default_endpoint="http://34.77.209.30:5001"
     
     # Use provided endpoint or default
     if [[ -n "${ENDPOINT:-}" ]]; then
@@ -259,9 +260,8 @@ run_basic_test() {
     print_info "  Payload variation: ${payload_variation}%"
     print_info "  Output variation: ${output_variation}%"
     print_info "  Variation distribution: ${variation_distribution}"
-    if [[ -n "$PARTITION" ]]; then
-        print_info "  Partition: ${PARTITION}"
-    fi
+    # Use the global PARTITION (default: 'default' unless overridden with --partition)
+    print_info "  Partition: ${PARTITION}"
     print_info ""
     
     # Setup endpoint
@@ -277,6 +277,7 @@ run_basic_test() {
     test_cmd+=(--nbTaskPerBuffer "$tasks_per_buffer")
     test_cmd+=(--nbBufferPerChannel "$buffers_per_channel")
     test_cmd+=(--nbChannel "$channels")
+    # Forward advanced parameters to the client (Program.cs / StressTests understands these)
     test_cmd+=(--submissionDelayMs "$submission_delay_ms")
     test_cmd+=(--payloadVariation "$payload_variation")
     test_cmd+=(--outputVariation "$output_variation")
@@ -287,6 +288,8 @@ run_basic_test() {
       test_cmd+=(--partition "$PARTITION")
     fi
     if [[ -n "${json_report:-}" ]]; then
+      # Ensure parent directory exists so the client can write the report file
+      mkdir -p "$(dirname "$json_report")"
       test_cmd+=(--jsonPath "$json_report")
     fi
 
@@ -337,9 +340,8 @@ run_advanced_test() {
     print_info "  Tasks per buffer: ${tasks_per_buffer}"
     print_info "  Buffers per channel: ${buffers_per_channel}"
     print_info "  Channels: ${channels}"
-    if [[ -n "$PARTITION" ]]; then
-        print_info "  Partition: ${PARTITION}"
-    fi
+    # Use the global PARTITION (default: 'default' unless overridden with --partition)
+    print_info "  Partition: ${PARTITION}"
     if [[ -n "$json_report" ]]; then
         print_info "  Report: ${json_report}"
     fi
