@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-namespace ArmoniK.Samples.StressTests.Client
+namespace Armonik.Samples.StressTests.Client
 {
   internal static class StressTestLogging
   {
@@ -18,9 +18,9 @@ namespace ArmoniK.Samples.StressTests.Client
       logger.LogInformation("================================================================================");
     }
 
-    public static void LogAdvancedParameters(ILogger logger, int submissionDelayMs, int payloadVariation, int outputVariation, string variationDistribution)
+    public static void LogParameters(ILogger logger, int submissionDelayMs, int payloadVariation, int outputVariation, string variationDistribution)
     {
-      logger.LogInformation($"Advanced parameters: submissionDelayMs={submissionDelayMs}, payloadVariation={payloadVariation}%, outputVariation={outputVariation}%, variationDistribution={variationDistribution}");
+      logger.LogInformation($"Parameters: submissionDelayMs={submissionDelayMs}, payloadVariation={payloadVariation}%, outputVariation={outputVariation}%, variationDistribution={variationDistribution}");
     }
 
     public static void LogSubmissionComplete(ILogger logger, int nbTasks, long nbInputBytes, Stopwatch submissionSw)

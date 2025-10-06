@@ -140,7 +140,7 @@ namespace Armonik.Samples.StressTests.Client
                                         .ToArray(); // 8 bytes per double
 
       StressTestLogging.LogTestHeader(Logger, "LargePayloadSubmit", nbTasks, nbInputBytes, nbOutputBytes, workloadTimeInMs);
-      StressTestLogging.LogAdvancedParameters(Logger, submissionDelayMs, payloadVariation, outputVariation, variationDistribution);
+  StressTestLogging.LogParameters(Logger, submissionDelayMs, payloadVariation, outputVariation, variationDistribution);
       var sw = Stopwatch.StartNew();
       var dt = DateTime.Now;
 
@@ -152,7 +152,7 @@ namespace Armonik.Samples.StressTests.Client
                    nbOutputBytes,
                    outputVariation,
                    submissionDelayMs,
-                   workloadTimeInMs); // 
+                   workloadTimeInMs); 
       StressTestLogging.LogSubmissionComplete(Logger, nbTasks, nbInputBytes, sw);
 
       var waitSw = Stopwatch.StartNew();
@@ -194,7 +194,7 @@ namespace Armonik.Samples.StressTests.Client
                                  workloadTimeInMs,
                                  Props);
 
-      // Store advanced test parameters into stats for report (explicit properties)
+  // Store test parameters into stats for report (explicit properties)
       try
       {
         stats.SubmissionDelayMs = submissionDelayMs > 0 ? submissionDelayMs : null;
@@ -322,7 +322,7 @@ namespace Armonik.Samples.StressTests.Client
 
       // Store submitted task IDs for missing task detection
       ResultHandle.SubmittedTaskIds = taskIds;
-  StressTestLogging.LogRegisteredTaskIds(Logger, taskIds.Count);
+      StressTestLogging.LogRegisteredTaskIds(Logger, taskIds.Count);
 
       indexTask = taskIds.Count();
 
@@ -400,7 +400,6 @@ namespace Armonik.Samples.StressTests.Client
       /// <param name="taskId">The task identifier which has invoke the response callBack</param>
       public void HandleResponse(object response,
                                  string taskId)
-
       {
         try 
         {

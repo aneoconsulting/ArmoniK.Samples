@@ -44,8 +44,6 @@ namespace ArmoniK.Samples.Client
     private static async Task Main(string[] args)
     {
       Console.WriteLine("Hello Armonik StressTest");
-
-
       Log.Logger = new LoggerConfiguration().MinimumLevel.Override("Microsoft",
                                                                    LogEventLevel.Information)
                                             .Enrich.FromLogContext()
@@ -152,52 +150,13 @@ namespace ArmoniK.Samples.Client
                                                                               options.OutputVariation,
                                                                               options.VariationDistribution);
                                                    });
-
-      // Advanced comprehensive stress test command
-      var advancedTestCommand = new Command("advancedTest",
-                                           "Execute comprehensive stress test suite with multiple scenarios and detailed reporting")
-                               {
-                                 new Option<string>("--partition",
-                                                    () => "",
-                                                    "specify the partition to use for the session."),
-                                 new Option<int>("--nbTaskPerBuffer",
-                                                 () => 50,
-                                                 "specify the number of task per buffer"),
-                                 new Option<int>("--nbBufferPerChannel",
-                                                 () => 5,
-                                                 "specify the number of concurrent buffer per channel"),
-                                 new Option<int>("--nbChannel",
-                                                 () => 5,
-                                                 "specify the number of Grpc Channel"),
-                               };
-
-      advancedTestCommand.Handler = CommandHandler.Create((AdvancedContainerOptions options) =>
-                                                          {
-                                                            _logger_.LogInformation("Advanced Comprehensive Stress Test Suite");
-                                                            _logger_.LogInformation($"--partition           = {options.Partition}");
-                                                            _logger_.LogInformation($"--nbTaskPerBuffer     = {options.NbTaskPerBuffer}");
-                                                            _logger_.LogInformation($"--nbBufferPerChannel  = {options.NbBufferPerChannel}");
-                                                            _logger_.LogInformation($"--nbChannel           = {options.NbChannel}");
-
-                                                            var advancedTest = new AdvancedStressTests(_configuration_,
-                                                                                                       factory,
-                                                                                                       options.Partition,
-                                                                                                       options.NbTaskPerBuffer,
-                                                                                                       options.NbBufferPerChannel,
-                                                                                                       options.NbChannel);
-
-                                                            return advancedTest.RunComprehensiveStressTest();
-                                                          });
-
       rootCommand.Add(pTaskCommand);
-      rootCommand.Add(advancedTestCommand);
 
       //Default without parameters
       rootCommand.SetHandler(() =>
                              {
                                _logger_.LogError("Please select one stress test to execute:");
                                _logger_.LogError("  stressTest     - Single scenario stress test");
-                               _logger_.LogError("  advancedTest   - Comprehensive stress test suite with reporting");
                              });
 
       await rootCommand.InvokeAsync(args);
@@ -218,14 +177,6 @@ namespace ArmoniK.Samples.Client
       public int    PayloadVariation       { get; set; }
       public int    OutputVariation        { get; set; }
       public string VariationDistribution  { get; set; } = "uniform";
-    }
-
-    public class AdvancedContainerOptions
-    {
-      public string Partition          { get; set; } = string.Empty;
-      public int    NbTaskPerBuffer    { get; set; }
-      public int    NbBufferPerChannel { get; set; }
-      public int    NbChannel          { get; set; }
     }
   }
 }

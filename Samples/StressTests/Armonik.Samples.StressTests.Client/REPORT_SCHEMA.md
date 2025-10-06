@@ -41,13 +41,7 @@ The report is a JSON object with these top-level fields:
     - `resultSizeBytes` (number): size in bytes of the result payload attached to the task (0 if not present).
     - `errorMessage` (string|null): the textual error message if the task ended with an error.
 
-Advanced parameters recorded
-
-- `submissionDelayMs` (number|null): if present, delay in milliseconds that was applied between task submissions (used to throttle submission rate).
-- `payloadVariationPercent` (number|null): percentage of variation applied to input payload sizes around the mean (`nbInputBytes`).
-- `outputVariationPercent` (number|null): percentage of variation applied to output/result sizes around the mean (`nbOutputBytes`).
-- `variationDistribution` (string|null): distribution used for variation: `uniform` or `gaussian`.
-- `grpcEndpoint` (string|null): the gRPC control-plane endpoint used for the run (comes from the environment variable `Grpc__Endpoint` or runner `--endpoint`).
+Note: this client runs a single default stress test. The report `context` and `kpis` contain standard configuration and timing fields as described above.
 
 Notes and interpretation guidance
 
@@ -67,9 +61,14 @@ jq '.kpis.TIME_THROUGHPUT_PROCESS' report.json         # processing throughput
 
 - Missing tasks detection: compare `context.nbTasks` to `kpis.COMPLETED_TASKS` and to the number of elements in `tasks` to find discrepancies. The client logs missing task IDs when they are detectable via callback bookkeeping.
 
-- Advanced parameters
+Parameters
 
-  - If you run the client with advanced options (submission delay, payloadVariation, outputVariation, variationDistribution), these parameters are _not currently stored as explicit named fields_ in `kpis` by default. They influence the per-task sizes in `tasks[].resultSizeBytes` and timings. If you want them recorded, add them to the `context` map in the client invocation before calling `PrintToJson` (or file an enhancement request).
+  - The following parameters are recorded as part of the test `context` and (where relevant) as `kpis`:
+    - `submissionDelayMs` (number|null): delay in milliseconds applied between task submissions (used to throttle submission rate).
+    - `payloadVariationPercent` (number|null): percentage of variation applied to input payload sizes around the mean (`nbInputBytes`).
+    - `outputVariationPercent` (number|null): percentage of variation applied to output/result sizes around the mean (`nbOutputBytes`).
+    - `variationDistribution` (string|null): distribution used for variation: `uniform`, `gaussian`, or `exponential`.
+    - `grpcEndpoint` (string|null): the gRPC control-plane endpoint used for the run (comes from the environment variable `Grpc__Endpoint` or runner `--endpoint`).
 
 Compatibility & extension
 

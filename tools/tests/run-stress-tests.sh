@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Advanced ArmoniK Stress Test Runner
-# This script provides easy access to both basic and comprehensive stress tests
+# ArmoniK Stress Test Runner
+# This script runs the default stress test (no command required)
 
 set -euo pipefail
 
@@ -13,7 +13,6 @@ BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
-#TODO ENLEVER LE TEST ENDURANCE
 # Default values
 # Default partition to use when --partition is not provided
 PARTITION="default"
@@ -43,7 +42,7 @@ print_error() {
 print_header() {
     echo -e "${PURPLE}"
     echo "================================================================================"
-    echo "                      ARMONIK ADVANCED STRESS TEST RUNNER"
+    echo "                      ARMONIK STRESS TEST RUNNER"
     echo "================================================================================"
     echo -e "${NC}"
 }
@@ -52,12 +51,9 @@ print_header() {
 
 # Function to show usage
 show_usage() {
-    echo "Usage: $0 [OPTIONS] <COMMAND>"
+    echo "Usage: $0 [OPTIONS]"
     echo ""
-    echo "Commands:"
-    echo "  basic          Run basic stress test (single scenario)"
-    echo "  advanced       Run comprehensive stress test suite"
-    echo "  help           Show this help message"
+    echo "This script runs the default stress test. Pass options directly."
     echo ""
     echo "Options:"
     echo "  --partition <name>           Partition name (default: 'default')"
@@ -66,14 +62,14 @@ show_usage() {
     echo "  --channels <num>             Number of channels (default: 5)"
     echo "  --endpoint <url>             ArmoniK control plane endpoint "
     echo ""
-    echo "Basic test additional options:"
+    echo "Stress test options:"
     echo "  --tasks <num>                Number of tasks (default: 1000)"
     echo "  --payload-kb <num>           Payload size in KB (default: 512)"
     echo "  --output-kb <num>            Output size in KB (default: 8)"
     echo "  --workload-ms <num>          Workload time in ms (default: 100)"
-    echo "  --tasks-per-buffer <num>     Tasks per buffer for basic test (default: 50)"
-    echo "  --buffers-per-channel <num>  Buffers per channel for basic test (default: 5)"
-    echo "  --channels <num>             Channels for basic test (default: 5)"
+    echo "  --tasks-per-buffer <num>     Tasks per buffer (default: 50)"
+    echo "  --buffers-per-channel <num>  Buffers per channel (default: 5)"
+    echo "  --channels <num>             Channels (default: 5)"
     echo "  --submission-delay-ms <num>  Delay in ms between task submissions (default: 0 = no delay)"
     echo "  --payload-variation <0-100>  Payload size variation in percent (default: 0 = fixed size)"
     echo "  --output-variation <0-100>   Output size variation in percent (default: 0 = fixed size)"
@@ -81,12 +77,12 @@ show_usage() {
     echo "  --report <path>              Report output path"
     echo ""
     echo "Examples:"
-    echo "  $0 basic --tasks 2000 --workload-ms 50"
-    echo "  $0 --endpoint <url> basic --tasks 1000"
-    echo "  $0 basic --tasks 5000 --payload-kb 1024 --workload-ms 10 --report ./report.json"
-    echo "  $0 basic --tasks 1000 --submission-delay-ms 100 --report ./throttled.json"
-    echo "  $0 basic --tasks 2000 --payload-kb 512 --payload-variation 30 --output-variation 20"
-    echo "  $0 basic --tasks 1000 --payload-variation 50 --variation-distribution gaussian"
+    echo "  $0 --tasks 2000 --workload-ms 50"
+    echo "  $0 --endpoint <url> --tasks 1000"
+    echo "  $0 --tasks 5000 --payload-kb 1024 --workload-ms 10 --report ./report.json"
+    echo "  $0 --tasks 1000 --submission-delay-ms 100 --report ./throttled.json"
+    echo "  $0 --tasks 2000 --payload-kb 512 --payload-variation 30 --output-variation 20"
+    echo "  $0 --tasks 1000 --payload-variation 50 --variation-distribution gaussian"
 }
 
 # Function to build the project
@@ -125,7 +121,8 @@ check_prerequisites() {
             "../.."
             "../../.."
         )
-        
+
+        # Find the stress test directory
         for base_path in "${search_paths[@]}"; do
             if [[ -d "$base_path" ]]; then
                 local found_path=$(find "$base_path" -name "$project_file" -type f 2>/dev/null | head -n1)
@@ -153,7 +150,7 @@ check_prerequisites() {
 # Function to set up endpoint
 # TODO be sure to change the endpoint if needed
 setup_endpoint() {
-    local default_endpoint="http://34.77.209.30:5001"
+    local default_endpoint="http://34.77.63.90:5001"
     
     # Use provided endpoint or default
     if [[ -n "${ENDPOINT:-}" ]]; then
@@ -165,8 +162,8 @@ setup_endpoint() {
     fi
 }
 
-# Function to run basic stress test
-run_basic_test() {
+# Function to run the stress test
+run_test() {
     # Local variables for this test run
     local tasks=1000
     local payload_kb=512
@@ -232,7 +229,7 @@ run_basic_test() {
                 # If next arg is missing or looks like an option, use default path
                 if [[ $# -lt 2 || "$2" == --* ]]; then
                     mkdir -p ./reports
-                    json_report="./reports/basic-$(date +%Y%m%d%H%M%S).json"
+                    json_report="./reports/$(date +%Y%m%d%H%M%S).json"
                 else
                     json_report="$2"
                     shift
@@ -240,14 +237,14 @@ run_basic_test() {
                 shift
                 ;;
             *)
-                print_error "Unknown basic test option: $1"
+                print_error "Unknown test option: $1"
                 show_usage
                 exit 1
                 ;;
         esac
     done
     
-    print_info "Running basic stress test..."
+    print_info "Running stress test..."
     print_info "Configuration:"
     print_info "  Tasks: ${tasks}"
     print_info "  Payload size: ${payload_kb} KB"
@@ -277,13 +274,11 @@ run_basic_test() {
     test_cmd+=(--nbTaskPerBuffer "$tasks_per_buffer")
     test_cmd+=(--nbBufferPerChannel "$buffers_per_channel")
     test_cmd+=(--nbChannel "$channels")
-    # Forward advanced parameters to the client (Program.cs / StressTests understands these)
     test_cmd+=(--submissionDelayMs "$submission_delay_ms")
     test_cmd+=(--payloadVariation "$payload_variation")
     test_cmd+=(--outputVariation "$output_variation")
     test_cmd+=(--variationDistribution "$variation_distribution")
 
-    # ajouter partition et json_path si nécessaire
     if [[ -n "${PARTITION:-}" ]]; then
       test_cmd+=(--partition "$PARTITION")
     fi
@@ -302,180 +297,63 @@ run_basic_test() {
     local exit_code=$?
     
     if [[ $exit_code -eq 0 ]]; then
-        print_success "Basic stress test completed successfully!"
+        print_success "Stress test completed successfully!"
         if [[ -n "${json_report}" ]]; then
             print_info "Report saved to: $json_report"
         fi
     else
-        print_error "Basic stress test failed with exit code: $exit_code"
+        print_error "Stress test failed with exit code: $exit_code"
     fi
     
-    return $exit_code
-}
-
-# Function to run advanced stress test
-run_advanced_test() {
-    # default values for advanced test
-    local tasks=5000
-    local payload_kb=512
-    local output_kb=8
-    local workload_ms=10
-    local tasks_per_buffer=${NB_TASK_PER_BUFFER}
-    local buffers_per_channel=${NB_BUFFER_PER_CHANNEL}
-    local channels=${NB_CHANNEL}
-    local json_report=""
-
-    # Advanced test does not accept per-scenario CLI options in this runner
-    # The advanced suite uses its internal scenario definitions and defaults.
-    if [[ $# -gt 0 ]]; then
-        print_warning "Advanced test ignores per-scenario options; using internal defaults. Provided args will be ignored."
-    fi
-
-    print_info "Running comprehensive stress test (advanced) ..."
-    print_info "Configuration:"
-    print_info "  Tasks: ${tasks}"
-    print_info "  Payload size: ${payload_kb} KB"
-    print_info "  Output size: ${output_kb} KB"
-    print_info "  Workload duration: ${workload_ms} ms"
-    print_info "  Tasks per buffer: ${tasks_per_buffer}"
-    print_info "  Buffers per channel: ${buffers_per_channel}"
-    print_info "  Channels: ${channels}"
-    # Use the global PARTITION (default: 'default' unless overridden with --partition)
-    print_info "  Partition: ${PARTITION}"
-    if [[ -n "$json_report" ]]; then
-        print_info "  Report: ${json_report}"
-    fi
-    print_info ""
-
-    # ensure endpoint is set
-    setup_endpoint
-
-    # build advanced test command
-    # Note: the advancedTest subcommand in the client only accepts
-    # --partition, --nbTaskPerBuffer, --nbBufferPerChannel and --nbChannel.
-    # We purposely do NOT forward per-scenario options like --nbTask,
-    # --nbInputBytes, --nbOutputBytes or --workLoadTimeInMs because the
-    # advanced suite uses internal scenario definitions.
-    local cmd="dotnet run -c Release -- advancedTest"
-    cmd="${cmd} --nbTaskPerBuffer ${tasks_per_buffer}"
-    cmd="${cmd} --nbBufferPerChannel ${buffers_per_channel}"
-    cmd="${cmd} --nbChannel ${channels}"
-
-    if [[ -n "${PARTITION:-}" ]]; then
-        cmd="${cmd} --partition ${PARTITION}"
-    fi
-
-    if [[ -n "${json_report}" ]]; then
-        mkdir -p "$(dirname "$json_report")"
-        cmd="${cmd} --jsonPath ${json_report}"
-    fi
-
-    print_info "Executing: $cmd"
-    print_info "Using endpoint: $Grpc__Endpoint"
-    print_info ""
-
-    # execute advanced test
-    eval $cmd
-    local exit_code=${PIPESTATUS[0]}
-
-    if [[ $exit_code -eq 0 ]]; then
-        print_success "Advanced stress test completed successfully!"
-        if [[ -n "${json_report}" ]]; then
-            print_info "Report saved to: $json_report"
-        fi
-    else
-        print_error "Advanced stress test failed with exit code: $exit_code"
-    fi
-
     return $exit_code
 }
 
 # Main script
 main() {
     print_header
-    
-    # Store all arguments for proper forwarding
-    local original_args=("$@")
-    local command=""
-    local command_args=()
-    local command_found=false
-    
-    # Parse arguments to find command and separate global from command-specific options
-    for arg in "${original_args[@]}"; do
-        if [[ "$arg" == "basic" || "$arg" == "advanced" || "$arg" == "help" || "$arg" == "--help" || "$arg" == "-h" ]]; then
-            command="$arg"
-            command_found=true
-            continue
-        fi
-        
-        if [[ "$command_found" == true ]]; then
-            command_args+=("$arg")
-        fi
-    done
-    
-    # Parse global options
-    while [[ $# -gt 0 ]]; do
-        case $1 in
+    local argv=("$@")
+    local basic_args=()
+    local i=0
+    while [[ $i -lt ${#argv[@]} ]]; do
+        arg="${argv[$i]}"
+        case "$arg" in
             --partition)
-                PARTITION="$2"
-                shift 2
+                PARTITION="${argv[$((i+1))]:-}"
+                i=$((i+2))
                 ;;
             --tasks-per-buffer)
-                NB_TASK_PER_BUFFER="$2"
-                shift 2
+                NB_TASK_PER_BUFFER="${argv[$((i+1))]:-}"
+                i=$((i+2))
                 ;;
             --buffers-per-channel)
-                NB_BUFFER_PER_CHANNEL="$2"
-                shift 2
+                NB_BUFFER_PER_CHANNEL="${argv[$((i+1))]:-}"
+                i=$((i+2))
                 ;;
             --channels)
-                NB_CHANNEL="$2"
-                shift 2
+                NB_CHANNEL="${argv[$((i+1))]:-}"
+                i=$((i+2))
                 ;;
             --endpoint)
-                ENDPOINT="$2"
-                shift 2
+                ENDPOINT="${argv[$((i+1))]:-}"
+                i=$((i+2))
                 ;;
-            basic|advanced|help|--help|-h)
-                # Skip command and remaining args - they're handled separately
-                break
+            -h|--help)
+                show_usage
+                exit 0
                 ;;
             *)
-                print_error "Unknown global option: $1"
-                show_usage
-                exit 1
+                # remaining args are for the stress test
+                while [[ $i -lt ${#argv[@]} ]]; do
+                    basic_args+=("${argv[$i]}")
+                    i=$((i+1))
+                done
                 ;;
         esac
     done
-    
-    # Execute command with proper arguments
-    case "$command" in
-        basic)
-            check_prerequisites
-            build_project
-            run_basic_test "${command_args[@]}"
-            ;;
-        advanced)
-            check_prerequisites
-            build_project
-            run_advanced_test "${command_args[@]}"
-            ;;
-        help|--help|-h)
-            show_usage
-            ;;
-        "")
-            # No command provided - run basic test with default parameters
-            print_info "No command specified, running basic test with default parameters"
-            check_prerequisites
-            build_project
-            run_basic_test
-            ;;
-        *)
-            print_error "Unknown command: $command"
-            show_usage
-            exit 1
-            ;;
-    esac
+
+    check_prerequisites
+    build_project
+    run_test "${basic_args[@]}"
 }
 
 # Run main function with all arguments

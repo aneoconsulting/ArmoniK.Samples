@@ -3,9 +3,9 @@ set -euo pipefail
 
 # Build the worker, create a zip, upload it to GCS, then run the stress test runner.
 # Usage examples:
-#  ./build-upload-run-stress-test.sh basic --tasks 1000
-#  ./build-upload-run-stress-test.sh -b nicodl-aneo-gcsfs basic --tasks 1000
-#  ./build-upload-run-stress-test.sh --bucket gs://nicodl-aneo-gcsfs basic --tasks 1000
+#  ./build-upload-run-stress-test.sh --tasks 1000
+#  ./build-upload-run-stress-test.sh -b nicodl-aneo-gcsfs --tasks 1000
+#  ./build-upload-run-stress-test.sh --bucket gs://nicodl-aneo-gcsfs --tasks 1000
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 REPO_ROOT=$(cd "$SCRIPT_DIR/../.." && pwd)
@@ -27,14 +27,13 @@ Options:
   -h|--help                 Show this help
 
 Example:
-  ${SCRIPT_DIR}/build-upload-run-stress-test.sh basic --tasks 1000
+  ${SCRIPT_DIR}/build-upload-run-stress-test.sh --tasks 1000
 
 This script will:
   - dotnet publish the worker to a temporary folder
   - create a zip archive under Samples/StressTests/packages/
   - call tools/tests/upload-to-gcs.sh to upload the zip
-  - optionally restart compute-plane pods (disabled by default)
-  - call tools/tests/run-stress-tests.sh with the provided command and args
+  - call tools/tests/run-stress-tests.sh (with any provided args)
 EOF
   exit 1
 }
@@ -79,7 +78,7 @@ while [[ $# -gt 0 ]]; do
       # unknown option for this wrapper: stop parsing and let remaining args be runner args
       break;;
     *)
-      # first non-option is the runner command (e.g. basic or advanced)
+      # first non-option is the runner command 
       break;;
   esac
 done
@@ -95,10 +94,7 @@ if [[ -n "${ENDPOINT:-}" ]]; then
   # Prepend endpoint so run-stress-tests.sh sees it before the command
   RUNNER_ARGS=( --endpoint "${ENDPOINT}" "${RUNNER_ARGS[@]}" )
 fi
-if [[ ${#RUNNER_ARGS[@]} -eq 0 ]]; then
-  echo "Error: missing stress runner command (e.g. basic) and its args" >&2
-  usage
-fi
+# Runner args are optional: if none provided, the runner will run the default stress test
 
 WORKER_DIR="$REPO_ROOT/Samples/StressTests/Armonik.Samples.StressTests.Worker"
 PACKAGES_DIR="$REPO_ROOT/Samples/StressTests/packages"
@@ -183,15 +179,6 @@ echo "Uploading package to bucket..."
 set -x
 "${UPLOAD_CMD[@]}"
 set +x
-
-if $RESTART_COMPUTE; then
-  if command -v kubectl >/dev/null 2>&1; then
-    echo "Restarting compute-plane pods (namespace: armonik)"
-    kubectl delete -n armonik pods -l service=compute-plane || true
-  else
-    echo "kubectl not found; cannot restart compute-plane pods" >&2
-  fi
-fi
 
 echo "Starting stress test runner with: ${RUNNER_ARGS[*]}"
 RUNNER_SCRIPT="$SCRIPT_DIR/run-stress-tests.sh"
