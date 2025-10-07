@@ -3,9 +3,9 @@ set -euo pipefail
 
 # Build the worker, create a zip, upload it to GCS, then run the stress test runner.
 # Usage examples:
-#  ./build-upload-run-stress-test.sh --tasks 1000
-#  ./build-upload-run-stress-test.sh -b nicodl-aneo-gcsfs --tasks 1000
-#  ./build-upload-run-stress-test.sh --bucket gs://nicodl-aneo-gcsfs --tasks 1000
+#  ./e2e-stress-test.sh --tasks 1000
+#  ./e2e-stress-test.sh -b nicodl-aneo-gcsfs --tasks 1000
+#  ./e2e-stress-test.sh --bucket gs://nicodl-aneo-gcsfs --tasks 1000
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 REPO_ROOT=$(cd "$SCRIPT_DIR/../.." && pwd)
@@ -27,7 +27,7 @@ Options:
   -h|--help                 Show this help
 
 Example:
-  ${SCRIPT_DIR}/build-upload-run-stress-test.sh --tasks 1000
+  ${SCRIPT_DIR}/e2e-stress-test.sh --tasks 1000
 
 This script will:
   - dotnet publish the worker to a temporary folder
@@ -102,23 +102,6 @@ mkdir -p "$PACKAGES_DIR"
 
 PACKAGE_PATH="$PACKAGES_DIR/$PACKAGE_NAME"
 
-# Build the client (runner) to ensure the end-to-end flow builds both client and worker
-CLIENT_DIR="$REPO_ROOT/Samples/StressTests/Armonik.Samples.StressTests.Client"
-CLIENT_PROJECT_FILE="$CLIENT_DIR/Armonik.Samples.StressTests.Client.csproj"
-if [[ -f "$CLIENT_PROJECT_FILE" ]]; then
-  echo "Building client project: $CLIENT_PROJECT_FILE"
-  if ! command -v dotnet >/dev/null 2>&1; then
-    echo "dotnet not found in PATH; cannot build client" >&2
-    exit 6
-  fi
-  dotnet build "$CLIENT_PROJECT_FILE" -c Release || {
-    echo "Client build failed" >&2
-    exit 7
-  }
-else
-  echo "Client project not found at $CLIENT_PROJECT_FILE; skipping client build"
-fi
-
 # Delegate build+package to build-worker.sh and capture created package path
 BUILD_SCRIPT="$SCRIPT_DIR/build-worker.sh"
 if [[ ! -x "$BUILD_SCRIPT" && -f "$BUILD_SCRIPT" ]]; then
@@ -129,9 +112,11 @@ if [[ ! -f "$BUILD_SCRIPT" ]]; then
   exit 4
 fi
 
-PACKAGE_PATH="$("$BUILD_SCRIPT" --worker-dir "$WORKER_DIR" --package-name "$PACKAGE_NAME" --packages-dir "$PACKAGES_DIR")"
-if [[ ! -f "$PACKAGE_PATH" ]]; then
-  echo "Package not created: $PACKAGE_PATH" >&2
+BUILD_OUTPUT="$("$BUILD_SCRIPT" --worker-dir "$WORKER_DIR" --package-name "$PACKAGE_NAME" --packages-dir "$PACKAGES_DIR" 2>&1)"
+PACKAGE_PATH="$(printf '%s\n' "$BUILD_OUTPUT" | awk 'NF{line=$0} END{print line}')"
+if [[ -z "$PACKAGE_PATH" || ! -f "$PACKAGE_PATH" ]]; then
+  echo "Package not created. Build output:" >&2
+  printf '%s\n' "$BUILD_OUTPUT" >&2
   exit 5
 fi
 

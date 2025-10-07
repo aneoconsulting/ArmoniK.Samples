@@ -31,10 +31,6 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
-print_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
 print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
@@ -150,7 +146,7 @@ check_prerequisites() {
 # Function to set up endpoint
 # TODO be sure to change the endpoint if needed
 setup_endpoint() {
-    local default_endpoint="http://34.77.63.90:5001"
+    local default_endpoint="http://34.77.232.145:5001"
     
     # Use provided endpoint or default
     if [[ -n "${ENDPOINT:-}" ]]; then

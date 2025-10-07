@@ -97,7 +97,7 @@ function build() {
   echo "rm -rf ${nuget_cache}/armonik.*"
   rm -rf "$(dotnet nuget locals global-packages --list | awk '{ print $2 }')/armonik.*"
   find \( -iname obj -o -iname bin \) -exec rm -rf {} +
-  dotnet publish --self-conined -c ${configuration} -r linux-x64 -f ${FRAMEWORK} .
+  dotnet publish --self-contained -c ${configuration} -r linux-x64 -f ${FRAMEWORK} .
 }
 
 function deploy() {

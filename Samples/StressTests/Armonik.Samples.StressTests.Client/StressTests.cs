@@ -22,14 +22,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/\>.
 
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.DevelopmentKit.Client.Common;
@@ -112,7 +107,7 @@ namespace Armonik.Samples.StressTests.Client
     private ISubmitterService Service { get; }
 
     /// <summary>
-    ///  A test submitting a number of tasks with customizable parameters
+    ///   A test submitting a number of tasks with customizable parameters
     /// </summary>
     /// <param name="nbTasks"></param>
     /// <param name="nbInputBytes"></param>
@@ -123,37 +118,49 @@ namespace Armonik.Samples.StressTests.Client
     /// <param name="payloadVariation"></param>
     /// <param name="outputVariation"></param>
     /// <param name="variationDistribution"></param>
-    internal void LargePayloadSubmit(int nbTasks = 100,
-                                     long nbInputBytes = 64000,
-                                     long nbOutputBytes = 8,
-                                     int workloadTimeInMs = 1,
-                                     string jsonPath = "",
-                                     int submissionDelayMs = 0,
-                                     int payloadVariation = 0,
-                                     int outputVariation = 0,
+    internal void LargePayloadSubmit(int    nbTasks               = 100,
+                                     long   nbInputBytes          = 64000,
+                                     long   nbOutputBytes         = 8,
+                                     int    workloadTimeInMs      = 1,
+                                     string jsonPath              = "",
+                                     int    submissionDelayMs     = 0,
+                                     int    payloadVariation      = 0,
+                                     int    outputVariation       = 0,
                                      string variationDistribution = "uniform")
     {
       var inputArrayOfBytes = Enumerable.Range(0,
                                                (int)(nbInputBytes / 8))
                                         .Select(x => Math.Pow(42.0 * 8 / nbInputBytes,
-                                                              1 / 3.0))
+                                                              1        / 3.0))
                                         .ToArray(); // 8 bytes per double
 
-      StressTestLogging.LogTestHeader(Logger, "LargePayloadSubmit", nbTasks, nbInputBytes, nbOutputBytes, workloadTimeInMs);
-  StressTestLogging.LogParameters(Logger, submissionDelayMs, payloadVariation, outputVariation, variationDistribution);
+      StressTestLogging.LogTestHeader(Logger,
+                                      "LargePayloadSubmit",
+                                      nbTasks,
+                                      nbInputBytes,
+                                      nbOutputBytes,
+                                      workloadTimeInMs);
+      StressTestLogging.LogParameters(Logger,
+                                      submissionDelayMs,
+                                      payloadVariation,
+                                      outputVariation,
+                                      variationDistribution);
       var sw = Stopwatch.StartNew();
       var dt = DateTime.Now;
 
       var periodicInfo = ComputeVector(nbTasks,
-                   inputArrayOfBytes,
-                   nbInputBytes,
-                   payloadVariation,
-                   variationDistribution,
-                   nbOutputBytes,
-                   outputVariation,
-                   submissionDelayMs,
-                   workloadTimeInMs); 
-      StressTestLogging.LogSubmissionComplete(Logger, nbTasks, nbInputBytes, sw);
+                                       inputArrayOfBytes,
+                                       nbInputBytes,
+                                       payloadVariation,
+                                       variationDistribution,
+                                       nbOutputBytes,
+                                       outputVariation,
+                                       submissionDelayMs,
+                                       workloadTimeInMs);
+      StressTestLogging.LogSubmissionComplete(Logger,
+                                              nbTasks,
+                                              nbInputBytes,
+                                              sw);
 
       var waitSw = Stopwatch.StartNew();
       ResultHandle.WaitForResult(nbTasks,
@@ -161,24 +168,34 @@ namespace Armonik.Samples.StressTests.Client
                   .Wait();
       waitSw.Stop();
 
-      StressTestLogging.LogFinalResults(Logger, waitSw.Elapsed, ResultHandle.SubmittedTaskIds?.Count ?? 0, ResultHandle.ReceivedTaskCount, ResultHandle.NbResults, ResultHandle.NbErrors);
+      StressTestLogging.LogFinalResults(Logger,
+                                        waitSw.Elapsed,
+                                        ResultHandle.SubmittedTaskIds?.Count ?? 0,
+                                        ResultHandle.ReceivedTaskCount,
+                                        ResultHandle.NbResults,
+                                        ResultHandle.NbErrors);
 
       // Debug discrepancy
       var expectedTotal = ResultHandle.ReceivedTaskCount;
-      var actualTotal = ResultHandle.NbResults + ResultHandle.NbErrors;
+      var actualTotal   = ResultHandle.NbResults + ResultHandle.NbErrors;
       if (expectedTotal != actualTotal)
       {
-        StressTestLogging.LogDiscrepancy(Logger, expectedTotal, actualTotal);
+        StressTestLogging.LogDiscrepancy(Logger,
+                                         expectedTotal,
+                                         actualTotal);
       }
 
       // Check for missing tasks and display their IDs
       var totalReceived = ResultHandle.NbResults + ResultHandle.NbErrors;
-      var missingCount = nbTasks - totalReceived;
+      var missingCount  = nbTasks                - totalReceived;
 
       if (missingCount > 0)
       {
-        var missingIds = ResultHandle.GetMissingIds().ToList();
-        StressTestLogging.LogMissingTasks(Logger, missingCount, missingIds);
+        var missingIds = ResultHandle.GetMissingIds()
+                                     .ToList();
+        StressTestLogging.LogMissingTasks(Logger,
+                                          missingCount,
+                                          missingIds);
       }
       else
       {
@@ -194,32 +211,55 @@ namespace Armonik.Samples.StressTests.Client
                                  workloadTimeInMs,
                                  Props);
 
-  // Store test parameters into stats for report (explicit properties)
-      try
-      {
-        stats.SubmissionDelayMs = submissionDelayMs > 0 ? submissionDelayMs : null;
-        stats.PayloadVariationPercent = payloadVariation > 0 ? payloadVariation : null;
-        stats.OutputVariationPercent = outputVariation > 0 ? outputVariation : null;
-        stats.VariationDistribution = !string.IsNullOrEmpty(variationDistribution) ? variationDistribution : null;
+      // Store test parameters into stats for report (explicit properties)
+      stats.SubmissionDelayMs = submissionDelayMs > 0
+                                  ? submissionDelayMs
+                                  : null;
+      stats.PayloadVariationPercent = payloadVariation > 0
+                                        ? payloadVariation
+                                        : null;
+      stats.OutputVariationPercent = outputVariation > 0
+                                       ? outputVariation
+                                       : null;
+      stats.VariationDistribution = !string.IsNullOrEmpty(variationDistribution)
+                                      ? variationDistribution
+                                      : null;
 
-        // read endpoint from environment if set (the runner exports Grpc__Endpoint)
-        var envEndpoint = Environment.GetEnvironmentVariable("Grpc__Endpoint");
-        if (!string.IsNullOrEmpty(envEndpoint))
-        {
-          stats.Endpoint = envEndpoint;
-        }
-      }
-      catch
+      // read endpoint from environment if set (the runner exports Grpc__Endpoint)
+      var envEndpoint = Environment.GetEnvironmentVariable("Grpc__Endpoint");
+      if (!string.IsNullOrEmpty(envEndpoint))
       {
-        throw;
+        stats.Endpoint = envEndpoint;
       }
 
       using var channel = channelPool_.Get();
-      stats.GetAllStats(channel,
-                        Service.SessionId,
-                        dt,
-                        DateTime.Now)
-           .Wait();
+
+      // Retrieve detailed stats but avoid blocking the whole run for too long
+      // (large task counts can make pagination slow). Use a short timeout and
+      // continue with available counters if the detailed collection doesn't finish.
+      var getStatsTask = stats.GetAllStats(channel,
+                                          Service.SessionId,
+                                          dt,
+                                          DateTime.Now);
+      var statsTimeout = TimeSpan.FromMinutes(2); // quick default timeout for stats collection
+      Logger.LogInformation($"Fetching detailed task stats (timeout {statsTimeout.TotalMinutes} min)...");
+      var completed = Task.WhenAny(getStatsTask, Task.Delay(statsTimeout)).Result == getStatsTask;
+      if (!completed)
+      {
+        Logger.LogWarning($"Detailed stats collection did not finish within {statsTimeout.TotalMinutes} minutes; proceeding with available counters.");
+      }
+      else
+      {
+        // ensure any exception is observed
+        try
+        {
+          getStatsTask.Wait();
+        }
+        catch (AggregateException ae)
+        {
+          Logger.LogWarning($"Getting detailed stats failed: {ae.Flatten().Message}");
+        }
+      }
 
       if (!string.IsNullOrEmpty(jsonPath))
       {
@@ -251,78 +291,92 @@ namespace Armonik.Samples.StressTests.Client
                                       int      submissionDelayMs,
                                       int      workloadTimeInMs = 1)
     {
-      var indexTask = 0;
-      const int elapsed = 30;
+      var       indexTask = 0;
+      const int elapsed   = 15;
 
       var periodicInfo = Utils.PeriodicInfo(() =>
-                                              { 
-                                                StressTestLogging.LogPeriodicInfo(Logger, ResultHandle.NbResults, (indexTask == nbTasks));
-                                              },
+                                            {
+                                              StressTestLogging.LogPeriodicInfo(Logger,
+                                                                                ResultHandle.NbResults,
+                                                                                indexTask == nbTasks);
+                                            },
                                             elapsed);
 
       // Prepare per-task sizes if variations requested
-      var random = new Random();
+      var random       = new Random();
       var payloadSizes = new List<long>(nbTasks);
-      var outputSizes = new List<long>(nbTasks);
+      var outputSizes  = new List<long>(nbTasks);
 
       // Precompute all sizes to avoid delays during submission
-      for (int i = 0; i < nbTasks; i++)
+      for (var i = 0; i < nbTasks; i++)
       {
-        long payloadSize = nbInputBytes;
+        var payloadSize = nbInputBytes;
         if (payloadVariation > 0)
         {
-          double variation = 0.0;
+          var variation = 0.0;
           if (variationDistribution == "gaussian")
           {
             // simple gaussian using Box-Muller
-            var u1 = 1.0 - random.NextDouble();
-            var u2 = 1.0 - random.NextDouble();
+            var u1            = 1.0 - random.NextDouble();
+            var u2            = 1.0 - random.NextDouble();
             var randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
-            variation = randStdNormal * (payloadVariation / 100.0);
+            variation = randStdNormal * (payloadVariation      / 100.0);
           }
           else
           {
             variation = (random.NextDouble() - 0.5) * 2.0 * (payloadVariation / 100.0);
           }
-          payloadSize = Math.Max(8, (long)(nbInputBytes * (1.0 + variation)));
+
+          payloadSize = Math.Max(8,
+                                 (long)(nbInputBytes * (1.0 + variation)));
         }
+
         payloadSizes.Add(payloadSize);
 
-        long outSize = nbOutputBytes;
+        var outSize = nbOutputBytes;
         if (outputVariation > 0)
         {
-          double variation = (variationDistribution == "gaussian")
-            ? (Math.Sqrt(-2.0 * Math.Log(1.0 - random.NextDouble())) * Math.Sin(2.0 * Math.PI * (1.0 - random.NextDouble()))) * (outputVariation / 100.0)
-            : (random.NextDouble() - 0.5) * 2.0 * (outputVariation / 100.0);
-          outSize = Math.Max(8, (long)(nbOutputBytes * (1.0 + variation)));
+          var variation = variationDistribution == "gaussian"
+                            ? Math.Sqrt(-2.0 * Math.Log(1.0 - random.NextDouble())) * Math.Sin(2.0 * Math.PI * (1.0 - random.NextDouble())) * (outputVariation / 100.0)
+                            : (random.NextDouble() - 0.5)                           * 2.0                                                   * (outputVariation / 100.0);
+          outSize = Math.Max(8,
+                             (long)(nbOutputBytes * (1.0 + variation)));
         }
+
         outputSizes.Add(outSize);
       }
+
       // Submit all tasks
       // Note: we use ToHashSet to force immediate evaluation of the enumerable and avoid delays
       var taskIds = Service.Submit("ComputeWorkLoad",
-                                   Enumerable.Range(0, nbTasks)
+                                   Enumerable.Range(0,
+                                                    nbTasks)
                                              .Select(i =>
-                                             {
-                                               if (submissionDelayMs > 0)
-                                               {
-                                                 Thread.Sleep(submissionDelayMs);
-                                               }
+                                                     {
+                                                       if (submissionDelayMs > 0)
+                                                       {
+                                                         Thread.Sleep(submissionDelayMs);
+                                                       }
 
-                                               var inputArray = payloadSizes[i] != nbInputBytes
-                                                 ? Enumerable.Range(0, (int)(payloadSizes[i] / 8)).Select(x => Math.Pow(42.0 * 8 / payloadSizes[i], 1.0 / 3.0)).ToArray()
-                                                 : inputArrayOfBytes;
+                                                       var inputArray = payloadSizes[i] != nbInputBytes
+                                                                          ? Enumerable.Range(0,
+                                                                                             (int)(payloadSizes[i] / 8))
+                                                                                      .Select(x => Math.Pow(42.0 * 8 / payloadSizes[i],
+                                                                                                            1.0      / 3.0))
+                                                                                      .ToArray()
+                                                                          : inputArrayOfBytes;
 
-                                               return Utils.ParamsHelper(inputArray,
-                                                                         outputSizes[i],
-                                                                         workloadTimeInMs);
-                                             }),
+                                                       return Utils.ParamsHelper(inputArray,
+                                                                                 outputSizes[i],
+                                                                                 workloadTimeInMs);
+                                                     }),
                                    ResultHandle)
                            .ToHashSet();
 
       // Store submitted task IDs for missing task detection
       ResultHandle.SubmittedTaskIds = taskIds;
-      StressTestLogging.LogRegisteredTaskIds(Logger, taskIds.Count);
+      StressTestLogging.LogRegisteredTaskIds(Logger,
+                                             taskIds.Count);
 
       indexTask = taskIds.Count();
 
@@ -330,27 +384,32 @@ namespace Armonik.Samples.StressTests.Client
     }
 
     /// <summary>
-    ///  Handler for results and errors from the service
+    ///   Handler for results and errors from the service
     /// </summary>
     private class ResultForStressTestsHandler : IServiceInvocationHandler
     {
-      private readonly ILogger<StressTests> logger_;
+      private readonly ILogger<StressTests>               logger_;
+      private readonly ConcurrentDictionary<string, byte> receivedTaskIds_ = new();
+      private          int                                nbErrors_;
+
+      private int nbResults_;
 
       public ResultForStressTestsHandler(ILogger<StressTests> Logger)
         => logger_ = Logger;
 
-      private int nbResults_;
-      private int nbErrors_;
-      
-      public int NbResults => nbResults_;
-      public int NbErrors => nbErrors_;
-      public double Total     { get; private set; }
+      public int NbResults
+        => nbResults_;
+
+      public int NbErrors
+        => nbErrors_;
+
+      public double Total { get; private set; }
 
       // Track submitted and received task IDs for missing task detection
       public ISet<string> SubmittedTaskIds { get; set; } = new HashSet<string>();
-      private readonly ConcurrentDictionary<string, byte> receivedTaskIds_ = new ConcurrentDictionary<string, byte>();
-      
-      public int ReceivedTaskCount => receivedTaskIds_.Count;
+
+      public int ReceivedTaskCount
+        => receivedTaskIds_.Count;
 
       /// <summary>
       ///   The callBack method which has to be implemented to retrieve error or exception
@@ -361,17 +420,18 @@ namespace Armonik.Samples.StressTests.Client
                               string                     taskId)
 
       {
-        try 
+        try
         {
           logger_.LogDebug($"HandleError called for task {taskId}: {e.Message}");
-          
+
           Interlocked.Increment(ref nbErrors_);
           logger_.LogDebug($"Error count incremented to {nbErrors_} for task {taskId}");
 
           // Track this task as received (even if error)
           if (!string.IsNullOrEmpty(taskId))
           {
-            receivedTaskIds_.TryAdd(taskId, 0);
+            receivedTaskIds_.TryAdd(taskId,
+                                    0);
             logger_.LogDebug($"Task {taskId} marked as received (error). Total received: {receivedTaskIds_.Count}");
           }
 
@@ -401,10 +461,10 @@ namespace Armonik.Samples.StressTests.Client
       public void HandleResponse(object response,
                                  string taskId)
       {
-        try 
+        try
         {
           logger_.LogDebug($"HandleResponse called for task {taskId}");
-          
+
           switch (response)
           {
             case double[] doubles:
@@ -418,7 +478,8 @@ namespace Armonik.Samples.StressTests.Client
           // Track this task as received (success)
           if (!string.IsNullOrEmpty(taskId))
           {
-            receivedTaskIds_.TryAdd(taskId, 0);
+            receivedTaskIds_.TryAdd(taskId,
+                                    0);
             logger_.LogDebug($"Task {taskId} marked as received (success). Total received: {receivedTaskIds_.Count}");
           }
 
@@ -433,16 +494,16 @@ namespace Armonik.Samples.StressTests.Client
       }
 
       /// <summary>
-      /// Wait for all results to be received, or timeout after 10 minutes
+      ///   Wait for all results to be received, or timeout after 10 minutes
       /// </summary>
       /// <param name="nbTasks"></param>
       /// <param name="token"></param>
       /// <returns></returns>
-      public async Task WaitForResult(int nbTasks,
+      public async Task WaitForResult(int               nbTasks,
                                       CancellationToken token)
       {
         var timeout = TimeSpan.FromMinutes(10);
-        var sw = Stopwatch.StartNew();
+        var sw      = Stopwatch.StartNew();
 
         while (NbResults + NbErrors < nbTasks && !token.IsCancellationRequested && sw.Elapsed < timeout)
         {
@@ -457,7 +518,7 @@ namespace Armonik.Samples.StressTests.Client
       }
 
       /// <summary>
-      /// Get the list of submitted task IDs that were never received as callbacks
+      ///   Get the list of submitted task IDs that were never received as callbacks
       /// </summary>
       public IEnumerable<string> GetMissingIds()
       {
