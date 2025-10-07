@@ -38,8 +38,8 @@ namespace ArmoniK.Samples.Client
 {
   internal class Program
   {
-  private static IConfiguration?   _configuration_;
-  private static ILogger<Program>? _logger_;
+    private static IConfiguration?   _configuration_;
+    private static ILogger<Program>? _logger_;
 
     private static async Task Main(string[] args)
     {
@@ -164,19 +164,19 @@ namespace ArmoniK.Samples.Client
 
     public class ContainerOptions
     {
-      public int    NbTask                 { get; set; }
-      public long   NbInputBytes           { get; set; }
-      public long   NbOutputBytes          { get; set; }
-      public int    WorkLoadTimeInMs       { get; set; }
-      public string Partition              { get; set; } = string.Empty;
-      public int    NbTaskPerBuffer        { get; set; }
-      public int    NbBufferPerChannel     { get; set; }
-      public int    NbChannel              { get; set; }
-      public string JsonPath               { get; set; } = string.Empty;
-      public int    SubmissionDelayMs      { get; set; }
-      public int    PayloadVariation       { get; set; }
-      public int    OutputVariation        { get; set; }
-      public string VariationDistribution  { get; set; } = "uniform";
+      public int    NbTask                { get; set; }
+      public long   NbInputBytes          { get; set; }
+      public long   NbOutputBytes         { get; set; }
+      public int    WorkLoadTimeInMs      { get; set; }
+      public string Partition             { get; set; } = string.Empty;
+      public int    NbTaskPerBuffer       { get; set; }
+      public int    NbBufferPerChannel    { get; set; }
+      public int    NbChannel             { get; set; }
+      public string JsonPath              { get; set; } = string.Empty;
+      public int    SubmissionDelayMs     { get; set; }
+      public int    PayloadVariation      { get; set; }
+      public int    OutputVariation       { get; set; }
+      public string VariationDistribution { get; set; } = "uniform";
     }
   }
 }
