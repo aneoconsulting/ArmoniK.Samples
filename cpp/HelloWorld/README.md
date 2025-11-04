@@ -73,7 +73,8 @@ make build_worker
 make build_client
 ```
 
-You can modify the image names in the `Makefile` or pass them as parameters.
+You can modify the image names in the `Makefile` or pass them as parameters. By default this will build the images
+`armonik-cpp-hello-worker:0.1.0-api` and `armonik-cpp-hello-client:0.1.0-api`
 
 Make sure to modify the ```appsettings.json``` for our client to communicate with our ArmoniK deployment.
 
@@ -87,24 +88,70 @@ Replace ```{armonik-output-ip}``` with the ip resulting from our ```make deploy`
 
 ### Running your application on ArmoniK
 
-Now, going back to our ArmoniK infrastructure, we have to change the name of the ArmoniK worker in our previously deployed infrastructure:
+Now, going back to our ArmoniK infrastructure add the C++ worker image, either by:
 
-```
-...
-    # ArmoniK workers
-    worker = [
-      {
-        image = "armonik-cpp-hello-worker"
-        tag="0.1.0-api"
-...
-```
+  - Replacing the default partition image with the C++ dynamic worker image.
+  This is done by modifying the default partition `parameters.tfvars`. For example, using the dynamic worker image provided by the ArmoniK Team:
+    ```diff
+    default = {
+      # number of replicas for each deployment of compute plane
+      replicas = 0
+      # ArmoniK polling agent
+      polling_agent = {...
+      }
+      # ArmoniK workers
+      worker = [
+        {
+    -     image = "dockerhubaneo/armonik_worker_dll"
+    +     image = "armonik-cpp-hello-client"
+    +     tag = "0.1.0-api"
+          limits = {...}
+          requests = {...}
+        }
+      ]
+      hpa = {...
+      }
+    }
+    ```
+
+  or
+  - Creating a new partition for the C++ worker: You will need to edit the `parameters.tfvars` file and add the new partition with the right image name and tag:
+
+    ```diff
+    +hellocpp = {
+    +  # number of replicas for each deployment of compute plane
+    +  replicas = 0
+    +  # ArmoniK polling agent
+    +  polling_agent = {...
+    +  }
+    +  # ArmoniK workers
+    +  worker = [
+    +    {
+    +      image = "armonik-cpp-hello-client"
+    +      tag = "0.1.0-api"
+    +      limits = {...}
+    +      requests = {...}
+    +    }
+    +  ]
+    +  hpa = {...
+    +  }
+    +}
+    ```
 
 Run the deploy command again to update the image.
 
-You can now run your client application to send tasks over to ArmoniK:
+You can now run your client application to send tasks over to ArmoniK, if you edited the default partition:
+
 ```
-docker run --rm armonik-cpp-hello-client:0.1.0
+docker run --rm armonik-cpp-hello-client:0.1.0-api
 ```
+
+If you added a new partition:
+
+```
+docker run --rm e GrpcClient__Endpoint="http://{armonik-output-ip}:5001" -e PartitionId=hellocpp armonik-cpp-hello-client:0.1.0-api
+```
+
 
 That's it! You can now develop and run C++ applications on ArmoniK.
 
