@@ -6,8 +6,8 @@
 #include "channel/ChannelFactory.h"
 #include "sessions/SessionsClient.h"
 #include "tasks/TasksClient.h"
-#include "results/ResultsClient.h" 
-#include "events/EventsClient.h" 
+#include "results/ResultsClient.h"
+#include "events/EventsClient.h"
 
 #include <map>
 
@@ -26,7 +26,8 @@ int main() {
 
     ak_grpc::TaskOptions taskOptions;
 
-    std::string used_partition = "default";
+    logger.info ("Endpoint : " + config.get("GrpcClient__Endpoint"));
+    std::string  used_partition = config.get("PartitionId").empty() ? "default" : config.get("PartitionId");
     logger.info("Using the '"+ used_partition + "' partition.");
 
     taskOptions.mutable_max_duration()->set_seconds(3600);
@@ -45,7 +46,7 @@ int main() {
     std::string session_id = sessionsClient.create_session(taskOptions, {used_partition});
     logger.info("Created session with id = " + session_id);
 
-    std::map<std::string,std::string> results = resultsClient.create_results_metadata(session_id, {"output", "payload"});d
+    std::map<std::string,std::string> results = resultsClient.create_results_metadata(session_id, {"output", "payload"});
 
     resultsClient.upload_result_data(session_id, results["payload"], "hello");
     logger.info("Uploaded payload.");
@@ -53,8 +54,8 @@ int main() {
     auto task_info = tasksClient.submit_tasks(session_id, {ak_common::TaskCreation{results["payload"], {results["output"]}}})[0];
     logger.info("Task submitted.");
     logger.info("Going to wait for result with id = " + results["output"] );
-    eventsClient.wait_for_result_availability(session_id, {results["output"]});  
-    
+    eventsClient.wait_for_result_availability(session_id, {results["output"]});
+
     logger.info("Finished waiting.");
     std::string taskResult = resultsClient.download_result_data(session_id, {results["output"]});
     logger.info("Got result = " + taskResult);

@@ -1,4 +1,4 @@
-FROM alpine:3.18.6 AS builder
+FROM alpine:3.18.12 AS builder
 
 RUN apk update && apk add --no-cache \
     git \
@@ -14,7 +14,7 @@ RUN apk update && apk add --no-cache \
     make \
     cmake \
     unzip \
-    linux-headers \ 
+    linux-headers \
     protobuf \
     grpc \
     grpc-dev \
@@ -43,13 +43,13 @@ COPY ./worker/CMakeLists.txt /worker/
 RUN cmake -DCMAKE_INSTALL_PREFIX="/worker/install" /worker/
 RUN make -j $(nproc) install
 
-FROM alpine:3.18.6
+FROM alpine:3.18.12
 
 RUN apk update && apk add --no-cache \
     c-ares \
     c-ares-dev \
     libprotobuf \
-    grpc \ 
+    grpc \
     grpc-cpp
 
 # Creating armonik user with the correct permissions

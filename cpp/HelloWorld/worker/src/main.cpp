@@ -15,14 +15,14 @@
 
 
 class HelloWorker: public armonik::api::worker::ArmoniKWorker {
-    public: 
+    public:
         explicit HelloWorker(std::unique_ptr<armonik::api::grpc::v1::agent::Agent::Stub> agent): ArmoniKWorker(std::move(agent)) {}
 
         armonik::api::worker::ProcessStatus Execute(armonik::api::worker::TaskHandler &taskHandler) override {
             std::string payload = taskHandler.getPayload();
 
             std::cout << "Received input = " << payload << "\n";
-       
+
             try {
                 if (!taskHandler.getExpectedResults().empty()) {
                     taskHandler.send_result(taskHandler.getExpectedResults()[0], payload).get();
@@ -40,7 +40,7 @@ class HelloWorker: public armonik::api::worker::ArmoniKWorker {
 int main()
 {
     std::cout << "Hello Worker started. gRPC version = " << grpc::Version() << "\n";
-    
+
     armonik::api::common::utils::Configuration config;
     config.add_json_configuration("/appsettings.json").add_env_configuration();
 
@@ -54,5 +54,5 @@ int main()
     }
 
     std::cout << "Stopping Server..." << std::endl;
-    return 0;   
+    return 0;
 }
