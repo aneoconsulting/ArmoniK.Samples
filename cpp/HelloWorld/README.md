@@ -26,7 +26,7 @@ Once you've cloned the ArmoniK repo and completed the installation steps, start 
 make deploy
 ```
 
-It's that simple. 
+It's that simple.
 
 ### Building your application
 
@@ -75,7 +75,7 @@ make build_client
 
 You can modify the image names in the `Makefile` or pass them as parameters.
 
-Make sure to modify the ```appsettings.json``` for our client to communicate with our ArmoniK deployment. 
+Make sure to modify the ```appsettings.json``` for our client to communicate with our ArmoniK deployment.
 
 ```json
 {
@@ -95,7 +95,7 @@ Now, going back to our ArmoniK infrastructure, we have to change the name of the
     worker = [
       {
         image = "armonik-cpp-hello-worker"
-        tag="0.1.0"
+        tag="0.1.0-api"
 ...
 ```
 
@@ -103,8 +103,8 @@ Run the deploy command again to update the image.
 
 You can now run your client application to send tasks over to ArmoniK:
 ```
-docker run --rm armonik-cpp-hello-client:0.1.0 
-``` 
+docker run --rm armonik-cpp-hello-client:0.1.0
+```
 
 That's it! You can now develop and run C++ applications on ArmoniK.
 

@@ -1,13 +1,13 @@
 .ONESHELL:
-WORKER_IMAGE_TAG?="armonik-cpp-hello-worker:0.1.0"
-CLIENT_IMAGE_TAG?="armonik-cpp-hello-client:0.1.0"
+WORKER_IMAGE_TAG?="armonik-cpp-hello-worker:0.1.0-api"
+CLIENT_IMAGE_TAG?="armonik-cpp-hello-client:0.1.0-api"
 
 .PHONY: help
 help: 	## Show help
 	@echo "Usage: make <target>"
 	@echo ""
 	@echo "Targets:"
-	@fgrep "##" Makefile | fgrep -v fgrep 
+	@fgrep "##" Makefile | fgrep -v fgrep
 
 all: build_worker build_client
 
@@ -21,7 +21,7 @@ build_worker: ## Builds docker image for worker
 
 
 .PHONY: setup_dev_env
-setup_dev_env:  # Gets ArmoniK APIs and other dependencies for autocomplete 
+setup_dev_env:  # Gets ArmoniK APIs and other dependencies for autocomplete
 	@rm -rf ./armonik_api/
 	@rm -rf ./armonik_api_temp/
 	@rm -rf ./vendor_temp/
