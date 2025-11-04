@@ -697,6 +697,102 @@ references:
   isSpec: "True"
   fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceApps.NonStaticComputeMadd
   nameWithType: ServiceApps.NonStaticComputeMadd
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck
+  name: ServiceAppsHealthCheck
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html
+  commentId: T:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck
+  nameWithType: ServiceAppsHealthCheck
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.#ctor
+  name: ServiceAppsHealthCheck()
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck__ctor
+  commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.#ctor
+  name.vb: New()
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.ServiceAppsHealthCheck()
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.New()
+  nameWithType: ServiceAppsHealthCheck.ServiceAppsHealthCheck()
+  nameWithType.vb: ServiceAppsHealthCheck.New()
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.#ctor*
+  name: ServiceAppsHealthCheck
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck__ctor_
+  commentId: Overload:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.ServiceAppsHealthCheck
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.New
+  nameWithType: ServiceAppsHealthCheck.ServiceAppsHealthCheck
+  nameWithType.vb: ServiceAppsHealthCheck.New
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddArray(System.Double[])
+  name: AddArray(double[])
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck_AddArray_System_Double___
+  commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddArray(System.Double[])
+  name.vb: AddArray(Double())
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddArray(double[])
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddArray(Double())
+  nameWithType: ServiceAppsHealthCheck.AddArray(double[])
+  nameWithType.vb: ServiceAppsHealthCheck.AddArray(Double())
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddArray*
+  name: AddArray
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck_AddArray_
+  commentId: Overload:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddArray
+  isSpec: "True"
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddArray
+  nameWithType: ServiceAppsHealthCheck.AddArray
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddTwoNumbers(System.Double,System.Double)
+  name: AddTwoNumbers(double, double)
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck_AddTwoNumbers_System_Double_System_Double_
+  commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddTwoNumbers(System.Double,System.Double)
+  name.vb: AddTwoNumbers(Double, Double)
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddTwoNumbers(double, double)
+  fullName.vb: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddTwoNumbers(Double, Double)
+  nameWithType: ServiceAppsHealthCheck.AddTwoNumbers(double, double)
+  nameWithType.vb: ServiceAppsHealthCheck.AddTwoNumbers(Double, Double)
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddTwoNumbers*
+  name: AddTwoNumbers
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck_AddTwoNumbers_
+  commentId: Overload:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddTwoNumbers
+  isSpec: "True"
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.AddTwoNumbers
+  nameWithType: ServiceAppsHealthCheck.AddTwoNumbers
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.CheckHealth
+  name: CheckHealth()
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck_CheckHealth
+  commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.CheckHealth
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.CheckHealth()
+  nameWithType: ServiceAppsHealthCheck.CheckHealth()
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.CheckHealth*
+  name: CheckHealth
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck_CheckHealth_
+  commentId: Overload:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.CheckHealth
+  isSpec: "True"
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.CheckHealth
+  nameWithType: ServiceAppsHealthCheck.CheckHealth
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.GetCallCount
+  name: GetCallCount()
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck_GetCallCount
+  commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.GetCallCount
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.GetCallCount()
+  nameWithType: ServiceAppsHealthCheck.GetCallCount()
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.GetCallCount*
+  name: GetCallCount
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck_GetCallCount_
+  commentId: Overload:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.GetCallCount
+  isSpec: "True"
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.GetCallCount
+  nameWithType: ServiceAppsHealthCheck.GetCallCount
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.TestWorkerIdentity
+  name: TestWorkerIdentity()
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck_TestWorkerIdentity
+  commentId: M:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.TestWorkerIdentity
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.TestWorkerIdentity()
+  nameWithType: ServiceAppsHealthCheck.TestWorkerIdentity()
+- uid: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.TestWorkerIdentity*
+  name: TestWorkerIdentity
+  href: api/ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.html#ArmoniK_Samples_Unified_Worker_Services_ServiceAppsHealthCheck_TestWorkerIdentity_
+  commentId: Overload:ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.TestWorkerIdentity
+  isSpec: "True"
+  fullName: ArmoniK.Samples.Unified.Worker.Services.ServiceAppsHealthCheck.TestWorkerIdentity
+  nameWithType: ServiceAppsHealthCheck.TestWorkerIdentity
 - uid: Armonik.Samples.StressTests.Client.Metrics
   name: Armonik.Samples.StressTests.Client.Metrics
   href: api/Armonik.Samples.StressTests.Client.Metrics.html
