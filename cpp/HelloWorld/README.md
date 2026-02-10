@@ -76,15 +76,6 @@ make build_client
 You can modify the image names in the `Makefile` or pass them as parameters. By default this will build the images
 `armonik-cpp-hello-worker:0.1.0-api` and `armonik-cpp-hello-client:0.1.0-api`
 
-Make sure to modify the ```appsettings.json``` for our client to communicate with our ArmoniK deployment.
-
-```json
-{
-        "Grpc__EndPoint": "http://{armonik-output-ip}:5001"
-}
-```
-
-Replace ```{armonik-output-ip}``` with the ip resulting from our ```make deploy``` command in the ArmoniK repo.
 
 ### Running your application on ArmoniK
 
@@ -149,8 +140,10 @@ docker run --rm armonik-cpp-hello-client:0.1.0-api
 If you added a new partition:
 
 ```
-docker run --rm e GrpcClient__Endpoint="http://{armonik-output-ip}:5001" -e PartitionId=hellocpp armonik-cpp-hello-client:0.1.0-api
-```
+docker run --rm -e GrpcClient__Endpoint="http://{armonik-output-ip}:5001" -e PartitionId=hellocpp armonik-cpp-hello-client:0.1.0-api
+``
+
+Replace ```{armonik-output-ip}``` with the ip resulting from our ```make deploy``` command in the ArmoniK repo.
 
 
 That's it! You can now develop and run C++ applications on ArmoniK.
