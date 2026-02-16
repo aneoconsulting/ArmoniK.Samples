@@ -1,1 +1,1 @@
-armonik>=3.25.0
+armonik>=3.28.3
