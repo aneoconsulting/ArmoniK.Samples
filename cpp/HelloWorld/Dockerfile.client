@@ -1,4 +1,4 @@
-FROM alpine:3.18.12 AS builder
+FROM alpine:3.23.3 AS builder
 
 RUN apk update && apk add --no-cache \
     git \
@@ -40,7 +40,7 @@ ENV PATH="/client/install/bin:$PATH"
 RUN cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="/client/install" /client/
 RUN make -j $(nproc) install
 
-FROM alpine:3.18.12 AS runner
+FROM alpine:3.23.3 AS runner
 
 RUN apk update && apk add --no-cache \
     c-ares \
