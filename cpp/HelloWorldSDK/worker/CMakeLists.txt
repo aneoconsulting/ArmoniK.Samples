@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 3.22)
+set(PROJECT_NAME ArmoniK.Samples.Cpp.Hello.SDK.Worker)
+include(CMakePackageConfigHelpers)
+
+project(${PROJECT_NAME})
+
+set(CMAKE_CXX_STANDARD 17)
+
+if(NOT TARGET ArmoniK.SDK.Worker)
+    find_package(ArmoniK.SDK.Worker CONFIG REQUIRED)
+endif()
+
+SET(WORKER_FILES "${CMAKE_CURRENT_SOURCE_DIR}")
+SET(WORKER_SOURCE_DIR "${WORKER_FILES}")
+SET(WORKER_HEADER_DIR "${WORKER_FILES}")
+
+FILE(GLOB_RECURSE SRC_WORKER_FILES ${WORKER_SOURCE_DIR}/*.cpp)
+FILE(GLOB_RECURSE HEADER_WORKER_FILES ${WORKER_HEADER_DIR}/*.h)
+
+add_library(${PROJECT_NAME} SHARED ${SRC_WORKER_FILES} ${HEADER_WORKER_FILES})
+
+target_link_libraries(${PROJECT_NAME} PUBLIC "-Wl,--whole-archive" ArmoniK.SDK.Worker "-Wl,--no-whole-archive")
+
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        "$<BUILD_INTERFACE:${WORKER_HEADER_DIR}>"
+        )
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
+
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR})
