@@ -1,4 +1,4 @@
-FROM debian:12 AS builder
+FROM debian:13 AS builder
 
 # Install debian package making tools
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install --no-install-recommends -y \
@@ -41,7 +41,7 @@ RUN wget "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/down
 WORKDIR /app
 RUN mkdir -p build && cd build && cmake .. && make
 
-FROM debian:12 AS runner
+FROM debian:13 AS runner
 
 # Copy only the necessary files from the build stage
 WORKDIR /app
