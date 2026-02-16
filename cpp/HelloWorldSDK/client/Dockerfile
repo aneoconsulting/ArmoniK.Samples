@@ -6,7 +6,7 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-ge
     equivs \
     cmake \
     wget \
-    gcc \ 
+    gcc \
     g++ \
     libgrpc-dev \
     libgrpc++-dev \
@@ -44,10 +44,7 @@ RUN mkdir -p build && cd build && cmake .. && make -j
 FROM debian:12 AS runner
 
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
-    libgrpc-dev \
-    libgrpc++-dev \
-    libprotobuf-dev \
-    protobuf-compiler-grpc \
+    libgrpc++ \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /lib/libArmoniK*.so* /lib/
