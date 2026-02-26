@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
     - name: Get dotnet sdk
       run: |
@@ -28,7 +28,7 @@ jobs:
         docfx Documentation/docfx.json
 
     - name: Deploy docfx documentation
-      uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a2847 # v3
+      uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: Documentation/_site
