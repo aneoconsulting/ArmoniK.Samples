@@ -15,7 +15,7 @@ add_executable(${PROJECT_NAME} ${SRC_FILES} ${HEADER_FILES})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
 
 target_link_options(${PROJECT_NAME} PRIVATE
-    -Wl,--copy-dt-needed-entries,--start-group
+    -Wl,--start-group
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ArmoniK.Api.Client ArmoniK.Api.Common)
