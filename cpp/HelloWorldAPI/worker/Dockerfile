@@ -37,8 +37,8 @@ RUN rm -rf /armonik_api_temp/
 ENV LD_LIBRARY_PATH="/worker/install/lib:$LD_LIBRARY_PATH"
 ENV PATH="/worker/install/bin:$PATH"
 
-COPY ./worker/src/ /worker/src/
-COPY ./worker/CMakeLists.txt /worker/
+COPY ./src/ /worker/src/
+COPY ./CMakeLists.txt /worker/
 
 RUN cmake -DCMAKE_INSTALL_PREFIX="/worker/install" /worker/
 RUN make -j $(nproc) install
@@ -57,7 +57,6 @@ RUN addgroup -g 5000 -S armonikuser && adduser -D -h /home/armonikuser  -u 5000 
 USER armonikuser
 
 COPY --from=builder /worker /worker
-COPY ./appsettings.json /appsettings.json
 
 ENV LD_LIBRARY_PATH="/worker/install/lib:$LD_LIBRARY_PATH"
 ENV PATH="/worker/install/bin:$PATH"

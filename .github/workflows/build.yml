@@ -179,8 +179,8 @@ jobs:
           IMAGE_NAME="dockerhubaneo/armonik_demo_cpp_$(echo '${{ matrix.demodir }}' | tr '[:upper:]' '[:lower:]')_${{ matrix.role }}"
           docker build \
             -t ${IMAGE_NAME}:${VERSION} \
-            -f ./cpp/${{ matrix.demodir }}/Dockerfile.${{ matrix.role }} \
-            cpp/
+            -f ./cpp/${{ matrix.demodir }}/${{ matrix.role }}/Dockerfile \
+            ./cpp/${{ matrix.role }}
           docker push ${IMAGE_NAME}:${VERSION}
 
   CSharpSamples:

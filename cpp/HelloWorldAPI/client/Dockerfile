@@ -31,8 +31,8 @@ WORKDIR /
 RUN cp -a /armonik_api_temp/packages/cpp/install/. /client/install/
 RUN rm -rf /armonik_api_temp/
 
-COPY ./client/src/ /client/src/
-COPY ./client/CMakeLists.txt /client/
+COPY ./src/ /client/src/
+COPY ./CMakeLists.txt /client/
 
 ENV LD_LIBRARY_PATH="/client/install/lib:$LD_LIBRARY_PATH"
 ENV PATH="/client/install/bin:$PATH"
@@ -53,7 +53,6 @@ RUN addgroup -g 5000 -S armonikuser && adduser -D -h /home/armonikuser  -u 5000 
 USER armonikuser
 
 COPY --from=builder /client /client
-COPY ./appsettings.json /appsettings.json
 
 ENV LD_LIBRARY_PATH="/client/install/lib:$LD_LIBRARY_PATH"
 ENV PATH="/client/install/bin:$PATH"
