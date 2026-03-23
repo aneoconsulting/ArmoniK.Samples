@@ -180,7 +180,7 @@ jobs:
           docker build \
             -t ${IMAGE_NAME}:${VERSION} \
             -f ./cpp/${{ matrix.demodir }}/${{ matrix.role }}/Dockerfile \
-            ./cpp/${{ matrix.role }}
+            cpp/${{ matrix.demodir }}/${{ matrix.role }}/
           docker push ${IMAGE_NAME}:${VERSION}
 
   CSharpSamples:
