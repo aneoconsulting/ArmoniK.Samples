@@ -215,7 +215,7 @@ jobs:
       fail-fast: false
     runs-on: ubuntu-latest
     env:
-      ARMONIK_SHARED_HOST_PATH: $(kubectl -n armonik get secrets shared-storage -o jsonpath='{.data.host_path}' 2>/dev/null | base64 -d 2>/dev/null)
+      ARMONIK_SHARED_HOST_PATH: ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data/
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
