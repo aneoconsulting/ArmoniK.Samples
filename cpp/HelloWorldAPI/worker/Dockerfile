@@ -23,7 +23,8 @@ RUN apk update && apk add --no-cache \
 ENV protobuf_BUILD_TESTS=OFF
 RUN mkdir -p /worker/install/
 
-RUN git clone https://github.com/aneoconsulting/ArmoniK.Api.git /armonik_api_temp/
+ARG API_VERSION=main
+RUN git clone -b "${API_VERSION}" https://github.com/aneoconsulting/ArmoniK.Api.git /armonik_api_temp/
 WORKDIR /armonik_api_temp/packages/cpp/
 RUN mkdir ./install
 

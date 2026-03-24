@@ -176,10 +176,14 @@ jobs:
 
       - name: Build and push Docker image
         run: |
+          API_VERSION=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json | jq -r '.armonik_versions.api')
+          SDK_VERSION=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json | jq -r '.armonik_versions.extcpp')
           IMAGE_NAME="dockerhubaneo/armonik_demo_cpp_$(echo '${{ matrix.demodir }}' | tr '[:upper:]' '[:lower:]')_${{ matrix.role }}"
           docker build \
             -t ${IMAGE_NAME}:${VERSION} \
             -f ./cpp/${{ matrix.demodir }}/${{ matrix.role }}/Dockerfile \
+            --build-arg="API_VERSION=${API_VERSION}" \
+            --build-arg="SDK_VERSION=${SDK_VERSION}" \
             cpp/${{ matrix.demodir }}/${{ matrix.role }}/
           docker push ${IMAGE_NAME}:${VERSION}
 
