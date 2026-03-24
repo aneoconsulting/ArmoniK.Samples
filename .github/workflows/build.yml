@@ -406,7 +406,12 @@ jobs:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
           log-suffix: ${{ matrix.demo }}
-
+      - name: Prepare SDK sample
+        run: |
+          docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_helloworldsdk_worker:${{ needs.versionning.outputs.version }}
+          ARMONIK_SHARED_HOST_PATH=${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data
+          docker cp so_exporter:app/libArmoniK.Samples.Cpp.Hello.SDK.Worker.so ${ARMONIK_SHARED_HOST_PATH}
+          docker remove so_exporter
       - name: Run Demo Client
         timeout-minutes: 10
         run: |
