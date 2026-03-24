@@ -361,7 +361,7 @@ compute_plane = {
       ]
     }
   },
-  hellocppapi = {
+  cpphelloworldapi = {
     # number of replicas for each deployment of compute plane
     replicas = 0
     # ArmoniK polling agent
@@ -410,7 +410,7 @@ compute_plane = {
       ]
     }
   },
-  hellocppsdk = {
+  cpphelloworldsdk = {
     # number of replicas for each deployment of compute plane
     replicas = 0
     # ArmoniK polling agent
