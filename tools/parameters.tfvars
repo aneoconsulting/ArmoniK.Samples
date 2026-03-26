@@ -82,7 +82,7 @@ compute_plane = {
     worker = [
       {
         image = "dockerhubaneo/armonik_worker_dll"
-        tag = "0.19.3"
+        tag   = "0.19.3"
         limits = {
           cpu    = "1000m"
           memory = "1024Mi"
@@ -428,7 +428,7 @@ compute_plane = {
     worker = [
       {
         image = "dockerhubaneo/armonik-sdk-cpp-dynamicworker"
-        tag = "0.4.4-ubuntu"
+        tag   = "0.4.4-ubuntu"
         limits = {
           cpu    = "1000m"
           memory = "1024Mi"
@@ -457,6 +457,67 @@ compute_plane = {
           type      = "prometheus"
           threshold = 2
         },
+      ]
+    }
+  },
+  javahelloworld = {
+    replicas    = 0
+    socket_type = "tcp"
+    polling_agent = {
+      limits   = { cpu = "2000m", memory = "2048Mi" }
+      requests = { cpu = "50m", memory = "50Mi" }
+    }
+    worker = [{
+      image    = "dockerhubaneo/armonik_demo_java_hello-world-worker"
+      limits   = { cpu = "1000m", memory = "1024Mi" }
+      requests = { cpu = "50m", memory = "50Mi" }
+    }]
+    hpa = {
+      type              = "prometheus"
+      polling_interval  = 15
+      cooldown_period   = 300
+      min_replica_count = 0
+      max_replica_count = 5
+      behavior = {
+        restore_to_original_replica_count = true
+        stabilization_window_seconds      = 300
+        type                              = "Percent"
+        value                             = 100
+        period_seconds                    = 15
+      }
+      triggers = [
+        { type = "prometheus", threshold = 2 }
+      ]
+    }
+  },
+  # partition for sum worker
+  javasum = {
+    replicas    = 0
+    socket_type = "tcp"
+    polling_agent = {
+      limits   = { cpu = "2000m", memory = "2048Mi" }
+      requests = { cpu = "50m", memory = "50Mi" }
+    }
+    worker = [{
+      image    = "dockerhubaneo/armonik_demo_java_sum-worker"
+      limits   = { cpu = "1000m", memory = "1024Mi" }
+      requests = { cpu = "50m", memory = "50Mi" }
+    }]
+    hpa = {
+      type              = "prometheus"
+      polling_interval  = 15
+      cooldown_period   = 300
+      min_replica_count = 0
+      max_replica_count = 5
+      behavior = {
+        restore_to_original_replica_count = true
+        stabilization_window_seconds      = 300
+        type                              = "Percent"
+        value                             = 100
+        period_seconds                    = 15
+      }
+      triggers = [
+        { type = "prometheus", threshold = 2 }
       ]
     }
   }
