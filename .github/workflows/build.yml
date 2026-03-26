@@ -544,4 +544,4 @@ jobs:
         timeout-minutes: 10
         run: |
           cd java/client
-          ./mvnw compile exec:java -Dexec.mainClass="fr.aneo.armonik.client.samples.{{ matrix.demo }}"
+          ./mvnw compile exec:java -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}"

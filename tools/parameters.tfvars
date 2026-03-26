@@ -460,7 +460,7 @@ compute_plane = {
       ]
     }
   },
-  javahelloworld = {
+  helloworld = {
     replicas    = 0
     socket_type = "tcp"
     polling_agent = {
@@ -491,7 +491,7 @@ compute_plane = {
     }
   },
   # partition for sum worker
-  javasum = {
+  sum = {
     replicas    = 0
     socket_type = "tcp"
     polling_agent = {
