@@ -133,8 +133,8 @@ jobs:
       - name: Java demos
         id: set-java-demos
         run: |
-          JAVA_DEMO_WORKER_DIRS='["workers/hello-world-worker","workers/sum-worker", "worker-libraries/multiply-library"]'
-          JAVA_DEMO_NAMES='["HelloWorld","SharedBlob","TaskDependencies", "DynamicLibrary"]'
+          JAVA_DEMO_WORKER_DIRS='["workers/hello-world-worker","workers/sum-worker"]'
+          JAVA_DEMO_NAMES='["HelloWorld","SharedBlob","TaskDependencies"]'
           echo "java-demo-worker-dirs=${JAVA_DEMO_WORKER_DIRS}" >> $GITHUB_OUTPUT
           echo "java-demo-names=${JAVA_DEMO_NAMES}" >> $GITHUB_OUTPUT
 
