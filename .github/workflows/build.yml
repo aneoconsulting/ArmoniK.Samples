@@ -278,11 +278,13 @@ jobs:
               | .armonik_images.samples += ["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]
               | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldapi_worker"]
               | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldsdk_worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_hello-world-worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_sum-worker"]
             ' > .versions.tfvars.json
 
           mv .versions.tfvars.json \
             ${{ github.workspace }}/infra/versions.tfvars.json
-    
+
       - id: deploy
         name: Deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
@@ -290,14 +292,14 @@ jobs:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
           log-suffix: ${{ matrix.demo }}
-         
+
       - name: Run Demo Client
         timeout-minutes: 10
         run: |
-         export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-         export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-         export Grpc__Endpoint=http://$CPIP:$CPPort
-         docker run --rm dockerhubaneo/armonik_demo_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }} --endpoint $Grpc__Endpoint --partition ${{ matrix.demo }}
+          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
+          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
+          export Grpc__Endpoint=http://$CPIP:$CPPort
+          docker run --rm dockerhubaneo/armonik_demo_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }} --endpoint $Grpc__Endpoint --partition ${{ matrix.demo }}
 
   testInfraWorker:
     needs:
@@ -306,7 +308,7 @@ jobs:
     strategy:
       matrix:
         scenario:
-           - --nbTask 224  --nbInputBytes 4029815 --nbOutputBytes 226016  --workLoadTimeInMs 10
+          - --nbTask 224  --nbInputBytes 4029815 --nbOutputBytes 226016  --workLoadTimeInMs 10
 
       fail-fast: false
     runs-on: ubuntu-latest
@@ -347,6 +349,8 @@ jobs:
               | .armonik_images.samples += ["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]
               | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldapi_worker"]
               | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldsdk_worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_hello-world-worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_sum-worker"]
             ' > .versions.tfvars.json
 
           mv .versions.tfvars.json \
@@ -364,14 +368,14 @@ jobs:
       - name: Run UnifiedAPI
         timeout-minutes: 15
         run: |
-         cd tools/tests
-         bash -x ./unified_api.sh
+          cd tools/tests
+          bash -x ./unified_api.sh
 
       - name: Run StressTests
         timeout-minutes: 15
         run: |
-         cd tools/tests
-         bash -x ./stress-tests.sh -- stressTest ${{ matrix.scenario }}
+          cd tools/tests
+          bash -x ./stress-tests.sh -- stressTest ${{ matrix.scenario }}
       - name: Copy logs
         if: always()
         shell: bash
@@ -441,6 +445,8 @@ jobs:
               | .armonik_images.samples += ["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]
               | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldapi_worker"]
               | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldsdk_worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_hello-world-worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_sum-worker"]
             ' > .versions.tfvars.json
 
           mv .versions.tfvars.json \
@@ -462,7 +468,80 @@ jobs:
       - name: Run Demo Client
         timeout-minutes: 10
         run: |
-         export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-         export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-         export Grpc__Endpoint=http://$CPIP:$CPPort
-         docker run --rm -e GrpcClient__Endpoint="${Grpc__Endpoint}" -e PartitionId="cpp${{ matrix.demo }}" dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }}
+          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
+          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
+          export Grpc__Endpoint=http://$CPIP:$CPPort
+          docker run --rm -e GrpcClient__Endpoint="${Grpc__Endpoint}" -e PartitionId="cpp${{ matrix.demo }}" dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }}
+
+  JavaSamples:
+    runs-on: ubuntu-latest
+    needs:
+      - versionning
+      - buildJavaImages
+      - setupDemoNames
+    strategy:
+      fail-fast: false
+      matrix:
+        demo: ${{ fromJson(needs.setupDemoNames.outputs.java-demo-names) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Install Dependencies
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        with:
+            docker: true
+            terraform: true
+            k3s: true
+            aws: true
+
+      - name: Checkout Infra
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+            repository: aneoconsulting/ArmoniK
+            path: infra
+
+      - name: Change version
+        run: |
+          cp tools/parameters.tfvars \
+            ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
+
+          cat ${{ github.workspace }}/infra/versions.tfvars.json \
+            | jq --arg version "${{ needs.versionning.outputs.version }}" '
+              .armonik_versions.samples = $version
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_helloworld_worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_multipleresults_worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_subtasking_worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_linearsubtasking_worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldapi_worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldsdk_worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_hello-world-worker"]
+              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_sum-worker"]
+            ' > .versions.tfvars.json
+
+          mv .versions.tfvars.json \
+            ${{ github.workspace }}/infra/versions.tfvars.json
+          
+      - name: Deploy
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        with:
+          working-directory: ${{ github.workspace }}/infra
+          type: localhost
+          log-suffix: ${{ matrix.demo }}
+
+      - name: Setup Java and Maven
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: 'maven'
+          cache-dependency-path: 'java/client/pom.xml'
+
+      - name: Run Demo Client
+        timeout-minutes: 10
+        run: |
+          cd java/client
+          ./mvnw compile exec:java -Dexec.mainClass="fr.aneo.armonik.client.samples.{{ matrix.demo }}"
