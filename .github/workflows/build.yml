@@ -111,6 +111,8 @@ jobs:
       csharp-demo-dirs: ${{ steps.set-csharp-demos.outputs.csharp-demo-dirs }}
       cpp-demo-names: ${{ steps.set-cpp-demos.outputs.cpp-demo-names }}
       cpp-demo-dirs: ${{ steps.set-cpp-demos.outputs.cpp-demo-dirs }}
+      java-demo-names: ${{ steps.set-java-demos.outputs.java-demo-names }}
+      java-demo-worker-dirs: ${{ steps.set-java-demos.outputs.java-demo-worker-dirs }}
     steps:
       - name: CSharp demos
         id: set-csharp-demos
@@ -128,6 +130,14 @@ jobs:
           echo "cpp-demo-dirs=${CPP_DEMO_DIRS}" >> $GITHUB_OUTPUT
           echo "cpp-demo-names=${CPP_DEMO_NAMES}" >> $GITHUB_OUTPUT
 
+      - name: Java demos
+        id: set-java-demos
+        run: |
+          JAVA_DEMO_WORKER_DIRS='["workers/hello-world-worker","workers/sum-worker", "worker-libraries/multiply-library"]'
+          JAVA_DEMO_NAMES='["HelloWorld","SharedBlob","TaskDependencies", "DynamicLibrary"]'
+          echo "java-demo-worker-dirs=${JAVA_DEMO_WORKER_DIRS}" >> $GITHUB_OUTPUT
+          echo "java-demo-names=${JAVA_DEMO_NAMES}" >> $GITHUB_OUTPUT
+
   buildCSharpImages:
     runs-on: ubuntu-latest
     needs:
@@ -143,7 +153,6 @@ jobs:
         role: [Client, Worker]
     steps:
       - uses: actions/checkout@v4
-
       - name: Login to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
 
@@ -186,6 +195,39 @@ jobs:
             --build-arg="SDK_VERSION=${SDK_VERSION}" \
             cpp/${{ matrix.demodir }}/${{ matrix.role }}/
           docker push ${IMAGE_NAME}:${VERSION}
+
+  buildJavaImages:
+    runs-on: ubuntu-latest
+    needs:
+      - versionning
+      - setupDemoNames
+    env:
+      VERSION: ${{ needs.versionning.outputs.version }}
+    strategy:
+      fail-fast: true
+      matrix:
+        demodir: ${{ fromJson(needs.setupDemoNames.outputs.java-demo-worker-dirs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java and Maven
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: 'maven'
+          cache-dependency-path: 'java/${{ matrix.demodir }}/pom.xml'
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          demodir="${{ matrix.demodir }}" && stripped=${demodir#*/}
+          IMAGE_NAME="dockerhubaneo/armonik_demo_java_${stripped}"
+          cd java/${{ matrix.demodir }}
+          ./mvnw package -Djib.to.image=${IMAGE_NAME}:${VERSION}
+
+      - name: Push Docker image
+        run: docker push ${IMAGE_NAME}:${VERSION}
 
   CSharpSamples:
     runs-on: ubuntu-latest
