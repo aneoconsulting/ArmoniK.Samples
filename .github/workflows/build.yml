@@ -416,7 +416,7 @@ jobs:
         id: gen_partition
         with:
           partition_name: ${{ matrix.demo }}
-          worker_image: dockerhubaneo/armonik_demo_${{ matrix.demo }}_worker
+          worker_image: dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_worker
           worker_tag: ${{ needs.versionning.outputs.version }}
 
       - name: Set extra.tfvars
@@ -442,7 +442,7 @@ jobs:
           export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
           export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
           export Grpc__Endpoint=http://$CPIP:$CPPort
-          docker run --rm -e GrpcClient__Endpoint="${Grpc__Endpoint}" -e PartitionId="cpp${{ matrix.demo }}" dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }}
+          docker run --rm -e GrpcClient__Endpoint="${Grpc__Endpoint}" -e PartitionId="${{ matrix.demo }}" dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }}
 
   JavaSamples:
     runs-on: ubuntu-latest
