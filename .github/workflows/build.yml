@@ -477,7 +477,7 @@ jobs:
       - name: Figure out correct worker
         id: get-worker
         run: |
-          DEMO2WORKER=${{ needs.setupDemoNames.outputs.java-demo-names-to-worker }}
+          DEMO2WORKER='${{ needs.setupDemoNames.outputs.java-demo-names-to-worker }}'
           worker=$(echo $DEMO2WORKER | jq -r --arg name "${{ matrix.demo }}" 'map(select(.[$name])) | .[0][$name]')
           echo WORKER_SUFFIX=$worker >> $GITHUB_ENV
 
@@ -486,7 +486,7 @@ jobs:
         id: gen_partition
         with:
           partition_name: $(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')
-          worker_image: dockerhubaneo/armonik_demo_$WORKER_SUFFIX
+          worker_image: dockerhubaneo/armonik_demo_java_$WORKER_SUFFIX
           worker_tag: ${{ needs.versionning.outputs.version }}
           socket_type: tcp
 
