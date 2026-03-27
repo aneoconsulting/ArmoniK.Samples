@@ -324,27 +324,17 @@ jobs:
           repository: aneoconsulting/ArmoniK
           path: infra
 
-      - name: Change version
+      - name: Generate partition JSON
+        uses: ./.github/actions/generate_partition
+        id: gen_partition
+        with:
+          partition_name: default
+          worker_image: dockerhubaneo/armonik_worker_dll
+          worker_tag: 0.19.3
+      - name: Set extra.tfvars
         run: |
-          cp tools/parameters.tfvars \
-            ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
-
-          cat ${{ github.workspace }}/infra/versions.tfvars.json \
-            | jq --arg version "${{ needs.versionning.outputs.version }}" '
-              .armonik_versions.samples = $version
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_helloworld_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_multipleresults_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_subtasking_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_linearsubtasking_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldapi_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldsdk_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_hello-world-worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_sum-worker"]
-            ' > .versions.tfvars.json
-
-          mv .versions.tfvars.json \
-            ${{ github.workspace }}/infra/versions.tfvars.json
+          echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
+          cat ${{ github.workspace }}/infra/extra.tfvars.json
 
       - id: deploy
         name: Deploy

@@ -35,7 +35,7 @@ runs:
           --arg socket_type "${{ inputs.socket_type }}" \
           --arg worker_image "${{ inputs.worker_image }}" \
           --arg worker_tag "${{ inputs.worker_tag }}" \
-          '{
+          '.compute_plane={
             ($partition_name): {
               replicas: 0,
               socket_type: $socket_type,
