@@ -113,6 +113,7 @@ jobs:
       cpp-demo-dirs: ${{ steps.set-cpp-demos.outputs.cpp-demo-dirs }}
       java-demo-names: ${{ steps.set-java-demos.outputs.java-demo-names }}
       java-demo-worker-dirs: ${{ steps.set-java-demos.outputs.java-demo-worker-dirs }}
+      java-demo-names-to-worker: ${{ steps.set-java-demos.outputs.java-demo-names-to-worker }}
     steps:
       - name: CSharp demos
         id: set-csharp-demos
@@ -135,8 +136,10 @@ jobs:
         run: |
           JAVA_DEMO_WORKER_DIRS='["workers/hello-world-worker","workers/sum-worker"]'
           JAVA_DEMO_NAMES='["HelloWorld","SharedBlob","TaskDependencies"]'
+          JAVA_DEMO_NAMES_TO_WORKER='[{"HelloWorld":"hello-world-worker"},{"SharedBlob":"sum-worker"},{"TaskDependencies":"sum-worker"}]'
           echo "java-demo-worker-dirs=${JAVA_DEMO_WORKER_DIRS}" >> $GITHUB_OUTPUT
           echo "java-demo-names=${JAVA_DEMO_NAMES}" >> $GITHUB_OUTPUT
+          echo "java-demo-names-to-worker=${JAVA_DEMO_NAMES_TO_WORKER}" >> $GITHUB_OUTPUT
 
   buildCSharpImages:
     runs-on: ubuntu-latest
@@ -275,8 +278,7 @@ jobs:
           echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
           cat ${{ github.workspace }}/infra/extra.tfvars.json
 
-      - id: deploy
-        name: Deploy
+      - name: Deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
         with:
           working-directory: ${{ github.workspace }}/infra
@@ -336,8 +338,7 @@ jobs:
           echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
           cat ${{ github.workspace }}/infra/extra.tfvars.json
 
-      - id: deploy
-        name: Deploy
+      - name: Deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
         with:
           working-directory: ${{ github.workspace }}/infra
@@ -410,30 +411,20 @@ jobs:
             repository: aneoconsulting/ArmoniK
             path: infra
 
-      - name: Change version
+      - name: Generate partition JSON
+        uses: ./.github/actions/generate_partition
+        id: gen_partition
+        with:
+          partition_name: ${{ matrix.demo }}
+          worker_image: dockerhubaneo/armonik_demo_${{ matrix.demo }}_worker
+          worker_tag: ${{ needs.versionning.outputs.version }}
+
+      - name: Set extra.tfvars
         run: |
-          cp tools/parameters.tfvars \
-            ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
+          echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
+          cat ${{ github.workspace }}/infra/extra.tfvars.json
 
-          cat ${{ github.workspace }}/infra/versions.tfvars.json \
-            | jq --arg version "${{ needs.versionning.outputs.version }}" '
-              .armonik_versions.samples = $version
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_helloworld_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_multipleresults_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_subtasking_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_linearsubtasking_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldapi_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldsdk_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_hello-world-worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_sum-worker"]
-            ' > .versions.tfvars.json
-
-          mv .versions.tfvars.json \
-            ${{ github.workspace }}/infra/versions.tfvars.json
-
-      - id: deploy
-        name: Deploy
+      - name: Deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
         with:
           working-directory: ${{ github.workspace }}/infra
@@ -483,27 +474,26 @@ jobs:
             repository: aneoconsulting/ArmoniK
             path: infra
 
-      - name: Change version
+      - name: Figure out correct worker
+        id: get-worker
         run: |
-          cp tools/parameters.tfvars \
-            ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
+          DEMO2WORKER=${{ needs.setupDemoNames.outputs.java-demo-names-to-worker }}
+          worker=$(echo $DEMO2WORKER | jq -r --arg name "${{ matrix.demo }}" 'map(select(.[$name])) | .[0][$name]')
+          echo WORKER_SUFFIX=$worker >> $GITHUB_ENV
 
-          cat ${{ github.workspace }}/infra/versions.tfvars.json \
-            | jq --arg version "${{ needs.versionning.outputs.version }}" '
-              .armonik_versions.samples = $version
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_helloworld_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_multipleresults_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_subtasking_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_linearsubtasking_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldapi_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_cpp_helloworldsdk_worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_hello-world-worker"]
-              | .armonik_images.samples += ["dockerhubaneo/armonik_demo_java_sum-worker"]
-            ' > .versions.tfvars.json
+      - name: Generate partition JSON
+        uses: ./.github/actions/generate_partition
+        id: gen_partition
+        with:
+          partition_name: $(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')
+          worker_image: dockerhubaneo/armonik_demo_$WORKER_SUFFIX
+          worker_tag: ${{ needs.versionning.outputs.version }}
+          socket_type: tcp
 
-          mv .versions.tfvars.json \
-            ${{ github.workspace }}/infra/versions.tfvars.json
+      - name: Set extra.tfvars
+        run: |
+          echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
+          cat ${{ github.workspace }}/infra/extra.tfvars.json
           
       - name: Deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
@@ -524,4 +514,5 @@ jobs:
         timeout-minutes: 10
         run: |
           cd java/client
-          ./mvnw compile exec:java -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}"
+          PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')
+          ./mvnw compile exec:java -Dpartition=$PARTITION_NAME -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}"
