@@ -1,6 +1,4 @@
-
-
-
+# Hello World Example using ArmoniK's C++ API
 
 ## Getting started
 
