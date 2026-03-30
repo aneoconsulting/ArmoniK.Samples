@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "ArmoniK"
+project = "ArmoniK.Samples"
 copyright = "2021-%Y, ANEO"
 author = "ANEO"
 release = "main"
@@ -44,7 +44,7 @@ myst_heading_anchors = 3
 html_context = {
     "display_github": True,  # Integrate GitHub
     "github_user": "aneoconsulting",  # Username
-    "github_repo": "ArmoniK",  # Repo name
+    "github_repo": "ArmoniK.Samples",  # Repo name
     "github_version": "main",  # Version
     "conf_py_path": "/.docs/",  # Path in the checkout to the docs root
 }
