@@ -139,7 +139,7 @@ If you added a new partition:
 
 ```
 docker run --rm -e GrpcClient__Endpoint="http://{armonik-output-ip}:5001" -e PartitionId=hellocpp armonik-cpp-hello-client:0.1.0-api
-``
+```
 
 Replace ```{armonik-output-ip}``` with the ip resulting from our ```make deploy``` command in the ArmoniK repo.
 
