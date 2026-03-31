@@ -40,7 +40,7 @@ runs:
               replicas: 0,
               socket_type: $socket_type,
               polling_agent: {
-                limits: { cpu: "2000m", memory: "2048Mi" },
+                limits: { cpu: "1000m", memory: "1024Mi" },
                 requests: { cpu: "50m", memory: "50Mi" }
               },
               worker: [{
