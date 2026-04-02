@@ -1,4 +1,4 @@
-# Hello World Worker - Java SDK Sample
+# Sum Worker - Java SDK Sample
 
 This sample demonstrates how to create a simple ArmoniK worker using the Java SDK. The worker receives a name as input and returns a greeting message.
 
