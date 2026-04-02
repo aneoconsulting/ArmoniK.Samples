@@ -1,4 +1,4 @@
-FROM alpine:3.18.12 AS builder
+FROM alpine:3.23.3 AS builder
 
 RUN apk update && apk add --no-cache \
     git \
@@ -44,7 +44,7 @@ COPY ./CMakeLists.txt /worker/
 RUN cmake -DCMAKE_INSTALL_PREFIX="/worker/install" /worker/
 RUN make -j $(nproc) install
 
-FROM alpine:3.18.12
+FROM alpine:3.23.3
 
 RUN apk update && apk add --no-cache \
     c-ares \
