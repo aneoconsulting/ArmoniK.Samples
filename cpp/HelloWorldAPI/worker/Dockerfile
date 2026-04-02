@@ -5,22 +5,26 @@ RUN apk update && apk add --no-cache \
     gcc \
     g++ \
     build-base \
+    autoconf \
+    automake \
     libtool \
     curl \
     c-ares \
     c-ares-dev \
     make \
     cmake \
+    unzip \
     linux-headers \
+    protobuf \
     grpc \
     grpc-dev \
-    protobuf \
     protobuf-dev
 
 ENV protobuf_BUILD_TESTS=OFF
-RUN mkdir -p /client/install/
+RUN mkdir -p /worker/install/
 
-RUN git clone https://github.com/aneoconsulting/ArmoniK.Api.git /armonik_api_temp/
+ARG API_VERSION=main
+RUN git clone -b "${API_VERSION}" https://github.com/aneoconsulting/ArmoniK.Api.git /armonik_api_temp/
 WORKDIR /armonik_api_temp/packages/cpp/
 RUN mkdir ./install
 
@@ -28,22 +32,23 @@ RUN mkdir ./build
 WORKDIR /armonik_api_temp/packages/cpp/build
 RUN cmake -DCMAKE_BUILD_TYPE=Debug -DPROTO_FILES_DIR=/armonik_api_temp/Protos/V1/ -DCMAKE_INSTALL_PREFIX=/armonik_api_temp/packages/cpp/install/ -DBUILD_TEST=OFF /armonik_api_temp/packages/cpp/ -DCPACK_GENERATOR=TGZ && make -j $(nproc) install
 WORKDIR /
-RUN cp -a /armonik_api_temp/packages/cpp/install/. /client/install/
+RUN cp -a /armonik_api_temp/packages/cpp/install/. /worker/install/
 RUN rm -rf /armonik_api_temp/
 
-COPY ./client/src/ /client/src/
-COPY ./client/CMakeLists.txt /client/
+ENV LD_LIBRARY_PATH="/worker/install/lib:$LD_LIBRARY_PATH"
+ENV PATH="/worker/install/bin:$PATH"
 
-ENV LD_LIBRARY_PATH="/client/install/lib:$LD_LIBRARY_PATH"
-ENV PATH="/client/install/bin:$PATH"
+COPY ./src/ /worker/src/
+COPY ./CMakeLists.txt /worker/
 
-RUN cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="/client/install" /client/
+RUN cmake -DCMAKE_INSTALL_PREFIX="/worker/install" /worker/
 RUN make -j $(nproc) install
 
-FROM alpine:3.18.12 AS runner
+FROM alpine:3.18.12
 
 RUN apk update && apk add --no-cache \
     c-ares \
+    c-ares-dev \
     libprotobuf \
     grpc \
     grpc-cpp
@@ -52,10 +57,9 @@ RUN apk update && apk add --no-cache \
 RUN addgroup -g 5000 -S armonikuser && adduser -D -h /home/armonikuser  -u 5000 -G armonikuser --shell /bin/sh armonikuser && mkdir /cache && chown armonikuser: /cache
 USER armonikuser
 
-COPY --from=builder /client /client
-COPY ./appsettings.json /appsettings.json
+COPY --from=builder /worker /worker
 
-ENV LD_LIBRARY_PATH="/client/install/lib:$LD_LIBRARY_PATH"
-ENV PATH="/client/install/bin:$PATH"
+ENV LD_LIBRARY_PATH="/worker/install/lib:$LD_LIBRARY_PATH"
+ENV PATH="/worker/install/bin:$PATH"
 
-ENTRYPOINT ["/client/install/bin/armonik_cpp_hello_client"]
+ENTRYPOINT ["/worker/install/bin/armonik_cpp_hello"]

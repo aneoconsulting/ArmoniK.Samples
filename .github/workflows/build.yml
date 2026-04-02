@@ -104,82 +104,154 @@ jobs:
       run: |
         dotnet build AllSamples.sln
 
-  buildImages:
+  setupDemoNames:
+    runs-on: ubuntu-latest
+    outputs:
+      csharp-demo-names: ${{ steps.set-csharp-demos.outputs.csharp-demo-names }}
+      csharp-demo-dirs: ${{ steps.set-csharp-demos.outputs.csharp-demo-dirs }}
+      cpp-demo-names: ${{ steps.set-cpp-demos.outputs.cpp-demo-names }}
+      cpp-demo-dirs: ${{ steps.set-cpp-demos.outputs.cpp-demo-dirs }}
+      java-demo-names: ${{ steps.set-java-demos.outputs.java-demo-names }}
+      java-demo-worker-dirs: ${{ steps.set-java-demos.outputs.java-demo-worker-dirs }}
+      java-demo-names-to-worker: ${{ steps.set-java-demos.outputs.java-demo-names-to-worker }}
+    steps:
+      - name: CSharp demos
+        id: set-csharp-demos
+        run: |
+          CSHARP_DEMO_DIRS='["HelloWorld","MultipleResults","SubTasking","LinearSubTasking","DynamicSubmission"]'
+          CSHARP_DEMO_NAMES=$(echo "${CSHARP_DEMO_DIRS}" | jq -c 'map(ascii_downcase)')
+          echo "csharp-demo-dirs=${CSHARP_DEMO_DIRS}" >> $GITHUB_OUTPUT
+          echo "csharp-demo-names=${CSHARP_DEMO_NAMES}" >> $GITHUB_OUTPUT
+
+      - name: Cpp demos
+        id: set-cpp-demos
+        run: |
+          CPP_DEMO_DIRS='["HelloWorldAPI","HelloWorldSDK"]'
+          CPP_DEMO_NAMES=$(echo "${CPP_DEMO_DIRS}" | jq -c 'map(ascii_downcase)')
+          echo "cpp-demo-dirs=${CPP_DEMO_DIRS}" >> $GITHUB_OUTPUT
+          echo "cpp-demo-names=${CPP_DEMO_NAMES}" >> $GITHUB_OUTPUT
+
+      - name: Java demos
+        id: set-java-demos
+        run: |
+          JAVA_DEMO_WORKER_DIRS='["workers/hello-world-worker","workers/sum-worker"]'
+          JAVA_DEMO_NAMES='["HelloWorld","SharedBlob","TaskDependencies"]'
+          JAVA_DEMO_NAMES_TO_WORKER='[{"HelloWorld":"hello-world-worker"},{"SharedBlob":"sum-worker"},{"TaskDependencies":"sum-worker"}]'
+          echo "java-demo-worker-dirs=${JAVA_DEMO_WORKER_DIRS}" >> $GITHUB_OUTPUT
+          echo "java-demo-names=${JAVA_DEMO_NAMES}" >> $GITHUB_OUTPUT
+          echo "java-demo-names-to-worker=${JAVA_DEMO_NAMES_TO_WORKER}" >> $GITHUB_OUTPUT
+
+  buildCSharpImages:
     runs-on: ubuntu-latest
     needs:
       - versionning
       - buildProjects
+      - setupDemoNames
     env:
       VERSION: ${{ needs.versionning.outputs.version }}
     strategy:
       fail-fast: true
       matrix:
-        include:
-        -  img : dockerhubaneo/armonik_demo_helloworld_client
-           path: ./csharp/native/HelloWorld/Client/Dockerfile
-           ctx: csharp/native/
-        -  img : dockerhubaneo/armonik_demo_helloworld_worker
-           path: ./csharp/native/HelloWorld/Worker/Dockerfile
-           ctx: csharp/native/
-        -  img : dockerhubaneo/armonik_demo_multipleresults_client
-           path: ./csharp/native/MultipleResults/Client/Dockerfile
-           ctx: csharp/native/
-        -  img : dockerhubaneo/armonik_demo_multipleresults_worker
-           path: ./csharp/native/MultipleResults/Worker/Dockerfile
-           ctx: csharp/native/
-        -  img : dockerhubaneo/armonik_demo_subtasking_client
-           path: ./csharp/native/SubTasking/Client/Dockerfile
-           ctx: csharp/native/
-        -  img : dockerhubaneo/armonik_demo_subtasking_worker
-           path: ./csharp/native/SubTasking/Worker/Dockerfile
-           ctx: csharp/native/
-        -  img : dockerhubaneo/armonik_demo_linearsubtasking_client
-           path: ./csharp/native/LinearSubTasking/Client/Dockerfile
-           ctx: csharp/native/
-        -  img : dockerhubaneo/armonik_demo_linearsubtasking_worker
-           path: ./csharp/native/LinearSubTasking/Worker/Dockerfile
-           ctx: csharp/native/
-        -  img : dockerhubaneo/armonik_demo_dynamicsubmission_client
-           path: ./csharp/native/DynamicSubmission/Client/Dockerfile
-           ctx: csharp/native/
-        -  img : dockerhubaneo/armonik_demo_dynamicsubmission_worker
-           path: ./csharp/native/DynamicSubmission/Worker/Dockerfile
-           ctx: csharp/native/
+        demodir: ${{ fromJson(needs.setupDemoNames.outputs.csharp-demo-dirs) }}
+        role: [Client, Worker]
     steps:
-    - name: Checkout
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      with:
-        ref: ${{ github.ref }}
+      - uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
 
-    - name: login
-      run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
+      - name: Build Docker image
+        run: |
+          IMAGE_NAME="dockerhubaneo/armonik_demo_$(echo '${{ matrix.demodir }}' | tr '[:upper:]' '[:lower:]')_$(echo '${{ matrix.role }}' | tr '[:upper:]' '[:lower:]')"
+          echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
+          docker build \
+            -t ${IMAGE_NAME}:${VERSION} \
+            -f ./csharp/native/${{ matrix.demodir }}/${{ matrix.role }}/Dockerfile \
+            csharp/native/
+      - name: Push Docker image
+        run: docker push ${IMAGE_NAME}:${VERSION}
 
-    - name: Build
-      run: docker build -t ${{ matrix.img }}:$VERSION -f ${{ matrix.path }} ${{ matrix.ctx }}
-
-    - name: push
-      run: docker push ${{ matrix.img }}:$VERSION
-
-  testHelloWorld:
+  buildCppImages:
     runs-on: ubuntu-latest
     needs:
       - versionning
-      - buildImages
+      - setupDemoNames
+    env:
+      VERSION: ${{ needs.versionning.outputs.version }}
+    strategy:
+      fail-fast: true
+      matrix:
+        demodir: ${{ fromJson(needs.setupDemoNames.outputs.cpp-demo-dirs) }}
+        role: [client, worker]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          API_VERSION=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json | jq -r '.armonik_versions.api')
+          SDK_VERSION=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json | jq -r '.armonik_versions.extcpp')
+          IMAGE_NAME="dockerhubaneo/armonik_demo_cpp_$(echo '${{ matrix.demodir }}' | tr '[:upper:]' '[:lower:]')_${{ matrix.role }}"
+          echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
+          docker build \
+            -t ${IMAGE_NAME}:${VERSION} \
+            -f ./cpp/${{ matrix.demodir }}/${{ matrix.role }}/Dockerfile \
+            --build-arg="API_VERSION=${API_VERSION}" \
+            --build-arg="SDK_VERSION=${SDK_VERSION}" \
+            cpp/${{ matrix.demodir }}/${{ matrix.role }}/
+      - name: Push Docker image
+        run: docker push ${IMAGE_NAME}:${VERSION}
+
+  buildJavaImages:
+    runs-on: ubuntu-latest
+    needs:
+      - versionning
+      - setupDemoNames
+    env:
+      VERSION: ${{ needs.versionning.outputs.version }}
+    strategy:
+      fail-fast: true
+      matrix:
+        demodir: ${{ fromJson(needs.setupDemoNames.outputs.java-demo-worker-dirs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java and Maven
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: 'maven'
+          cache-dependency-path: 'java/${{ matrix.demodir }}/pom.xml'
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          demodir="${{ matrix.demodir }}" && stripped=${demodir#*/}
+          IMAGE_NAME="dockerhubaneo/armonik_demo_java_${stripped}"
+          echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
+          cd java/${{ matrix.demodir }}
+          ./mvnw package -Djib.to.image=${IMAGE_NAME}:${VERSION}
+
+      - name: Push Docker image
+        run: docker push ${IMAGE_NAME}:${VERSION}
+
+  CSharpSamples:
+    runs-on: ubuntu-latest
+    needs:
+      - versionning
+      - buildCSharpImages
+      - setupDemoNames
     strategy:
       fail-fast: false
       matrix:
-        demo:
-          - helloworld
-          - multipleresults
-          - subtasking
-          - linearsubtasking
-          - dynamicsubmission
+        demo: ${{ fromJson(needs.setupDemoNames.outputs.csharp-demo-names) }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           ref: ${{ github.ref }}
-
       - name: Install Dependencies
         uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
         with:
@@ -194,27 +266,32 @@ jobs:
             repository: aneoconsulting/ArmoniK
             path: infra
 
-      - name: Change version
+      - name: Generate partition JSON
+        uses: ./.github/actions/generate_partition
+        id: gen_partition
+        with:
+          partition_name: ${{ matrix.demo }}
+          worker_image: dockerhubaneo/armonik_demo_${{ matrix.demo }}_worker
+          worker_tag: ${{ needs.versionning.outputs.version }}
+      - name: Set extra.tfvars
         run: |
-            cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
-            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]'  > .versions.tfvars.json
-            mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
+          echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
+          cat ${{ github.workspace }}/infra/extra.tfvars.json
 
-      - id: deploy
-        name: Deploy
+      - name: Deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
         with:
-            working-directory: ${{ github.workspace }}/infra
-            type: localhost
-            log-suffix: ${{ matrix.demo }}
-         
+          working-directory: ${{ github.workspace }}/infra
+          type: localhost
+          log-suffix: ${{ matrix.demo }}
+
       - name: Run Demo Client
         timeout-minutes: 10
         run: |
-         export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-         export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-         export Grpc__Endpoint=http://$CPIP:$CPPort
-         docker run --rm dockerhubaneo/armonik_demo_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }} --endpoint $Grpc__Endpoint --partition ${{ matrix.demo }}
+          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
+          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
+          export Grpc__Endpoint=http://$CPIP:$CPPort
+          docker run --rm dockerhubaneo/armonik_demo_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }} --endpoint $Grpc__Endpoint --partition ${{ matrix.demo }}
 
   testInfraWorker:
     needs:
@@ -223,7 +300,7 @@ jobs:
     strategy:
       matrix:
         scenario:
-           - --nbTask 224  --nbInputBytes 4029815 --nbOutputBytes 226016  --workLoadTimeInMs 10
+          - --nbTask 224  --nbInputBytes 4029815 --nbOutputBytes 226016  --workLoadTimeInMs 10
 
       fail-fast: false
     runs-on: ubuntu-latest
@@ -249,14 +326,19 @@ jobs:
           repository: aneoconsulting/ArmoniK
           path: infra
 
-      - name: Change version
+      - name: Generate partition JSON
+        uses: ./.github/actions/generate_partition
+        id: gen_partition
+        with:
+          partition_name: default
+          worker_image: dockerhubaneo/armonik_worker_dll
+          worker_tag: 0.19.3
+      - name: Set extra.tfvars
         run: |
-            cp tools/parameters.tfvars ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/parameters.tfvars
-            cat ${{ github.workspace }}/infra/versions.tfvars.json | jq --arg version "${{ needs.versionning.outputs.version }}" '.armonik_versions.samples=$version | .armonik_images.samples+=["dockerhubaneo/armonik_demo_helloworld_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_multipleresults_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_subtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_linearsubtasking_worker"] | .armonik_images.samples+=["dockerhubaneo/armonik_demo_dynamicsubmission_worker"]' > .versions.tfvars.json
-            mv .versions.tfvars.json ${{ github.workspace }}/infra/versions.tfvars.json
+          echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
+          cat ${{ github.workspace }}/infra/extra.tfvars.json
 
-      - id: deploy
-        name: Deploy
+      - name: Deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
         with:
           working-directory: ${{ github.workspace }}/infra
@@ -267,14 +349,14 @@ jobs:
       - name: Run UnifiedAPI
         timeout-minutes: 15
         run: |
-         cd tools/tests
-         bash -x ./unified_api.sh
+          cd tools/tests
+          bash -x ./unified_api.sh
 
       - name: Run StressTests
         timeout-minutes: 15
         run: |
-         cd tools/tests
-         bash -x ./stress-tests.sh -- stressTest ${{ matrix.scenario }}
+          cd tools/tests
+          bash -x ./stress-tests.sh -- stressTest ${{ matrix.scenario }}
       - name: Copy logs
         if: always()
         shell: bash
@@ -299,3 +381,142 @@ jobs:
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
+
+  CppSamples:
+    runs-on: ubuntu-latest
+    needs:
+      - versionning
+      - buildCppImages
+      - setupDemoNames
+    strategy:
+      fail-fast: false
+      matrix:
+        demo: ${{ fromJson(needs.setupDemoNames.outputs.cpp-demo-names) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: ${{ github.ref }}
+      - name: Install Dependencies
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        with:
+            docker: true
+            terraform: true
+            k3s: true
+            aws: true
+
+      - name: Checkout Infra
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+            repository: aneoconsulting/ArmoniK
+            path: infra
+
+      - name: Prepare SDK sample
+        run: |
+          docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_helloworldsdk_worker:${{ needs.versionning.outputs.version }}
+          ARMONIK_SHARED_HOST_PATH=${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data
+          docker cp so_exporter:app/libArmoniK.Samples.Cpp.Hello.SDK.Worker.so ${ARMONIK_SHARED_HOST_PATH}
+          docker remove so_exporter
+          SDK_VERSION=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json | jq -r '.armonik_versions.extcpp')
+          echo "SDK_VERSION=${SDK_VERSION}" >> $GITHUB_ENV
+
+      - name: Generate partition JSON
+        uses: ./.github/actions/generate_partition
+        id: gen_partition
+        with:
+          partition_name: ${{ matrix.demo }}
+          worker_image: ${{ contains(matrix.demo, 'sdk') && 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' || format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) }}
+          worker_tag: ${{ contains(matrix.demo, 'sdk') && format('{0}-ubuntu', env.SDK_VERSION) || needs.versionning.outputs.version }}
+
+      - name: Set extra.tfvars
+        run: |
+          echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
+          cat ${{ github.workspace }}/infra/extra.tfvars.json
+
+      - name: Deploy
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        with:
+          working-directory: ${{ github.workspace }}/infra
+          type: localhost
+          log-suffix: ${{ matrix.demo }}
+
+      - name: Run Demo Client
+        timeout-minutes: 10
+        run: |
+          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
+          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
+          export Grpc__Endpoint=http://$CPIP:$CPPort
+          docker run --rm -e GrpcClient__Endpoint="${Grpc__Endpoint}" -e PartitionId="${{ matrix.demo }}" dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }}
+
+  JavaSamples:
+    runs-on: ubuntu-latest
+    needs:
+      - versionning
+      - buildJavaImages
+      - setupDemoNames
+    strategy:
+      fail-fast: false
+      matrix:
+        demo: ${{ fromJson(needs.setupDemoNames.outputs.java-demo-names) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Install Dependencies
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        with:
+            docker: true
+            terraform: true
+            k3s: true
+            aws: true
+
+      - name: Checkout Infra
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+            repository: aneoconsulting/ArmoniK
+            path: infra
+
+      - name: Figure out correct worker
+        id: get-worker
+        run: |
+          DEMO2WORKER='${{ needs.setupDemoNames.outputs.java-demo-names-to-worker }}'
+          worker=$(echo $DEMO2WORKER | jq -r --arg name "${{ matrix.demo }}" 'map(select(.[$name])) | .[0][$name]')
+          echo WORKER_SUFFIX=$worker >> $GITHUB_ENV
+
+      - name: Generate partition JSON
+        uses: ./.github/actions/generate_partition
+        id: gen_partition
+        with:
+          partition_name: $(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')
+          worker_image: dockerhubaneo/armonik_demo_java_$WORKER_SUFFIX
+          worker_tag: ${{ needs.versionning.outputs.version }}
+          socket_type: tcp
+
+      - name: Set extra.tfvars
+        run: |
+          echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
+          cat ${{ github.workspace }}/infra/extra.tfvars.json
+          
+      - name: Deploy
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        with:
+          working-directory: ${{ github.workspace }}/infra
+          type: localhost
+          log-suffix: ${{ matrix.demo }}
+
+      - name: Setup Java and Maven
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: 'maven'
+          cache-dependency-path: 'java/client/pom.xml'
+
+      - name: Run Demo Client
+        timeout-minutes: 10
+        run: |
+          cd java/client
+          PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')
+          ./mvnw compile exec:java -Dpartition=$PARTITION_NAME -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}"

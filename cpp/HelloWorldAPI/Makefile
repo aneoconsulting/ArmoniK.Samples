@@ -1,4 +1,5 @@
 .ONESHELL:
+WORKING_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 WORKER_IMAGE_TAG?="armonik-cpp-hello-worker:0.1.0-api"
 CLIENT_IMAGE_TAG?="armonik-cpp-hello-client:0.1.0-api"
 
@@ -13,12 +14,15 @@ all: build_worker build_client
 
 .PHONY: build_client
 build_client: ## Builds docker image for client
-	@docker build -t ${CLIENT_IMAGE_TAG} -f ./Dockerfile.client .
+	@docker build -t ${CLIENT_IMAGE_TAG} \
+		-f "${WORKING_DIR}/client/Dockerfile" \
+		${WORKING_DIR}/client
 
 .PHONY: build_worker
 build_worker: ## Builds docker image for worker
-	@docker build -t ${WORKER_IMAGE_TAG} -f ./Dockerfile.worker .
-
+	@docker build -t ${WORKER_IMAGE_TAG} \
+		-f "${WORKING_DIR}/worker/Dockerfile" \
+		${WORKING_DIR}/worker
 
 .PHONY: setup_dev_env
 setup_dev_env:  # Gets ArmoniK APIs and other dependencies for autocomplete

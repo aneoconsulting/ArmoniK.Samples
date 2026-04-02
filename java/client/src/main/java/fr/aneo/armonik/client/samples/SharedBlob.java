@@ -25,10 +25,12 @@ public class SharedBlob {
                               .withoutSslValidation()
                               .build();
 
+    String partition = System.getProperty("partition", "sum");
+
     try (var client = new ArmoniKClient(config)) {
       var sessionDefinition = new SessionDefinition(
-        Set.of("sum"),
-        TaskConfiguration.defaultConfigurationWithPartition("sum"),
+        Set.of(partition),
+        TaskConfiguration.defaultConfigurationWithPartition(partition),
         new SimpleBlobListener()
       );
       var session = client.openSession(sessionDefinition);

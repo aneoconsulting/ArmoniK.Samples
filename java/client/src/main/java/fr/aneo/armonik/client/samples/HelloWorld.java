@@ -24,11 +24,13 @@ public class HelloWorld {
                               .withoutSslValidation()
                               .build();
 
+    String partition = System.getProperty("partition", "helloworld");
+
     try (var client = new ArmoniKClient(config)) {
       // Create session targeting the "helloworld" partition
       var sessionDefinition = new SessionDefinition(
-        Set.of("helloworld"),
-        TaskConfiguration.defaultConfigurationWithPartition("helloworld"),
+        Set.of(partition),
+        TaskConfiguration.defaultConfigurationWithPartition(partition),
         new SimpleBlobListener()
       );
       var session = client.openSession(sessionDefinition);
