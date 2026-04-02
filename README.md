@@ -1,10 +1,10 @@
 # ArmoniK.Samples
 
-## Introduction <a name="introduction"></a>
+## Introduction
 
 Code samples showcasing how to use ArmoniK for the different programming languages supported by the framework.
 
-## Software prerequisites <a name="software-prerequisites"></a>
+## Software prerequisites
 
 Before you start using the Samples, please follow the Armonik installation that you can find
 in [Armonik's official documentation](https://armonik.readthedocs.io/en/latest/)
