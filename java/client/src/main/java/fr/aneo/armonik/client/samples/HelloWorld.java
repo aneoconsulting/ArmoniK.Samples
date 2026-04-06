@@ -24,7 +24,7 @@ public class HelloWorld {
                               .withoutSslValidation()
                               .build();
 
-    String partition = System.getProperty("partition", "helloworld");
+    String partition = System.getProperty("fr.aneo.armonik.client.samples.partition", "helloworld");
 
     try (var client = new ArmoniKClient(config)) {
       // Create session targeting the "helloworld" partition
