@@ -519,4 +519,4 @@ jobs:
         run: |
           cd java/client
           PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')
-          ./mvnw compile exec:java -Dpartition=$PARTITION_NAME -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}"
+          ./mvnw compile exec:java -D"fr.aneo.armonik.client.samples.partition=$PARTITION_NAME" -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}"

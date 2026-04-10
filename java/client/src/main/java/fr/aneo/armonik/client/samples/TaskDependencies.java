@@ -31,7 +31,7 @@ public class TaskDependencies {
                               .withoutSslValidation()
                               .build();
 
-    String partition = System.getProperty("partition", "sum");
+    String partition = System.getProperty("fr.aneo.armonik.client.samples.partition", "sum");
     try (var client = new ArmoniKClient(config)) {
       var sessionDefinition = new SessionDefinition(
         Set.of(partition),
