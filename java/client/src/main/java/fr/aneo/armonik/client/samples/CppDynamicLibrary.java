@@ -46,23 +46,16 @@ public class CppDynamicLibrary {
       );
 
       // WorkerLibrary ensures the blob is added to the task's data dependencies so the C++ worker
-      // can fetch it at runtime. path is the .so filename (ignored when LibraryBlobId is set);
-      // symbol is the armonik_* function prefix used by dlsym (empty string defaults to "armonik").
+      // can fetch it at runtime. path is the .so filename;
+      // symbol is the function_name passed to the armonik_call method.
       var cppWorkerLibrary = new WorkerLibrary(
         "libArmoniK.Samples.Cpp.MultiplyProcessor.Worker.so",
-        "armonik",
+        "multiply",
         libraryBlob
       );
 
-      // MethodName tells the C++ worker which function to call inside the .so
-      var taskConfig = TaskConfiguration.defaultConfigurationWithPartition(partition)
-                                        .withOptions(Map.of("MethodName", "multiply"));
-
-      // Submit task using the C++ convention: the worker fetches the .so by LibraryBlobId,
-      // dlopen()s it, and calls the function named by MethodName.
       var taskDefinition = new TaskDefinition()
         .withWorkerLibrary(cppWorkerLibrary)
-        .withConfiguration(taskConfig)
         .withInput("num1", InputBlobDefinition.from("2".getBytes(UTF_8)))
         .withInput("num2", InputBlobDefinition.from("3".getBytes(UTF_8)))
         .withOutput("result");
