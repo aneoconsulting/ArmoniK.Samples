@@ -11,7 +11,7 @@ jobs:
       version: ${{ steps.genver.outputs.version }}
     steps:
     - name: Checkout
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       with:
         ref: ${{ github.ref }}
         fetch-depth: 0
@@ -39,14 +39,14 @@ jobs:
           - csharp/native/Demo.sln
     steps:
     - name: Checkout
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       with:
         ref: ${{ github.ref }}
         fetch-depth: 0
         submodules: true
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4
+      uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
       with:
         dotnet-version: 8.x
 
@@ -81,7 +81,7 @@ jobs:
       run: |
         git diff > patch-csharp.diff
         
-    - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
+    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
       if: ${{ failure() && steps.check-diff.conclusion == 'failure' }}
       with:
         name: patch-csharp
@@ -91,12 +91,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       with:
         ref: ${{ github.head_ref }}
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@3951f0dfe7a07e2313ec93c75700083e2005cbab # v4
+      uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
       with:
         dotnet-version: 8.x
 
@@ -155,7 +155,7 @@ jobs:
         demodir: ${{ fromJson(needs.setupDemoNames.outputs.csharp-demo-dirs) }}
         role: [Client, Worker]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Login to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
 
@@ -183,7 +183,7 @@ jobs:
         demodir: ${{ fromJson(needs.setupDemoNames.outputs.cpp-demo-dirs) }}
         role: [client, worker]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Login to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
@@ -215,7 +215,7 @@ jobs:
       matrix:
         demodir: ${{ fromJson(needs.setupDemoNames.outputs.java-demo-worker-dirs) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Setup Java and Maven
         uses: actions/setup-java@v5
         with:
@@ -249,7 +249,7 @@ jobs:
         demo: ${{ fromJson(needs.setupDemoNames.outputs.csharp-demo-names) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           ref: ${{ github.ref }}
       - name: Install Dependencies
@@ -261,7 +261,7 @@ jobs:
             aws: true
 
       - name: Checkout Infra
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
             repository: aneoconsulting/ArmoniK
             path: infra
@@ -308,7 +308,7 @@ jobs:
       ARMONIK_SHARED_HOST_PATH: ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data/
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           ref: ${{ github.head_ref }}
 
@@ -321,7 +321,7 @@ jobs:
           aws: true
 
       - name: Checkout Infra
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           repository: aneoconsulting/ArmoniK
           path: infra
@@ -368,7 +368,7 @@ jobs:
           find /tmp/armoniklogs -name "*.log"
 
       - name: Store logs
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
         with:
           name: Logs Worker
@@ -394,7 +394,7 @@ jobs:
         demo: ${{ fromJson(needs.setupDemoNames.outputs.cpp-demo-names) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           ref: ${{ github.ref }}
       - name: Install Dependencies
@@ -406,7 +406,7 @@ jobs:
             aws: true
 
       - name: Checkout Infra
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
             repository: aneoconsulting/ArmoniK
             path: infra
@@ -460,7 +460,7 @@ jobs:
         demo: ${{ fromJson(needs.setupDemoNames.outputs.java-demo-names) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           ref: ${{ github.ref }}
 
@@ -473,7 +473,7 @@ jobs:
             aws: true
 
       - name: Checkout Infra
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
             repository: aneoconsulting/ArmoniK
             path: infra
