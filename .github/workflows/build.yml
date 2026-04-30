@@ -266,31 +266,22 @@ jobs:
             repository: aneoconsulting/ArmoniK
             path: infra
 
-      - name: Generate partition JSON
-        uses: ./.github/actions/generate_partition
-        id: gen_partition
-        with:
-          partition_name: ${{ matrix.demo }}
-          worker_image: dockerhubaneo/armonik_demo_${{ matrix.demo }}_worker
-          worker_tag: ${{ needs.versionning.outputs.version }}
-      - name: Set extra.tfvars
-        run: |
-          echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
-          cat ${{ github.workspace }}/infra/extra.tfvars.json
-
       - name: Deploy
+        id: deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
+          override-compute: true
+          override-worker-version: ${{ needs.versionning.outputs.version }}
+          override-worker-image:  dockerhubaneo/armonik_demo_${{ matrix.demo }}_worker
+          override-worker-partition: ${{ matrix.demo }}
           log-suffix: ${{ matrix.demo }}
 
       - name: Run Demo Client
         timeout-minutes: 10
         run: |
-          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-          export Grpc__Endpoint=http://$CPIP:$CPPort
+          export Grpc__Endpoint=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
           docker run --rm dockerhubaneo/armonik_demo_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }} --endpoint $Grpc__Endpoint --partition ${{ matrix.demo }}
 
   testInfraWorker:
@@ -326,23 +317,16 @@ jobs:
           repository: aneoconsulting/ArmoniK
           path: infra
 
-      - name: Generate partition JSON
-        uses: ./.github/actions/generate_partition
-        id: gen_partition
-        with:
-          partition_name: default
-          worker_image: dockerhubaneo/armonik_worker_dll
-          worker_tag: 0.19.3
-      - name: Set extra.tfvars
-        run: |
-          echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
-          cat ${{ github.workspace }}/infra/extra.tfvars.json
-
       - name: Deploy
+        id: deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
+          override-compute: true
+          override-worker-version: 0.19.3
+          override-worker-image: dockerhubaneo/armonik_worker_dll
+          override-worker-partition: default
           shared-data-folder: ${{ env.ARMONIK_SHARED_HOST_PATH }}
           log-suffix: infraWorker
 
@@ -420,32 +404,22 @@ jobs:
           SDK_VERSION=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json | jq -r '.armonik_versions.extcpp')
           echo "SDK_VERSION=${SDK_VERSION}" >> $GITHUB_ENV
 
-      - name: Generate partition JSON
-        uses: ./.github/actions/generate_partition
-        id: gen_partition
-        with:
-          partition_name: ${{ matrix.demo }}
-          worker_image: ${{ contains(matrix.demo, 'sdk') && 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' || format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) }}
-          worker_tag: ${{ contains(matrix.demo, 'sdk') && format('{0}-ubuntu', env.SDK_VERSION) || needs.versionning.outputs.version }}
-
-      - name: Set extra.tfvars
-        run: |
-          echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
-          cat ${{ github.workspace }}/infra/extra.tfvars.json
-
       - name: Deploy
+        id: deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
+          override-compute: true
+          override-worker-version:  ${{ contains(matrix.demo, 'sdk') && format('{0}-ubuntu', env.SDK_VERSION) || needs.versionning.outputs.version }}
+          override-worker-image: ${{ contains(matrix.demo, 'sdk') && 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' || format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) }}
+          override-worker-partition: ${{ matrix.demo }}
           log-suffix: ${{ matrix.demo }}
 
       - name: Run Demo Client
         timeout-minutes: 10
         run: |
-          export CPIP=$(kubectl get svc control-plane -n armonik -o custom-columns="IP:.spec.clusterIP" --no-headers=true)
-          export CPPort=$(kubectl get svc control-plane -n armonik -o custom-columns="PORT:.spec.ports[*].port" --no-headers=true)
-          export Grpc__Endpoint=http://$CPIP:$CPPort
+          export Grpc__Endpoint=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
           docker run --rm -e GrpcClient__Endpoint="${Grpc__Endpoint}" -e PartitionId="${{ matrix.demo }}" dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }}
 
   JavaSamples:
@@ -484,26 +458,19 @@ jobs:
           DEMO2WORKER='${{ needs.setupDemoNames.outputs.java-demo-names-to-worker }}'
           worker=$(echo $DEMO2WORKER | jq -r --arg name "${{ matrix.demo }}" 'map(select(.[$name])) | .[0][$name]')
           echo WORKER_SUFFIX=$worker >> $GITHUB_ENV
-
-      - name: Generate partition JSON
-        uses: ./.github/actions/generate_partition
-        id: gen_partition
-        with:
-          partition_name: $(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')
-          worker_image: dockerhubaneo/armonik_demo_java_$WORKER_SUFFIX
-          worker_tag: ${{ needs.versionning.outputs.version }}
-          socket_type: tcp
-
-      - name: Set extra.tfvars
-        run: |
-          echo $PARTITION_JSON > ${{ github.workspace }}/infra/extra.tfvars.json
-          cat ${{ github.workspace }}/infra/extra.tfvars.json
+          echo PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
           
       - name: Deploy
+        id: deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
+          override-compute: true
+          override-worker-socket: tcp
+          override-worker-version: ${{ needs.versionning.outputs.version }}
+          override-worker-image: dockerhubaneo/armonik_demo_java_${{ env.WORKER_SUFFIX }}
+          override-worker-partition: ${{ env.PARTITION_NAME }}
           log-suffix: ${{ matrix.demo }}
 
       - name: Setup Java and Maven
@@ -518,5 +485,4 @@ jobs:
         timeout-minutes: 10
         run: |
           cd java/client
-          PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')
           ./mvnw compile exec:java -Dpartition=$PARTITION_NAME -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}"
