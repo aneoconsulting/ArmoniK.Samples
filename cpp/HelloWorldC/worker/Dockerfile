@@ -23,9 +23,7 @@ RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_
     rm libarmonik-${API_VERSION}-Linux.deb
 
 # Clone and build the SDK from the feature branch (introduces ARMONIK_STATUS_RETRY)
-ARG SDK_BRANCH=jf/retryExcep
-RUN git clone --branch "${SDK_BRANCH}" --depth 1 \
-        https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp.git /tmp/sdk && \
+RUN git clone --depth 1 https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp.git /tmp/sdk && \
     cmake -B /tmp/sdk/build -S /tmp/sdk \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr \

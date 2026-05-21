@@ -24,7 +24,7 @@ If you already deployed ArmoniK and wish to add such a partition, follow these s
     +  worker = [
     +    {
     +      image = "dockerhubaneo/armonik-sdk-cpp-dynamicworker"
-    +      tag   = "0.4.4"
+    +      tag   = "0.5.0"
     +      limits   = { ... }
     +      requests = { ... }
     +    }

@@ -4,8 +4,7 @@ WORKING_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 CLIENT_IMAGE_TAG?= armonik-samples-c-hello-client:0.0.0
 WORKER_IMAGE_TAG?= armonik-samples-c-hello-worker:0.0.0
 API_VERSION?= 3.28.3
-SDK_VERSION?= 0.4.4
-SDK_BRANCH?= jf/retryExcep
+SDK_VERSION?= 0.5.0
 
 .PHONY: help
 help: 	## Show help
@@ -29,5 +28,4 @@ build_worker: ## Build the worker Docker image
 	@docker build -t ${WORKER_IMAGE_TAG} \
 		-f "${WORKING_DIR}/worker/Dockerfile" \
 		--build-arg="API_VERSION=${API_VERSION}" \
-		--build-arg="SDK_BRANCH=${SDK_BRANCH}" \
 		${WORKING_DIR}/worker
