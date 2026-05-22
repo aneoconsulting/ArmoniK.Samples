@@ -4,7 +4,7 @@ WORKING_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 CLIENT_IMAGE_TAG?= armonik-samples-c-hello-client:0.0.0
 WORKER_IMAGE_TAG?= armonik-samples-c-hello-worker:0.0.0
 API_VERSION?= 3.28.3
-SDK_VERSION?= 0.5.0
+SDK_VERSION?= 0.5.1
 
 .PHONY: help
 help: 	## Show help
