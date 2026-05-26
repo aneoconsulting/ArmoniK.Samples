@@ -13,6 +13,7 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install --no-inst
     libgrpc++-dev \
     libprotobuf-dev \
     protobuf-compiler-grpc \
+    nlohmann-json3-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install ArmoniK API — provides cmake configs for ArmoniK.Api.Common/Client needed to compile the SDK
@@ -22,16 +23,11 @@ RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_
     apt-get -f install -y && \
     rm libarmonik-${API_VERSION}-Linux.deb
 
-# Clone and build the SDK from the feature branch (introduces ARMONIK_STATUS_RETRY)
-RUN git clone --depth 1 https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp.git /tmp/sdk && \
-    cmake -B /tmp/sdk/build -S /tmp/sdk \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_INSTALL_PREFIX=/usr \
-          -DBUILD_DYNAMICWORKER=OFF \
-          -DBUILD_END2END=OFF && \
-    cmake --build /tmp/sdk/build -j$(nproc) && \
-    cmake --install /tmp/sdk/build && \
-    rm -rf /tmp/sdk
+ARG SDK_VERSION
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/download/${SDK_VERSION}/armoniksdk-${SDK_VERSION}.deb" && \
+    dpkg -i armoniksdk-${SDK_VERSION}.deb && \
+    apt-get -f install -y && \
+    rm armoniksdk-${SDK_VERSION}.deb
 
 WORKDIR /app
 COPY CMakeLists.txt ./
