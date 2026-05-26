@@ -126,7 +126,7 @@ jobs:
       - name: Cpp demos
         id: set-cpp-demos
         run: |
-          CPP_DEMO_DIRS='["HelloWorldAPI","HelloWorldSDK"]'
+          CPP_DEMO_DIRS='["HelloWorldAPI","HelloWorldSDK", "HelloWorldC"]'
           CPP_DEMO_NAMES=$(echo "${CPP_DEMO_DIRS}" | jq -c 'map(ascii_downcase)')
           echo "cpp-demo-dirs=${CPP_DEMO_DIRS}" >> $GITHUB_OUTPUT
           echo "cpp-demo-names=${CPP_DEMO_NAMES}" >> $GITHUB_OUTPUT
