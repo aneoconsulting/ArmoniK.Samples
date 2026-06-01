@@ -9,16 +9,13 @@ if(NOT TARGET ArmoniK.SDK.Worker)
     find_package(ArmoniK.SDK.Worker CONFIG REQUIRED)
 endif()
 
-find_package(nlohmann_json REQUIRED)
-
 FILE(GLOB_RECURSE SRC_WORKER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 FILE(GLOB_RECURSE HEADER_WORKER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
 add_library(${PROJECT_NAME} SHARED ${SRC_WORKER_FILES} ${HEADER_WORKER_FILES})
 
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC "-Wl,--whole-archive" ArmoniK.SDK.Worker "-Wl,--no-whole-archive"
-    PRIVATE nlohmann_json::nlohmann_json)
+    PUBLIC "-Wl,--whole-archive" ArmoniK.SDK.Worker "-Wl,--no-whole-archive")
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")

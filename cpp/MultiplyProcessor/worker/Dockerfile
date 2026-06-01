@@ -43,5 +43,5 @@ RUN mkdir -p build && cd build && cmake .. && make -j
 
 FROM debian:12 AS runner
 
-# Copy the compiled library to the path referenced by Worker__LibraryPath in appsettings.json
-COPY --from=builder /app/build/libArmoniK.Samples.Cpp.DynamicLibrary.Worker.so ./libmultiply.so
+WORKDIR /app
+COPY --from=builder /app/build/libArmoniK.Samples.Cpp.MultiplyProcessor.Worker.so ./

@@ -1,6 +1,8 @@
 FROM debian:12 AS builder
 
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install --no-install-recommends -y \
+    devscripts \
+    equivs \
     cmake \
     wget \
     gcc \
@@ -43,7 +45,7 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install --no-inst
 COPY --from=builder /lib/libArmoniK*.so* /lib/
 
 WORKDIR /app
-COPY --from=builder /app/build/ArmoniK.Samples.Cpp.DynamicLibrary.Client ./
+COPY --from=builder /app/build/ArmoniK.Samples.Cpp.MultiplyProcessor.Client ./
 COPY appsettings.json ./
 
-ENTRYPOINT ["./ArmoniK.Samples.Cpp.DynamicLibrary.Client"]
+ENTRYPOINT ["./ArmoniK.Samples.Cpp.MultiplyProcessor.Client"]

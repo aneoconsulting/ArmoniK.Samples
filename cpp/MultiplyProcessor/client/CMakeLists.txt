@@ -8,7 +8,6 @@ SET(HEADER_CLIENT_FILES "ResultHandler.h")
 
 find_package(ArmoniK.Api.Client CONFIG REQUIRED)
 
-find_package(nlohmann_json REQUIRED)
 if(NOT TARGET ArmoniK.SDK.Common)
 	find_package(ArmoniK.SDK.Common CONFIG REQUIRED)
 endif()
