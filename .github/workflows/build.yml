@@ -398,7 +398,7 @@ jobs:
             path: infra
 
       - name: Prepare SDK sample
-        if: ${{ contains(matrix.demo, 'sdk') }}
+        if: ${{ contains(matrix.demo, 'sdk') || matrix.demo == 'helloworldc' }}
         env:
           SO_FILE: ${{ matrix.demo == 'helloworldc' && 'libArmoniK.Samples.C.Hello.Worker.so' || 'libArmoniK.Samples.Cpp.Hello.SDK.Worker.so' }}
         run: |
