@@ -398,7 +398,7 @@ jobs:
             path: infra
 
       - name: Prepare SDK sample
-        if: ${{ contains(matrix.demo, 'sdk') || matrix.demo == 'helloworldc' }}
+        if: ${{ !contains(matrix.demo, 'api') }}
         env:
           SO_FILE: ${{ matrix.demo == 'helloworldc' && 'libArmoniK.Samples.C.Hello.Worker.so' || 'libArmoniK.Samples.Cpp.Hello.SDK.Worker.so' }}
         run: |
@@ -416,8 +416,8 @@ jobs:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
           override-compute: true
-          override-worker-version:  ${{ contains(matrix.demo, 'sdk') && format('{0}-ubuntu', env.SDK_VERSION) || needs.versionning.outputs.version }}
-          override-worker-image: ${{ contains(matrix.demo, 'sdk') && 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' || format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) }}
+          override-worker-version:  ${{ !contains(matrix.demo, 'api') && format('{0}-ubuntu', env.SDK_VERSION) || needs.versionning.outputs.version }}
+          override-worker-image: ${{  !contains(matrix.demo, 'api') && 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' || format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) }}
           override-worker-partition: ${{ matrix.demo }}
           log-suffix: ${{ matrix.demo }}
 
@@ -490,4 +490,5 @@ jobs:
         timeout-minutes: 10
         run: |
           cd java/client
+          PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')
           ./mvnw compile exec:java -Dpartition=$PARTITION_NAME -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}"
