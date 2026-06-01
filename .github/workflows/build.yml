@@ -126,7 +126,7 @@ jobs:
       - name: Cpp demos
         id: set-cpp-demos
         run: |
-          CPP_DEMO_DIRS='["HelloWorldAPI","HelloWorldSDK","HelloWorldC"]'
+          CPP_DEMO_DIRS='["HelloWorldAPI","HelloWorldSDK","HelloWorldC","ChainedArithmetic"]'
           CPP_DEMO_NAMES=$(echo "${CPP_DEMO_DIRS}" | jq -c 'map(ascii_downcase)')
           echo "cpp-demo-dirs=${CPP_DEMO_DIRS}" >> $GITHUB_OUTPUT
           echo "cpp-demo-names=${CPP_DEMO_NAMES}" >> $GITHUB_OUTPUT
@@ -399,15 +399,29 @@ jobs:
 
       - name: Prepare SDK sample
         if: ${{ !contains(matrix.demo, 'api') }}
-        env:
-          SO_FILE: ${{ matrix.demo == 'helloworldc' && 'libArmoniK.Samples.C.Hello.Worker.so' || 'libArmoniK.Samples.Cpp.Hello.SDK.Worker.so' }}
         run: |
-          ARMONIK_SHARED_HOST_PATH=${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data
+          case "${{ matrix.demo }}" in
+            helloworldc)
+              SO_FILE="libArmoniK.Samples.C.Hello.Worker.so"
+              DEST=${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data
+              ;;
+            chainedarithmetic)
+              # .so is uploaded by the client as a blob; copy it to a local dir the client container can mount.
+              SO_FILE="libArmoniK.Samples.Cpp.ChainedArithmetic.Worker.so"
+              DEST=/tmp/so-libs
+              mkdir -p ${DEST}
+              ;;
+            *)
+              SO_FILE="libArmoniK.Samples.Cpp.Hello.SDK.Worker.so"
+              DEST=${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data
+              ;;
+          esac
           docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_worker:${{ needs.versionning.outputs.version }}
-          docker cp so_exporter:app/${SO_FILE} ${ARMONIK_SHARED_HOST_PATH}
+          docker cp so_exporter:app/${SO_FILE} ${DEST}
           docker remove so_exporter
           SDK_VERSION=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json | jq -r '.armonik_versions.extcpp')
           echo "SDK_VERSION=${SDK_VERSION}" >> $GITHUB_ENV
+          echo "SO_FILE=${SO_FILE}" >> $GITHUB_ENV
 
       - name: Deploy
         id: deploy
@@ -425,7 +439,19 @@ jobs:
         timeout-minutes: 10
         run: |
           export Grpc__Endpoint=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
-          docker run --rm -e GrpcClient__Endpoint="${Grpc__Endpoint}" -e PartitionId="${{ matrix.demo }}" dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }}
+          if [ "${{ matrix.demo }}" = "chainedarithmetic" ]; then
+            docker run --rm \
+              -v /tmp/so-libs:/so-libs \
+              -e GrpcClient__Endpoint="${Grpc__Endpoint}" \
+              -e PartitionId="${{ matrix.demo }}" \
+              -e Worker__LibraryPath="/so-libs/${SO_FILE}" \
+              dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }}
+          else
+            docker run --rm \
+              -e GrpcClient__Endpoint="${Grpc__Endpoint}" \
+              -e PartitionId="${{ matrix.demo }}" \
+              dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }}
+          fi
 
   JavaSamples:
     runs-on: ubuntu-latest
