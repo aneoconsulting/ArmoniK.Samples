@@ -45,6 +45,14 @@ int main() {
   task_options.SetDynamicLibrary(lib);
   logger.info("Session ID: " + service.getSession());
 
+  // The DynamicWorker requires Symbol to match the method being dispatched.
+  // Build per-method options by cloning the base options and overriding Symbol.
+  auto opts_multiply = task_options;
+  opts_multiply.options[ArmoniK::Sdk::Common::DynamicLibrary::KeySymbol] = "multiply";
+
+  auto opts_add = task_options;
+  opts_add.options[ArmoniK::Sdk::Common::DynamicLibrary::KeySymbol] = "add";
+
   auto handler = std::make_shared<ResultHandler>(logger);
 
   using ArmoniK::Sdk::Common::BlobDefinition;
@@ -56,7 +64,7 @@ int main() {
                                    {"num2", BlobDefinition::FromData("3")}}),
        TaskDefinition("multiply", {{"num1", BlobDefinition::FromData("4")},
                                    {"num2", BlobDefinition::FromData("4")}})},
-      handler, task_options);
+      handler, opts_multiply);
   logger.info("Multiply tasks submitted: " + mul_tasks[0] + ", " + mul_tasks[1]);
 
   service.WaitResults();
@@ -65,7 +73,7 @@ int main() {
   auto add_tasks = service.Submit(
       {TaskDefinition("add", {{"num1", BlobDefinition::FromBlobId(handler->GetResultId(mul_tasks[0]))},
                               {"num2", BlobDefinition::FromBlobId(handler->GetResultId(mul_tasks[1]))}})},
-      handler, task_options);
+      handler, opts_add);
   logger.info("Add task submitted: " + add_tasks[0]);
 
   service.WaitResults();
