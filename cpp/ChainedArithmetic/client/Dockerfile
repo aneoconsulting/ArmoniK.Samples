@@ -45,7 +45,7 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install --no-inst
 COPY --from=builder /lib/libArmoniK*.so* /lib/
 
 WORKDIR /app
-COPY --from=builder /app/build/ArmoniK.Samples.Cpp.MultiplyProcessor.Client ./
+COPY --from=builder /app/build/ArmoniK.Samples.Cpp.ChainedArithmetic.Client ./
 COPY appsettings.json ./
 
-ENTRYPOINT ["./ArmoniK.Samples.Cpp.MultiplyProcessor.Client"]
+ENTRYPOINT ["./ArmoniK.Samples.Cpp.ChainedArithmetic.Client"]

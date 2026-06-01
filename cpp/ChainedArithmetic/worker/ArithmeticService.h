@@ -5,16 +5,7 @@
 #include <stdexcept>
 #include <string>
 
-/**
- * @brief Convention-mode worker library that multiplies two numbers.
- *
- * The DynamicWorker calls armonik_call() with a JSON-serialized TaskPayload:
- *   {"method":"multiply","inputs":{"num1":"2","num2":"3"},"outputs":{"result":""}}
- *
- * The call() method parses that JSON, dispatches on method name, and returns
- * the result as a plain string (e.g. "6").
- */
-class MultiplyService : public ArmoniK::Sdk::Worker::ServiceBase {
+class ArithmeticService : public ArmoniK::Sdk::Worker::ServiceBase {
 public:
   std::string call(void *, const std::string &name, const std::map<std::string, std::string> &inputs) override {
 

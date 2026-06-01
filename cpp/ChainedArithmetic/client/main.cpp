@@ -22,10 +22,6 @@ int main() {
   ArmoniK::Sdk::Common::Configuration config;
   config.add_json_configuration("./appsettings.json").add_env_configuration();
 
-  // Describe which shared library the worker should load.
-  // symbol: optional prefix for armonik_* symbol names (leave empty for default "armonik" prefix).
-  ArmoniK::Sdk::Common::DynamicLibrary lib;
-  lib.symbol = config.get("Worker__LibrarySymbol"); // optional; leave empty for "armonik" prefix
 
   // Build task options that encode the library descriptor.
   // The partition_id routes tasks to the DynamicWorker partition.
@@ -39,6 +35,7 @@ int main() {
   ArmoniK::Sdk::Client::SessionService service(properties, logger);
 
   // Upload the worker library as a blob so the worker can fetch it at runtime.
+  ArmoniK::Sdk::Common::DynamicLibrary lib;
   service.UploadLibrary(config.get("Worker__LibraryPath"), lib);
   logger.info("Library uploaded, blob ID: " + lib.library_blob_id);
 

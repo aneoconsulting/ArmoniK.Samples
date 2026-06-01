@@ -18,7 +18,7 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-ge
 WORKDIR /app
 
 COPY CMakeLists.txt ./
-COPY MultiplyService.h ./
+COPY ArithmeticService.h ./
 COPY ServiceDispatch.cpp ./
 
 
@@ -44,4 +44,4 @@ RUN mkdir -p build && cd build && cmake .. && make -j
 FROM debian:12 AS runner
 
 WORKDIR /app
-COPY --from=builder /app/build/libArmoniK.Samples.Cpp.MultiplyProcessor.Worker.so ./
+COPY --from=builder /app/build/libArmoniK.Samples.Cpp.ChainedArithmetic.Worker.so ./

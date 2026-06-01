@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-set(PROJECT_NAME ArmoniK.Samples.Cpp.MultiplyProcessor.Client)
+set(PROJECT_NAME ArmoniK.Samples.Cpp.ChainedArithmetic.Client)
 
 project(${PROJECT_NAME})
 
