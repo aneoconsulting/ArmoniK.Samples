@@ -126,7 +126,7 @@ jobs:
       - name: Cpp demos
         id: set-cpp-demos
         run: |
-          CPP_DEMO_DIRS='["HelloWorldAPI","HelloWorldSDK"]'
+          CPP_DEMO_DIRS='["HelloWorldAPI","HelloWorldSDK","HelloWorldC"]'
           CPP_DEMO_NAMES=$(echo "${CPP_DEMO_DIRS}" | jq -c 'map(ascii_downcase)')
           echo "cpp-demo-dirs=${CPP_DEMO_DIRS}" >> $GITHUB_OUTPUT
           echo "cpp-demo-names=${CPP_DEMO_NAMES}" >> $GITHUB_OUTPUT
@@ -194,12 +194,14 @@ jobs:
           SDK_VERSION=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json | jq -r '.armonik_versions.extcpp')
           IMAGE_NAME="dockerhubaneo/armonik_demo_cpp_$(echo '${{ matrix.demodir }}' | tr '[:upper:]' '[:lower:]')_${{ matrix.role }}"
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
+          DEMO_DIR="${{ matrix.demodir }}"
+          DEMO_DIR="${DEMO_DIR/HelloWorldSDK_C/HelloWorldC}"
           docker build \
             -t ${IMAGE_NAME}:${VERSION} \
-            -f ./cpp/${{ matrix.demodir }}/${{ matrix.role }}/Dockerfile \
+            -f ./cpp/${DEMO_DIR}/${{ matrix.role }}/Dockerfile \
             --build-arg="API_VERSION=${API_VERSION}" \
             --build-arg="SDK_VERSION=${SDK_VERSION}" \
-            cpp/${{ matrix.demodir }}/${{ matrix.role }}/
+            cpp/${DEMO_DIR}/${{ matrix.role }}/
       - name: Push Docker image
         run: docker push ${IMAGE_NAME}:${VERSION}
 
@@ -396,10 +398,13 @@ jobs:
             path: infra
 
       - name: Prepare SDK sample
+        if: ${{ !contains(matrix.demo, 'api') }}
+        env:
+          SO_FILE: ${{ matrix.demo == 'helloworldc' && 'libArmoniK.Samples.C.Hello.Worker.so' || 'libArmoniK.Samples.Cpp.Hello.SDK.Worker.so' }}
         run: |
-          docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_helloworldsdk_worker:${{ needs.versionning.outputs.version }}
           ARMONIK_SHARED_HOST_PATH=${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data
-          docker cp so_exporter:app/libArmoniK.Samples.Cpp.Hello.SDK.Worker.so ${ARMONIK_SHARED_HOST_PATH}
+          docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_worker:${{ needs.versionning.outputs.version }}
+          docker cp so_exporter:app/${SO_FILE} ${ARMONIK_SHARED_HOST_PATH}
           docker remove so_exporter
           SDK_VERSION=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json | jq -r '.armonik_versions.extcpp')
           echo "SDK_VERSION=${SDK_VERSION}" >> $GITHUB_ENV
@@ -411,8 +416,8 @@ jobs:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
           override-compute: true
-          override-worker-version:  ${{ contains(matrix.demo, 'sdk') && format('{0}-ubuntu', env.SDK_VERSION) || needs.versionning.outputs.version }}
-          override-worker-image: ${{ contains(matrix.demo, 'sdk') && 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' || format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) }}
+          override-worker-version:  ${{ !contains(matrix.demo, 'api') && format('{0}-ubuntu', env.SDK_VERSION) || needs.versionning.outputs.version }}
+          override-worker-image: ${{  !contains(matrix.demo, 'api') && 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' || format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) }}
           override-worker-partition: ${{ matrix.demo }}
           log-suffix: ${{ matrix.demo }}
 
@@ -485,4 +490,5 @@ jobs:
         timeout-minutes: 10
         run: |
           cd java/client
+          PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')
           ./mvnw compile exec:java -Dpartition=$PARTITION_NAME -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}"

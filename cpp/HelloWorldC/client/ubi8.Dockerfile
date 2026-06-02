@@ -1,0 +1,71 @@
+FROM registry.access.redhat.com/ubi8 AS builder
+
+RUN dnf install -y --nodocs \
+    https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
+    dnf install -y --nodocs \
+    cmake \
+    make \
+    wget \
+    gcc \
+    git \
+    gcc-c++ \
+    && dnf clean all
+
+RUN git clone --depth 1 https://github.com/nlohmann/json.git -b v3.11.3 /tmp/nlohmann-json && \
+    cmake -S /tmp/nlohmann-json -B /tmp/nlohmann-json/build \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DJSON_BuildTests=OFF && \
+    cmake --build /tmp/nlohmann-json/build --target install && \
+    rm -rf /tmp/nlohmann-json
+
+# Fetch aneo's grpc rpm packages, in our repo we append an extra .x to the grpc version to distinguish several builds of the
+# same version.
+ARG GRPC_VERSION=1.62.2
+ARG GRPC_BUILD=${GRPC_VERSION}.0
+
+RUN wget "https://github.com/aneoconsulting/grpc-rpm/releases/download/${GRPC_BUILD}/grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" && \
+    wget "https://github.com/aneoconsulting/grpc-rpm/releases/download/${GRPC_BUILD}/grpc-devel-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" && \
+    dnf install -y "grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" "grpc-devel-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" && \
+    rm "grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" "grpc-devel-${GRPC_BUILD%.*}-1.el8.x86_64.rpm"
+
+ARG API_VERSION
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" && \
+    dnf install -y libarmonik-${API_VERSION}-Linux.rpm && \
+    rm libarmonik-${API_VERSION}-Linux.rpm
+
+ARG SDK_VERSION
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/download/${SDK_VERSION}/armoniksdk-${SDK_VERSION}.rpm" && \
+    dnf install -y armoniksdk-${SDK_VERSION}.rpm && \
+    rm armoniksdk-${SDK_VERSION}.rpm
+
+
+WORKDIR /app
+COPY CMakeLists.txt ./
+COPY HelloServiceHandler.h ./
+COPY main.cpp ./
+RUN mkdir -p build && cd build && cmake .. && make -j
+
+FROM registry.access.redhat.com/ubi8 AS runner
+
+RUN dnf install -y --nodocs \
+    https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
+    dnf install -y --nodocs \
+    wget \
+    re2 \
+    && dnf clean all
+
+# Fetch aneo's grpc rpm packages, in our repo we append an extra .x to the grpc version to distinguish several builds of the
+# same version.
+ARG GRPC_VERSION=1.62.2
+ARG GRPC_BUILD=${GRPC_VERSION}.0
+
+RUN wget "https://github.com/aneoconsulting/grpc-rpm/releases/download/${GRPC_BUILD}/grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" && \
+    dnf install -y "grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" && \
+    rm "grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm"
+
+COPY --from=builder /lib/libArmoniK*.so* /lib/
+
+WORKDIR /app
+COPY --from=builder /app/build/ArmoniK.Samples.C.Hello.Client ./
+
+ENTRYPOINT ["./ArmoniK.Samples.C.Hello.Client"]

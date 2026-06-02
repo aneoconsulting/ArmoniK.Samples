@@ -1,8 +1,8 @@
 WORKING_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 
 .ONESHELL:
-CLIENT_IMAGE_TAG?= armonik-samples-cpp-hello-client:0.0.0-sdk
-WORKER_IMAGE_TAG?= armonik-samples-cpp-hello-worker:0.0.0-sdk
+CLIENT_IMAGE_TAG?= armonik-samples-c-hello-client:0.0.0
+WORKER_IMAGE_TAG?= armonik-samples-c-hello-worker:0.0.0
 API_VERSION?= 3.28.3
 SDK_VERSION?= 0.5.1
 
@@ -25,8 +25,7 @@ build_client: ## Build the client Docker image
 
 .PHONY: build_worker
 build_worker: ## Build the worker Docker image
-	@docker build -t ${WORKER_IMAGE_TAG}  \
+	@docker build -t ${WORKER_IMAGE_TAG} \
 		-f "${WORKING_DIR}/worker/Dockerfile" \
 		--build-arg="API_VERSION=${API_VERSION}" \
-		--build-arg="SDK_VERSION=${SDK_VERSION}" \
 		${WORKING_DIR}/worker
