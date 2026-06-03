@@ -87,6 +87,7 @@ internal class Callback : ICallback
                     ?? throw new InvalidOperationException(
                          "LibraryPath is required. Set it in appsettings.json, as an environment variable, or pass --LibraryPath.");
      var partition   = config["Partition"]!;
+     var symbol      = config["Symbol"]!;
 
      var loggerFactory = new LoggerFactory([
                                              new SerilogLoggerProvider(new LoggerConfiguration().ReadFrom.Configuration(config)
@@ -127,7 +128,7 @@ internal class Callback : ICallback
      // can dispatch to the right handler.
      var workerLibrary = new DynamicLibrary
                          {
-                           Symbol        = "multiply",
+                           Symbol        = symbol,
                            LibraryBlobId = libraryBlob.BlobId,
                          };
 
