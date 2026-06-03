@@ -517,4 +517,72 @@ jobs:
         run: |
           cd java/client
           PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')
-          ./mvnw compile exec:java -Dpartition=$PARTITION_NAME -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}"
+          ./mvnw compile exec:java -D"fr.aneo.armonik.client.samples.partition=$PARTITION_NAME" -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}"
+
+  JavaCppInterop:
+    runs-on: ubuntu-latest
+    needs:
+      - versionning
+      - buildCppImages
+      - setupDemoNames
+    strategy:
+      fail-fast: false
+      matrix:
+        demo: [javaClientCppWorker]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: ${{ github.ref }}
+      - name: Install Dependencies
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        with:
+            docker: true
+            terraform: true
+            k3s: true
+            aws: true
+
+      - name: Checkout Infra
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+            repository: aneoconsulting/ArmoniK
+            path: infra
+
+      - name: Prepare SDK sample
+        run: |
+          SO_FILE="libArmoniK.Samples.Cpp.ChainedArithmetic.Worker.so"
+          DEST=/tmp/so-libs
+          mkdir -p ${DEST}
+          docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_chainedarithmetic_worker:${{ needs.versionning.outputs.version }}
+          docker cp so_exporter:app/${SO_FILE} ${DEST}
+          docker remove so_exporter
+          SDK_VERSION=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json | jq -r '.armonik_versions.extcpp')
+          echo "SDK_VERSION=${SDK_VERSION}" >> $GITHUB_ENV
+          echo "SO_FILE=${SO_FILE}" >> $GITHUB_ENV
+          echo "PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Deploy
+        id: deploy
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        with:
+          working-directory: ${{ github.workspace }}/infra
+          type: localhost
+          override-compute: true
+          override-worker-version:  ${{ format('{0}-ubuntu', env.SDK_VERSION) }}
+          override-worker-image: dockerhubaneo/armonik-sdk-cpp-dynamicworker
+          override-worker-partition: ${{ env.PARTITION_NAME }}
+          log-suffix: ${{ env.PARTITION_NAME }}
+
+      - name: Setup Java and Maven
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: 'maven'
+          cache-dependency-path: 'java/client/pom.xml'
+
+      - name: Run Demo Client
+        timeout-minutes: 10
+        run: |
+          cd java/client
+          ./mvnw compile exec:java -D"fr.aneo.armonik.client.samples.partition=$PARTITION_NAME" -D"fr.aneo.armonik.client.samples.dynlib.path=/tmp/so-libs/${SO_FILE}" -Dexec.mainClass="fr.aneo.armonik.client.samples.CppDynamicLibrary"
