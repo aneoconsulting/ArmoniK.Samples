@@ -28,7 +28,7 @@ An ArmoniK cluster with a partition running the dynamic C++ worker:
 
 2. Redeploy ArmoniK to include the new partition.
 
-3. Build the C++ worker shared library you want to call. The default configuration points to `libArmoniK.Samples.Cpp.ChainedArithmetic.Worker.so` from the [ChainedArithmetic](../../cpp/ChainedArithmetic) C++ sample. Copy it to ArmoniK's shared data folder before running this client.
+3. Build the C++ worker shared library you want to call. The default configuration points to `libArmoniK.Samples.Cpp.ChainedArithmetic.Worker.so` from the `cpp/ChainedArithmetic` sample. Copy it to ArmoniK's shared data folder before running this client.
 
 ## Building and running the example
 
@@ -89,4 +89,4 @@ An ArmoniK cluster with a partition running the dynamic C++ worker:
 ## Notes
 
 - Replace `http://localhost:5001` with the correct endpoint for your control plane.
-- The library can be any C++ shared object that implements the `armonik_call` entry point. See the [C++ SDK samples](../../cpp) for examples.
+- The library can be any C++ shared object that implements the `armonik_call` entry point. See the C++ SDK samples (`cpp/HelloWorldSDK`, `cpp/ChainedArithmetic`) for examples.

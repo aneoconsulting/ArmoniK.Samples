@@ -269,7 +269,7 @@ Blob completed - id: <blob-id>, data: 6
 
 Demonstrates Java-to-C++ interoperability: the Java client uploads a C++ shared library (`.so`) as a blob, then submits a task to the C++ DynamicWorker which loads the library at runtime and calls the specified function.
 
-**Setup:** Build the C++ worker shared library from the [ChainedArithmetic](../../cpp/ChainedArithmetic) sample. Then provide its path via the `fr.aneo.armonik.client.samples.dynlib.path` system property.
+**Setup:** Build the C++ worker shared library from the `cpp/ChainedArithmetic` sample. Then provide its path via the `fr.aneo.armonik.client.samples.dynlib.path` system property.
 
 **Run:**
 
