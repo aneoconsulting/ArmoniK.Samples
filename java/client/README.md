@@ -20,7 +20,8 @@ client/
     ├── HelloWorld.java
     ├── SharedBlob.java
     ├── TaskDependencies.java
-    └── DynamicLibrary.java
+    ├── DynamicLibrary.java
+    └── CppDynamicLibrary.java
 ```
 
 ## Samples Overview
@@ -31,6 +32,7 @@ client/
 | `SharedBlob` | Reuse a blob across multiple tasks | `sum` |
 | `TaskDependencies` | Chain tasks using outputs as inputs | `sum` |
 | `DynamicLibrary` | Load a library JAR at runtime | `javadynamic` |
+| `CppDynamicLibrary` | Java client calling a C++ dynamic worker (interoperability) | `cppdynamic` |
 
 ## Partition Setup
 
@@ -115,6 +117,39 @@ compute_plane = {
     worker = [{
       image    = "dockerhubaneo/armonik-dynamic-java-worker"
       tag      = "latest"
+      limits   = { cpu = "1000m", memory = "1024Mi" }
+      requests = { cpu = "50m", memory = "50Mi" }
+    }]
+    hpa = {
+      type              = "prometheus"
+      polling_interval  = 15
+      cooldown_period   = 300
+      min_replica_count = 0
+      max_replica_count = 5
+      behavior = {
+        restore_to_original_replica_count = true
+        stabilization_window_seconds      = 300
+        type                              = "Percent"
+        value                             = 100
+        period_seconds                    = 15
+      }
+      triggers = [
+        { type = "prometheus", threshold = 2 }
+      ]
+    }
+  },
+
+  # partition for CppDynamicLibrary sample (C++ DynamicWorker from the ArmoniK C++ SDK)
+  cppdynamic = {
+    replicas    = 0
+    socket_type = "tcp"
+    polling_agent = {
+      limits   = { cpu = "2000m", memory = "2048Mi" }
+      requests = { cpu = "50m", memory = "50Mi" }
+    }
+    worker = [{
+      image    = "dockerhubaneo/armonik-sdk-cpp-dynamicworker"
+      tag      = "0.5.2"
       limits   = { cpu = "1000m", memory = "1024Mi" }
       requests = { cpu = "50m", memory = "50Mi" }
     }]
@@ -223,6 +258,25 @@ cp ../worker-libraries/multiply-library/target/multiply-library.zip src/main/res
 
 ```bash
 ./mvnw compile exec:java -Dexec.mainClass="fr.aneo.armonik.client.samples.DynamicLibrary"
+```
+
+Expected output:
+```
+Blob completed - id: <blob-id>, data: 6
+```
+
+### CppDynamicLibrary
+
+Demonstrates Java-to-C++ interoperability: the Java client uploads a C++ shared library (`.so`) as a blob, then submits a task to the C++ DynamicWorker which loads the library at runtime and calls the specified function.
+
+**Setup:** Build the C++ worker shared library from the [ChainedArithmetic](../../cpp/ChainedArithmetic) sample. Then provide its path via the `fr.aneo.armonik.client.samples.dynlib.path` system property.
+
+**Run:**
+
+```bash
+./mvnw compile exec:java \
+  -Dexec.mainClass="fr.aneo.armonik.client.samples.CppDynamicLibrary" \
+  -Dfr.aneo.armonik.client.samples.dynlib.path=/path/to/libArmoniK.Samples.Cpp.ChainedArithmetic.Worker.so
 ```
 
 Expected output:
