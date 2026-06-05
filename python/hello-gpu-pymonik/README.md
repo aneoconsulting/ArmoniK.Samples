@@ -1,4 +1,4 @@
-# A Python Hello World on ArmoniK on the GPU 
+# A Python Hello World on ArmoniK on the GPU [PymoniK]
 
 ## Description
 
