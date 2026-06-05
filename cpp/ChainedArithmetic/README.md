@@ -42,7 +42,7 @@ You can build either directly on your system or using Docker containers.
 
 1. Install the right packages for your distribution:
 
-   - [ArmoniK.Api](https://github.com/aneoconsulting/ArmoniK.Api/releases/tag/3.28.3)
+   - [ArmoniK.Api](https://github.com/aneoconsulting/ArmoniK.Api/releases/tag/3.29.0)
    - [ArmoniK.Extensions.Cpp](https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases)
 
 2. Compile the worker shared library:
