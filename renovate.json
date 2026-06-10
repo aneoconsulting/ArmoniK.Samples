@@ -6,6 +6,7 @@
     ":semanticCommitTypeAll(chore)",
     "helpers:pinGitHubActionDigests"
   ],
+  "semanticCommits": "enabled",
   "rangeStrategy": "bump",
   "packageRules": [
     {
