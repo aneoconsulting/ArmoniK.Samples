@@ -17,14 +17,14 @@ all: build_worker build_client
 build_client: ## Builds docker image for client (RHEL 8)
 	@docker build -t ${CLIENT_IMAGE_TAG}  \
 		--build-arg="API_VERSION=${API_VERSION}" \
-		-f "${WORKING_DIR}/client/Dockerfile" \
+		-f "${WORKING_DIR}/client/Dockerfile.ubi8" \
 		${WORKING_DIR}/client
 
 .PHONY: build_worker
 build_worker: ## Builds docker image for worker (RHEL 8)
 	@docker build -t ${WORKER_IMAGE_TAG} \
 		--build-arg="API_VERSION=${API_VERSION}" \
-		-f "${WORKING_DIR}/worker/Dockerfile" \
+		-f "${WORKING_DIR}/worker/Dockerfile.ubi8" \
 		${WORKING_DIR}/worker
 
 .PHONY: build_client_debian
