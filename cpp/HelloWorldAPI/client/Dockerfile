@@ -30,30 +30,15 @@ RUN wget https://github.com/aneoconsulting/grpc-rpm/releases/download/1.62.2.0/g
 
 RUN rm -rf *.rpm
 
-ENV protobuf_BUILD_TESTS=OFF
 RUN mkdir -p /client/install/
 
-RUN git clone https://github.com/aneoconsulting/ArmoniK.Api.git -b jf/cpp-static /armonik_api_temp/
-WORKDIR /armonik_api_temp/packages/cpp/
-RUN mkdir ./install
-
-RUN mkdir ./build
-WORKDIR /armonik_api_temp/packages/cpp/build
-RUN cmake "-DCMAKE_BUILD_TYPE=Debug" \
-     "-DPROTO_FILES_DIR=/armonik_api_temp/Protos/V1/" \
-     "-DCMAKE_INSTALL_PREFIX=/armonik_api_temp/packages/cpp/install/" \
-     "-DSTATIC_LINK=ON" \
-     "-DBUILD_TEST=OFF" \
-     /armonik_api_temp/packages/cpp/  && make -j ${PARALLEL_JOBS} install
-WORKDIR /
-RUN cp -a /armonik_api_temp/packages/cpp/install/. /client/install/
-RUN rm -rf /armonik_api_temp/
+ARG API_VERSION
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" && \
+    rpm -ivh libarmonik-${API_VERSION}-Linux.rpm && \
+    rm libarmonik-${API_VERSION}-Linux.rpm
 
 COPY ./src/ /client/src/
 COPY ./CMakeLists.txt /client/
-
-RUN export LD_LIBRARY_PATH="/client/install/lib:$LD_LIBRARY_PATH"
-RUN export PATH="/client/install/bin:$PATH"
 
 RUN cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="/client/install" /client/
 RUN make -j ${PARALLEL_JOBS} install
@@ -79,7 +64,6 @@ RUN groupadd --gid 5000 armonikuser && useradd --home-dir /home/armonikuser --cr
 USER armonikuser
 
 COPY --from=builder /client /client
-COPY ./appsettings.json /client/install/bin/appsettings.json
 
 RUN export LD_LIBRARY_PATH="/client/install/lib:$LD_LIBRARY_PATH"
 RUN export PATH="/client/install/bin:$PATH"
