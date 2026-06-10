@@ -92,7 +92,7 @@ Now, going back to our ArmoniK infrastructure add the C++ worker image, either b
       worker = [
         {
     -     image = "dockerhubaneo/armonik_worker_dll"
-    +     image = "armonik-cpp-hello-client"
+    +     image = "armonik-cpp-hello-worker"
     +     tag = "0.1.0-api"
           limits = {...}
           requests = {...}
@@ -116,7 +116,7 @@ Now, going back to our ArmoniK infrastructure add the C++ worker image, either b
     +  # ArmoniK workers
     +  worker = [
     +    {
-    +      image = "armonik-cpp-hello-client"
+    +      image = "armonik-cpp-hello-worker"
     +      tag = "0.1.0-api"
     +      limits = {...}
     +      requests = {...}
