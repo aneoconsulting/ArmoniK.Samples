@@ -1,0 +1,52 @@
+FROM debian:12 AS builder
+
+ARG PARALLEL_JOBS=4
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+    make \
+    cmake \
+    git \
+    gcc \
+    g++ \
+    wget \
+    ca-certificates \
+    libgrpc-dev \
+    libgrpc++-dev \
+    libprotobuf-dev \
+    protobuf-compiler-grpc \
+    libre2-dev \
+    zlib1g-dev \
+    libssl-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /worker/install/
+
+ARG API_VERSION
+WORKDIR /tmp
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.deb" && \
+    dpkg -i libarmonik-${API_VERSION}-Linux.deb && \
+    apt-get -f install -y && \
+    rm libarmonik-${API_VERSION}-Linux.deb
+
+COPY ./src/ /worker/src/
+COPY ./CMakeLists.txt /worker/
+
+RUN cmake -DCMAKE_INSTALL_PREFIX="/worker/install" /worker/
+RUN make -j ${PARALLEL_JOBS} install
+
+FROM debian:12 AS runner
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+    libgrpc++ \
+    libre2-9 \
+    zlib1g \
+    wget \
+    libssl3 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd --gid 5000 armonikuser && useradd --home-dir /home/armonikuser --create-home --uid 5000 --gid 5000 --shell /bin/sh --skel /dev/null armonikuser && mkdir /cache && chown armonikuser: /cache
+USER armonikuser
+
+COPY --from=builder /worker /worker
+
+ENTRYPOINT ["/worker/install/bin/armonik_cpp_hello"]
