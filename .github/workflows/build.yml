@@ -196,8 +196,22 @@ jobs:
           - demodir: HelloWorldAPI
             role: worker
             distro: debian
+          - demodir: HelloWorldSDK
+            role: client
+            distro: ubi8
+          - demodir: HelloWorldSDK
+            role: worker
+            distro: ubi8
+          - demodir: HelloWorldSDK
+            role: client
+            distro: debian
+          - demodir: HelloWorldSDK
+            role: worker
+            distro: debian
         exclude:
           - demodir: HelloWorldAPI
+            distro: ''
+          - demodir: HelloWorldSDK
             distro: ''
     steps:
       - uses: actions/checkout@v4
@@ -410,8 +424,14 @@ jobs:
             distro: ubi8
           - demo: helloworldapi
             distro: debian
+          - demo: helloworldsdk
+            distro: ubi8
+          - demo: helloworldsdk
+            distro: debian
         exclude:
           - demo: helloworldapi
+            distro: ''
+          - demo: helloworldsdk
             distro: ''
     steps:
       - name: Checkout
@@ -451,7 +471,9 @@ jobs:
               DEST=${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data
               ;;
           esac
-          docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_worker:${{ needs.versionning.outputs.version }}
+          DISTRO="${{ matrix.distro }}"
+          WORKER_TAG="${{ needs.versionning.outputs.version }}${DISTRO:+-${DISTRO}}"
+          docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_worker:${WORKER_TAG}
           docker cp so_exporter:app/${SO_FILE} ${DEST}
           docker remove so_exporter
           SDK_VERSION=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json | jq -r '.armonik_versions.extcpp')

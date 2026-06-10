@@ -1,0 +1,71 @@
+FROM registry.access.redhat.com/ubi8 AS builder
+
+RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+RUN yum --disableplugin=subscription-manager update -y && \
+    yum --disableplugin=subscription-manager install -y \
+    make \
+    cmake \
+    git \
+    gcc \
+    gcc-c++ \
+    wget \
+    rpm-build \
+    re2-devel \
+    zlib-devel \
+    openssl-devel \
+    nlohmann-json-devel
+
+RUN yum --disableplugin=subscription-manager clean all
+
+WORKDIR /tmp
+
+RUN wget https://github.com/aneoconsulting/grpc-rpm/releases/download/1.62.2.0/grpc-1.62.2-1.el8.x86_64.rpm && \
+    rpm -ivh grpc-1.62.2-1.el8.x86_64.rpm
+
+RUN wget https://github.com/aneoconsulting/grpc-rpm/releases/download/1.62.2.0/grpc-devel-1.62.2-1.el8.x86_64.rpm && \
+    rpm -ivh grpc-devel-1.62.2-1.el8.x86_64.rpm
+
+RUN rm -rf *.rpm
+
+ARG API_VERSION
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" && \
+    rpm -ivh libarmonik-${API_VERSION}-Linux.rpm && \
+    rm libarmonik-${API_VERSION}-Linux.rpm
+
+ARG SDK_VERSION
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/download/${SDK_VERSION}/armoniksdk-${SDK_VERSION}-Linux.rpm" && \
+    rpm -ivh armoniksdk-${SDK_VERSION}-Linux.rpm && \
+    rm armoniksdk-${SDK_VERSION}-Linux.rpm
+
+WORKDIR /app
+COPY CMakeLists.txt ./
+COPY HelloServiceHandler.h ./
+COPY main.cpp ./
+
+RUN mkdir -p build && cd build && cmake .. && make -j
+
+FROM registry.access.redhat.com/ubi8 AS runner
+
+RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+RUN yum --disableplugin=subscription-manager update -y && \
+    yum --disableplugin=subscription-manager install -y \
+    re2 \
+    zlib \
+    wget \
+    openssl
+
+RUN yum --disableplugin=subscription-manager clean all
+
+WORKDIR /tmp
+RUN wget https://github.com/aneoconsulting/grpc-rpm/releases/download/1.62.2.0/grpc-1.62.2-1.el8.x86_64.rpm && \
+    rpm -ivh grpc-1.62.2-1.el8.x86_64.rpm && rm grpc-1.62.2-1.el8.x86_64.rpm
+
+RUN groupadd --gid 5000 armonikuser && useradd --home-dir /home/armonikuser --create-home --uid 5000 --gid 5000 --shell /bin/sh --skel /dev/null armonikuser && mkdir /cache && chown armonikuser: /cache
+USER armonikuser
+
+WORKDIR /app
+COPY --from=builder /app/build/ArmoniK.Samples.Cpp.Hello.SDK.Client ./
+
+ENTRYPOINT ["./ArmoniK.Samples.Cpp.Hello.SDK.Client"]
