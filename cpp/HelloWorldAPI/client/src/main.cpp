@@ -60,5 +60,7 @@ int main() {
     std::string taskResult = resultsClient.download_result_data(session_id, {results["output"]});
     logger.info("Got result = " + taskResult);
 
+    sessionsClient.close_session(session_id);
+
     return 0;
 }

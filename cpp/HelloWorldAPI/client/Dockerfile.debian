@@ -1,0 +1,58 @@
+FROM debian:12 AS builder
+
+ARG PARALLEL_JOBS=4
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+    make \
+    cmake \
+    git \
+    gcc \
+    g++ \
+    wget \
+    ca-certificates \
+    libgrpc-dev \
+    libgrpc++-dev \
+    libprotobuf-dev \
+    protobuf-compiler-grpc \
+    libre2-dev \
+    zlib1g-dev \
+    libssl-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /client/install/
+
+ARG API_VERSION
+WORKDIR /tmp
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.deb" && \
+    dpkg -i libarmonik-${API_VERSION}-Linux.deb && \
+    apt-get -f install -y && \
+    rm libarmonik-${API_VERSION}-Linux.deb
+
+COPY ./src/ /client/src/
+COPY ./CMakeLists.txt /client/
+
+RUN cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="/client/install" /client/
+RUN make -j ${PARALLEL_JOBS} install
+
+FROM debian:12 AS runner
+
+ARG API_VERSION
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+    libgrpc++ \
+    libre2-9 \
+    zlib1g \
+    wget \
+    ca-certificates \
+    libssl3 \
+    libprotobuf-dev \
+    protobuf-compiler-grpc \
+    && wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.deb" \
+    && dpkg -i libarmonik-${API_VERSION}-Linux.deb \
+    && apt-get -f install -y \
+    && rm libarmonik-${API_VERSION}-Linux.deb \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /client /client
+
+ENTRYPOINT ["/client/install/bin/armonik_cpp_hello_client"]

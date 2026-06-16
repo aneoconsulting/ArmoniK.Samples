@@ -182,6 +182,23 @@ jobs:
       matrix:
         demodir: ${{ fromJson(needs.setupDemoNames.outputs.cpp-demo-dirs) }}
         role: [client, worker]
+        distro: ['']
+        include:
+          - demodir: HelloWorldAPI
+            role: client
+            distro: ubi8
+          - demodir: HelloWorldAPI
+            role: worker
+            distro: ubi8
+          - demodir: HelloWorldAPI
+            role: client
+            distro: debian
+          - demodir: HelloWorldAPI
+            role: worker
+            distro: debian
+        exclude:
+          - demodir: HelloWorldAPI
+            distro: ''
     steps:
       - uses: actions/checkout@v4
 
@@ -196,14 +213,23 @@ jobs:
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
           DEMO_DIR="${{ matrix.demodir }}"
           DEMO_DIR="${DEMO_DIR/HelloWorldSDK_C/HelloWorldC}"
+          DISTRO="${{ matrix.distro }}"
+          if [ -n "${DISTRO}" ]; then
+            DOCKERFILE="Dockerfile.${DISTRO}"
+            IMAGE_TAG="${VERSION}-${DISTRO}"
+          else
+            DOCKERFILE="Dockerfile"
+            IMAGE_TAG="${VERSION}"
+          fi
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
           docker build \
-            -t ${IMAGE_NAME}:${VERSION} \
-            -f ./cpp/${DEMO_DIR}/${{ matrix.role }}/Dockerfile \
+            -t ${IMAGE_NAME}:${IMAGE_TAG} \
+            -f ./cpp/${DEMO_DIR}/${{ matrix.role }}/${DOCKERFILE} \
             --build-arg="API_VERSION=${API_VERSION}" \
             --build-arg="SDK_VERSION=${SDK_VERSION}" \
             cpp/${DEMO_DIR}/${{ matrix.role }}/
       - name: Push Docker image
-        run: docker push ${IMAGE_NAME}:${VERSION}
+        run: docker push ${IMAGE_NAME}:${IMAGE_TAG}
 
   buildJavaImages:
     runs-on: ubuntu-latest
@@ -378,6 +404,15 @@ jobs:
       fail-fast: false
       matrix:
         demo: ${{ fromJson(needs.setupDemoNames.outputs.cpp-demo-names) }}
+        distro: ['']
+        include:
+          - demo: helloworldapi
+            distro: ubi8
+          - demo: helloworldapi
+            distro: debian
+        exclude:
+          - demo: helloworldapi
+            distro: ''
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -430,27 +465,29 @@ jobs:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
           override-compute: true
-          override-worker-version:  ${{ !contains(matrix.demo, 'api') && format('{0}-ubuntu', env.SDK_VERSION) || needs.versionning.outputs.version }}
-          override-worker-image: ${{  !contains(matrix.demo, 'api') && 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' || format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) }}
+          override-worker-version: ${{ !contains(matrix.demo, 'api') && format('{0}-ubuntu', env.SDK_VERSION) || format('{0}-{1}', needs.versionning.outputs.version, matrix.distro) }}
+          override-worker-image: ${{ !contains(matrix.demo, 'api') && 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' || format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) }}
           override-worker-partition: ${{ matrix.demo }}
-          log-suffix: ${{ matrix.demo }}
+          log-suffix: ${{ matrix.distro && format('{0}-{1}', matrix.demo, matrix.distro) || matrix.demo }}
 
       - name: Run Demo Client
         timeout-minutes: 10
         run: |
           export Grpc__Endpoint=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
+          DISTRO="${{ matrix.distro }}"
+          CLIENT_TAG="${{ needs.versionning.outputs.version }}${DISTRO:+-${DISTRO}}"
           if [ "${{ matrix.demo }}" = "chainedarithmetic" ]; then
             docker run --rm \
               -v /tmp/so-libs:/so-libs \
               -e GrpcClient__Endpoint="${Grpc__Endpoint}" \
               -e PartitionId="${{ matrix.demo }}" \
               -e Worker__LibraryPath="/so-libs/${SO_FILE}" \
-              dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }}
+              dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${CLIENT_TAG}
           else
             docker run --rm \
               -e GrpcClient__Endpoint="${Grpc__Endpoint}" \
               -e PartitionId="${{ matrix.demo }}" \
-              dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }}
+              dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${CLIENT_TAG}
           fi
 
   JavaSamples:
