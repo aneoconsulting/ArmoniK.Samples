@@ -1,4 +1,4 @@
-FROM debian:12 AS builder
+FROM debian:bookworm-20260623 AS builder
 
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
     ca-certificates \
@@ -34,7 +34,7 @@ COPY CMakeLists.txt ./
 COPY hello_worker.c ./
 RUN mkdir -p build && cd build && cmake .. && make
 
-FROM debian:12 AS runner
+FROM debian:bookworm-20260623 AS runner
 
 WORKDIR /app
 COPY --from=builder /app/build/libArmoniK.Samples.C.Hello.Worker.so ./
