@@ -16,7 +16,7 @@ jobs:
       release: ${{ steps.release.outputs.version }}
     steps:
     - name: Checkout
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       with:
         ref: ${{ github.ref }}
         fetch-depth: 0
@@ -35,7 +35,7 @@ jobs:
 
     - name: Generate Snapshot Version
       id: snapshot
-      uses: codacy/git-version@80c816f11db8dea5e3a81025f598193015b51832 # 2.8.0
+      uses: codacy/git-version@e81d6fdad74f9e114420d69ca8b47658f1182afb # 2.8.7
       with:
         minor-identifier: "feat:"
         release-branch: ${{ github.ref_name }}-pre
@@ -44,7 +44,7 @@ jobs:
 
     - name: Generate Release Version
       id: release
-      uses: codacy/git-version@80c816f11db8dea5e3a81025f598193015b51832 # 2.8.0
+      uses: codacy/git-version@e81d6fdad74f9e114420d69ca8b47658f1182afb # 2.8.7
       with:
         minor-identifier: "feat:"
         release-branch: ${{ steps.rev.outputs.current-branch }}
@@ -89,19 +89,19 @@ jobs:
           path : ./csharp/native/DynamicSubmission/Client/Dockerfile
     steps:
     - name: Checkout
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       with:
         ref: ${{ github.ref }}
         submodules: true
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@5964de0df58d5ad28b04d8fe2e6b80ad47105b91 # v3
+      uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4
 
     - name: Set up Docker Buildx
       id: buildx
-      uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3
+      uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
 
     - name: login
-      uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
+      uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4
       with:
         username: ${{ secrets.DOCKER_HUB_LOGIN }}
         password: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -110,7 +110,7 @@ jobs:
       run: echo ${{ steps.buildx.outputs.platforms }}
 
     - name: Build and push
-      uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
+      uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
       with:
         file: ${{ matrix.path }}
         context: ./csharp/native
@@ -130,7 +130,7 @@ jobs:
       GENRELEASE: ${{ needs.versionning.outputs.release }}
     steps:
     - name: Checkout
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       with:
         ref: ${{ github.ref }}
         submodules: true
