@@ -1,5 +1,5 @@
 # Build the multiply library
-FROM debian:12 AS builder
+FROM debian:trixie-20260623 AS builder
 
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install --no-install-recommends -y \
     devscripts \
@@ -41,7 +41,7 @@ RUN wget "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/down
 WORKDIR /app
 RUN mkdir -p build && cd build && cmake .. && make -j
 
-FROM debian:12 AS runner
+FROM debian:trixie-20260623 AS runner
 
 WORKDIR /app
 COPY --from=builder /app/build/libArmoniK.Samples.Cpp.ChainedArithmetic.Worker.so ./
