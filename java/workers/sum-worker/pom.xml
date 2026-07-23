@@ -20,7 +20,7 @@
     <dependency>
       <groupId>fr.aneo</groupId>
       <artifactId>armonik-worker</artifactId>
-      <version>0.1.2</version>
+      <version>0.1.4</version>
     </dependency>
   </dependencies>
   <build>
@@ -28,7 +28,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-wrapper-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.4</version>
         <configuration>
           <mavenVersion>3.9.6</mavenVersion>
         </configuration>
@@ -36,7 +36,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.12.1</version>
+        <version>3.15.0</version>
         <configuration>
           <release>${maven.compiler.release}</release>
           <encoding>${project.build.sourceEncoding}</encoding>
@@ -46,7 +46,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>3.6.2</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -109,7 +109,7 @@
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
-        <version>3.5.1</version>
+        <version>3.5.2</version>
         <executions>
           <execution>
             <phase>package</phase>
