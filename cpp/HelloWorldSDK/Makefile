@@ -3,8 +3,8 @@ WORKING_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 .ONESHELL:
 CLIENT_IMAGE_TAG?= armonik-samples-cpp-hello-client:0.0.0-sdk
 WORKER_IMAGE_TAG?= armonik-samples-cpp-hello-worker:0.0.0-sdk
-API_VERSION?= 3.29.0
-SDK_VERSION?= 0.5.2
+API_VERSION?= 3.29.2
+SDK_VERSION?= 0.5.5
 
 .PHONY: help
 help: 	## Show help
