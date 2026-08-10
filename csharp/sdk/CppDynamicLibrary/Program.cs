@@ -45,12 +45,19 @@ internal class Callback : ICallback
     return ValueTask.CompletedTask;
   }
 
-  public ValueTask OnErrorAsync(BlobHandle        blob,
-                                Exception?        exception,
-                                CancellationToken cancellationToken)
+  public async ValueTask OnErrorAsync(BlobHandle        blob,
+                                      Exception         exception,
+                                      CancellationToken cancellationToken)
   {
-    Console.WriteLine(exception?.Message ?? $"blob {blob.BlobInfo.BlobId} aborted");
-    return ValueTask.CompletedTask;
+    if (exception is not null)
+    {
+      Console.WriteLine(exception.Message);
+      return;
+    }
+
+    var blobInfo = await blob.GetBlobInfoAsync()
+                             .ConfigureAwait(false);
+    Console.WriteLine($"blob {blobInfo.BlobId} aborted");
   }
 }
 
@@ -136,13 +143,13 @@ internal class Callback : ICallback
      var taskDefinition = new TaskDefinition().WithTaskOptions(taskConfiguration)
                                               .WithLibrary(workerLibrary)
                                               .WithInput("num1",
-                                                         BlobDefinition.FromString("two",
-                                                                                   2.ToString()))
+                                                         InputBlobDefinition.FromString("two",
+                                                                                        2.ToString()))
                                               .WithInput("num2",
-                                                         BlobDefinition.FromString("three",
-                                                                                   3.ToString()))
+                                                         InputBlobDefinition.FromString("three",
+                                                                                        3.ToString()))
                                               .WithOutput("result",
-                                                          BlobDefinition.CreateOutput("resultBlob").WithCallback(callBack));
+                                                          OutputBlobDefinition.CreateOutput("resultBlob").WithCallback(callBack));
 
      logger.Log(LogLevel.Information, "Submitting task ...");
      var taskHandle = sessionHandle.Submit(taskDefinition);
