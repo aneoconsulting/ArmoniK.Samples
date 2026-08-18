@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
+FROM mcr.microsoft.com/dotnet/runtime:10.0 AS base
 
 WORKDIR /app
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY ["SubTasking/Client/ArmoniK.Samples.SubTasking.Client.csproj", "SubTasking/Client/"]
 RUN dotnet restore "SubTasking/Client/ArmoniK.Samples.SubTasking.Client.csproj"
