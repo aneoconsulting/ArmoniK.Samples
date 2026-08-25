@@ -1,4 +1,4 @@
-FROM debian:12 AS builder
+FROM debian:bookworm-20260623 AS builder
 
 ARG PARALLEL_JOBS=4
 
@@ -34,7 +34,7 @@ COPY ./CMakeLists.txt /worker/
 RUN cmake -DCMAKE_INSTALL_PREFIX="/worker/install" /worker/
 RUN make -j ${PARALLEL_JOBS} install
 
-FROM debian:12 AS runner
+FROM debian:bookworm-20260623 AS runner
 
 ARG API_VERSION
 
