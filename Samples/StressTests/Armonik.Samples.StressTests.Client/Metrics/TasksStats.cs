@@ -22,14 +22,17 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.Api.gRPC.V1.SortDirection;
 using ArmoniK.Api.gRPC.V1.Tasks;
 using ArmoniK.DevelopmentKit.Client.Common;
 
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 
 using Grpc.Core;
@@ -80,9 +83,20 @@ namespace Armonik.Samples.StressTests.Client.Metrics
     }
 
 
-    public Dictionary<KpiKeys, string> Kpi      { get; set; } = new();
-    public IList<TaskDetailed>         TasksRaw { get; set; } = new List<TaskDetailed>();
+    public Dictionary<KpiKeys, string> Kpi                     { get; set; } = new();
+    public IList<TaskDetailed>         TasksRaw                { get; set; } = new List<TaskDetailed>();
+    public int?                        SubmissionDelayMs       { get; set; }
+    public int?                        PayloadVariationPercent { get; set; }
+    public int?                        OutputVariationPercent  { get; set; }
+    public string?                     VariationDistribution   { get; set; }
+    public string?                     Endpoint                { get; set; }
 
+    /// <summary>
+    ///   Retrieve all tasks matching the given filter, using pagination.
+    /// </summary>
+    /// <param name="channel">gRPC channel to use</param>
+    /// <param name="filter">Filter to apply</param>
+    /// <param name="sort">Sorting options</param>
     private async IAsyncEnumerable<TaskDetailed> RetrieveAllTasksStats(ChannelBase                 channel,
                                                                        Filters                     filter,
                                                                        ListTasksRequest.Types.Sort sort)
@@ -116,7 +130,11 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       }
     }
 
-
+    /// <summary>
+    ///   Retrieve all task statistics for a specific session.
+    /// </summary>
+    /// <param name="channel">gRPC channel to use</param>
+    /// <param name="sessionId">Session identifier</param>
     private async Task GetAllStatsAsync(ChannelBase channel,
                                         string      sessionId)
     {
@@ -165,6 +183,12 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       }
     }
 
+    /// <summary>
+    ///   Get the time taken to submit tasks for a specific session.
+    /// </summary>
+    /// <param name="channel">gRPC channel to use</param>
+    /// <param name="sessionId">Session identifier</param>
+    /// <param name="start">Start time</param>
     public async Task GetTimeToSubmitTasks(ChannelBase channel,
                                            string      sessionId,
                                            DateTime    start)
@@ -189,6 +213,11 @@ namespace Armonik.Samples.StressTests.Client.Metrics
     }
 
 
+    /// <summary>
+    ///   Get the time taken to process tasks for a specific session.
+    /// </summary>
+    /// <param name="channel">gRPC channel to use</param>
+    /// <param name="sessionId">Session identifier</param>
     private async Task GetTimeToProcessTasks(ChannelBase channel,
                                              string      sessionId)
     {
@@ -202,13 +231,66 @@ namespace Armonik.Samples.StressTests.Client.Metrics
 
       var timeDiff = TasksRaw.Select(raw => raw.EndedAt)
                              .Max() - TasksRaw.Select(raw => raw.CreatedAt)
-                                              .Min();
-      var withMs = timeDiff.Seconds + timeDiff.Nanos / 1e9;
+                                              .Min();       // total time between first submission and last completion
+      var withMs = timeDiff.Seconds + timeDiff.Nanos / 1e9; // in seconds
       Kpi[KpiKeys.TIME_PROCESSED_TASKS] = TimeSpan.FromSeconds(withMs)
                                                   .ToString();
       Kpi[KpiKeys.TIME_THROUGHPUT_PROCESS] = (TasksRaw.Count() / withMs).ToString("F02");
+      // Total time (human readable) and number of distinct pods used
+      try
+      {
+        // total wall-clock time between first creation and last end
+        Kpi[KpiKeys.TOTAL_TIME] = TimeSpan.FromSeconds(withMs)
+                                          .ToString();
+
+        // count distinct owner pod ids if available
+        var podIds = TasksRaw.Select(r =>
+                                     {
+                                       try
+                                       {
+                                         // TaskDetailed likely exposes OwnerPodId
+                                         var prop = r.GetType()
+                                                     .GetProperty("OwnerPodId");
+                                         if (prop != null)
+                                         {
+                                           return prop.GetValue(r)
+                                                      ?.ToString();
+                                         }
+
+                                         // fallback to Owner if different naming
+                                         var alt = r.GetType()
+                                                    .GetProperty("Owner");
+                                         if (alt != null)
+                                         {
+                                           return alt.GetValue(r)
+                                                     ?.ToString();
+                                         }
+                                       }
+                                       catch
+                                       {
+                                         // ignore
+                                       }
+
+                                       return null;
+                                     })
+                             .Where(id => !string.IsNullOrEmpty(id))
+                             .Distinct()
+                             .Count();
+
+        Kpi[KpiKeys.NB_POD_USED] = podIds.ToString();
+      }
+      catch
+      {
+        // best effort only, don't break KPI calculation
+      }
     }
 
+    /// <summary>
+    ///   Get the time taken to retrieve results for a specific session.
+    /// </summary>
+    /// <param name="channel">gRPC channel to use</param>
+    /// <param name="sessionId">Session identifier</param>
+    /// <param name="dateTimeFinished">Time when the results were retrieved</param>
     public async Task GetTimeToRetrieveResults(ChannelBase channel,
                                                string      sessionId,
                                                DateTime    dateTimeFinished)
@@ -230,45 +312,121 @@ namespace Armonik.Samples.StressTests.Client.Metrics
       Kpi[KpiKeys.DOWNLOAD_SPEED_KB]       = (TasksRaw.Count() * (int.Parse(Kpi[KpiKeys.NB_OUTPUTBYTES]) / 1024.0) / withMs).ToString("F02");
     }
 
-    public async Task<Dictionary<KpiKeys, string>> GetAllStats(ChannelBase channel,
-                                                               string      sessionId,
-                                                               DateTime    start,
-                                                               DateTime?   end = null)
+    /// <summary>
+    ///   Public wrapper that retrieves all stats for a session and computes KPIs.
+    ///   Kept for backward compatibility with older callers.
+    /// </summary>
+    public async Task GetAllStats(ChannelBase channel,
+                                  string      sessionId,
+                                  DateTime    startTime,
+                                  DateTime    finishedTime)
     {
-      var dateTimeFinished = end ?? DateTime.Now;
-
-      await GetTimeToSubmitTasks(channel,
-                                 sessionId,
-                                 start)
+      // retrieve raw tasks
+      await GetAllStatsAsync(channel,
+                             sessionId)
         .ConfigureAwait(false);
 
+      // compute derived KPIs
+      await GetTimeToSubmitTasks(channel,
+                                 sessionId,
+                                 startTime)
+        .ConfigureAwait(false);
       await GetTimeToProcessTasks(channel,
                                   sessionId)
         .ConfigureAwait(false);
-
       await GetTimeToRetrieveResults(channel,
                                      sessionId,
-                                     dateTimeFinished)
+                                     finishedTime)
         .ConfigureAwait(false);
-
-      Kpi[KpiKeys.TOTAL_TIME] = (end - start).ToString() ?? string.Empty;
-
-      Kpi[KpiKeys.NB_POD_USED] = TasksRaw.DistinctBy(t => t.OwnerPodId)
-                                         .Count()
-                                         .ToString();
-
-      return Kpi;
     }
 
+    /// <summary>
+    ///   Create a JSON report file with all KPIs and per-task summaries.
+    /// </summary>
+    /// <param name="jsonPath">Path to the output JSON file</param>
     public async Task PrintToJson(string jsonPath)
     {
-      var dictJson = new Dictionary<string, string>(Kpi.Select(pair => new KeyValuePair<string, string>(pair.Key.ToString(),
-                                                                                                        pair.Value)));
+      // Build a rich report object containing parameters, KPIs and per-task summaries
+      var report = new Dictionary<string, object>();
+
+
+      report["kpis"] = Kpi.ToDictionary(k => k.Key.ToString(),
+                                        k => (object)k.Value);
+
+      // Add configuration/context information if present in Kpi
+      var context = new Dictionary<string, object>();
+      context["nbTasks"] = Kpi.ContainsKey(KpiKeys.NB_TASKS)
+                             ? Kpi[KpiKeys.NB_TASKS]
+                             : null;
+      context["nbInputBytes"] = Kpi.ContainsKey(KpiKeys.NB_INPUTBYTES)
+                                  ? Kpi[KpiKeys.NB_INPUTBYTES]
+                                  : null;
+      context["nbOutputBytes"] = Kpi.ContainsKey(KpiKeys.NB_OUTPUTBYTES)
+                                   ? Kpi[KpiKeys.NB_OUTPUTBYTES]
+                                   : null;
+      context["workloadTimeInMs"] = Kpi.ContainsKey(KpiKeys.TIME_WORKLOAD_IN_MS)
+                                      ? Kpi[KpiKeys.TIME_WORKLOAD_IN_MS]
+                                      : null;
+      context["tasksPerBuffer"] = Kpi.ContainsKey(KpiKeys.TASKS_PER_BUFFER)
+                                    ? Kpi[KpiKeys.TASKS_PER_BUFFER]
+                                    : null;
+      context["nbChannel"] = Kpi.ContainsKey(KpiKeys.NB_CHANNEL)
+                               ? Kpi[KpiKeys.NB_CHANNEL]
+                               : null;
+      context["nbConcurrentBufferPerChannel"] = Kpi.ContainsKey(KpiKeys.NB_CONCURRENT_BUFFER_PER_CHANNEL)
+                                                  ? Kpi[KpiKeys.NB_CONCURRENT_BUFFER_PER_CHANNEL]
+                                                  : null;
+
+      report["context"] = context;
+
+      if (SubmissionDelayMs.HasValue)
+      {
+        context["submissionDelayMs"] = SubmissionDelayMs.Value;
+      }
+
+      if (PayloadVariationPercent.HasValue)
+      {
+        context["payloadVariationPercent"] = PayloadVariationPercent.Value;
+      }
+
+      if (OutputVariationPercent.HasValue)
+      {
+        context["outputVariationPercent"] = OutputVariationPercent.Value;
+      }
+
+      if (!string.IsNullOrEmpty(VariationDistribution))
+      {
+        context["variationDistribution"] = VariationDistribution;
+      }
+
+      if (!string.IsNullOrEmpty(Endpoint))
+      {
+        context["grpcEndpoint"] = Endpoint;
+      }
+
+      // Additional auto fields
+      report["generatedAt"] = DateTime.UtcNow.ToString("o");
 
       var options = new JsonSerializerOptions
                     {
-                      WriteIndented = true,
+                      WriteIndented          = true,
+                      DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                     };
+
+      // Ensure parent directory exists
+      try
+      {
+        var parent = Path.GetDirectoryName(jsonPath);
+        if (!string.IsNullOrEmpty(parent) && !Directory.Exists(parent))
+        {
+          Directory.CreateDirectory(parent);
+        }
+      }
+      catch
+      {
+        // ignore
+      }
+
       if (File.Exists(jsonPath))
       {
         File.Delete(jsonPath);
@@ -276,50 +434,93 @@ namespace Armonik.Samples.StressTests.Client.Metrics
 
       await using var file = File.OpenWrite(jsonPath);
 
-      await file.WriteAsync(new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(dictJson,
+      await file.WriteAsync(new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(report,
                                                                                                      options))))
                 .ConfigureAwait(false);
     }
 
 
-    public async Task<string> PrintToText()
+    /// <summary>
+    ///   Create a human-readable text report with all KPIs.
+    /// </summary>
+    /// <returns>String containing the text report</returns>
+    public Task<string> PrintToText()
     {
       var sb = new StringBuilder();
       sb.Append("========      Statistics and performance      ========" + Environment.NewLine);
       sb.Append(Environment.NewLine);
-      sb.Append("-------- Submission buffer configuration --------------"                             + Environment.NewLine);
-      sb.Append($"Max nb tasks per buffer          : {Kpi[KpiKeys.TASKS_PER_BUFFER]}"                 + Environment.NewLine);
-      sb.Append($"Nb Grpc channel                  : {Kpi[KpiKeys.NB_CHANNEL]}"                       + Environment.NewLine);
-      sb.Append($"Nb concurrent buffer per channel : {Kpi[KpiKeys.NB_CONCURRENT_BUFFER_PER_CHANNEL]}" + Environment.NewLine);
+      sb.Append("-------- Submission buffer configuration --------------" + Environment.NewLine);
+
+      // helper to safely read KPI values (some keys may be absent)
+      string kpiVal(KpiKeys key)
+        => Kpi.TryGetValue(key,
+                           out var v)
+             ? v
+             : "N/A";
+
+      sb.Append($"Max nb tasks per buffer          : {kpiVal(KpiKeys.TASKS_PER_BUFFER)}"                 + Environment.NewLine);
+      sb.Append($"Nb Grpc channel                  : {kpiVal(KpiKeys.NB_CHANNEL)}"                       + Environment.NewLine);
+      sb.Append($"Nb concurrent buffer per channel : {kpiVal(KpiKeys.NB_CONCURRENT_BUFFER_PER_CHANNEL)}" + Environment.NewLine);
 
 
       sb.Append(Environment.NewLine);
-      sb.Append("-------- Context of stressTests          --------------"                + Environment.NewLine);
-      sb.Append($"Nb Task received and completed   : {Kpi[KpiKeys.COMPLETED_TASKS]}"     + Environment.NewLine);
-      sb.Append($"Input bytes by payload in kB     : {Kpi[KpiKeys.NB_INPUTBYTES]}"       + Environment.NewLine);
-      sb.Append($"Output bytes by result in kB     : {Kpi[KpiKeys.NB_OUTPUTBYTES]}"      + Environment.NewLine);
-      sb.Append($"Workload time per task (ms)      : {Kpi[KpiKeys.TIME_WORKLOAD_IN_MS]}" + Environment.NewLine);
+      sb.Append("-------- Context of stressTests          ---------------" + Environment.NewLine);
+      if (SubmissionDelayMs.HasValue || PayloadVariationPercent.HasValue || OutputVariationPercent.HasValue || !string.IsNullOrEmpty(VariationDistribution) ||
+          !string.IsNullOrEmpty(Endpoint))
+      {
+        if (SubmissionDelayMs.HasValue)
+        {
+          sb.Append($"Submission delay (ms)            : {SubmissionDelayMs.Value}" + Environment.NewLine);
+        }
+
+        if (PayloadVariationPercent.HasValue)
+        {
+          sb.Append($"Payload variation (%)           : {PayloadVariationPercent.Value}" + Environment.NewLine);
+        }
+
+        if (OutputVariationPercent.HasValue)
+        {
+          sb.Append($"Output variation (%)            : {OutputVariationPercent.Value}" + Environment.NewLine);
+        }
+
+        if (!string.IsNullOrEmpty(VariationDistribution))
+        {
+          sb.Append($"Variation distribution          : {VariationDistribution}" + Environment.NewLine);
+        }
+
+        if (!string.IsNullOrEmpty(Endpoint))
+        {
+          sb.Append($"gRPC endpoint                   : {Endpoint}" + Environment.NewLine);
+        }
+
+        sb.Append(Environment.NewLine);
+      }
+
+      sb.Append($"Nb Task received and completed   : {kpiVal(KpiKeys.COMPLETED_TASKS)}"     + Environment.NewLine);
+      sb.Append($"Input bytes by payload in kB     : {kpiVal(KpiKeys.NB_INPUTBYTES)}"       + Environment.NewLine);
+      sb.Append($"Output bytes by result in kB     : {kpiVal(KpiKeys.NB_OUTPUTBYTES)}"      + Environment.NewLine);
+      sb.Append($"Workload time per task (ms)      : {kpiVal(KpiKeys.TIME_WORKLOAD_IN_MS)}" + Environment.NewLine);
       sb.Append(Environment.NewLine);
 
-      sb.Append("-------- Statistics of execution         --------------"                         + Environment.NewLine);
-      sb.Append($"Time to Submit all Tasks           : {Kpi[KpiKeys.TIME_SUBMITTED_TASKS]}"       + Environment.NewLine);
-      sb.Append($"Submission throughPut (tasks/s)    : {Kpi[KpiKeys.TIME_THROUGHPUT_SUBMISSION]}" + Environment.NewLine);
-      sb.Append($"Upload speed (KB/s)                : {Kpi[KpiKeys.UPLOAD_SPEED_KB]}"            + Environment.NewLine);
+      sb.Append("-------- Statistics of execution         --------------"                            + Environment.NewLine);
+      sb.Append($"Time to Submit all Tasks           : {kpiVal(KpiKeys.TIME_SUBMITTED_TASKS)}"       + Environment.NewLine);
+      sb.Append($"Submission throughPut (tasks/s)    : {kpiVal(KpiKeys.TIME_THROUGHPUT_SUBMISSION)}" + Environment.NewLine);
+      sb.Append($"Upload speed (KB/s)                : {kpiVal(KpiKeys.UPLOAD_SPEED_KB)}"            + Environment.NewLine);
       sb.Append(Environment.NewLine);
-      sb.Append($"Time to process all Tasks          : {Kpi[KpiKeys.TIME_PROCESSED_TASKS]}"    + Environment.NewLine);
-      sb.Append($"Processing throughPut (tasks/s)    : {Kpi[KpiKeys.TIME_THROUGHPUT_PROCESS]}" + Environment.NewLine);
+      sb.Append($"Time to process all Tasks          : {kpiVal(KpiKeys.TIME_PROCESSED_TASKS)}"    + Environment.NewLine);
+      sb.Append($"Processing throughPut (tasks/s)    : {kpiVal(KpiKeys.TIME_THROUGHPUT_PROCESS)}" + Environment.NewLine);
       sb.Append(Environment.NewLine);
-      sb.Append($"Time to retrieve all results       : {Kpi[KpiKeys.TIME_RETRIEVE_RESULTS]}"   + Environment.NewLine);
-      sb.Append($"Speed retrieving result (result/s) : {Kpi[KpiKeys.TIME_THROUGHPUT_RESULTS]}" + Environment.NewLine);
-      sb.Append($"Download speed (KB/s)              : {Kpi[KpiKeys.DOWNLOAD_SPEED_KB]}"       + Environment.NewLine);
+      sb.Append($"Time to retrieve all results       : {kpiVal(KpiKeys.TIME_RETRIEVE_RESULTS)}"   + Environment.NewLine);
+      sb.Append($"Speed retrieving result (result/s) : {kpiVal(KpiKeys.TIME_THROUGHPUT_RESULTS)}" + Environment.NewLine);
+      sb.Append($"Download speed (KB/s)              : {kpiVal(KpiKeys.DOWNLOAD_SPEED_KB)}"       + Environment.NewLine);
 
       sb.Append(Environment.NewLine);
       sb.Append("-------- Total user time end to end      --------------" + Environment.NewLine);
 
-      sb.Append($"Number of pod used               : {Kpi[KpiKeys.NB_POD_USED]}" + Environment.NewLine);
-      sb.Append($"Total time                       : {Kpi[KpiKeys.TOTAL_TIME]}"  + Environment.NewLine);
+      sb.Append($"Number of pod used               : {kpiVal(KpiKeys.NB_POD_USED)}" + Environment.NewLine);
+      sb.Append($"Total time                       : {kpiVal(KpiKeys.TOTAL_TIME)}"  + Environment.NewLine);
 
-      return sb.ToString();
+      return Task.FromResult(sb.ToString());
     }
   }
 }
