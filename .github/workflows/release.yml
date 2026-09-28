@@ -162,6 +162,72 @@ jobs:
           -Djib.to.tags=latest \
           -Djib.from.platforms=linux/amd64,linux/arm64
 
+  buildCppImages:
+    runs-on: ubuntu-latest
+    needs:
+      - versionning
+    env:
+      RELEASE: ${{ needs.versionning.outputs.release }}
+    strategy:
+      fail-fast: true
+      matrix:
+        role: [client, worker]
+        demo:
+          - dir: HelloWorldAPI
+            distro: ubi8
+          - dir: HelloWorldAPI
+            distro: debian
+          - dir: HelloWorldSDK
+            distro: ubi8
+          - dir: HelloWorldSDK
+            distro: debian
+          - dir: HelloWorldC
+            distro: ''
+          - dir: ChainedArithmetic
+            distro: ''
+    steps:
+    - name: Checkout
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      with:
+        ref: ${{ github.ref }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
+
+    - name: login
+      uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4
+      with:
+        username: ${{ secrets.DOCKER_HUB_LOGIN }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Compute build parameters
+      id: params
+      run: |
+        VERSIONS=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json)
+        echo "api-version=$(echo "${VERSIONS}" | jq -r '.armonik_versions.api')" >> $GITHUB_OUTPUT
+        echo "sdk-version=$(echo "${VERSIONS}" | jq -r '.armonik_versions.extcpp')" >> $GITHUB_OUTPUT
+        IMAGE="dockerhubaneo/armonik_demo_cpp_$(echo '${{ matrix.demo.dir }}' | tr '[:upper:]' '[:lower:]')_${{ matrix.role }}"
+        DISTRO="${{ matrix.demo.distro }}"
+        echo "dockerfile=Dockerfile${DISTRO:+.${DISTRO}}" >> $GITHUB_OUTPUT
+        {
+          echo "tags<<EOF"
+          echo "${IMAGE}:${RELEASE}${DISTRO:+-${DISTRO}}"
+          echo "${IMAGE}:latest${DISTRO:+-${DISTRO}}"
+          echo "EOF"
+        } >> $GITHUB_OUTPUT
+
+    - name: Build and push
+      uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+      with:
+        context: ./cpp/${{ matrix.demo.dir }}/${{ matrix.role }}
+        file: ./cpp/${{ matrix.demo.dir }}/${{ matrix.role }}/${{ steps.params.outputs.dockerfile }}
+        platforms: linux/amd64
+        build-args: |
+          API_VERSION=${{ steps.params.outputs.api-version }}
+          SDK_VERSION=${{ steps.params.outputs.sdk-version }}
+        push: true
+        tags: ${{ steps.params.outputs.tags }}
+
   buildProjects:
     runs-on: ubuntu-latest
     needs:
