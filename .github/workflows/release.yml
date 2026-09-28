@@ -157,7 +157,7 @@ jobs:
     - name: Build and push
       working-directory: java/workers/${{ matrix.worker }}
       run: |
-        ./mvnw compile jib:build \
+        ./mvnw -B compile jar:jar jib:build \
           -Djib.to.image=dockerhubaneo/armonik_demo_java_${{ matrix.worker }}:${RELEASE} \
           -Djib.to.tags=latest \
           -Djib.from.platforms=linux/amd64,linux/arm64
