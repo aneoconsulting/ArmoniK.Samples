@@ -125,4 +125,4 @@ Expected output:
 ## Notes
 
 - Replace `http://xxx.xxx.xxx:5001` with the correct endpoint for your control plane.
-- The image tags and package versions are defined in the `Makefile` and can be overridden with environment variables (`CLIENT_IMAGE_TAG`, `WORKER_IMAGE_TAG`, `API_VERSION`, `SDK_VERSION`).
+- The package versions are defined in [`cpp/versions.env`](../versions.env) and the image tags in the `Makefile`. All can be overridden with environment variables (`CLIENT_IMAGE_TAG`, `WORKER_IMAGE_TAG`, `API_VERSION`, `SDK_VERSION`).

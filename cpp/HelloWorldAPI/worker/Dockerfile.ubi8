@@ -32,9 +32,9 @@ RUN rm -rf *.rpm
 RUN mkdir -p /worker/install/
 
 ARG API_VERSION
-RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" && \
-    rpm -ivh libarmonik-${API_VERSION}-Linux.rpm && \
-    rm libarmonik-${API_VERSION}-Linux.rpm
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-devel-${API_VERSION}-Linux.rpm" && \
+    rpm -ivh libarmonik-${API_VERSION}-Linux.rpm libarmonik-devel-${API_VERSION}-Linux.rpm && \
+    rm libarmonik-${API_VERSION}-Linux.rpm libarmonik-devel-${API_VERSION}-Linux.rpm
 
 COPY ./src/ /worker/src/
 COPY ./CMakeLists.txt /worker/
@@ -57,6 +57,11 @@ RUN yum --disableplugin=subscription-manager update -y && \
 WORKDIR /tmp
 RUN wget https://github.com/aneoconsulting/grpc-rpm/releases/download/1.62.2.0/grpc-1.62.2-1.el8.x86_64.rpm && \
     rpm -ivh grpc-1.62.2-1.el8.x86_64.rpm && rm grpc-1.62.2-1.el8.x86_64.rpm
+
+ARG API_VERSION
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" && \
+    yum --disableplugin=subscription-manager install -y libarmonik-${API_VERSION}-Linux.rpm && \
+    rm libarmonik-${API_VERSION}-Linux.rpm
 
 COPY --from=builder /worker /worker
 

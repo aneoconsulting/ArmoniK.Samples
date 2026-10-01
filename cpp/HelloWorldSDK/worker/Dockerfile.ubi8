@@ -27,9 +27,9 @@ RUN wget "https://github.com/aneoconsulting/grpc-rpm/releases/download/${GRPC_BU
     rm "grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" "grpc-devel-${GRPC_BUILD%.*}-1.el8.x86_64.rpm"
 
 ARG API_VERSION
-RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" && \
-    dnf install -y libarmonik-${API_VERSION}-Linux.rpm && \
-    rm libarmonik-${API_VERSION}-Linux.rpm
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-devel-${API_VERSION}-Linux.rpm" && \
+    dnf install -y libarmonik-${API_VERSION}-Linux.rpm libarmonik-devel-${API_VERSION}-Linux.rpm && \
+    rm libarmonik-${API_VERSION}-Linux.rpm libarmonik-devel-${API_VERSION}-Linux.rpm
 
 ARG SDK_VERSION
 RUN wget "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/download/${SDK_VERSION}/armoniksdk-${SDK_VERSION}.rpm" && \

@@ -178,4 +178,4 @@ Status(StatusCode="Unavailable", Detail="Error processing task : Transient error
 - The worker is a pure C shared library. It has no dependency on the C++ SDK runtime or the ArmoniK API library at runtime — only `ArmoniKSDKInterface.h` is needed at compile time.
 - Error vs. retry semantics map directly to `armonik_status_t` return values: `ARMONIK_STATUS_ERROR` marks the task as permanently failed; `ARMONIK_STATUS_RETRY` signals a transient failure and causes ArmoniK to reschedule the task according to its `max_retries` policy.
 - Replace `http://xxx.xxx.xxx:5001` with the correct endpoint for your control plane.
-- The image tags and package versions used in the `Makefile` can be overridden with environment variables (`CLIENT_IMAGE_TAG`, `WORKER_IMAGE_TAG`, `API_VERSION`, `SDK_VERSION`).
+- The package versions are defined in [`cpp/versions.env`](../versions.env) and the image tags in the `Makefile`. All can be overridden with environment variables (`CLIENT_IMAGE_TAG`, `WORKER_IMAGE_TAG`, `API_VERSION`, `SDK_VERSION`).
