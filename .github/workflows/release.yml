@@ -204,6 +204,7 @@ jobs:
       id: params
       run: |
         source cpp/versions.env
+        if [ "${{ matrix.demo.dir }}" = "ChainedArithmetic" ]; then SDK_VERSION=${CHAINEDARITHMETIC_SDK_VERSION}; fi
         echo "api-version=${API_VERSION}" >> $GITHUB_OUTPUT
         echo "sdk-version=${SDK_VERSION}" >> $GITHUB_OUTPUT
         IMAGE="dockerhubaneo/armonik_demo_cpp_$(echo '${{ matrix.demo.dir }}' | tr '[:upper:]' '[:lower:]')_${{ matrix.role }}"
