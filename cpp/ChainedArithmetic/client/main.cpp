@@ -59,20 +59,20 @@ int main() {
   using ArmoniK::Sdk::Common::TaskDefinition;
 
   // Step 1: submit 3*3 and 4*4 as two independent multiply tasks.
+  // The method is selected by the Symbol option in opts_multiply.
   auto mul_tasks = service.Submit(
-      {TaskDefinition("multiply", {{"num1", BlobDefinition::FromData("3")},
-                                   {"num2", BlobDefinition::FromData("3")}}),
-       TaskDefinition("multiply", {{"num1", BlobDefinition::FromData("4")},
-                                   {"num2", BlobDefinition::FromData("4")}})},
+      {TaskDefinition({{"num1", BlobDefinition::FromData("3")}, {"num2", BlobDefinition::FromData("3")}}),
+       TaskDefinition({{"num1", BlobDefinition::FromData("4")}, {"num2", BlobDefinition::FromData("4")}})},
       handler, opts_multiply);
   logger.info("Multiply tasks submitted: " + mul_tasks[0] + ", " + mul_tasks[1]);
 
   service.WaitResults();
 
   // Step 2: submit add task wiring the two multiply results as inputs by blob ID.
+  // The method is selected by the Symbol option in opts_add.
   auto add_tasks = service.Submit(
-      {TaskDefinition("add", {{"num1", BlobDefinition::FromBlobId(handler->GetResultId(mul_tasks[0]))},
-                              {"num2", BlobDefinition::FromBlobId(handler->GetResultId(mul_tasks[1]))}})},
+      {TaskDefinition({{"num1", BlobDefinition::FromBlobId(handler->GetResultId(mul_tasks[0]))},
+                       {"num2", BlobDefinition::FromBlobId(handler->GetResultId(mul_tasks[1]))}})},
       handler, opts_add);
   logger.info("Add task submitted: " + add_tasks[0]);
 
