@@ -4,7 +4,7 @@ WORKING_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 CLIENT_IMAGE_TAG?= armonik-samples-cpp-chained-arithmetic-client:0.0.0-sdk
 WORKER_IMAGE_TAG?= armonik-samples-cpp-chained-arithmetic-worker:0.0.0-sdk
 API_VERSION?= $(shell . $(WORKING_DIR)/../versions.env && echo $$API_VERSION)
-SDK_VERSION?= $(shell . $(WORKING_DIR)/../versions.env && echo $$CHAINEDARITHMETIC_SDK_VERSION)
+SDK_VERSION?= $(shell . $(WORKING_DIR)/../versions.env && echo $$SDK_VERSION)
 
 .PHONY: help
 help: 	## Show help
