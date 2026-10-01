@@ -58,6 +58,11 @@ RUN wget "https://github.com/aneoconsulting/grpc-rpm/releases/download/${GRPC_BU
     dnf install -y "grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" && \
     rm "grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm"
 
+ARG API_VERSION
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" && \
+    dnf install -y libarmonik-${API_VERSION}-Linux.rpm && \
+    rm libarmonik-${API_VERSION}-Linux.rpm
+
 COPY --from=builder /lib/libArmoniK*.so* /lib/
 
 WORKDIR /app
