@@ -32,9 +32,9 @@ RUN rm -rf *.rpm
 RUN mkdir -p /client/install/
 
 ARG API_VERSION
-RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" && \
-    rpm -ivh libarmonik-${API_VERSION}-Linux.rpm && \
-    rm libarmonik-${API_VERSION}-Linux.rpm
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-devel-${API_VERSION}-Linux.rpm" && \
+    rpm -ivh libarmonik-${API_VERSION}-Linux.rpm libarmonik-devel-${API_VERSION}-Linux.rpm && \
+    rm libarmonik-${API_VERSION}-Linux.rpm libarmonik-devel-${API_VERSION}-Linux.rpm
 
 COPY ./src/ /client/src/
 COPY ./CMakeLists.txt /client/

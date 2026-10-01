@@ -18,10 +18,10 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install --no-inst
 
 # Install ArmoniK API — provides cmake configs for ArmoniK.Api.Common/Client needed to compile the SDK
 ARG API_VERSION
-RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.deb" && \
-    dpkg -i libarmonik-${API_VERSION}-Linux.deb && \
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.deb" "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-dev-${API_VERSION}-Linux.deb" && \
+    dpkg -i libarmonik-${API_VERSION}-Linux.deb libarmonik-dev-${API_VERSION}-Linux.deb && \
     apt-get -f install -y && \
-    rm libarmonik-${API_VERSION}-Linux.deb
+    rm libarmonik-${API_VERSION}-Linux.deb libarmonik-dev-${API_VERSION}-Linux.deb
 
 ARG SDK_VERSION
 RUN wget "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/download/${SDK_VERSION}/armoniksdk-${SDK_VERSION}.deb" && \

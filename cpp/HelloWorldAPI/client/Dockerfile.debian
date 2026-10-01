@@ -23,10 +23,10 @@ RUN mkdir -p /client/install/
 
 ARG API_VERSION
 WORKDIR /tmp
-RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.deb" && \
-    dpkg -i libarmonik-${API_VERSION}-Linux.deb && \
+RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.deb" "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-dev-${API_VERSION}-Linux.deb" && \
+    dpkg -i libarmonik-${API_VERSION}-Linux.deb libarmonik-dev-${API_VERSION}-Linux.deb && \
     apt-get -f install -y && \
-    rm libarmonik-${API_VERSION}-Linux.deb
+    rm libarmonik-${API_VERSION}-Linux.deb libarmonik-dev-${API_VERSION}-Linux.deb
 
 COPY ./src/ /client/src/
 COPY ./CMakeLists.txt /client/
