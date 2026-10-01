@@ -2,7 +2,7 @@
 WORKING_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 WORKER_IMAGE_TAG?="armonik-cpp-hello-worker:0.1.0-api"
 CLIENT_IMAGE_TAG?="armonik-cpp-hello-client:0.1.0-api"
-API_VERSION?=3.29.0
+API_VERSION?=$(shell . $(WORKING_DIR)/../versions.env && echo $$API_VERSION)
 
 .PHONY: help
 help: 	## Show help

@@ -203,9 +203,9 @@ jobs:
     - name: Compute build parameters
       id: params
       run: |
-        VERSIONS=$(curl -fsS https://raw.githubusercontent.com/aneoconsulting/ArmoniK/main/versions.tfvars.json)
-        echo "api-version=$(echo "${VERSIONS}" | jq -r '.armonik_versions.api')" >> $GITHUB_OUTPUT
-        echo "sdk-version=$(echo "${VERSIONS}" | jq -r '.armonik_versions.extcpp')" >> $GITHUB_OUTPUT
+        source cpp/versions.env
+        echo "api-version=${API_VERSION}" >> $GITHUB_OUTPUT
+        echo "sdk-version=${SDK_VERSION}" >> $GITHUB_OUTPUT
         IMAGE="dockerhubaneo/armonik_demo_cpp_$(echo '${{ matrix.demo.dir }}' | tr '[:upper:]' '[:lower:]')_${{ matrix.role }}"
         DISTRO="${{ matrix.demo.distro }}"
         echo "dockerfile=Dockerfile${DISTRO:+.${DISTRO}}" >> $GITHUB_OUTPUT
