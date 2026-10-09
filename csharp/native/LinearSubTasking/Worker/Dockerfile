@@ -1,10 +1,10 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY ["LinearSubTasking/Worker/ArmoniK.Samples.LinearSubTasking.Worker.csproj", "LinearSubTasking/Worker/"]
 RUN dotnet restore "LinearSubTasking/Worker/ArmoniK.Samples.LinearSubTasking.Worker.csproj"
