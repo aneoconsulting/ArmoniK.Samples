@@ -24,7 +24,7 @@ The service is an ordinary `ArmoniK::Sdk::Worker::ServiceBase`, as in the dynami
 
 ## Prerequisites
 
-- An ArmoniK.Extensions.Cpp release that includes `ConventionExecutor` and `TaskOptions::SetConvention` ([ArmoniK.Extensions.Cpp#107](https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/pull/107)). Set `SDK_VERSION` to that release.
+- ArmoniK.Extensions.Cpp 0.5.8 or later, which provides `ConventionExecutor` and `TaskOptions::SetConvention`.
 - An ArmoniK cluster with a partition that runs this sample's worker image. If you already deployed ArmoniK and wish to add such a partition, follow these steps:
 
 1. Build the worker image (see below) and make it available to your cluster.
