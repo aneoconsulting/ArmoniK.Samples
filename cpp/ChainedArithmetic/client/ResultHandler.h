@@ -10,16 +10,16 @@ class ResultHandler : public ArmoniK::Sdk::Client::IServiceInvocationHandler {
 public:
   explicit ResultHandler(armonik::api::common::logger::Logger &logger) : logger(logger.local()) {}
 
-  void HandleResponse(const std::string &result_payload, const std::string &taskId,
-                      const std::string &result_id) override {
+  void HandleResponse(std::string &&result_payload, armonik::api::string_view taskId,
+                      armonik::api::string_view result_id) override {
     std::stringstream ss;
     ss << "Result for task " << taskId << ": " << result_payload;
     logger.info(ss.str());
     std::lock_guard<std::mutex> lock(mutex_);
-    result_ids_[taskId] = result_id;
+    result_ids_[std::string(taskId)] = std::string(result_id);
   }
 
-  void HandleError(const std::exception &e, const std::string &taskId) override {
+  void HandleError(const std::exception &e, armonik::api::string_view taskId) override {
     std::stringstream ss;
     ss << "Error for task " << taskId << ": " << e.what();
     logger.error(ss.str());
