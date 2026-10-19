@@ -5,8 +5,6 @@ project(${PROJECT_NAME})
 
 set(CMAKE_CXX_STANDARD 17)
 
-# Needed until the installed ArmoniK.SDK.Common package finds it itself (ArmoniK.Extensions.Cpp#106)
-find_package(nlohmann_json REQUIRED)
 find_package(ArmoniK.Api.Worker CONFIG REQUIRED)
 if(NOT TARGET ArmoniK.SDK.Common)
     find_package(ArmoniK.SDK.Common CONFIG REQUIRED)

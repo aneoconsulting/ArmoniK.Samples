@@ -132,7 +132,7 @@ jobs:
       - name: Cpp demos
         id: set-cpp-demos
         run: |
-          CPP_DEMO_DIRS='["HelloWorldAPI","HelloWorldSDK","HelloWorldC","ChainedArithmetic"]'
+          CPP_DEMO_DIRS='["HelloWorldAPI","HelloWorldSDK","HelloWorldC","ChainedArithmetic","StaticWorker"]'
           CPP_DEMO_NAMES=$(echo "${CPP_DEMO_DIRS}" | jq -c 'map(ascii_downcase)')
           echo "cpp-demo-dirs=${CPP_DEMO_DIRS}" >> $GITHUB_OUTPUT
           echo "cpp-demo-names=${CPP_DEMO_NAMES}" >> $GITHUB_OUTPUT
@@ -493,7 +493,7 @@ jobs:
             path: infra
 
       - name: Prepare SDK sample
-        if: ${{ !contains(matrix.demo, 'api') }}
+        if: ${{ !contains(matrix.demo, 'api') && matrix.demo != 'staticworker' }}
         run: |
           case "${{ matrix.demo }}" in
             helloworldc)
@@ -526,8 +526,9 @@ jobs:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
           override-compute: true
-          override-worker-version: ${{ !contains(matrix.demo, 'api') && format('{0}-ubuntu', env.SDK_VERSION) || format('{0}-{1}', needs.versionning.outputs.version, matrix.distro) }}
-          override-worker-image: ${{ !contains(matrix.demo, 'api') && 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' || format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) }}
+          # helloworldapi and staticworker run their own worker image; the other demos run the SDK's DynamicWorker
+          override-worker-version: ${{ (contains(matrix.demo, 'api') || matrix.demo == 'staticworker') && (matrix.distro && format('{0}-{1}', needs.versionning.outputs.version, matrix.distro) || needs.versionning.outputs.version) || format('{0}-ubuntu', env.SDK_VERSION) }}
+          override-worker-image: ${{ (contains(matrix.demo, 'api') || matrix.demo == 'staticworker') && format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) || 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' }}
           override-worker-partition: ${{ matrix.demo }}
           log-suffix: ${{ matrix.distro && format('{0}-{1}', matrix.demo, matrix.distro) || matrix.demo }}
 
