@@ -659,3 +659,59 @@ jobs:
           dotnet run --project csharp/sdk/CppDynamicLibrary/CppDynamicLibrary.csproj -- \
             --LibraryPath /tmp/so-libs/${SO_FILE} \
             --Partition $PARTITION_NAME
+
+  CSharpSdkSamples:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        demo: [SubTasking]
+    env:
+      # Dynamic worker image built from ArmoniK.Extensions.CSharp main (.NET 10); must match the SDK version of the sample
+      DYNAMIC_WORKER_VERSION: 0.22.1-main.7.g8a47cef
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: ${{ github.ref }}
+      - name: Install Dependencies
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        with:
+            docker: true
+            terraform: true
+            k3s: true
+            aws: true
+
+      - name: Checkout Infra
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+            repository: aneoconsulting/ArmoniK
+            path: infra
+
+      - name: Set partition name
+        run: echo "PARTITION_NAME=csharpsdk$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Deploy
+        id: deploy
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        with:
+          working-directory: ${{ github.workspace }}/infra
+          type: localhost
+          override-compute: true
+          override-worker-version: ${{ env.DYNAMIC_WORKER_VERSION }}
+          override-worker-image: dockerhubaneo/armonik-dynamic-dotnet-worker
+          override-worker-partition: ${{ env.PARTITION_NAME }}
+          log-suffix: ${{ env.PARTITION_NAME }}
+
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        with:
+          dotnet-version: 10.x
+
+      - name: Run Demo
+        timeout-minutes: 10
+        working-directory: csharp/sdk/${{ matrix.demo }}
+        run: |
+          export Grpc__EndPoint=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
+          dotnet publish -c Release ${{ matrix.demo }}.Worker
+          dotnet run --project ${{ matrix.demo }}.Client -- --Partition $PARTITION_NAME
