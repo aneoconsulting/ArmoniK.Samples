@@ -41,7 +41,7 @@ The worker uses `ISdkTaskHandler` from `ArmoniK.Extensions.CSharp.Worker.Interfa
 - [.NET 10 SDK](https://dotnet.microsoft.com/download).
 - An ArmoniK cluster with a partition running `dockerhubaneo/armonik-dynamic-dotnet-worker`. The image must run on
   .NET 10 to load the worker library, and its tag should match the SDK version used here
-  (`0.22.1-main.7.g8a47cef`). Images up to `0.22.0` run on .NET 8.
+  (`0.23.0`). Images up to `0.22.0` run on .NET 8.
 
 ## Building and running
 

@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ArmoniK.Extensions.CSharp.Worker.Interfaces" Version="0.22.1-main.7.g8a47cef" />
+    <PackageReference Include="ArmoniK.Extensions.CSharp.Worker.Interfaces" Version="0.23.0" />
   </ItemGroup>
 
   <!-- The dynamic worker expects a zip archive. The dll ends up at

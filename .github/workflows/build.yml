@@ -667,8 +667,8 @@ jobs:
       matrix:
         demo: [SubTasking]
     env:
-      # Dynamic worker image built from ArmoniK.Extensions.CSharp main (.NET 10); must match the SDK version of the sample
-      DYNAMIC_WORKER_VERSION: 0.22.1-main.7.g8a47cef
+      # Dynamic worker image (.NET 10 from 0.23.0); must match the SDK version of the sample
+      DYNAMIC_WORKER_VERSION: 0.23.0
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
