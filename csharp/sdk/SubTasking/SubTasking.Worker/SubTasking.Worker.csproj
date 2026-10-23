@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Must match the .NET runtime of dockerhubaneo/armonik-dynamic-dotnet-worker -->
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>1.0.0</Version>
+    <OutputType>Library</OutputType>
+    <IsPackable>false</IsPackable>
+    <PublishDir>./publish/$(MSBuildProjectName)/$(Version)/</PublishDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ArmoniK.Extensions.CSharp.Worker.Interfaces" Version="0.22.1-main.7.g8a47cef" />
+  </ItemGroup>
+
+  <!-- The dynamic worker expects a zip archive. The dll ends up at
+       SubTasking.Worker/<Version>/SubTasking.Worker.dll inside it, which is the LibraryPath used by the client. -->
+  <Target Name="ZipPublishDir" AfterTargets="Publish">
+    <MakeDir Directories="./packages/" />
+    <ZipDirectory SourceDirectory="./publish/" DestinationFile="./packages/$(MSBuildProjectName)-v$(Version).zip"
+                  Overwrite="true" />
+  </Target>
+
+</Project>
