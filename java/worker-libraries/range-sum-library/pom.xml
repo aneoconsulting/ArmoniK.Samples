@@ -14,8 +14,8 @@
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- Needs TaskContext#workerLibrary and TaskDefinition#withWorkerLibrary (not released yet) -->
-    <armonik-worker.version>1.0.0-SNAPSHOT</armonik-worker.version>
+    <!-- TaskContext#workerLibrary and TaskDefinition#withWorkerLibrary are available from 0.2.0 -->
+    <armonik-worker.version>0.2.0</armonik-worker.version>
   </properties>
 
   <dependencies>

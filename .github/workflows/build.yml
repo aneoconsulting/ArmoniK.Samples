@@ -659,3 +659,74 @@ jobs:
           dotnet run --project csharp/sdk/CppDynamicLibrary/CppDynamicLibrary.csproj -- \
             --LibraryPath /tmp/so-libs/${SO_FILE} \
             --Partition $PARTITION_NAME
+
+  JavaDynamicSamples:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - demo: RangeSum
+            library: range-sum-library
+    env:
+      # Dynamic worker image of ArmoniK.Extensions.Java; must match the SDK version of the library
+      DYNAMIC_WORKER_VERSION: 0.2.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Install Dependencies
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        with:
+            docker: true
+            terraform: true
+            k3s: true
+            aws: true
+
+      - name: Checkout Infra
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+            repository: aneoconsulting/ArmoniK
+            path: infra
+
+      - name: Set partition name
+        run: echo "PARTITION_NAME=javadynamic$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Deploy
+        id: deploy
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        with:
+          working-directory: ${{ github.workspace }}/infra
+          type: localhost
+          override-compute: true
+          override-worker-socket: tcp
+          override-worker-version: ${{ env.DYNAMIC_WORKER_VERSION }}
+          override-worker-image: dockerhubaneo/armonik-dynamic-java-worker
+          override-worker-partition: ${{ env.PARTITION_NAME }}
+          log-suffix: ${{ env.PARTITION_NAME }}
+
+      - name: Setup Java and Maven
+        uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 # v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: 'maven'
+          cache-dependency-path: |
+            java/client/pom.xml
+            java/worker-libraries/${{ matrix.library }}/pom.xml
+
+      - name: Build Worker Library
+        working-directory: java/worker-libraries/${{ matrix.library }}
+        run: mvn -B -ntp package
+
+      - name: Run Demo Client
+        timeout-minutes: 10
+        working-directory: java/client
+        run: |
+          export ENDPOINT=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
+          ./mvnw compile exec:java -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}" \
+            -Dendpoint=$ENDPOINT \
+            -Dpartition=$PARTITION_NAME \
+            -Dlibrary=../worker-libraries/${{ matrix.library }}/target/${{ matrix.library }}.zip

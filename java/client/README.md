@@ -291,8 +291,8 @@ Submits one task computing $\sum_{i=1}^{N} i^2$ to the Java dynamic worker. The
 [range sum library](../worker-libraries/range-sum-library/README.md) splits the range recursively by submitting
 subtasks; the client only waits for the root result.
 
-**Setup:** The library and the `javadynamic` worker image need an unreleased ArmoniK.Extensions.Java version. See the
-[library requirements](../worker-libraries/range-sum-library/README.md#requirements), then build the library:
+**Setup:** The `javadynamic` partition must run `dockerhubaneo/armonik-dynamic-java-worker:0.2.0` or later (see the
+[library requirements](../worker-libraries/range-sum-library/README.md#requirements)). Build the library:
 
 ```bash
 cd ../worker-libraries/range-sum-library && mvn package

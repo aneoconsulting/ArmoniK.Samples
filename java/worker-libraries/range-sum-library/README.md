@@ -40,19 +40,9 @@ the same archive.
 
 ## Requirements
 
-`TaskContext#workerLibrary()` and the worker-side `TaskDefinition#withWorkerLibrary(...)` are not in a released
-ArmoniK.Extensions.Java version yet. Both the library and the `javadynamic` worker image must be built from a version
-that has them:
-
-```bash
-# In ArmoniK.Extensions.Java/worker
-./mvnw -Pdocker -DskipTests -Djib.skip=true install
-./mvnw -Pdocker -pl armonik-worker jib:dockerBuild \
-  -Djib.to.image=armonik-dynamic-java-worker -Djib.to.tags=subtask-local -Djib.from.platforms=linux/amd64
-```
-
-The `install` step puts `armonik-worker-domain:1.0.0-SNAPSHOT` in the local Maven repository for this library, and
-`jib:dockerBuild` builds the worker image into the local Docker daemon. Use that image for the `javadynamic` partition.
+`TaskContext#workerLibrary()` and the worker-side `TaskDefinition#withWorkerLibrary(...)` are available from
+ArmoniK.Extensions.Java 0.2.0. The `javadynamic` partition must run `dockerhubaneo/armonik-dynamic-java-worker:0.2.0`
+or later.
 
 The library declares `armonik-worker-domain` with `provided` scope: the dynamic worker loads library classes with its
 own class loader as parent, so the SDK classes always come from the worker.
