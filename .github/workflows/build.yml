@@ -114,6 +114,7 @@ jobs:
       java-demo-names: ${{ steps.set-java-demos.outputs.java-demo-names }}
       java-demo-worker-dirs: ${{ steps.set-java-demos.outputs.java-demo-worker-dirs }}
       java-demo-names-to-worker: ${{ steps.set-java-demos.outputs.java-demo-names-to-worker }}
+      java-demo-names-to-library: ${{ steps.set-java-demos.outputs.java-demo-names-to-library }}
     steps:
       - name: CSharp demos
         id: set-csharp-demos
@@ -135,11 +136,14 @@ jobs:
         id: set-java-demos
         run: |
           JAVA_DEMO_WORKER_DIRS='["workers/hello-world-worker","workers/sum-worker"]'
-          JAVA_DEMO_NAMES='["HelloWorld","SharedBlob","TaskDependencies"]'
+          JAVA_DEMO_NAMES='["HelloWorld","SharedBlob","TaskDependencies","RangeSum"]'
           JAVA_DEMO_NAMES_TO_WORKER='[{"HelloWorld":"hello-world-worker"},{"SharedBlob":"sum-worker"},{"TaskDependencies":"sum-worker"}]'
+          # Demos running a worker library on the dynamic Java worker instead of a sample worker image
+          JAVA_DEMO_NAMES_TO_LIBRARY='[{"RangeSum":"range-sum-library"}]'
           echo "java-demo-worker-dirs=${JAVA_DEMO_WORKER_DIRS}" >> $GITHUB_OUTPUT
           echo "java-demo-names=${JAVA_DEMO_NAMES}" >> $GITHUB_OUTPUT
           echo "java-demo-names-to-worker=${JAVA_DEMO_NAMES_TO_WORKER}" >> $GITHUB_OUTPUT
+          echo "java-demo-names-to-library=${JAVA_DEMO_NAMES_TO_LIBRARY}" >> $GITHUB_OUTPUT
 
   buildCSharpImages:
     runs-on: ubuntu-latest
@@ -516,6 +520,9 @@ jobs:
       - versionning
       - buildJavaImages
       - setupDemoNames
+    env:
+      # Dynamic worker image of ArmoniK.Extensions.Java for library demos; must match the SDK version of the libraries
+      JAVA_DYNAMIC_WORKER_VERSION: 0.2.0
     strategy:
       fail-fast: false
       matrix:
@@ -544,8 +551,17 @@ jobs:
         id: get-worker
         run: |
           DEMO2WORKER='${{ needs.setupDemoNames.outputs.java-demo-names-to-worker }}'
-          worker=$(echo $DEMO2WORKER | jq -r --arg name "${{ matrix.demo }}" 'map(select(.[$name])) | .[0][$name]')
-          echo WORKER_SUFFIX=$worker >> $GITHUB_ENV
+          DEMO2LIBRARY='${{ needs.setupDemoNames.outputs.java-demo-names-to-library }}'
+          worker=$(echo $DEMO2WORKER | jq -r --arg name "${{ matrix.demo }}" 'map(select(.[$name])) | .[0][$name] // empty')
+          library=$(echo $DEMO2LIBRARY | jq -r --arg name "${{ matrix.demo }}" 'map(select(.[$name])) | .[0][$name] // empty')
+          if [ -n "$library" ]; then
+            echo WORKER_LIBRARY=$library >> $GITHUB_ENV
+            echo WORKER_IMAGE=dockerhubaneo/armonik-dynamic-java-worker >> $GITHUB_ENV
+            echo WORKER_VERSION=$JAVA_DYNAMIC_WORKER_VERSION >> $GITHUB_ENV
+          else
+            echo WORKER_IMAGE=dockerhubaneo/armonik_demo_java_$worker >> $GITHUB_ENV
+            echo WORKER_VERSION=${{ needs.versionning.outputs.version }} >> $GITHUB_ENV
+          fi
           echo PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
           
       - name: Deploy
@@ -556,8 +572,8 @@ jobs:
           type: localhost
           override-compute: true
           override-worker-socket: tcp
-          override-worker-version: ${{ needs.versionning.outputs.version }}
-          override-worker-image: dockerhubaneo/armonik_demo_java_${{ env.WORKER_SUFFIX }}
+          override-worker-version: ${{ env.WORKER_VERSION }}
+          override-worker-image: ${{ env.WORKER_IMAGE }}
           override-worker-partition: ${{ env.PARTITION_NAME }}
           log-suffix: ${{ matrix.demo }}
 
@@ -567,7 +583,14 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: 'maven'
-          cache-dependency-path: 'java/client/pom.xml'
+          cache-dependency-path: |
+            java/client/pom.xml
+            java/worker-libraries/*/pom.xml
+
+      - name: Build Worker Library
+        if: ${{ env.WORKER_LIBRARY != '' }}
+        working-directory: java/worker-libraries/${{ env.WORKER_LIBRARY }}
+        run: mvn -B -ntp package
 
       - name: Run Demo Client
         timeout-minutes: 10
@@ -659,74 +682,3 @@ jobs:
           dotnet run --project csharp/sdk/CppDynamicLibrary/CppDynamicLibrary.csproj -- \
             --LibraryPath /tmp/so-libs/${SO_FILE} \
             --Partition $PARTITION_NAME
-
-  JavaDynamicSamples:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - demo: RangeSum
-            library: range-sum-library
-    env:
-      # Dynamic worker image of ArmoniK.Extensions.Java; must match the SDK version of the library
-      DYNAMIC_WORKER_VERSION: 0.2.0
-    steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-        with:
-          ref: ${{ github.ref }}
-
-      - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
-        with:
-            docker: true
-            terraform: true
-            k3s: true
-            aws: true
-
-      - name: Checkout Infra
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-        with:
-            repository: aneoconsulting/ArmoniK
-            path: infra
-
-      - name: Set partition name
-        run: echo "PARTITION_NAME=javadynamic$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
-      - name: Deploy
-        id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
-        with:
-          working-directory: ${{ github.workspace }}/infra
-          type: localhost
-          override-compute: true
-          override-worker-socket: tcp
-          override-worker-version: ${{ env.DYNAMIC_WORKER_VERSION }}
-          override-worker-image: dockerhubaneo/armonik-dynamic-java-worker
-          override-worker-partition: ${{ env.PARTITION_NAME }}
-          log-suffix: ${{ env.PARTITION_NAME }}
-
-      - name: Setup Java and Maven
-        uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 # v5
-        with:
-          distribution: temurin
-          java-version: '17'
-          cache: 'maven'
-          cache-dependency-path: |
-            java/client/pom.xml
-            java/worker-libraries/${{ matrix.library }}/pom.xml
-
-      - name: Build Worker Library
-        working-directory: java/worker-libraries/${{ matrix.library }}
-        run: mvn -B -ntp package
-
-      - name: Run Demo Client
-        timeout-minutes: 10
-        working-directory: java/client
-        run: |
-          export ENDPOINT=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
-          ./mvnw compile exec:java -Dexec.mainClass="fr.aneo.armonik.client.samples.${{ matrix.demo }}" \
-            -Dendpoint=$ENDPOINT \
-            -Dpartition=$PARTITION_NAME \
-            -Dlibrary=../worker-libraries/${{ matrix.library }}/target/${{ matrix.library }}.zip

@@ -20,17 +20,18 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * The worker library (range-sum-library) splits the range recursively by submitting subtasks;
  * the client only waits for the root result.
  * <p>
- * System properties: {@code endpoint} (default http://localhost:5001), {@code partition} (default javadynamic),
- * {@code library} (path to range-sum-library.zip), {@code n} (default 1000), {@code grain} (default 100).
+ * System properties, prefixed with {@code fr.aneo.armonik.client.samples.}: {@code endpoint} (default
+ * http://localhost:5001), {@code partition} (default javadynamic), {@code library.path} (path to
+ * range-sum-library.zip), {@code n} (default 1000), {@code grain} (default 100).
  */
 public class RangeSum {
 
   public static void main(String[] args) {
-    var endpoint = System.getProperty("endpoint", "http://localhost:5001");
-    var partition = System.getProperty("partition", "javadynamic");
-    var libraryZip = System.getProperty("library", "../worker-libraries/range-sum-library/target/range-sum-library.zip");
-    var n = Long.parseLong(System.getProperty("n", "1000"));
-    var grain = Long.parseLong(System.getProperty("grain", "100"));
+    var endpoint = System.getProperty("fr.aneo.armonik.client.samples.endpoint", "http://localhost:5001");
+    var partition = System.getProperty("fr.aneo.armonik.client.samples.partition", "javadynamic");
+    var libraryZip = System.getProperty("fr.aneo.armonik.client.samples.library.path", "../worker-libraries/range-sum-library/target/range-sum-library.zip");
+    var n = Long.parseLong(System.getProperty("fr.aneo.armonik.client.samples.n", "1000"));
+    var grain = Long.parseLong(System.getProperty("fr.aneo.armonik.client.samples.grain", "100"));
 
     var config = ArmoniKConfig.builder()
                               .endpoint(endpoint)

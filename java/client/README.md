@@ -302,11 +302,12 @@ cd ../worker-libraries/range-sum-library && mvn package
 
 ```bash
 ./mvnw compile exec:java -Dexec.mainClass="fr.aneo.armonik.client.samples.RangeSum" \
-  -Dendpoint=http://<ingress-ip>:5001
+  -Dfr.aneo.armonik.client.samples.endpoint=http://<ingress-ip>:5001
 ```
 
-Optional system properties: `partition` (default `javadynamic`), `library` (default
-`../worker-libraries/range-sum-library/target/range-sum-library.zip`), `n` (default `1000`), `grain` (default `100`).
+Optional system properties, prefixed with `fr.aneo.armonik.client.samples.`: `partition` (default `javadynamic`),
+`library.path` (default `../worker-libraries/range-sum-library/target/range-sum-library.zip`), `n` (default `1000`),
+`grain` (default `100`).
 
 Expected output:
 ```
