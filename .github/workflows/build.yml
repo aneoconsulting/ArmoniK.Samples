@@ -109,6 +109,7 @@ jobs:
     outputs:
       csharp-demo-names: ${{ steps.set-csharp-demos.outputs.csharp-demo-names }}
       csharp-demo-dirs: ${{ steps.set-csharp-demos.outputs.csharp-demo-dirs }}
+      csharp-demo-names-to-sdk-dir: ${{ steps.set-csharp-demos.outputs.csharp-demo-names-to-sdk-dir }}
       cpp-demo-names: ${{ steps.set-cpp-demos.outputs.cpp-demo-names }}
       cpp-demo-dirs: ${{ steps.set-cpp-demos.outputs.cpp-demo-dirs }}
       java-demo-names: ${{ steps.set-java-demos.outputs.java-demo-names }}
@@ -119,9 +120,13 @@ jobs:
         id: set-csharp-demos
         run: |
           CSHARP_DEMO_DIRS='["HelloWorld","MultipleResults","SubTasking","LinearSubTasking","DynamicSubmission"]'
-          CSHARP_DEMO_NAMES=$(echo "${CSHARP_DEMO_DIRS}" | jq -c 'map(ascii_downcase)')
+          # Samples under csharp/sdk: worker library loaded by the dynamic worker, no sample images
+          CSHARP_SDK_DEMO_DIRS='["SubTasking"]'
+          CSHARP_DEMO_NAMES=$(jq -nc --argjson native "${CSHARP_DEMO_DIRS}" --argjson sdk "${CSHARP_SDK_DEMO_DIRS}" '($native | map(ascii_downcase)) + ($sdk | map("sdk" + ascii_downcase))')
+          CSHARP_DEMO_NAMES_TO_SDK_DIR=$(echo "${CSHARP_SDK_DEMO_DIRS}" | jq -c 'map({("sdk" + ascii_downcase): .})')
           echo "csharp-demo-dirs=${CSHARP_DEMO_DIRS}" >> $GITHUB_OUTPUT
           echo "csharp-demo-names=${CSHARP_DEMO_NAMES}" >> $GITHUB_OUTPUT
+          echo "csharp-demo-names-to-sdk-dir=${CSHARP_DEMO_NAMES_TO_SDK_DIR}" >> $GITHUB_OUTPUT
 
       - name: Cpp demos
         id: set-cpp-demos
@@ -284,6 +289,9 @@ jobs:
       - versionning
       - buildCSharpImages
       - setupDemoNames
+    env:
+      # Dynamic worker image of ArmoniK.Extensions.CSharp for SDK demos; must match the SDK version of the samples
+      CSHARP_DYNAMIC_WORKER_VERSION: 0.23.0
     strategy:
       fail-fast: false
       matrix:
@@ -307,6 +315,19 @@ jobs:
             repository: aneoconsulting/ArmoniK
             path: infra
 
+      - name: Figure out correct worker
+        run: |
+          DEMO2SDKDIR='${{ needs.setupDemoNames.outputs.csharp-demo-names-to-sdk-dir }}'
+          sdk_dir=$(echo $DEMO2SDKDIR | jq -r --arg name "${{ matrix.demo }}" 'map(select(.[$name])) | .[0][$name] // empty')
+          if [ -n "$sdk_dir" ]; then
+            echo SDK_DIR=$sdk_dir >> $GITHUB_ENV
+            echo WORKER_IMAGE=dockerhubaneo/armonik-dynamic-dotnet-worker >> $GITHUB_ENV
+            echo WORKER_VERSION=$CSHARP_DYNAMIC_WORKER_VERSION >> $GITHUB_ENV
+          else
+            echo WORKER_IMAGE=dockerhubaneo/armonik_demo_${{ matrix.demo }}_worker >> $GITHUB_ENV
+            echo WORKER_VERSION=${{ needs.versionning.outputs.version }} >> $GITHUB_ENV
+          fi
+
       - name: Deploy
         id: deploy
         uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
@@ -314,12 +335,28 @@ jobs:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
           override-compute: true
-          override-worker-version: ${{ needs.versionning.outputs.version }}
-          override-worker-image:  dockerhubaneo/armonik_demo_${{ matrix.demo }}_worker
+          override-worker-version: ${{ env.WORKER_VERSION }}
+          override-worker-image: ${{ env.WORKER_IMAGE }}
           override-worker-partition: ${{ matrix.demo }}
           log-suffix: ${{ matrix.demo }}
 
+      - name: Install .NET Core
+        if: ${{ env.SDK_DIR != '' }}
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        with:
+          dotnet-version: 10.x
+
+      - name: Run SDK Demo
+        if: ${{ env.SDK_DIR != '' }}
+        timeout-minutes: 10
+        working-directory: csharp/sdk/${{ env.SDK_DIR }}
+        run: |
+          export Grpc__EndPoint=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
+          dotnet publish -c Release ${{ env.SDK_DIR }}.Worker
+          dotnet run --project ${{ env.SDK_DIR }}.Client -- --Partition ${{ matrix.demo }}
+
       - name: Run Demo Client
+        if: ${{ env.SDK_DIR == '' }}
         timeout-minutes: 10
         run: |
           export Grpc__Endpoint=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
@@ -659,59 +696,3 @@ jobs:
           dotnet run --project csharp/sdk/CppDynamicLibrary/CppDynamicLibrary.csproj -- \
             --LibraryPath /tmp/so-libs/${SO_FILE} \
             --Partition $PARTITION_NAME
-
-  CSharpSdkSamples:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        demo: [SubTasking]
-    env:
-      # Dynamic worker image (.NET 10 from 0.23.0); must match the SDK version of the sample
-      DYNAMIC_WORKER_VERSION: 0.23.0
-    steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-        with:
-          ref: ${{ github.ref }}
-      - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
-        with:
-            docker: true
-            terraform: true
-            k3s: true
-            aws: true
-
-      - name: Checkout Infra
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-        with:
-            repository: aneoconsulting/ArmoniK
-            path: infra
-
-      - name: Set partition name
-        run: echo "PARTITION_NAME=csharpsdk$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
-      - name: Deploy
-        id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
-        with:
-          working-directory: ${{ github.workspace }}/infra
-          type: localhost
-          override-compute: true
-          override-worker-version: ${{ env.DYNAMIC_WORKER_VERSION }}
-          override-worker-image: dockerhubaneo/armonik-dynamic-dotnet-worker
-          override-worker-partition: ${{ env.PARTITION_NAME }}
-          log-suffix: ${{ env.PARTITION_NAME }}
-
-      - name: Install .NET Core
-        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
-        with:
-          dotnet-version: 10.x
-
-      - name: Run Demo
-        timeout-minutes: 10
-        working-directory: csharp/sdk/${{ matrix.demo }}
-        run: |
-          export Grpc__EndPoint=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
-          dotnet publish -c Release ${{ matrix.demo }}.Worker
-          dotnet run --project ${{ matrix.demo }}.Client -- --Partition $PARTITION_NAME
