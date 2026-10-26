@@ -33,6 +33,7 @@ client/
 | `TaskDependencies` | Chain tasks using outputs as inputs | `sum` |
 | `DynamicLibrary` | Load a library JAR at runtime | `javadynamic` |
 | `CppDynamicLibrary` | Java client calling a C++ dynamic worker (interoperability) | `cppdynamic` |
+| `RangeSum` | Library that submits its own subtasks (recursive range sum) | `javadynamic` |
 
 ## Partition Setup
 
@@ -284,6 +285,34 @@ Expected output:
 Blob completed - id: <blob-id>, data: 6
 ```
 
+### RangeSum
+
+Submits one task computing $\sum_{i=1}^{N} i^2$ to the Java dynamic worker. The
+[range sum library](../worker-libraries/range-sum-library/README.md) splits the range recursively by submitting
+subtasks; the client only waits for the root result.
+
+**Setup:** The library and the `javadynamic` worker image need an unreleased ArmoniK.Extensions.Java version. See the
+[library requirements](../worker-libraries/range-sum-library/README.md#requirements), then build the library:
+
+```bash
+cd ../worker-libraries/range-sum-library && mvn package
+```
+
+**Run:**
+
+```bash
+./mvnw compile exec:java -Dexec.mainClass="fr.aneo.armonik.client.samples.RangeSum" \
+  -Dendpoint=http://<ingress-ip>:5001
+```
+
+Optional system properties: `partition` (default `javadynamic`), `library` (default
+`../worker-libraries/range-sum-library/target/range-sum-library.zip`), `n` (default `1000`), `grain` (default `100`).
+
+Expected output:
+```
+Result: 333833500, expected: 333833500
+```
+
 ## Key Concepts
 
 ### ArmoniKClient
@@ -371,4 +400,5 @@ public class SimpleBlobListener implements BlobCompletionListener {
 - [Hello World Worker Sample](../workers/hello-world-worker/README.md)
 - [Sum Worker Sample](../workers/sum-worker/README.md)
 - [Multiply Library Sample](../worker-libraries/multiply-library/README.md)
+- [Range Sum Library Sample](../worker-libraries/range-sum-library/README.md)
 - [ArmoniK Samples Repository](https://github.com/aneoconsulting/ArmoniK.Samples)

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>fr.aneo</groupId>
+  <artifactId>range-sum-library</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <name>range-sum-library</name>
+
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Needs TaskContext#workerLibrary and TaskDefinition#withWorkerLibrary (not released yet) -->
+    <armonik-worker.version>1.0.0-SNAPSHOT</armonik-worker.version>
+  </properties>
+
+  <dependencies>
+    <!-- Provided by the dynamic worker at runtime: its class loader is the parent of the library's -->
+    <dependency>
+      <groupId>fr.aneo</groupId>
+      <artifactId>armonik-worker-domain</artifactId>
+      <version>${armonik-worker.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.12.1</version>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <parameters>true</parameters>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.7.1</version>
+        <executions>
+          <execution>
+            <id>zip-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>range-sum-library</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+              <inlineDescriptors>
+                <inlineDescriptor>
+                  <id>zip</id>
+                  <formats>
+                    <format>zip</format>
+                  </formats>
+                  <includeBaseDirectory>false</includeBaseDirectory>
+                  <files>
+                    <file>
+                      <source>${project.build.directory}/${project.build.finalName}.jar</source>
+                      <outputDirectory>/</outputDirectory>
+                    </file>
+                  </files>
+                </inlineDescriptor>
+              </inlineDescriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
