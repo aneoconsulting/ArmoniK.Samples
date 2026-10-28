@@ -1,0 +1,231 @@
+{
+  "version": 1,
+  "evaluationDate": "2026-10-22",
+  "requests": [
+    {
+      "id": "eu-call-atm",
+      "instrument": {
+        "type": "EuropeanOption",
+        "optionType": "Call",
+        "strike": 100,
+        "maturity": "2027-10-22"
+      },
+      "market": {
+        "spot": 100,
+        "volatility": 0.2,
+        "dividendYield": 0.0,
+        "discountCurve": {
+          "flatRate": 0.05
+        }
+      },
+      "engine": {
+        "type": "AnalyticEuropean"
+      }
+    },
+    {
+      "id": "eu-put-mc",
+      "instrument": {
+        "type": "EuropeanOption",
+        "optionType": "Put",
+        "strike": 95,
+        "maturity": "2027-04-22"
+      },
+      "market": {
+        "spot": 100,
+        "volatility": 0.25,
+        "dividendYield": 0.01,
+        "discountCurve": {
+          "flatRate": 0.05
+        }
+      },
+      "engine": {
+        "type": "MonteCarlo",
+        "samples": 100000,
+        "seed": 7
+      },
+      "outputs": [
+        "npv",
+        "delta",
+        "vega"
+      ]
+    },
+    {
+      "id": "am-put-crr",
+      "instrument": {
+        "type": "AmericanOption",
+        "optionType": "Put",
+        "strike": 100,
+        "maturity": "2027-10-22"
+      },
+      "market": {
+        "spot": 100,
+        "volatility": 0.2,
+        "discountCurve": {
+          "flatRate": 0.05
+        }
+      },
+      "engine": {
+        "type": "Binomial",
+        "tree": "crr",
+        "steps": 500
+      }
+    },
+    {
+      "id": "am-put-fd",
+      "instrument": {
+        "type": "AmericanOption",
+        "optionType": "Put",
+        "strike": 100,
+        "maturity": "2027-10-22"
+      },
+      "market": {
+        "spot": 100,
+        "volatility": 0.2,
+        "discountCurve": {
+          "zeroPoints": [
+            [
+              "6M",
+              0.045
+            ],
+            [
+              "1Y",
+              0.05
+            ],
+            [
+              "2Y",
+              0.052
+            ]
+          ]
+        }
+      },
+      "engine": {
+        "type": "FiniteDifference",
+        "timeSteps": 200,
+        "gridPoints": 200
+      }
+    },
+    {
+      "id": "bond-curve",
+      "instrument": {
+        "type": "FixedRateBond",
+        "faceAmount": 100,
+        "coupon": 0.04,
+        "issueDate": "2025-01-15",
+        "maturity": "2030-01-15",
+        "frequency": "Annual",
+        "dayCounter": "ActualActualISMA",
+        "calendar": "TARGET",
+        "settlementDays": 2
+      },
+      "market": {
+        "discountCurve": {
+          "zeroPoints": [
+            [
+              "1Y",
+              0.03
+            ],
+            [
+              "5Y",
+              0.035
+            ],
+            [
+              "10Y",
+              0.038
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "bond-quoted",
+      "instrument": {
+        "type": "FixedRateBond",
+        "coupon": 0.025,
+        "issueDate": "2024-06-01",
+        "maturity": "2034-06-01",
+        "frequency": "Semiannual"
+      },
+      "market": {
+        "cleanPrice": 93.5
+      }
+    },
+    {
+      "id": "swap-5y-payer",
+      "instrument": {
+        "type": "VanillaSwap",
+        "side": "Payer",
+        "notional": 1000000,
+        "fixedRate": 0.035,
+        "tenor": "5Y",
+        "fixedFrequency": "Annual",
+        "fixedDayCounter": "Thirty360BondBasis",
+        "floatIndex": {
+          "name": "Euribor",
+          "tenor": "6M"
+        },
+        "floatSpread": 0.0
+      },
+      "market": {
+        "discountCurve": {
+          "flatRate": 0.03
+        },
+        "forecastCurve": {
+          "flatRate": 0.032
+        }
+      }
+    },
+    {
+      "id": "swap-10y-receiver-forward",
+      "instrument": {
+        "type": "VanillaSwap",
+        "side": "Receiver",
+        "notional": 5000000,
+        "fixedRate": 0.033,
+        "tenor": "10Y",
+        "startDate": "2027-10-22",
+        "floatIndex": {
+          "name": "Euribor",
+          "tenor": "3M"
+        }
+      },
+      "market": {
+        "discountCurve": {
+          "zeroPoints": [
+            [
+              "1Y",
+              0.029
+            ],
+            [
+              "5Y",
+              0.031
+            ],
+            [
+              "10Y",
+              0.033
+            ],
+            [
+              "20Y",
+              0.034
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "invalid-on-purpose",
+      "instrument": {
+        "type": "EuropeanOption",
+        "optionType": "Call",
+        "strike": -5,
+        "maturity": "2027-10-22"
+      },
+      "market": {
+        "spot": 100,
+        "volatility": 0.2,
+        "discountCurve": {
+          "flatRate": 0.05
+        }
+      }
+    }
+  ]
+}

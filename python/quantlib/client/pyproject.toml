@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "armonik-quantlib-client"
+version = "0.1.0"
+description = "Submits JSON pricing requests to the ArmoniK QuantLib worker"
+requires-python = ">=3.10"
+dependencies = ["armonik==3.29.3"]
+
+[project.scripts]
+quantlib-client = "quantlib_client.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

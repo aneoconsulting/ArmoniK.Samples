@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "evaluationDate": "2026-10-22",
+  "requests": [
+    {
+      "id": "eu-call-atm",
+      "instrument": { "type": "EuropeanOption", "optionType": "Call", "strike": 100, "maturity": "2027-10-22" },
+      "market": { "spot": 100, "volatility": 0.2, "dividendYield": 0.0, "discountCurve": { "flatRate": 0.05 } },
+      "engine": { "type": "AnalyticEuropean" }
+    },
+    {
+      "id": "eu-put-mc",
+      "instrument": { "type": "EuropeanOption", "optionType": "Put", "strike": 95, "maturity": "2027-04-22" },
+      "market": { "spot": 100, "volatility": 0.25, "dividendYield": 0.01, "discountCurve": { "flatRate": 0.05 } },
+      "engine": { "type": "MonteCarlo", "samples": 100000, "seed": 7 },
+      "outputs": ["npv", "delta", "vega"]
+    }
+  ]
+}

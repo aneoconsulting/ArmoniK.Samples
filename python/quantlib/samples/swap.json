@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "evaluationDate": "2026-10-22",
+  "requests": [
+    {
+      "id": "swap-5y-payer",
+      "instrument": {
+        "type": "VanillaSwap", "side": "Payer", "notional": 1000000, "fixedRate": 0.035, "tenor": "5Y",
+        "fixedFrequency": "Annual", "fixedDayCounter": "Thirty360BondBasis",
+        "floatIndex": { "name": "Euribor", "tenor": "6M" }, "floatSpread": 0.0
+      },
+      "market": { "discountCurve": { "flatRate": 0.03 }, "forecastCurve": { "flatRate": 0.032 } }
+    },
+    {
+      "id": "swap-10y-receiver-forward",
+      "instrument": {
+        "type": "VanillaSwap", "side": "Receiver", "notional": 5000000, "fixedRate": 0.033, "tenor": "10Y",
+        "startDate": "2027-10-22", "floatIndex": { "name": "Euribor", "tenor": "3M" }
+      },
+      "market": { "discountCurve": { "zeroPoints": [["1Y", 0.029], ["5Y", 0.031], ["10Y", 0.033], ["20Y", 0.034]] } }
+    }
+  ]
+}
