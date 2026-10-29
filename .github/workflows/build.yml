@@ -291,7 +291,7 @@ jobs:
       - setupDemoNames
     env:
       # Dynamic worker image of ArmoniK.Extensions.CSharp for SDK demos; must match the SDK version of the samples
-      CSHARP_DYNAMIC_WORKER_VERSION: 0.23.0
+      CSHARP_DYNAMIC_WORKER_VERSION: 0.23.1
     strategy:
       fail-fast: false
       matrix:
