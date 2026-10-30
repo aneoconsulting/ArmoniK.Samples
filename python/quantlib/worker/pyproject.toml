@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "armonik-quantlib-worker"
+version = "0.2.1"
+description = "ArmoniK worker pricing options, bonds and swaps with QuantLib from JSON payloads"
+requires-python = ">=3.10"
+dependencies = [
+  "QuantLib==1.44",
+  "armonik==3.29.3",
+  "pydantic==2.14.1",
+]
+
+[project.optional-dependencies]
+tests = ["pytest==9.1.1"]
+
+[project.scripts]
+quantlib-worker = "quantlib_worker.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

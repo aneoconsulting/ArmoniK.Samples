@@ -1,0 +1,14 @@
+annotated-types==0.8.0
+armonik==3.29.3
+cffi==2.1.1
+cryptography==50.0.2
+deprecation==2.1.0
+grpcio==1.84.0
+packaging==26.3
+protobuf==7.36.2
+pycparser==3.11
+pydantic==2.14.1
+pydantic_core==2.50.1
+QuantLib==1.44
+typing-inspection==0.4.4
+typing_extensions==4.16.0

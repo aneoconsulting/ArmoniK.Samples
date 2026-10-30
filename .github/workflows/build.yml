@@ -720,3 +720,83 @@ jobs:
           dotnet run --project csharp/sdk/CppDynamicLibrary/CppDynamicLibrary.csproj -- \
             --LibraryPath /tmp/so-libs/${SO_FILE} \
             --Partition $PARTITION_NAME
+
+  # The QuantLib images are built and tested here only: they are not pushed to Docker Hub
+  QuantLibSamples:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Install Dependencies
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        with:
+            docker: true
+            terraform: true
+            k3s: true
+            aws: true
+
+      - name: Checkout Infra
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+            repository: aneoconsulting/ArmoniK
+            path: infra
+
+      - name: Build images
+        run: |
+          python/quantlib/build.sh all --test --tag ci
+          # k3s does not use the docker image store: the worker image is imported for the partition to find it
+          docker save armonik_quantlib_worker:ci | sudo k3s ctr images import -
+          make -C cpp/QuantLib build_client CLIENT_IMAGE_TAG=armonik_quantlib_client_cpp:ci
+          # The sample batch without its request invalid on purpose: every client must exit with 0
+          mkdir -p /tmp/quantlib
+          jq 'del(.requests[] | select(.id == "invalid-on-purpose"))' python/quantlib/samples/mixed_batch.json > /tmp/quantlib/batch.json
+
+      - name: Deploy
+        id: deploy
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        with:
+          working-directory: ${{ github.workspace }}/infra
+          type: localhost
+          override-compute: true
+          override-worker-version: ci
+          override-worker-image: armonik_quantlib_worker
+          override-worker-partition: quantlib
+          log-suffix: quantlib
+
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        with:
+          dotnet-version: |
+            8.x
+            10.x
+
+      - name: Run Python client
+        timeout-minutes: 10
+        run: |
+          ENDPOINT=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
+          docker run --rm -v /tmp/quantlib:/data/input:ro armonik_quantlib_client:ci input/batch.json \
+            --endpoint "${ENDPOINT}" --partition quantlib --batch-size 3
+
+      - name: Run C# API client
+        timeout-minutes: 10
+        run: |
+          ENDPOINT=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
+          dotnet run --project csharp/native/QuantLib/Client -- /tmp/quantlib/batch.json \
+            --endpoint "${ENDPOINT}" --partition quantlib --batch-size 3
+
+      - name: Run C# SDK client
+        timeout-minutes: 10
+        run: |
+          export Grpc__EndPoint=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
+          dotnet run --project csharp/sdk/QuantLib -- --Input /tmp/quantlib/batch.json --Partition quantlib --BatchSize 3
+
+      - name: Run C++ SDK client
+        timeout-minutes: 10
+        run: |
+          docker run --rm -v /tmp/quantlib:/app/input:ro \
+            -e GrpcClient__Endpoint="$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")" \
+            -e PartitionId=quantlib -e Input=input/batch.json -e BatchSize=3 \
+            armonik_quantlib_client_cpp:ci

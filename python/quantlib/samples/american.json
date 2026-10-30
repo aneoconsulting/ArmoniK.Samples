@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "evaluationDate": "2026-10-22",
+  "requests": [
+    {
+      "id": "am-put-crr",
+      "instrument": { "type": "AmericanOption", "optionType": "Put", "strike": 100, "maturity": "2027-10-22" },
+      "market": { "spot": 100, "volatility": 0.2, "discountCurve": { "flatRate": 0.05 } },
+      "engine": { "type": "Binomial", "tree": "crr", "steps": 500 }
+    },
+    {
+      "id": "am-put-fd",
+      "instrument": { "type": "AmericanOption", "optionType": "Put", "strike": 100, "maturity": "2027-10-22" },
+      "market": { "spot": 100, "volatility": 0.2, "discountCurve": { "zeroPoints": [["6M", 0.045], ["1Y", 0.05], ["2Y", 0.052]] } },
+      "engine": { "type": "FiniteDifference", "timeSteps": 200, "gridPoints": 200 }
+    }
+  ]
+}

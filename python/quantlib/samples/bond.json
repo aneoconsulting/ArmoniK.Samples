@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "evaluationDate": "2026-10-22",
+  "requests": [
+    {
+      "id": "bond-curve",
+      "instrument": {
+        "type": "FixedRateBond", "faceAmount": 100, "coupon": 0.04,
+        "issueDate": "2025-01-15", "maturity": "2030-01-15",
+        "frequency": "Annual", "dayCounter": "ActualActualISMA", "calendar": "TARGET", "settlementDays": 2
+      },
+      "market": { "discountCurve": { "zeroPoints": [["1Y", 0.030], ["5Y", 0.035], ["10Y", 0.038]] } }
+    },
+    {
+      "id": "bond-quoted",
+      "instrument": { "type": "FixedRateBond", "coupon": 0.025, "issueDate": "2024-06-01", "maturity": "2034-06-01", "frequency": "Semiannual" },
+      "market": { "cleanPrice": 93.5 }
+    }
+  ]
+}

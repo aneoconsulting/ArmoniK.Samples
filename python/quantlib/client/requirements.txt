@@ -1,0 +1,9 @@
+armonik==3.29.3
+cffi==2.1.1
+cryptography==50.0.2
+deprecation==2.1.0
+grpcio==1.84.0
+packaging==26.3
+protobuf==7.36.2
+pycparser==3.11
+typing_extensions==4.16.0

@@ -1,0 +1,892 @@
+{
+  "additionalProperties": false,
+  "description": "Task payload. ``requests`` stays raw here and is validated request by request.",
+  "properties": {
+    "version": {
+      "const": 1,
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "evaluationDate": {
+      "format": "date",
+      "title": "Evaluationdate",
+      "type": "string"
+    },
+    "requests": {
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/OptionRequest"
+          },
+          {
+            "$ref": "#/$defs/BondRequest"
+          },
+          {
+            "$ref": "#/$defs/SwapRequest"
+          }
+        ]
+      },
+      "minItems": 1,
+      "title": "Requests",
+      "type": "array"
+    }
+  },
+  "required": [
+    "evaluationDate",
+    "requests"
+  ],
+  "title": "ArmoniK QuantLib pricing batch",
+  "type": "object",
+  "$defs": {
+    "AnalyticEuropeanEngine": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "AnalyticEuropean",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "AnalyticEuropeanEngine",
+      "type": "object"
+    },
+    "BaroneAdesiWhaleyEngine": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "BaroneAdesiWhaley",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "BaroneAdesiWhaleyEngine",
+      "type": "object"
+    },
+    "BinomialEngine": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "Binomial",
+          "title": "Type",
+          "type": "string"
+        },
+        "tree": {
+          "default": "crr",
+          "enum": [
+            "crr",
+            "jr",
+            "eqp",
+            "trigeorgis",
+            "tian",
+            "lr",
+            "joshi4"
+          ],
+          "title": "Tree",
+          "type": "string"
+        },
+        "steps": {
+          "default": 500,
+          "exclusiveMinimum": 0,
+          "title": "Steps",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "BinomialEngine",
+      "type": "object"
+    },
+    "EquityMarket": {
+      "additionalProperties": false,
+      "properties": {
+        "spot": {
+          "exclusiveMinimum": 0,
+          "title": "Spot",
+          "type": "number"
+        },
+        "volatility": {
+          "exclusiveMinimum": 0,
+          "title": "Volatility",
+          "type": "number"
+        },
+        "dividendYield": {
+          "default": 0.0,
+          "title": "Dividendyield",
+          "type": "number"
+        },
+        "discountCurve": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FlatCurve"
+            },
+            {
+              "$ref": "#/$defs/ZeroCurve"
+            }
+          ],
+          "title": "Discountcurve"
+        },
+        "dayCounter": {
+          "default": "Actual365Fixed",
+          "enum": [
+            "Actual360",
+            "Actual365Fixed",
+            "ActualActualISDA",
+            "ActualActualISMA",
+            "ActualActualBond",
+            "Thirty360BondBasis",
+            "Thirty360European",
+            "Business252"
+          ],
+          "title": "Daycounter",
+          "type": "string"
+        },
+        "calendar": {
+          "default": "TARGET",
+          "enum": [
+            "TARGET",
+            "NullCalendar",
+            "France",
+            "Germany",
+            "UnitedKingdom",
+            "UnitedStates",
+            "UnitedStatesNYSE",
+            "Japan"
+          ],
+          "title": "Calendar",
+          "type": "string"
+        }
+      },
+      "required": [
+        "spot",
+        "volatility",
+        "discountCurve"
+      ],
+      "title": "EquityMarket",
+      "type": "object"
+    },
+    "FiniteDifferenceEngine": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "FiniteDifference",
+          "title": "Type",
+          "type": "string"
+        },
+        "timeSteps": {
+          "default": 200,
+          "exclusiveMinimum": 0,
+          "title": "Timesteps",
+          "type": "integer"
+        },
+        "gridPoints": {
+          "default": 200,
+          "exclusiveMinimum": 0,
+          "title": "Gridpoints",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "FiniteDifferenceEngine",
+      "type": "object"
+    },
+    "FlatCurve": {
+      "additionalProperties": false,
+      "properties": {
+        "flatRate": {
+          "title": "Flatrate",
+          "type": "number"
+        },
+        "compounding": {
+          "default": "Continuous",
+          "enum": [
+            "Simple",
+            "Compounded",
+            "Continuous"
+          ],
+          "title": "Compounding",
+          "type": "string"
+        },
+        "frequency": {
+          "default": "Annual",
+          "enum": [
+            "Annual",
+            "Semiannual",
+            "Quarterly",
+            "Monthly"
+          ],
+          "title": "Frequency",
+          "type": "string"
+        },
+        "dayCounter": {
+          "default": "Actual365Fixed",
+          "enum": [
+            "Actual360",
+            "Actual365Fixed",
+            "ActualActualISDA",
+            "ActualActualISMA",
+            "ActualActualBond",
+            "Thirty360BondBasis",
+            "Thirty360European",
+            "Business252"
+          ],
+          "title": "Daycounter",
+          "type": "string"
+        }
+      },
+      "required": [
+        "flatRate"
+      ],
+      "title": "FlatCurve",
+      "type": "object"
+    },
+    "MonteCarloEngine": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "MonteCarlo",
+          "title": "Type",
+          "type": "string"
+        },
+        "samples": {
+          "default": 100000,
+          "exclusiveMinimum": 0,
+          "title": "Samples",
+          "type": "integer"
+        },
+        "timeSteps": {
+          "default": 1,
+          "exclusiveMinimum": 0,
+          "title": "Timesteps",
+          "type": "integer"
+        },
+        "seed": {
+          "default": 42,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "antithetic": {
+          "default": true,
+          "title": "Antithetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "MonteCarloEngine",
+      "type": "object"
+    },
+    "VanillaOption": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "EuropeanOption",
+            "AmericanOption"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "optionType": {
+          "enum": [
+            "Call",
+            "Put"
+          ],
+          "title": "Optiontype",
+          "type": "string"
+        },
+        "strike": {
+          "exclusiveMinimum": 0,
+          "title": "Strike",
+          "type": "number"
+        },
+        "maturity": {
+          "format": "date",
+          "title": "Maturity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "optionType",
+        "strike",
+        "maturity"
+      ],
+      "title": "VanillaOption",
+      "type": "object"
+    },
+    "ZeroCurve": {
+      "additionalProperties": false,
+      "description": "Zero rates interpolated linearly. Each point is ``[tenor or ISO date, rate]``.",
+      "properties": {
+        "zeroPoints": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "anyOf": [
+                  {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  {
+                    "pattern": "^\\d+[DWMY]$",
+                    "type": "string"
+                  }
+                ]
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "minItems": 1,
+          "title": "Zeropoints",
+          "type": "array"
+        },
+        "compounding": {
+          "default": "Continuous",
+          "enum": [
+            "Simple",
+            "Compounded",
+            "Continuous"
+          ],
+          "title": "Compounding",
+          "type": "string"
+        },
+        "frequency": {
+          "default": "Annual",
+          "enum": [
+            "Annual",
+            "Semiannual",
+            "Quarterly",
+            "Monthly"
+          ],
+          "title": "Frequency",
+          "type": "string"
+        },
+        "dayCounter": {
+          "default": "Actual365Fixed",
+          "enum": [
+            "Actual360",
+            "Actual365Fixed",
+            "ActualActualISDA",
+            "ActualActualISMA",
+            "ActualActualBond",
+            "Thirty360BondBasis",
+            "Thirty360European",
+            "Business252"
+          ],
+          "title": "Daycounter",
+          "type": "string"
+        }
+      },
+      "required": [
+        "zeroPoints"
+      ],
+      "title": "ZeroCurve",
+      "type": "object"
+    },
+    "OptionRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "evaluationDate": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Evaluationdate"
+        },
+        "instrument": {
+          "$ref": "#/$defs/VanillaOption"
+        },
+        "market": {
+          "$ref": "#/$defs/EquityMarket"
+        },
+        "engine": {
+          "anyOf": [
+            {
+              "discriminator": {
+                "mapping": {
+                  "AnalyticEuropean": "#/$defs/AnalyticEuropeanEngine",
+                  "BaroneAdesiWhaley": "#/$defs/BaroneAdesiWhaleyEngine",
+                  "Binomial": "#/$defs/BinomialEngine",
+                  "FiniteDifference": "#/$defs/FiniteDifferenceEngine",
+                  "MonteCarlo": "#/$defs/MonteCarloEngine"
+                },
+                "propertyName": "type"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/AnalyticEuropeanEngine"
+                },
+                {
+                  "$ref": "#/$defs/BinomialEngine"
+                },
+                {
+                  "$ref": "#/$defs/FiniteDifferenceEngine"
+                },
+                {
+                  "$ref": "#/$defs/MonteCarloEngine"
+                },
+                {
+                  "$ref": "#/$defs/BaroneAdesiWhaleyEngine"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Engine"
+        },
+        "outputs": {
+          "default": [
+            "npv",
+            "delta",
+            "gamma",
+            "vega",
+            "theta",
+            "rho"
+          ],
+          "items": {
+            "enum": [
+              "npv",
+              "delta",
+              "gamma",
+              "vega",
+              "theta",
+              "rho"
+            ],
+            "type": "string"
+          },
+          "title": "Outputs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "instrument",
+        "market"
+      ],
+      "title": "OptionRequest",
+      "type": "object"
+    },
+    "BondMarket": {
+      "additionalProperties": false,
+      "description": "``discountCurve`` prices the bond; ``cleanPrice`` (quoted, per 100) drives yield and risk measures.\n\nAt least one of them is required. When only the curve is given, the yield is implied from the curve price.",
+      "properties": {
+        "discountCurve": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FlatCurve"
+            },
+            {
+              "$ref": "#/$defs/ZeroCurve"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Discountcurve"
+        },
+        "cleanPrice": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cleanprice"
+        }
+      },
+      "title": "BondMarket",
+      "type": "object"
+    },
+    "FixedRateBond": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "FixedRateBond",
+          "title": "Type",
+          "type": "string"
+        },
+        "faceAmount": {
+          "default": 100.0,
+          "exclusiveMinimum": 0,
+          "title": "Faceamount",
+          "type": "number"
+        },
+        "coupon": {
+          "title": "Coupon",
+          "type": "number"
+        },
+        "issueDate": {
+          "format": "date",
+          "title": "Issuedate",
+          "type": "string"
+        },
+        "maturity": {
+          "format": "date",
+          "title": "Maturity",
+          "type": "string"
+        },
+        "frequency": {
+          "default": "Annual",
+          "enum": [
+            "Annual",
+            "Semiannual",
+            "Quarterly",
+            "Monthly"
+          ],
+          "title": "Frequency",
+          "type": "string"
+        },
+        "dayCounter": {
+          "default": "ActualActualISMA",
+          "enum": [
+            "Actual360",
+            "Actual365Fixed",
+            "ActualActualISDA",
+            "ActualActualISMA",
+            "ActualActualBond",
+            "Thirty360BondBasis",
+            "Thirty360European",
+            "Business252"
+          ],
+          "title": "Daycounter",
+          "type": "string"
+        },
+        "calendar": {
+          "default": "TARGET",
+          "enum": [
+            "TARGET",
+            "NullCalendar",
+            "France",
+            "Germany",
+            "UnitedKingdom",
+            "UnitedStates",
+            "UnitedStatesNYSE",
+            "Japan"
+          ],
+          "title": "Calendar",
+          "type": "string"
+        },
+        "businessDayConvention": {
+          "default": "Unadjusted",
+          "enum": [
+            "Following",
+            "ModifiedFollowing",
+            "Preceding",
+            "Unadjusted"
+          ],
+          "title": "Businessdayconvention",
+          "type": "string"
+        },
+        "settlementDays": {
+          "default": 2,
+          "minimum": 0,
+          "title": "Settlementdays",
+          "type": "integer"
+        },
+        "redemption": {
+          "default": 100.0,
+          "exclusiveMinimum": 0,
+          "title": "Redemption",
+          "type": "number"
+        }
+      },
+      "required": [
+        "type",
+        "coupon",
+        "issueDate",
+        "maturity"
+      ],
+      "title": "FixedRateBond",
+      "type": "object"
+    },
+    "BondRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "evaluationDate": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Evaluationdate"
+        },
+        "instrument": {
+          "$ref": "#/$defs/FixedRateBond"
+        },
+        "market": {
+          "$ref": "#/$defs/BondMarket"
+        }
+      },
+      "required": [
+        "id",
+        "instrument",
+        "market"
+      ],
+      "title": "BondRequest",
+      "type": "object"
+    },
+    "IborIndex": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "const": "Euribor",
+          "default": "Euribor",
+          "title": "Name",
+          "type": "string"
+        },
+        "tenor": {
+          "pattern": "^\\d+[DWMY]$",
+          "title": "Tenor",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenor"
+      ],
+      "title": "IborIndex",
+      "type": "object"
+    },
+    "SwapMarket": {
+      "additionalProperties": false,
+      "properties": {
+        "discountCurve": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FlatCurve"
+            },
+            {
+              "$ref": "#/$defs/ZeroCurve"
+            }
+          ],
+          "title": "Discountcurve"
+        },
+        "forecastCurve": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FlatCurve"
+            },
+            {
+              "$ref": "#/$defs/ZeroCurve"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Defaults to discountCurve (single curve)",
+          "title": "Forecastcurve"
+        }
+      },
+      "required": [
+        "discountCurve"
+      ],
+      "title": "SwapMarket",
+      "type": "object"
+    },
+    "VanillaSwap": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "VanillaSwap",
+          "title": "Type",
+          "type": "string"
+        },
+        "side": {
+          "description": "Payer pays the fixed leg, Receiver receives it",
+          "enum": [
+            "Payer",
+            "Receiver"
+          ],
+          "title": "Side",
+          "type": "string"
+        },
+        "notional": {
+          "exclusiveMinimum": 0,
+          "title": "Notional",
+          "type": "number"
+        },
+        "fixedRate": {
+          "title": "Fixedrate",
+          "type": "number"
+        },
+        "tenor": {
+          "pattern": "^\\d+[DWMY]$",
+          "title": "Tenor",
+          "type": "string"
+        },
+        "startDate": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Defaults to spot: evaluation date + settlementDays business days",
+          "title": "Startdate"
+        },
+        "settlementDays": {
+          "default": 2,
+          "minimum": 0,
+          "title": "Settlementdays",
+          "type": "integer"
+        },
+        "fixedFrequency": {
+          "default": "Annual",
+          "enum": [
+            "Annual",
+            "Semiannual",
+            "Quarterly",
+            "Monthly"
+          ],
+          "title": "Fixedfrequency",
+          "type": "string"
+        },
+        "fixedDayCounter": {
+          "default": "Thirty360BondBasis",
+          "enum": [
+            "Actual360",
+            "Actual365Fixed",
+            "ActualActualISDA",
+            "ActualActualISMA",
+            "ActualActualBond",
+            "Thirty360BondBasis",
+            "Thirty360European",
+            "Business252"
+          ],
+          "title": "Fixeddaycounter",
+          "type": "string"
+        },
+        "floatIndex": {
+          "$ref": "#/$defs/IborIndex",
+          "default": {
+            "name": "Euribor",
+            "tenor": "6M"
+          }
+        },
+        "floatSpread": {
+          "default": 0.0,
+          "title": "Floatspread",
+          "type": "number"
+        },
+        "calendar": {
+          "default": "TARGET",
+          "enum": [
+            "TARGET",
+            "NullCalendar",
+            "France",
+            "Germany",
+            "UnitedKingdom",
+            "UnitedStates",
+            "UnitedStatesNYSE",
+            "Japan"
+          ],
+          "title": "Calendar",
+          "type": "string"
+        },
+        "businessDayConvention": {
+          "default": "ModifiedFollowing",
+          "enum": [
+            "Following",
+            "ModifiedFollowing",
+            "Preceding",
+            "Unadjusted"
+          ],
+          "title": "Businessdayconvention",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "side",
+        "notional",
+        "fixedRate",
+        "tenor"
+      ],
+      "title": "VanillaSwap",
+      "type": "object"
+    },
+    "SwapRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "evaluationDate": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Evaluationdate"
+        },
+        "instrument": {
+          "$ref": "#/$defs/VanillaSwap"
+        },
+        "market": {
+          "$ref": "#/$defs/SwapMarket"
+        }
+      },
+      "required": [
+        "id",
+        "instrument",
+        "market"
+      ],
+      "title": "SwapRequest",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}
