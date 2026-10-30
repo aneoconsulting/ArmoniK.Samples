@@ -24,6 +24,13 @@ def test_endpoints(monkeypatch, socket_type, address, expected):
     assert _endpoints("WorkerChannel", "/cache/armonik_worker.sock") == expected
 
 
+def test_endpoints_tcp_without_port(monkeypatch):
+    monkeypatch.setenv("ComputePlane__WorkerChannel__SocketType", "tcp")
+    monkeypatch.setenv("ComputePlane__WorkerChannel__Address", "http://worker0")
+    with pytest.raises(ValueError, match="has no port"):
+        _endpoints("WorkerChannel", "/cache/armonik_worker.sock")
+
+
 REFS = {"inputs": {"requests": "in"}, "outputs": {"results": "out"}}
 
 

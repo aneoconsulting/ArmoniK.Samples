@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -37,10 +38,12 @@ using System.Threading.Tasks;
 using ArmoniK.Api.Client;
 using ArmoniK.Api.Client.Options;
 using ArmoniK.Api.Client.Submitter;
+using ArmoniK.Api.Common.Exceptions;
 using ArmoniK.Api.gRPC.V1;
 using ArmoniK.Api.gRPC.V1.Events;
 using ArmoniK.Api.gRPC.V1.Results;
 using ArmoniK.Api.gRPC.V1.Sessions;
+using ArmoniK.Api.gRPC.V1.SortDirection;
 using ArmoniK.Api.gRPC.V1.Tasks;
 
 using Google.Protobuf;
@@ -50,10 +53,20 @@ using Microsoft.Extensions.Configuration;
 
 using static System.Console;
 
+using FilterField = ArmoniK.Api.gRPC.V1.Results.FilterField;
+using Filters = ArmoniK.Api.gRPC.V1.Results.Filters;
+using FiltersAnd = ArmoniK.Api.gRPC.V1.Results.FiltersAnd;
+using FilterStatus = ArmoniK.Api.gRPC.V1.Results.FilterStatus;
+
 namespace ArmoniK.Samples.QuantLib.Client
 {
   internal static class Program
   {
+    /// <summary>
+    ///   Page size when listing the results
+    /// </summary>
+    private const int PageSize = 1000;
+
     /// <summary>
     ///   Reads pricing requests from a JSON file, sends them to the QuantLib worker in tasks of
     ///   <paramref name="batchSize" /> requests, and writes the results, in request order, as JSON.
@@ -65,6 +78,7 @@ namespace ArmoniK.Samples.QuantLib.Client
     /// <param name="repeat">Number of times the requests are submitted, for load tests</param>
     /// <param name="evaluationDate">Evaluation date used when the input does not give one</param>
     /// <param name="maxRetries">Task retries on worker failure</param>
+    /// <param name="maxDuration">Task timeout in seconds</param>
     /// <param name="output">File receiving the results, stdout when empty</param>
     /// <returns>0 when every request was priced, 1 otherwise</returns>
     internal static async Task<int> Run(FileInfo input,
@@ -74,6 +88,7 @@ namespace ArmoniK.Samples.QuantLib.Client
                                         int      repeat,
                                         string   evaluationDate,
                                         int      maxRetries,
+                                        int      maxDuration,
                                         string   output)
     {
       var (date, requests) = LoadRequests(input,
@@ -101,7 +116,7 @@ namespace ArmoniK.Samples.QuantLib.Client
                            {
                              DefaultTaskOption = new TaskOptions
                                                  {
-                                                   MaxDuration = Duration.FromTimeSpan(TimeSpan.FromMinutes(5)),
+                                                   MaxDuration = Duration.FromTimeSpan(TimeSpan.FromSeconds(maxDuration)),
                                                    MaxRetries  = maxRetries,
                                                    Priority    = 1,
                                                    PartitionId = partition,
@@ -332,6 +347,16 @@ namespace ArmoniK.Samples.QuantLib.Client
         date = DateTime.Today.ToString("yyyy-MM-dd");
       }
 
+      // Checked here rather than by every task
+      if (!DateOnly.TryParseExact(date,
+                                  "yyyy-MM-dd",
+                                  CultureInfo.InvariantCulture,
+                                  DateTimeStyles.None,
+                                  out _))
+      {
+        throw new ArgumentException($"invalid evaluation date '{date}', expected yyyy-MM-dd");
+      }
+
       // Repeated requests get a "#k" suffix so their results stay distinguishable
       var repeated = Enumerable.Range(0,
                                       repeat)
@@ -351,7 +376,7 @@ namespace ArmoniK.Samples.QuantLib.Client
 
     /// <summary>
     ///   Waits until every output is completed or aborted: <c>WaitForResultsAsync</c> throws at the first aborted
-    ///   result, so the statuses are checked and the wait resumes on the outputs still pending.
+    ///   result, so the outputs still pending are listed and the wait resumes on them.
     /// </summary>
     private static async Task WaitForOutputs(Events.EventsClient   eventClient,
                                              Results.ResultsClient resultClient,
@@ -370,27 +395,93 @@ namespace ArmoniK.Samples.QuantLib.Client
                                                 cancellationToken: CancellationToken.None);
           return;
         }
-        catch (Exception) when (pending.Count > 0)
+        catch (ResultAbortedException)
         {
-          var stillPending = new List<string>();
-          foreach (var id in pending)
-          {
-            var status = (await resultClient.GetResultAsync(new GetResultRequest
-                                                            {
-                                                              ResultId = id,
-                                                            })).Result.Status;
-            if (status != ResultStatus.Completed && status != ResultStatus.Aborted)
-            {
-              stillPending.Add(id);
-            }
-          }
-
+          var stillPending = (await CreatedResults(resultClient,
+                                                   sessionId)).Intersect(pending)
+                                                              .ToList();
           if (stillPending.Count == pending.Count)
           {
             throw;
           }
 
           pending = stillPending;
+        }
+      }
+    }
+
+    /// <summary>
+    ///   Lists the results of the session not completed nor aborted yet
+    /// </summary>
+    private static async Task<HashSet<string>> CreatedResults(Results.ResultsClient resultClient,
+                                                              string                sessionId)
+    {
+      var filters = new Filters
+                    {
+                      Or =
+                      {
+                        new FiltersAnd
+                        {
+                          And =
+                          {
+                            new FilterField
+                            {
+                              Field = new ResultField
+                                      {
+                                        ResultRawField = new ResultRawField
+                                                         {
+                                                           Field = ResultRawEnumField.SessionId,
+                                                         },
+                                      },
+                              FilterString = new FilterString
+                                             {
+                                               Operator = FilterStringOperator.Equal,
+                                               Value    = sessionId,
+                                             },
+                            },
+                            new FilterField
+                            {
+                              Field = new ResultField
+                                      {
+                                        ResultRawField = new ResultRawField
+                                                         {
+                                                           Field = ResultRawEnumField.Status,
+                                                         },
+                                      },
+                              FilterStatus = new FilterStatus
+                                             {
+                                               Operator = FilterStatusOperator.Equal,
+                                               Value    = ResultStatus.Created,
+                                             },
+                            },
+                          },
+                        },
+                      },
+                    };
+      var ids = new HashSet<string>();
+      for (var page = 0;; page++)
+      {
+        var response = await resultClient.ListResultsAsync(new ListResultsRequest
+                                                           {
+                                                             Filters  = filters,
+                                                             Page     = page,
+                                                             PageSize = PageSize,
+                                                             Sort = new ListResultsRequest.Types.Sort
+                                                                    {
+                                                                      Field = new ResultField
+                                                                              {
+                                                                                ResultRawField = new ResultRawField
+                                                                                                 {
+                                                                                                   Field = ResultRawEnumField.ResultId,
+                                                                                                 },
+                                                                              },
+                                                                      Direction = SortDirection.Asc,
+                                                                    },
+                                                           });
+        ids.UnionWith(response.Results.Select(r => r.ResultId));
+        if (response.Results.Count < PageSize)
+        {
+          return ids;
         }
       }
     }
@@ -418,6 +509,9 @@ namespace ArmoniK.Samples.QuantLib.Client
       var maxRetries = new Option<int>("--max-retries",
                                        description: "Task retries on worker failure.",
                                        getDefaultValue: () => 2);
+      var maxDuration = new Option<int>("--max-duration",
+                                        description: "Task timeout in seconds; Monte Carlo batches with greeks may need more.",
+                                        getDefaultValue: () => 300);
       var output = new Option<string>("--output",
                                       description: "Write the results JSON to this file instead of stdout.",
                                       getDefaultValue: () => "");
@@ -426,6 +520,7 @@ namespace ArmoniK.Samples.QuantLib.Client
                              {
                                batchSize,
                                repeat,
+                               maxDuration,
                              })
       {
         option.AddValidator(result =>
@@ -448,33 +543,24 @@ namespace ArmoniK.Samples.QuantLib.Client
       rootCommand.AddOption(repeat);
       rootCommand.AddOption(evaluationDate);
       rootCommand.AddOption(maxRetries);
+      rootCommand.AddOption(maxDuration);
       rootCommand.AddOption(output);
 
-      // Configure the handler to call the function that will do the work
+      // Configure the handler to call the function that will do the work; typed handlers stop at 8 options
       var exitCode = 0;
-      rootCommand.SetHandler(async (i,
-                                    e,
-                                    p,
-                                    b,
-                                    r,
-                                    d,
-                                    m,
-                                    o) => exitCode = await Run(i,
-                                                               e,
-                                                               p,
-                                                               b,
-                                                               r,
-                                                               d,
-                                                               m,
-                                                               o),
-                             input,
-                             endpoint,
-                             partition,
-                             batchSize,
-                             repeat,
-                             evaluationDate,
-                             maxRetries,
-                             output);
+      rootCommand.SetHandler(async context =>
+                             {
+                               var parsed = context.ParseResult;
+                               exitCode = await Run(parsed.GetValueForArgument(input),
+                                                    parsed.GetValueForOption(endpoint)!,
+                                                    parsed.GetValueForOption(partition)!,
+                                                    parsed.GetValueForOption(batchSize),
+                                                    parsed.GetValueForOption(repeat),
+                                                    parsed.GetValueForOption(evaluationDate)!,
+                                                    parsed.GetValueForOption(maxRetries),
+                                                    parsed.GetValueForOption(maxDuration),
+                                                    parsed.GetValueForOption(output)!);
+                             });
 
       // Parse the command line parameters and call the function that represents the application
       var parseResult = await rootCommand.InvokeAsync(args);

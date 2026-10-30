@@ -19,7 +19,8 @@ def _endpoints(channel: str, default_socket: str) -> tuple[str, str]:
     """Return (server bind address, client URI) for a ComputePlane channel.
 
     ArmoniK.Core passes a bare socket path in unixdomainsocket mode and a full URI
-    (``http://host:port``) in tcp mode; the SDK wrapper would prefix the latter twice.
+    (``http://host:port``) in tcp mode; the SDK wrapper would prefix the latter twice. The port is
+    required in tcp mode: the worker binds to it.
     """
     socket_type = os.getenv(f"ComputePlane__{channel}__SocketType", "unixdomainsocket").lower()
     address = os.getenv(f"ComputePlane__{channel}__Address", default_socket)
@@ -27,7 +28,10 @@ def _endpoints(channel: str, default_socket: str) -> tuple[str, str]:
         path = urlparse(address).path if "://" in address else address
         return f"unix://{path}", f"unix://{path}"
     uri = address if "://" in address else f"http://{address}"
-    return f"0.0.0.0:{urlparse(uri).port}", uri
+    port = urlparse(uri).port
+    if port is None:
+        raise ValueError(f"ComputePlane__{channel}__Address has no port: {address!r}")
+    return f"0.0.0.0:{port}", uri
 
 
 CONVENTION_VERSION = "v1"

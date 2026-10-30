@@ -70,5 +70,5 @@ multiarch_builder() {
   echo "$builder"
 }
 
-[[ "$target" == worker || "$target" == all ]] && build worker worker
-[[ "$target" == client || "$target" == all ]] && build client client
+if [[ "$target" == worker || "$target" == all ]]; then build worker worker; fi
+if [[ "$target" == client || "$target" == all ]]; then build client client; fi

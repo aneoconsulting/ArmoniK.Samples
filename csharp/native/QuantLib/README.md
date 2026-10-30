@@ -57,8 +57,9 @@ docker run --rm --net armonik_network -v $PWD/../../python/quantlib/samples:/dat
 | `--partition` | (default partition) | Partition running the QuantLib worker |
 | `--batch-size` | `10` | Pricing requests per task |
 | `--repeat` | `1` | Submit the requests N times, for load tests |
-| `--evaluation-date` | today | Used when the input has none |
+| `--evaluation-date` | today | Used when the input has none, checked at startup (`yyyy-MM-dd`) |
 | `--max-retries` | `2` | Task retries on worker failure |
+| `--max-duration` | `300` | Task timeout in seconds; Monte Carlo batches with greeks may need more |
 | `--output` | stdout | File receiving the results JSON |
 
 The exit code is 1 when any request or task failed.

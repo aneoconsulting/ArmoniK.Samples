@@ -122,15 +122,20 @@ int run(armonik::api::common::logger::Logger &logger) {
     std::string error = "no result";
     const auto result = handler->results().find(task_ids[i]);
     if (result != handler->results().end()) {
-      const auto output = json::parse(result->second);
-      const auto &task_results = output.at("results");
-      if (task_results.size() == batches[i].size()) {
-        for (const auto &r : task_results) {
-          results.push_back(r);
+      // A malformed output only fails its own batch
+      try {
+        const auto output = json::parse(result->second);
+        const auto &task_results = output.at("results");
+        if (task_results.is_array() && task_results.size() == batches[i].size()) {
+          for (const auto &r : task_results) {
+            results.push_back(r);
+          }
+          continue;
         }
-        continue;
+        error = "malformed output: expected " + std::to_string(batches[i].size()) + " results";
+      } catch (const json::exception &e) {
+        error = std::string("malformed output: ") + e.what();
       }
-      error = std::to_string(task_results.size()) + " results for " + std::to_string(batches[i].size()) + " requests";
     } else if (handler->errors().count(task_ids[i]) != 0) {
       error = handler->errors().at(task_ids[i]);
     }

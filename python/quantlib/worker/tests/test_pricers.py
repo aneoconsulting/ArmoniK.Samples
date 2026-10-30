@@ -185,6 +185,12 @@ def test_payer_and_receiver_are_opposite():
     assert payer["npv"] < 0  # pays 3.5% fixed against a ~3.25% forward
 
 
+def test_spot_swap_on_a_weekend():
+    # Saturday: the spot start counts from the next business day, so its first fixing is not in the past
+    (result,) = run(swap(), evaluation_date="2026-10-24")
+    assert "error" not in result, result["error"]
+
+
 def test_swap_with_past_start_is_an_error():
     (result,) = run(swap(startDate="2026-01-02"))
     assert "past fixings" in result["error"]

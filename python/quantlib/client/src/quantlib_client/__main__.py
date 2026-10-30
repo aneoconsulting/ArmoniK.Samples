@@ -17,7 +17,7 @@ import time
 from typing import Any, Dict, List
 
 from armonik.client import ArmoniKEvents, ArmoniKResults, ArmoniKSessions, ArmoniKTasks
-from armonik.common import ResultStatus, TaskDefinition, TaskOptions
+from armonik.common import Result, ResultStatus, TaskDefinition, TaskOptions
 from armonik.common.channel import create_channel
 
 logger = logging.getLogger("quantlib_client")
@@ -65,15 +65,32 @@ def load_requests(args: argparse.Namespace) -> tuple[str, List[Any]]:
     return evaluation_date, requests
 
 
+def created_results(results: ArmoniKResults, session_id: str) -> set[str]:
+    """Ids of the results of the session not completed nor aborted yet."""
+    result_filter = (Result.session_id == session_id) & (Result.status == ResultStatus.CREATED)
+    ids: set[str] = set()
+    page = 0
+    while True:
+        _, listed = results.list_results(result_filter, page=page, page_size=1000, sort_field=Result.result_id)
+        ids.update(r.result_id for r in listed)
+        if len(listed) < 1000:
+            return ids
+        page += 1
+
+
 def wait_for_outputs(events: ArmoniKEvents, results: ArmoniKResults, session_id: str, output_ids: List[str]) -> None:
-    """Wait until every output is completed or aborted (the SDK stops at the first aborted one)."""
+    """Wait until every output is completed or aborted: the SDK stops at the first aborted one, so the outputs
+    still pending are listed and the wait resumes on them. One stream at a time, none is left open on an abort."""
     pending = set(output_ids)
     while pending:
         try:
-            events.wait_for_result_availability(list(pending), session_id, parallelism=4)
+            events.wait_for_result_availability(list(pending), session_id)
             return
         except RuntimeError:
-            pending = {r for r in pending if results.get_result(r).status not in (ResultStatus.COMPLETED, ResultStatus.ABORTED)}
+            still_pending = pending & created_results(results, session_id)
+            if still_pending == pending:
+                raise
+            pending = still_pending
 
 
 def main(argv: List[str] | None = None) -> int:

@@ -27,7 +27,7 @@ def price_swap(req: SwapRequest, evaluation: ql.Date) -> Dict[str, Any]:
     if instrument.start_date is not None:
         start = to_ql_date(instrument.start_date)
     else:
-        start = cal.advance(evaluation, instrument.settlement_days, ql.Days)
+        start = cal.advance(cal.adjust(evaluation), instrument.settlement_days, ql.Days)
     if index.fixingDate(start) < evaluation:
         raise ValueError("swaps whose first fixing is before the evaluation date need past fixings (not supported)")
     end = cal.advance(start, ql.Period(instrument.tenor), convention)
