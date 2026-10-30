@@ -2,7 +2,9 @@
 
 An ArmoniK worker that prices vanilla options, fixed rate bonds and interest rate swaps with
 [QuantLib](https://github.com/lballabio/quantlib), and a Python client that submits them. Requests and results are plain
-JSON so any ArmoniK client can use the worker: a C# client lives in [csharp/native/QuantLib](../../csharp/native/QuantLib).
+JSON and tasks follow the ArmoniK SDK convention, so any ArmoniK client can use the worker: C# clients live in
+[csharp/native/QuantLib](../../csharp/native/QuantLib) (gRPC API) and [csharp/sdk/QuantLib](../../csharp/sdk/QuantLib)
+(C# SDK).
 
 ```
 worker/    Python worker (QuantLib 1.44 wheels + armonik SDK), unit tests, Dockerfile
@@ -24,7 +26,7 @@ both architectures (`pip install --only-binary=:all:` fails fast if a wheel is e
 ./build.sh all --platform linux/amd64,linux/arm64 --push --registry docker.io/<me>   # multi-arch manifest
 ```
 
-Images: `armonik_quantlib_worker:<tag>` and `armonik_quantlib_client:<tag>` (default tag `0.1.0`).
+Images: `armonik_quantlib_worker:<tag>` and `armonik_quantlib_client:<tag>` (default tag `0.2.0`).
 
 Foreign architectures are emulated with QEMU through `binfmt_misc`. To register it (once per boot):
 `docker run --privileged --rm tonistiigi/binfmt --install amd64` (or `arm64`).
@@ -39,7 +41,7 @@ pass the worker image (tasks then go to the default partition):
 
 ```bash
 cd <path to>/ArmoniK.Core
-WORKER_IMAGE=armonik_quantlib_worker:0.1.0 just tag=<core tag> build-core deploy   # or just `deploy`
+WORKER_IMAGE=armonik_quantlib_worker:0.2.0 just tag=<core tag> build-core deploy   # or just `deploy`
 ```
 
 Do **not** use `just build-deploy`: its `buildWorker` step rebuilds `WORKER_IMAGE` from the default HtcMock Dockerfile
@@ -53,12 +55,12 @@ polling agent so they can share the unix sockets.
 ```bash
 docker run --rm --net armonik_network -v $PWD/samples:/data/samples:ro \
   -e GrpcClient__Endpoint=http://armonik.control.submitter:1080 \
-  armonik_quantlib_client:0.1.0 samples/mixed_batch.json --batch-size 3
+  armonik_quantlib_client:0.2.0 samples/mixed_batch.json --batch-size 3
 
 # load test: 100 copies of each request, 10 requests per task, results to a file
 docker run --rm --net armonik_network -v $PWD/samples:/data/samples:ro -v $PWD:/out \
   -e GrpcClient__Endpoint=http://armonik.control.submitter:1080 \
-  armonik_quantlib_client:0.1.0 samples/mixed_batch.json --repeat 100 --batch-size 10 -o /out/results.json
+  armonik_quantlib_client:0.2.0 samples/mixed_batch.json --repeat 100 --batch-size 10 -o /out/results.json
 ```
 
 The input is a full payload, a list of requests or a single request. Options: `--batch-size`, `--repeat`,
@@ -67,7 +69,16 @@ results go to stdout (or `--output`), a summary to stderr. The exit code is 1 wh
 
 ## JSON contract
 
-### Task payload
+### Task layout (ArmoniK SDK convention v1)
+
+The worker follows the convention shared by the ArmoniK C# and C++ SDKs, so their clients can submit to it:
+
+- the task options contain `ConventionVersion=v1` (the session default options are enough);
+- the task has one input blob named `requests`, declared as a data dependency, holding the pricing payload below;
+- the task has one output blob named `results`, receiving the task result below;
+- the task payload only maps these names to blob ids: `{"inputs": {"requests": "<id>"}, "outputs": {"results": "<id>"}}`.
+
+### Pricing payload
 
 One task prices a batch of requests, possibly of different kinds:
 
@@ -136,26 +147,31 @@ legs use `{"name": "Euribor", "tenor": "6M"}`.
 ### Errors
 
 - An invalid or unpriceable **request** yields `{"id", "error"}` in `results`; the rest of the batch is priced.
-- An invalid **payload** (not JSON, wrong `version`, no `requests`...) makes the **task** fail with
-  `invalid payload: ...` as its output error. ArmoniK does not retry tasks failed by the worker.
+- An invalid **task** (missing `ConventionVersion=v1`, task payload not following the convention, pricing payload not
+  JSON, wrong `version`, no `requests`...) fails with `invalid payload: ...` as its output error. ArmoniK does not retry tasks failed by the worker.
 
 ## Submitting from another client
 
-Any ArmoniK client works ([csharp/native/QuantLib](../../csharp/native/QuantLib) is the C# version); per batch:
+With the C# or C++ SDK, give each task an input named `requests` with the pricing payload and an output named
+`results`: the SDK handles the rest ([csharp/sdk/QuantLib](../../csharp/sdk/QuantLib)).
 
-1. create a session (`Sessions.CreateSession`);
-2. create the payload result with the JSON bytes (`Results.CreateResults`) and one empty output (`Results.CreateResultsMetaData`);
-3. submit a task with that payload and output (`Tasks.SubmitTasks`);
-4. wait for the output (`Events.GetEvents`, or poll `Results.GetResult` until `COMPLETED`/`ABORTED`) and download it
+With the gRPC API ([csharp/native/QuantLib](../../csharp/native/QuantLib) is the C# version), per batch:
+
+1. create a session with `ConventionVersion=v1` in its default task options (`Sessions.CreateSession`);
+2. create the input with the pricing payload (`Results.CreateResults`) and one empty output (`Results.CreateResultsMetaData`);
+3. create the task payload referencing them, `{"inputs": {"requests": <input id>}, "outputs": {"results": <output id>}}`
+   (`Results.CreateResults`);
+4. submit a task with that payload, the output as expected output and the input as data dependency (`Tasks.SubmitTasks`);
+5. wait for the output (`Events.GetEvents`, or poll `Results.GetResult` until `COMPLETED`/`ABORTED`) and download it
    (`Results.DownloadResultData`); on `ABORTED`, the reason is the owner task's `output.error`.
 
-`client/src/quantlib_client/__main__.py` is a complete example in about 160 lines.
+`client/src/quantlib_client/__main__.py` is a complete example in about 180 lines.
 
 ## Development
 
 ```bash
 docker build --target test worker/          # unit tests (pytest) in the image
-docker run --rm --entrypoint python armonik_quantlib_worker:0.1.0 -m quantlib_worker.schema \
+docker run --rm --entrypoint python armonik_quantlib_worker:0.2.0 -m quantlib_worker.schema \
   > schema/pricing-request.schema.json      # regenerate the schema after a contract change
 ```
 

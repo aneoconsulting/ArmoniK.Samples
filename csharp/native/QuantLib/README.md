@@ -2,14 +2,16 @@
 
 A C# client for the [QuantLib pricing worker](../../../python/quantlib) (a Python worker): it reads pricing requests
 (options, bonds, swaps) from a JSON file, sends them to ArmoniK in tasks of several requests, and prints the results as
-JSON in request order. The worker and the JSON contract are described in the worker's README.
+JSON in request order. The worker and the JSON contract are described in the worker's README. It uses the gRPC API
+directly; [csharp/sdk/QuantLib](../../sdk/QuantLib) does the same with the C# SDK.
 
 ## What it does
 
 1. Reads the input file: a full payload (`{"evaluationDate": ..., "requests": [...]}`), a list of requests or a single
    request.
 2. Creates a session and splits the requests in batches of `--batch-size`.
-3. Per batch, uploads the JSON payload, reserves an output and submits one task.
+3. Per batch, uploads the pricing requests (input `requests`), reserves an output (`results`), uploads the task payload
+   referencing both and submits one task, following the ArmoniK SDK convention v1.
 4. Waits for every output (completed or aborted), downloads the results and reassembles them in request order; the
    requests of a failed task get the task error.
 
@@ -23,7 +25,9 @@ QuantLib/
 
 ## Key concepts
 
-- Uploading a JSON payload per task with `ResultsClient.CreateResults`
+- The ArmoniK SDK convention v1, by hand: `ConventionVersion=v1` in the session task options, named input and output
+  blobs referenced by the task payload, the input as a data dependency
+- Uploading data with `ResultsClient.CreateResults`
 - Submitting many tasks in a single `TasksClient.SubmitTasks` call
 - Waiting for results with `EventsClient.WaitForResultsAsync`, and handling aborted results through the owner task's
   `Output.Error`

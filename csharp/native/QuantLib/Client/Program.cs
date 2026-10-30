@@ -105,6 +105,12 @@ namespace ArmoniK.Samples.QuantLib.Client
                                                    MaxRetries  = maxRetries,
                                                    Priority    = 1,
                                                    PartitionId = partition,
+                                                   // ArmoniK SDK convention v1 (inherited by the tasks): the worker reads
+                                                   // its input and output blob ids from the task payload
+                                                   Options =
+                                                   {
+                                                     ["ConventionVersion"] = "v1",
+                                                   },
                                                  },
                            };
       if (!string.IsNullOrEmpty(partition))
@@ -115,29 +121,29 @@ namespace ArmoniK.Samples.QuantLib.Client
       var sessionId = (await sessionClient.CreateSessionAsync(sessionRequest)).SessionId;
       Console.Error.WriteLine($"Session {sessionId}: {requests.Count} requests in {batches.Count} tasks");
 
-      // One payload per batch: the JSON document expected by the worker
-      var payloadIds = (await resultClient.CreateResultsAsync(new CreateResultsRequest
+      // One input per batch: the pricing requests, as the JSON document expected by the worker
+      var inputIds = (await resultClient.CreateResultsAsync(new CreateResultsRequest
+                                                            {
+                                                              SessionId = sessionId,
+                                                              Results =
                                                               {
-                                                                SessionId = sessionId,
-                                                                Results =
-                                                                {
-                                                                  batches.Select((batch,
-                                                                                  i) => new CreateResultsRequest.Types.ResultCreate
-                                                                                        {
-                                                                                          Name = $"payload-{i}",
-                                                                                          Data = ByteString.CopyFromUtf8(new JsonObject
-                                                                                                                         {
-                                                                                                                           ["version"]        = 1,
-                                                                                                                           ["evaluationDate"] = date,
-                                                                                                                           ["requests"] =
-                                                                                                                             new JsonArray(batch
-                                                                                                                                           .Select(r => r?.DeepClone())
-                                                                                                                                           .ToArray()),
-                                                                                                                         }.ToJsonString()),
-                                                                                        }),
-                                                                },
-                                                              })).Results.ToDictionary(r => r.Name,
-                                                                                       r => r.ResultId);
+                                                                batches.Select((batch,
+                                                                                i) => new CreateResultsRequest.Types.ResultCreate
+                                                                                      {
+                                                                                        Name = $"requests-{i}",
+                                                                                        Data = ByteString.CopyFromUtf8(new JsonObject
+                                                                                                                       {
+                                                                                                                         ["version"]        = 1,
+                                                                                                                         ["evaluationDate"] = date,
+                                                                                                                         ["requests"] =
+                                                                                                                           new JsonArray(batch
+                                                                                                                                         .Select(r => r?.DeepClone())
+                                                                                                                                         .ToArray()),
+                                                                                                                       }.ToJsonString()),
+                                                                                      }),
+                                                              },
+                                                            })).Results.ToDictionary(r => r.Name,
+                                                                                     r => r.ResultId);
 
       // One output per batch, filled by the worker with the JSON results
       var outputIds = (await resultClient.CreateResultsMetaDataAsync(new CreateResultsMetaDataRequest
@@ -148,14 +154,40 @@ namespace ArmoniK.Samples.QuantLib.Client
                                                                          batches.Select((_,
                                                                                          i) => new CreateResultsMetaDataRequest.Types.ResultCreate
                                                                                                {
-                                                                                                 Name = $"output-{i}",
+                                                                                                 Name = $"results-{i}",
                                                                                                }),
                                                                        },
                                                                      })).Results.ToDictionary(r => r.Name,
                                                                                               r => r.ResultId);
       var orderedOutputIds = batches.Select((_,
-                                             i) => outputIds[$"output-{i}"])
+                                             i) => outputIds[$"results-{i}"])
                                     .ToList();
+
+      // The task payload only references the input and the output by name
+      var payloadIds = (await resultClient.CreateResultsAsync(new CreateResultsRequest
+                                                              {
+                                                                SessionId = sessionId,
+                                                                Results =
+                                                                {
+                                                                  batches.Select((_,
+                                                                                  i) => new CreateResultsRequest.Types.ResultCreate
+                                                                                        {
+                                                                                          Name = $"payload-{i}",
+                                                                                          Data = ByteString.CopyFromUtf8(new JsonObject
+                                                                                                                         {
+                                                                                                                           ["inputs"] = new JsonObject
+                                                                                                                                        {
+                                                                                                                                          ["requests"] = inputIds[$"requests-{i}"],
+                                                                                                                                        },
+                                                                                                                           ["outputs"] = new JsonObject
+                                                                                                                                         {
+                                                                                                                                           ["results"] = outputIds[$"results-{i}"],
+                                                                                                                                         },
+                                                                                                                         }.ToJsonString()),
+                                                                                        }),
+                                                                },
+                                                              })).Results.ToDictionary(r => r.Name,
+                                                                                       r => r.ResultId);
 
       await taskClient.SubmitTasksAsync(new SubmitTasksRequest
                                         {
@@ -168,7 +200,11 @@ namespace ArmoniK.Samples.QuantLib.Client
                                                                     PayloadId = payloadIds[$"payload-{i}"],
                                                                     ExpectedOutputKeys =
                                                                     {
-                                                                      outputIds[$"output-{i}"],
+                                                                      outputIds[$"results-{i}"],
+                                                                    },
+                                                                    DataDependencies =
+                                                                    {
+                                                                      inputIds[$"requests-{i}"],
                                                                     },
                                                                   }),
                                           },

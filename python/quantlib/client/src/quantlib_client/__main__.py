@@ -87,28 +87,44 @@ def main(argv: List[str] | None = None) -> int:
         sessions, tasks = ArmoniKSessions(channel), ArmoniKTasks(channel)
         results, events = ArmoniKResults(channel), ArmoniKEvents(channel)
 
+        # ArmoniK SDK convention v1 (inherited by the tasks): the worker reads its input and output blob ids
+        # from the task payload
         options = TaskOptions(
             max_duration=dt.timedelta(seconds=args.max_duration),
             priority=1,
             max_retries=args.max_retries,
             partition_id=args.partition or None,
+            options={"ConventionVersion": "v1"},
         )
         session_id = sessions.create_session(options, partition_ids=[args.partition] if args.partition else None)
         logger.info(f"Session {session_id}: {len(requests)} requests in {len(batches)} tasks")
 
-        payloads = {
-            f"payload-{i}": json.dumps({"version": 1, "evaluationDate": evaluation_date, "requests": b}).encode()
+        # Per batch: the pricing requests (input "requests") and an empty output (output "results")
+        inputs = {
+            f"requests-{i}": json.dumps({"version": 1, "evaluationDate": evaluation_date, "requests": b}).encode()
             for i, b in enumerate(batches)
         }
-        payload_ids = {name: r.result_id for name, r in results.create_results(payloads, session_id, batch_size=100).items()}
-        output_names = [f"output-{i}" for i in range(len(batches))]
+        created = results.create_results(inputs, session_id, batch_size=100)
+        input_ids = [created[f"requests-{i}"].result_id for i in range(len(batches))]
+        output_names = [f"results-{i}" for i in range(len(batches))]
         outputs = results.create_results_metadata(output_names, session_id)
         output_ids = [outputs[n].result_id for n in output_names]
+
+        # The task payload only references the blobs by name
+        refs = {
+            f"payload-{i}": json.dumps({"inputs": {"requests": input_ids[i]}, "outputs": {"results": output_ids[i]}}).encode()
+            for i in range(len(batches))
+        }
+        payloads = results.create_results(refs, session_id, batch_size=100)
 
         submitted = tasks.submit_tasks(
             session_id,
             [
-                TaskDefinition(payload_id=payload_ids[f"payload-{i}"], expected_output_ids=[output_ids[i]])
+                TaskDefinition(
+                    payload_id=payloads[f"payload-{i}"].result_id,
+                    expected_output_ids=[output_ids[i]],
+                    data_dependencies=[input_ids[i]],
+                )
                 for i in range(len(batches))
             ],
         )

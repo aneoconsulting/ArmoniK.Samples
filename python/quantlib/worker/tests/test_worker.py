@@ -1,4 +1,5 @@
 import json
+from types import SimpleNamespace
 
 import pytest
 
@@ -23,9 +24,14 @@ def test_endpoints(monkeypatch, socket_type, address, expected):
     assert _endpoints("WorkerChannel", "/cache/armonik_worker.sock") == expected
 
 
+REFS = {"inputs": {"requests": "in"}, "outputs": {"results": "out"}}
+
+
 class FakeTaskHandler:
-    def __init__(self, payload, expected_results=("out",)):
-        self.payload = payload
+    def __init__(self, data, refs=REFS, options=None, expected_results=("out",)):
+        self.payload = json.dumps(refs).encode() if isinstance(refs, dict) else refs
+        self.data_dependencies = {"in": data}
+        self.task_options = SimpleNamespace(options={"ConventionVersion": "v1"} if options is None else options)
         self.task_id = "task"
         self.expected_results = list(expected_results)
         self.sent = {}
@@ -45,12 +51,20 @@ def test_process_sends_result():
     assert json.loads(handler.sent["out"])["results"][0]["id"] == "x"
 
 
-def test_process_invalid_payload_is_task_error():
-    handler = FakeTaskHandler(b"oops")
+@pytest.mark.parametrize(
+    "kwargs,message",
+    [
+        ({}, "invalid payload: "),
+        ({"options": {}}, "unsupported ConventionVersion None"),
+        ({"options": {"ConventionVersion": "v2"}}, "unsupported ConventionVersion 'v2'"),
+        ({"refs": b"oops"}, "expected {"),
+        ({"refs": {"inputs": {"other": "in"}, "outputs": {"results": "out"}}}, "expected {"),
+        ({"refs": {"inputs": {"requests": "missing"}, "outputs": {"results": "out"}}}, "is not a data dependency"),
+        ({"expected_results": ()}, "is not an expected output"),
+    ],
+)
+def test_process_invalid_task_is_task_error(kwargs, message):
+    handler = FakeTaskHandler(b"oops", **kwargs)
     output = process(handler)
-    assert not output.success and output.error.startswith("invalid payload:")
+    assert not output.success and output.error.startswith("invalid payload:") and message in output.error
     assert handler.sent == {}
-
-
-def test_process_requires_single_output():
-    assert not process(FakeTaskHandler(b"{}", expected_results=())).success
