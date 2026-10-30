@@ -8,11 +8,15 @@
 #include <armonik/sdk/common/Properties.h>
 #include <armonik/sdk/common/TaskDefinition.h>
 #include <armonik/sdk/common/TaskOptions.h>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <mutex>
 #include <nlohmann/json.hpp>
+#include <stdexcept>
+#include <vector>
 
 using json = nlohmann::json;
 
@@ -32,7 +36,7 @@ public:
     errors_[std::string(taskId)] = e.what();
   }
 
-  // Called once every task is done
+  // Not locked: only call them after WaitResults(), once every task is done
   const std::map<std::string, std::string> &results() const { return results_; }
   const std::map<std::string, std::string> &errors() const { return errors_; }
 
@@ -42,16 +46,30 @@ private:
   std::map<std::string, std::string> errors_;
 };
 
-int main() {
-  // Logs to stderr, the results go to stdout
-  armonik::api::common::logger::Logger logger{armonik::api::common::logger::writer_file(std::cerr),
-                                              armonik::api::common::logger::formatter_plain(true)};
+/**
+ * @brief Reads a strictly positive integer setting.
+ */
+std::size_t positive_setting(const ArmoniK::Sdk::Common::Configuration &config, const std::string &key) {
+  const auto value = config.get(key);
+  std::size_t end = 0;
+  long long number = 0;
+  try {
+    number = std::stoll(value, &end);
+  } catch (const std::exception &) {
+  }
+  if (end == 0 || end != value.size() || number < 1) {
+    throw std::invalid_argument(key + " must be an integer >= 1, got '" + value + "'");
+  }
+  return static_cast<std::size_t>(number);
+}
 
+int run(armonik::api::common::logger::Logger &logger) {
   // appsettings.json, overridden by environment variables
   ArmoniK::Sdk::Common::Configuration config;
   config.add_json_configuration("./appsettings.json").add_env_configuration();
   const auto input = config.get("Input");
-  const auto batch_size = std::stoul(config.get("BatchSize"));
+  const auto batch_size = positive_setting(config, "BatchSize");
+  const auto max_duration = positive_setting(config, "MaxDuration");
 
   // The input is a full payload: {"evaluationDate": ..., "requests": [...]}
   std::ifstream file(input);
@@ -74,6 +92,7 @@ int main() {
   ArmoniK::Sdk::Common::TaskOptions task_options("", "", "", "", config.get("PartitionId"));
   task_options.max_retries = 2;
   task_options.priority = 1;
+  task_options.max_duration.seconds = static_cast<int64_t>(max_duration);
   // ArmoniK SDK convention v1 (ConventionVersion and Symbol), expected by the worker, which ignores the method name
   task_options.SetConvention("price");
 
@@ -96,21 +115,27 @@ int main() {
   service.WaitResults();
   service.CloseSession();
 
-  // Reassemble the results in request order; a failed task yields one error per request of its batch
+  // Reassemble the results in request order; a failed task, or one that does not return one result per request,
+  // yields one error per request of its batch
   json results = json::array();
   for (std::size_t i = 0; i < task_ids.size(); ++i) {
+    std::string error = "no result";
     const auto result = handler->results().find(task_ids[i]);
     if (result != handler->results().end()) {
       const auto output = json::parse(result->second);
-      for (const auto &r : output.at("results")) {
-        results.push_back(r);
+      const auto &task_results = output.at("results");
+      if (task_results.size() == batches[i].size()) {
+        for (const auto &r : task_results) {
+          results.push_back(r);
+        }
+        continue;
       }
-      continue;
+      error = std::to_string(task_results.size()) + " results for " + std::to_string(batches[i].size()) + " requests";
+    } else if (handler->errors().count(task_ids[i]) != 0) {
+      error = handler->errors().at(task_ids[i]);
     }
-    const auto error = handler->errors().find(task_ids[i]);
     for (const auto &request : batches[i]) {
-      results.push_back({{"id", request.value("id", json())},
-                         {"error", "task failed: " + (error != handler->errors().end() ? error->second : "no result")}});
+      results.push_back({{"id", request.value("id", json())}, {"error", "task failed: " + error}});
     }
   }
 
@@ -127,4 +152,16 @@ int main() {
   }
   logger.info(std::to_string(results.size()) + " results, " + std::to_string(errors) + " errors");
   return errors == 0 ? 0 : 1;
+}
+
+int main() {
+  // Logs to stderr, the results go to stdout
+  armonik::api::common::logger::Logger logger{armonik::api::common::logger::writer_file(std::cerr),
+                                              armonik::api::common::logger::formatter_plain(true)};
+  try {
+    return run(logger);
+  } catch (const std::exception &e) {
+    logger.error(std::string("QuantLib client failed: ") + e.what());
+    return 1;
+  }
 }

@@ -42,7 +42,9 @@ docker run --rm -v $PWD/python/quantlib/samples:/app/samples:ro \
 | `Input` | JSON file with the pricing requests, `{"evaluationDate": ..., "requests": [...]}` | `samples/mixed_batch.json` |
 | `GrpcClient__Endpoint` | ArmoniK control-plane endpoint | `http://localhost:5001` |
 | `PartitionId` | Partition running the QuantLib worker | `quantlib` |
-| `BatchSize` | Pricing requests per task | `10` |
+| `BatchSize` | Pricing requests per task, at least 1 | `10` |
+| `MaxDuration` | Task timeout in seconds, at least 1 | `300` |
 
 Environment variables override `appsettings.json`. The results go to stdout, the logs to stderr. The exit code is 1
-when any request or task failed.
+when any request or task failed, and also when the client itself fails (invalid setting or input file, unreachable
+endpoint); the error is then logged and nothing is printed on stdout.
