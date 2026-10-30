@@ -177,11 +177,13 @@ namespace ArmoniK.Samples.QuantLib.Client
                                                                                                                          {
                                                                                                                            ["inputs"] = new JsonObject
                                                                                                                                         {
-                                                                                                                                          ["requests"] = inputIds[$"requests-{i}"],
+                                                                                                                                          ["requests"] =
+                                                                                                                                            inputIds[$"requests-{i}"],
                                                                                                                                         },
                                                                                                                            ["outputs"] = new JsonObject
                                                                                                                                          {
-                                                                                                                                           ["results"] = outputIds[$"results-{i}"],
+                                                                                                                                           ["results"] =
+                                                                                                                                             outputIds[$"results-{i}"],
                                                                                                                                          },
                                                                                                                          }.ToJsonString()),
                                                                                         }),
