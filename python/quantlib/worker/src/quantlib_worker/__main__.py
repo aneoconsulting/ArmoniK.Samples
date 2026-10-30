@@ -41,13 +41,18 @@ def _convention_io(task_handler: TaskHandler) -> tuple[bytes, str]:
     The task options carry ``ConventionVersion=v1`` and the task payload maps names to blob ids,
     ``{"inputs": {"requests": <id>}, "outputs": {"results": <id>}}``: the pricing payload is the
     ``requests`` data dependency and the results go to the ``results`` expected output.
+    The C++ SDK does not name outputs (``"outputs": {}``): the single expected output is then used.
     """
     version = task_handler.task_options.options.get("ConventionVersion")
     if version != CONVENTION_VERSION:
         raise InvalidPayload(f"unsupported ConventionVersion {version!r}, expected {CONVENTION_VERSION!r}")
     try:
         refs = json.loads(task_handler.payload)
-        input_id, output_id = refs["inputs"][INPUT_NAME], refs["outputs"][OUTPUT_NAME]
+        input_id = refs["inputs"][INPUT_NAME]
+        if not refs["outputs"] and len(task_handler.expected_results) == 1:
+            output_id = task_handler.expected_results[0]
+        else:
+            output_id = refs["outputs"][OUTPUT_NAME]
     except (ValueError, TypeError, KeyError) as e:
         raise InvalidPayload(
             f'expected {{"inputs": {{"{INPUT_NAME}": <blob id>}}, "outputs": {{"{OUTPUT_NAME}": <blob id>}}}}: {e!r}'

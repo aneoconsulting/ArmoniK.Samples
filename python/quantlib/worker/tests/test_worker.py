@@ -51,6 +51,13 @@ def test_process_sends_result():
     assert json.loads(handler.sent["out"])["results"][0]["id"] == "x"
 
 
+def test_process_unnamed_single_output():
+    payload = {"version": 1, "evaluationDate": "2026-10-22", "requests": [{"id": "x", "instrument": {"type": "Nope"}}]}
+    handler = FakeTaskHandler(json.dumps(payload).encode(), refs={"inputs": {"requests": "in"}, "outputs": {}})
+    assert process(handler).success
+    assert json.loads(handler.sent["out"])["results"][0]["id"] == "x"
+
+
 @pytest.mark.parametrize(
     "kwargs,message",
     [
@@ -60,6 +67,7 @@ def test_process_sends_result():
         ({"refs": b"oops"}, "expected {"),
         ({"refs": {"inputs": {"other": "in"}, "outputs": {"results": "out"}}}, "expected {"),
         ({"refs": {"inputs": {"requests": "missing"}, "outputs": {"results": "out"}}}, "is not a data dependency"),
+        ({"refs": {"inputs": {"requests": "in"}, "outputs": {}}, "expected_results": ("a", "b")}, "expected {"),
         ({"expected_results": ()}, "is not an expected output"),
     ],
 )

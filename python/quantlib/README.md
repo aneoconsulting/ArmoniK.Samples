@@ -4,7 +4,7 @@ An ArmoniK worker that prices vanilla options, fixed rate bonds and interest rat
 [QuantLib](https://github.com/lballabio/quantlib), and a Python client that submits them. Requests and results are plain
 JSON and tasks follow the ArmoniK SDK convention, so any ArmoniK client can use the worker: C# clients live in
 [csharp/native/QuantLib](../../csharp/native/QuantLib) (gRPC API) and [csharp/sdk/QuantLib](../../csharp/sdk/QuantLib)
-(C# SDK).
+(C# SDK), a C++ one in [cpp/QuantLib](../../cpp/QuantLib) (C++ SDK).
 
 ```
 worker/    Python worker (QuantLib 1.44 wheels + armonik SDK), unit tests, Dockerfile
@@ -26,7 +26,7 @@ both architectures (`pip install --only-binary=:all:` fails fast if a wheel is e
 ./build.sh all --platform linux/amd64,linux/arm64 --push --registry docker.io/<me>   # multi-arch manifest
 ```
 
-Images: `armonik_quantlib_worker:<tag>` and `armonik_quantlib_client:<tag>` (default tag `0.2.0`).
+Images: `armonik_quantlib_worker:<tag>` and `armonik_quantlib_client:<tag>` (default tag `0.2.1`).
 
 Foreign architectures are emulated with QEMU through `binfmt_misc`. To register it (once per boot):
 `docker run --privileged --rm tonistiigi/binfmt --install amd64` (or `arm64`).
@@ -41,7 +41,7 @@ pass the worker image (tasks then go to the default partition):
 
 ```bash
 cd <path to>/ArmoniK.Core
-WORKER_IMAGE=armonik_quantlib_worker:0.2.0 just tag=<core tag> build-core deploy   # or just `deploy`
+WORKER_IMAGE=armonik_quantlib_worker:0.2.1 just tag=<core tag> build-core deploy   # or just `deploy`
 ```
 
 Do **not** use `just build-deploy`: its `buildWorker` step rebuilds `WORKER_IMAGE` from the default HtcMock Dockerfile
@@ -55,12 +55,12 @@ polling agent so they can share the unix sockets.
 ```bash
 docker run --rm --net armonik_network -v $PWD/samples:/data/samples:ro \
   -e GrpcClient__Endpoint=http://armonik.control.submitter:1080 \
-  armonik_quantlib_client:0.2.0 samples/mixed_batch.json --batch-size 3
+  armonik_quantlib_client:0.2.1 samples/mixed_batch.json --batch-size 3
 
 # load test: 100 copies of each request, 10 requests per task, results to a file
 docker run --rm --net armonik_network -v $PWD/samples:/data/samples:ro -v $PWD:/out \
   -e GrpcClient__Endpoint=http://armonik.control.submitter:1080 \
-  armonik_quantlib_client:0.2.0 samples/mixed_batch.json --repeat 100 --batch-size 10 -o /out/results.json
+  armonik_quantlib_client:0.2.1 samples/mixed_batch.json --repeat 100 --batch-size 10 -o /out/results.json
 ```
 
 The input is a full payload, a list of requests or a single request. Options: `--batch-size`, `--repeat`,
@@ -75,7 +75,8 @@ The worker follows the convention shared by the ArmoniK C# and C++ SDKs, so thei
 
 - the task options contain `ConventionVersion=v1` (the session default options are enough);
 - the task has one input blob named `requests`, declared as a data dependency, holding the pricing payload below;
-- the task has one output blob named `results`, receiving the task result below;
+- the task has one output blob named `results`, receiving the task result below; when the payload names no output
+  (`"outputs": {}`, as the C++ SDK does), the single expected output of the task is used;
 - the task payload only maps these names to blob ids: `{"inputs": {"requests": "<id>"}, "outputs": {"results": "<id>"}}`.
 
 ### Pricing payload
@@ -152,8 +153,10 @@ legs use `{"name": "Euribor", "tenor": "6M"}`.
 
 ## Submitting from another client
 
-With the C# or C++ SDK, give each task an input named `requests` with the pricing payload and an output named
-`results`: the SDK handles the rest ([csharp/sdk/QuantLib](../../csharp/sdk/QuantLib)).
+With the C# SDK, give each task an input named `requests` with the pricing payload and an output named `results`: the
+SDK handles the rest ([csharp/sdk/QuantLib](../../csharp/sdk/QuantLib)). With the C++ SDK, give each task the input
+`requests` and set `ConventionVersion=v1` in the task options, which `Submit` does not do without a dynamic library
+([cpp/QuantLib](../../cpp/QuantLib)).
 
 With the gRPC API ([csharp/native/QuantLib](../../csharp/native/QuantLib) is the C# version), per batch:
 
@@ -171,7 +174,7 @@ With the gRPC API ([csharp/native/QuantLib](../../csharp/native/QuantLib) is the
 
 ```bash
 docker build --target test worker/          # unit tests (pytest) in the image
-docker run --rm --entrypoint python armonik_quantlib_worker:0.2.0 -m quantlib_worker.schema \
+docker run --rm --entrypoint python armonik_quantlib_worker:0.2.1 -m quantlib_worker.schema \
   > schema/pricing-request.schema.json      # regenerate the schema after a contract change
 ```
 

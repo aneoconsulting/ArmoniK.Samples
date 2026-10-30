@@ -11,7 +11,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 target=all
-tag=0.2.0
+tag=0.2.1
 platform=""
 registry=""
 run_tests=false
