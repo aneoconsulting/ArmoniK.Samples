@@ -12,13 +12,14 @@ and creates a task payload mapping the names to blob ids, plus one output per ta
 `requests`, the JSON document of a batch of pricing requests, and writes the results to the output of the task.
 
 ```cpp
-task_options.options[DynamicLibrary::KeyConventionVersion] = DynamicLibrary::ConventionVersion;
+task_options.SetConvention("price");
 ...
 service.Submit({TaskDefinition().WithInput("requests", BlobDefinition::FromData(json))}, handler);
 ```
 
-`ConventionVersion=v1` is set by hand: `Submit` only sets it with a dynamic library (`SetDynamicLibrary`), which a
-Python worker does not need. The handler receives the content of each output, or the reason why its task failed.
+`SetConvention` sets `ConventionVersion=v1` and the method name (`Symbol`, ignored by the worker): `Submit` does not
+set them itself, and the dynamic library of `SetDynamicLibrary` is not needed by a Python worker. The handler receives
+the content of each output, or the reason why its task failed.
 
 ## Running
 

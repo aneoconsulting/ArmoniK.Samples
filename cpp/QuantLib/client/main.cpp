@@ -5,7 +5,6 @@
 #include <armonik/sdk/client/SessionService.h>
 #include <armonik/sdk/common/BlobDefinition.h>
 #include <armonik/sdk/common/Configuration.h>
-#include <armonik/sdk/common/DynamicLibrary.h>
 #include <armonik/sdk/common/Properties.h>
 #include <armonik/sdk/common/TaskDefinition.h>
 #include <armonik/sdk/common/TaskOptions.h>
@@ -22,15 +21,15 @@ using json = nlohmann::json;
  */
 class ResultHandler : public ArmoniK::Sdk::Client::IServiceInvocationHandler {
 public:
-  void HandleResponse(const std::string &result_payload, const std::string &taskId,
-                      const std::string &result_id) override {
+  void HandleResponse(std::string &&result_payload, armonik::api::string_view taskId,
+                      armonik::api::string_view) override {
     std::lock_guard<std::mutex> lock(mutex_);
-    results_[taskId] = result_payload;
+    results_[std::string(taskId)] = std::move(result_payload);
   }
 
-  void HandleError(const std::exception &e, const std::string &taskId) override {
+  void HandleError(const std::exception &e, armonik::api::string_view taskId) override {
     std::lock_guard<std::mutex> lock(mutex_);
-    errors_[taskId] = e.what();
+    errors_[std::string(taskId)] = e.what();
   }
 
   // Called once every task is done
@@ -75,9 +74,8 @@ int main() {
   ArmoniK::Sdk::Common::TaskOptions task_options("", "", "", "", config.get("PartitionId"));
   task_options.max_retries = 2;
   task_options.priority = 1;
-  // ArmoniK SDK convention v1, expected by the worker. Submit() does not set it when no dynamic library is used.
-  task_options.options[ArmoniK::Sdk::Common::DynamicLibrary::KeyConventionVersion] =
-      ArmoniK::Sdk::Common::DynamicLibrary::ConventionVersion;
+  // ArmoniK SDK convention v1 (ConventionVersion and Symbol), expected by the worker, which ignores the method name
+  task_options.SetConvention("price");
 
   ArmoniK::Sdk::Common::Properties properties{config, task_options};
   ArmoniK::Sdk::Client::SessionService service(properties, logger);

@@ -155,8 +155,8 @@ legs use `{"name": "Euribor", "tenor": "6M"}`.
 
 With the C# SDK, give each task an input named `requests` with the pricing payload and an output named `results`: the
 SDK handles the rest ([csharp/sdk/QuantLib](../../csharp/sdk/QuantLib)). With the C++ SDK, give each task the input
-`requests` and set `ConventionVersion=v1` in the task options, which `Submit` does not do without a dynamic library
-([cpp/QuantLib](../../cpp/QuantLib)).
+`requests` and mark the task options as convention tasks with `SetConvention` (any method name, the worker ignores it),
+which `Submit` does not do by itself ([cpp/QuantLib](../../cpp/QuantLib)).
 
 With the gRPC API ([csharp/native/QuantLib](../../csharp/native/QuantLib) is the C# version), per batch:
 
