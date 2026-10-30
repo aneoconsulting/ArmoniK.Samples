@@ -102,7 +102,8 @@ def main(argv: List[str] | None = None) -> int:
         }
         payload_ids = {name: r.result_id for name, r in results.create_results(payloads, session_id, batch_size=100).items()}
         output_names = [f"output-{i}" for i in range(len(batches))]
-        output_ids = [results.create_results_metadata(output_names, session_id)[n].result_id for n in output_names]
+        outputs = results.create_results_metadata(output_names, session_id)
+        output_ids = [outputs[n].result_id for n in output_names]
 
         submitted = tasks.submit_tasks(
             session_id,
