@@ -42,7 +42,8 @@ dotnet run --project Client -- ../../../python/quantlib/samples/mixed_batch.json
   --endpoint http://localhost:5001 --batch-size 3
 ```
 
-Or with Docker, on the network of a local ArmoniK.Core deployment:
+Or with Docker, on the network of a local ArmoniK.Core deployment (see
+[Local Deployment of ArmoniK.Core](https://github.com/aneoconsulting/ArmoniK.Core/blob/main/.docs/content/0.installation/1.local-deployment.md)):
 
 ```bash
 docker build -t armonik_quantlib_client_csharp -f QuantLib/Client/Dockerfile .   # from csharp/native
