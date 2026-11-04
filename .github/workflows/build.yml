@@ -306,7 +306,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
             docker: true
             terraform: true
@@ -334,7 +334,7 @@ jobs:
 
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -386,7 +386,7 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
           docker: true
           terraform: true
@@ -401,7 +401,7 @@ jobs:
 
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -443,7 +443,7 @@ jobs:
           
       - name: Destroy deployment
         if: success() || failure()
-        uses: aneoconsulting/ArmoniK.Action.Deploy/destroy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/destroy@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -479,7 +479,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
             docker: true
             terraform: true
@@ -521,7 +521,7 @@ jobs:
 
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -572,7 +572,7 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
             docker: true
             terraform: true
@@ -604,7 +604,7 @@ jobs:
           
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -653,7 +653,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
             docker: true
             terraform: true
@@ -680,7 +680,7 @@ jobs:
 
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -731,7 +731,7 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
             docker: true
             terraform: true
@@ -756,7 +756,7 @@ jobs:
 
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@4e5c5c1da3ba2c80f184083a9d7e799a14176021 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
