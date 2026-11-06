@@ -11,14 +11,14 @@ jobs:
       version: ${{ steps.genver.outputs.version }}
     steps:
     - name: Checkout
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         ref: ${{ github.ref }}
         fetch-depth: 0
 
     - name: Generate Version
       id: genver
-      uses: codacy/git-version@e81d6fdad74f9e114420d69ca8b47658f1182afb # 2.8.7
+      uses: codacy/git-version@5cabe6920ad6a182ba6d653ee8cb5ec65b8b4cfd # 2.9.0
       with:
         minor-identifier: "feat:"
         release-branch: release
@@ -39,7 +39,7 @@ jobs:
           - csharp/native/Demo.sln
     steps:
     - name: Checkout
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         ref: ${{ github.ref }}
         fetch-depth: 0
@@ -81,7 +81,7 @@ jobs:
       run: |
         git diff > patch-csharp.diff
         
-    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
       if: ${{ failure() && steps.check-diff.conclusion == 'failure' }}
       with:
         name: patch-csharp
@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         ref: ${{ github.head_ref }}
 
@@ -164,7 +164,7 @@ jobs:
         demodir: ${{ fromJson(needs.setupDemoNames.outputs.csharp-demo-dirs) }}
         role: [Client, Worker]
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Login to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
 
@@ -223,7 +223,7 @@ jobs:
           - demodir: HelloWorldSDK
             distro: ''
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Login to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
@@ -265,9 +265,9 @@ jobs:
       matrix:
         demodir: ${{ fromJson(needs.setupDemoNames.outputs.java-demo-worker-dirs) }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Setup Java and Maven
-        uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 # v5
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
           java-version: '17'
@@ -302,11 +302,11 @@ jobs:
         demo: ${{ fromJson(needs.setupDemoNames.outputs.csharp-demo-names) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.ref }}
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
             docker: true
             terraform: true
@@ -314,7 +314,7 @@ jobs:
             aws: true
 
       - name: Checkout Infra
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
             repository: aneoconsulting/ArmoniK
             path: infra
@@ -334,7 +334,7 @@ jobs:
 
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -381,12 +381,12 @@ jobs:
       ARMONIK_SHARED_HOST_PATH: ${{ github.workspace }}/infra/infrastructure/quick-deploy/localhost/all-in-one/data/
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.head_ref }}
 
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
           docker: true
           terraform: true
@@ -394,14 +394,14 @@ jobs:
           aws: true
 
       - name: Checkout Infra
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           repository: aneoconsulting/ArmoniK
           path: infra
 
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -434,7 +434,7 @@ jobs:
           find /tmp/armoniklogs -name "*.log"
 
       - name: Store logs
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always()
         with:
           name: Logs Worker
@@ -443,7 +443,7 @@ jobs:
           
       - name: Destroy deployment
         if: success() || failure()
-        uses: aneoconsulting/ArmoniK.Action.Deploy/destroy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/destroy@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -475,11 +475,11 @@ jobs:
             distro: ''
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.ref }}
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
             docker: true
             terraform: true
@@ -487,7 +487,7 @@ jobs:
             aws: true
 
       - name: Checkout Infra
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
             repository: aneoconsulting/ArmoniK
             path: infra
@@ -515,13 +515,13 @@ jobs:
           WORKER_TAG="${{ needs.versionning.outputs.version }}${DISTRO:+-${DISTRO}}"
           docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_worker:${WORKER_TAG}
           docker cp so_exporter:app/${SO_FILE} ${DEST}
-          docker remove so_exporter
+          docker rm so_exporter
           grep '^SDK_VERSION=' cpp/versions.env >> $GITHUB_ENV
           echo "SO_FILE=${SO_FILE}" >> $GITHUB_ENV
 
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -567,12 +567,12 @@ jobs:
         demo: ${{ fromJson(needs.setupDemoNames.outputs.java-demo-names) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.ref }}
 
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
             docker: true
             terraform: true
@@ -580,7 +580,7 @@ jobs:
             aws: true
 
       - name: Checkout Infra
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
             repository: aneoconsulting/ArmoniK
             path: infra
@@ -604,7 +604,7 @@ jobs:
           
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -616,7 +616,7 @@ jobs:
           log-suffix: ${{ matrix.demo }}
 
       - name: Setup Java and Maven
-        uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 # v5
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
           java-version: '17'
@@ -649,11 +649,11 @@ jobs:
         demo: [javaClientCppWorker, csharpClientCppWorker]
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.ref }}
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
             docker: true
             terraform: true
@@ -661,7 +661,7 @@ jobs:
             aws: true
 
       - name: Checkout Infra
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
             repository: aneoconsulting/ArmoniK
             path: infra
@@ -673,14 +673,14 @@ jobs:
           mkdir -p ${DEST}
           docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_chainedarithmetic_worker:${{ needs.versionning.outputs.version }}
           docker cp so_exporter:app/${SO_FILE} ${DEST}
-          docker remove so_exporter
+          docker rm so_exporter
           grep '^SDK_VERSION=' cpp/versions.env >> $GITHUB_ENV
           echo "SO_FILE=${SO_FILE}" >> $GITHUB_ENV
           echo "PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost
@@ -692,7 +692,7 @@ jobs:
 
       - name: Setup Java and Maven
         if: ${{ matrix.demo == 'javaClientCppWorker' }}
-        uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 # v5
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
           java-version: '17'
@@ -726,12 +726,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.ref }}
 
       - name: Install Dependencies
-        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/dependencies@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
             docker: true
             terraform: true
@@ -739,7 +739,7 @@ jobs:
             aws: true
 
       - name: Checkout Infra
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
             repository: aneoconsulting/ArmoniK
             path: infra
@@ -756,7 +756,7 @@ jobs:
 
       - name: Deploy
         id: deploy
-        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@main
+        uses: aneoconsulting/ArmoniK.Action.Deploy/deploy@5c478eb7d9cb7fc9988e2b3d7cbe74c2f8162e18 # main
         with:
           working-directory: ${{ github.workspace }}/infra
           type: localhost

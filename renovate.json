@@ -42,6 +42,16 @@
       ]
     },
     {
+      "groupName": "ArmoniK Java packages",
+      "groupSlug": "maven-armonik",
+      "matchPackagePrefixes": [
+        "fr.aneo:armonik"
+      ],
+      "matchDatasources": [
+        "maven"
+      ]
+    },
+    {
       "groupName": "docker images",
       "groupSlug": "docker",
       "matchDatasources": [
