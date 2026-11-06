@@ -131,6 +131,40 @@ Expected output:
 [Info]  Task processing complete.
 ```
 
+### Windows client
+
+The client also runs natively on Windows and sends its tasks to the same Linux `cppstatic` worker. It is the code of [`client`](client), built with MSVC by [`windows-client/build.ps1`](windows-client/build.ps1). Only the client is built: ArmoniK workers run on Linux.
+
+The script fetches ArmoniK.Extensions.Cpp at `SDK_WINDOWS_REF` from [`cpp/versions.env`](../versions.env), since no SDK release ships the Windows build yet. gRPC, protobuf and their dependencies come prebuilt from conda-forge, building them with vcpkg takes hours. The CI job `buildCppWindowsClient` runs this script on `windows-latest` to check that the client builds. It doesn't run the client.
+
+Requirements:
+
+- Visual Studio 2022 with the "Desktop development with C++" workload
+- CMake 3.22 or later, and git
+- [micromamba](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html)
+
+Build from a "Developer PowerShell for VS 2022":
+
+```powershell
+cd cpp\StaticWorker\windows-client
+.\build.ps1
+```
+
+The first run takes a while: it creates the conda environment, then builds ArmoniK.Api and the SDK. Later runs reuse them. The result is a `dist` folder with the executable, `appsettings.json` and the DLLs it needs, which can be copied to another Windows machine.
+
+The build fails on long paths. If the repository is deep in your tree, use a short build directory: `.\build.ps1 -WorkDir C:\akbuild`. To reuse an existing environment created from the SDK's `tools\windows\environment.yml`, pass `-DepsPrefix <env path>`.
+
+Run the client from `dist`, since it reads `.\appsettings.json` from the current directory:
+
+```powershell
+cd dist
+$env:GrpcClient__Endpoint = "http://xxx.xxx.xxx:5001"
+$env:PartitionId = "cppstatic"
+.\ArmoniK.Samples.Cpp.StaticWorker.Client.exe
+```
+
+The output is the same as on Linux. The control plane must be reachable from the Windows machine. With ArmoniK deployed in WSL2, `localhost` forwarding may not cover the control plane port: use the WSL2 IP address (`wsl hostname -I`) or the node IP instead.
+
 ## Notes
 
 - Replace `http://xxx.xxx.xxx:5001` with the correct endpoint for your control plane.
