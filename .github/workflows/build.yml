@@ -515,7 +515,7 @@ jobs:
           WORKER_TAG="${{ needs.versionning.outputs.version }}${DISTRO:+-${DISTRO}}"
           docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_worker:${WORKER_TAG}
           docker cp so_exporter:app/${SO_FILE} ${DEST}
-          docker remove so_exporter
+          docker rm so_exporter
           grep '^SDK_VERSION=' cpp/versions.env >> $GITHUB_ENV
           echo "SO_FILE=${SO_FILE}" >> $GITHUB_ENV
 
@@ -673,7 +673,7 @@ jobs:
           mkdir -p ${DEST}
           docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_chainedarithmetic_worker:${{ needs.versionning.outputs.version }}
           docker cp so_exporter:app/${SO_FILE} ${DEST}
-          docker remove so_exporter
+          docker rm so_exporter
           grep '^SDK_VERSION=' cpp/versions.env >> $GITHUB_ENV
           echo "SO_FILE=${SO_FILE}" >> $GITHUB_ENV
           echo "PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
