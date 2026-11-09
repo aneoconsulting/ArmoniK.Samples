@@ -137,9 +137,9 @@ The client also runs natively on Windows and sends its tasks to the same Linux `
 
 The script:
 
-1. Fetches ArmoniK.Extensions.Cpp at `SDK_WINDOWS_REF` from [`cpp/versions.env`](../versions.env), since no SDK release ships the Windows build yet.
+1. Fetches the ArmoniK.Extensions.Cpp sources at `SDK_VERSION` from [`cpp/versions.env`](../versions.env). The SDK releases no Windows binaries, its Windows build starts at 0.5.9.
 2. Gets gRPC, protobuf, abseil, nlohmann_json and zlib, built with MSVC. See [Dependencies](#dependencies) below.
-3. Builds ArmoniK.Api and the SDK with the SDK's `tools\windows\build.ps1`.
+3. Builds ArmoniK.Api at `API_VERSION` and the SDK with the SDK's `tools\windows\build.ps1`.
 4. Builds the client and copies it to `dist`.
 
 The CI job `buildCppWindowsClient` runs this script on `windows-latest`, with the default conda dependencies, to check that the client builds. It doesn't run the client.

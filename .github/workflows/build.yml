@@ -114,11 +114,11 @@ jobs:
       with:
         ref: ${{ github.ref }}
 
-    - name: Read SDK commit
+    - name: Read SDK version
       id: sdk
       shell: pwsh
       run: |
-        $ref = (Select-String -Path cpp/versions.env -Pattern '^SDK_WINDOWS_REF=(\S+)').Matches[0].Groups[1].Value
+        $ref = (Select-String -Path cpp/versions.env -Pattern '^SDK_VERSION=(\S+)').Matches[0].Groups[1].Value
         "ref=$ref" >> $env:GITHUB_OUTPUT
 
     - name: Checkout ArmoniK.Extensions.Cpp

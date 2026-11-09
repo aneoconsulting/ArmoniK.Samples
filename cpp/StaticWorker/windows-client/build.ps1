@@ -6,15 +6,15 @@ Builds the StaticWorker client for Windows with MSVC.
 Builds the sources in ..\client into a native Windows executable that sends tasks to the
 Linux cppstatic worker. The steps are:
 
-1. Fetch ArmoniK.Extensions.Cpp at SDK_WINDOWS_REF from cpp\versions.env.
+1. Fetch ArmoniK.Extensions.Cpp at SDK_VERSION from cpp\versions.env.
 2. Get the dependencies (gRPC, protobuf, abseil, nlohmann_json, zlib), from one of:
    - a conda environment created from the SDK's tools\windows\environment.yml with
      micromamba (prebuilt MSVC binaries from conda-forge). This is the default.
    - an existing conda environment, passed with -DepsPrefix.
    - any CMake prefix holding MSVC builds of them (vcpkg, source builds), passed with
      -DepsCMakePrefix. For vcpkg, also pass -VcpkgRoot.
-3. Build and install ArmoniK.Api (client) and the SDK (Client + Common) with the SDK's
-   tools\windows\build.ps1.
+3. Build and install ArmoniK.Api (client) at API_VERSION and the SDK (Client + Common) with
+   the SDK's tools\windows\build.ps1.
 4. Build the client and copy it to -OutDir with appsettings.json and the DLLs it needs.
 
 Requirements: Visual Studio 2022 (C++ workload), CMake >= 3.22, git, and micromamba
@@ -37,9 +37,11 @@ param(
     [string]$WorkDir,
     # Folder receiving the executable, appsettings.json and the DLLs. Default: <this folder>\dist
     [string]$OutDir,
-    # ArmoniK.Extensions.Cpp commit or tag. Default: SDK_WINDOWS_REF from cpp\versions.env
-    [string]$SdkRef,
-    # Existing ArmoniK.Extensions.Cpp checkout. Default: fetch $SdkRef into $WorkDir
+    # ArmoniK.Extensions.Cpp tag. Default: SDK_VERSION from cpp\versions.env
+    [string]$SdkVersion,
+    # ArmoniK.Api tag. Default: API_VERSION from cpp\versions.env
+    [string]$ApiVersion,
+    # Existing ArmoniK.Extensions.Cpp checkout. Default: fetch $SdkVersion into $WorkDir
     [string]$SdkSource,
     # Existing environment created from the SDK's tools\windows\environment.yml.
     # Default: create one with micromamba in $WorkDir\env
@@ -76,13 +78,14 @@ $ClientSource = (Resolve-Path (Join-Path $PSScriptRoot '..\client')).Path
 
 if (-not $WorkDir) { $WorkDir = Join-Path $PSScriptRoot 'build' }
 if (-not $OutDir) { $OutDir = Join-Path $PSScriptRoot 'dist' }
-if (-not $SdkRef) { $SdkRef = Get-VersionsEnv 'SDK_WINDOWS_REF' }
+if (-not $SdkVersion) { $SdkVersion = Get-VersionsEnv 'SDK_VERSION' }
+if (-not $ApiVersion) { $ApiVersion = Get-VersionsEnv 'API_VERSION' }
 New-Item -ItemType Directory -Force -Path $WorkDir, $OutDir | Out-Null
 $WorkDir = (Resolve-Path $WorkDir).Path
 $OutDir = (Resolve-Path $OutDir).Path
 $Prefix = Join-Path $WorkDir 'install'
 
-# 1. SDK sources. A fetch by commit works for tags and full SHAs, a shallow clone only for tags.
+# 1. SDK sources. Fetching into an existing checkout follows SDK_VERSION changes.
 if (-not $SdkSource) {
     $SdkSource = Join-Path $WorkDir 'ArmoniK.Extensions.Cpp'
     if (-not (Test-Path (Join-Path $SdkSource '.git'))) {
@@ -90,12 +93,12 @@ if (-not $SdkSource) {
         Invoke-Native git @('-C', $SdkSource, 'remote', 'add', 'origin',
             'https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp.git')
     }
-    Invoke-Native git @('-C', $SdkSource, 'fetch', '--quiet', '--depth', '1', 'origin', $SdkRef)
+    Invoke-Native git @('-C', $SdkSource, 'fetch', '--quiet', '--depth', '1', 'origin', $SdkVersion)
     Invoke-Native git @('-C', $SdkSource, 'checkout', '--quiet', '--force', 'FETCH_HEAD')
 }
 $SdkSource = (Resolve-Path $SdkSource).Path
 $SdkScript = Join-Path $SdkSource 'tools\windows\build.ps1'
-if (-not (Test-Path $SdkScript)) { throw "$SdkScript not found, $SdkRef predates the Windows SDK build" }
+if (-not (Test-Path $SdkScript)) { throw "$SdkScript not found, SDK $SdkVersion predates the Windows build (0.5.9)" }
 
 # 2. Dependencies. $DepsCMake is the CMake prefix holding them, $DepsArgs selects them in the SDK script.
 $DepsOptions = @()
@@ -129,7 +132,7 @@ if ($DepsCMakePrefix) {
 $env:PATH = "$DepsCMake\bin;$env:PATH"
 
 # 3. ArmoniK.Api and the SDK, both static libraries
-& $SdkScript @DepsArgs -Prefix $Prefix -WorkDir (Join-Path $WorkDir 'sdk')
+& $SdkScript @DepsArgs -Prefix $Prefix -WorkDir (Join-Path $WorkDir 'sdk') -ApiVersion $ApiVersion -Version $SdkVersion
 
 # 4. Client
 $ClientBuild = Join-Path $WorkDir 'client'
