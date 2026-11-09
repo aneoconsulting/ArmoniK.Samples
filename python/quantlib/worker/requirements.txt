@@ -7,8 +7,8 @@ grpcio==1.85.1
 packaging==26.3
 protobuf==7.36.2
 pycparser==3.12
-pydantic==2.14.2
-pydantic_core==2.50.2
+pydantic==2.14.3
+pydantic_core==2.50.4
 QuantLib==1.44
-typing-inspection==0.4.4
+typing-inspection==0.4.5
 typing_extensions==4.16.0
