@@ -59,6 +59,16 @@
       ]
     },
     {
+      "description": "Keep .NET images on the 10 LTS line",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "mcr.microsoft.com/dotnet/**"
+      ],
+      "allowedVersions": "<11"
+    },
+    {
       "groupName": "github actions",
       "groupSlug": "github-actions",
       "matchDatasources": [
