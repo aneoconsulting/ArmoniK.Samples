@@ -34,7 +34,7 @@ fi
 echo
 
 if [ "${count}" -gt 0 ]; then
-  ids=$(jq -r '[.[].id] | unique | join(", ")' <<< "${blocking}")
+  ids=$(jq -r '[.[] | "\(.id) (\(.pkg) \(.installed) -> \(.fixed))"] | unique | join(", ")' <<< "${blocking}")
   if [ "${enforce}" = "true" ]; then
     echo "::error title=Trivy ${name}::${count} fixable ${severities} vulnerabilities: ${ids}" >&2
     exit 1
