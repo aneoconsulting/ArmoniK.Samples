@@ -4,30 +4,6 @@ on:
   push:
 
 jobs:
-  versionning:
-    name: Versionning
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.genver.outputs.version }}
-    steps:
-    - name: Checkout
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      with:
-        ref: ${{ github.ref }}
-        fetch-depth: 0
-
-    - name: Generate Version
-      id: genver
-      uses: codacy/git-version@5cabe6920ad6a182ba6d653ee8cb5ec65b8b4cfd # 2.9.0
-      with:
-        minor-identifier: "feat:"
-        release-branch: release
-        dev-branch: main
-        prefix: v
-
-    - name: Print version
-      run: echo VERSION ${{ steps.genver.outputs.version }} >> $GITHUB_STEP_SUMMARY
-
   formatCsharp:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -150,14 +126,12 @@ jobs:
           echo "java-demo-names-to-worker=${JAVA_DEMO_NAMES_TO_WORKER}" >> $GITHUB_OUTPUT
           echo "java-demo-names-to-library=${JAVA_DEMO_NAMES_TO_LIBRARY}" >> $GITHUB_OUTPUT
 
+  # Sample images are not pushed: they are saved as workflow artifacts and imported into k3s by the test jobs
   buildCSharpImages:
     runs-on: ubuntu-latest
     needs:
-      - versionning
       - buildProjects
       - setupDemoNames
-    env:
-      VERSION: ${{ needs.versionning.outputs.version }}
     strategy:
       fail-fast: true
       matrix:
@@ -165,27 +139,29 @@ jobs:
         role: [Client, Worker]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Login to Docker Hub
-        run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
 
       - name: Build Docker image
         run: |
-          IMAGE_NAME="dockerhubaneo/armonik_demo_$(echo '${{ matrix.demodir }}' | tr '[:upper:]' '[:lower:]')_$(echo '${{ matrix.role }}' | tr '[:upper:]' '[:lower:]')"
+          IMAGE_NAME="armonik_demo_$(echo '${{ matrix.demodir }}' | tr '[:upper:]' '[:lower:]')_$(echo '${{ matrix.role }}' | tr '[:upper:]' '[:lower:]')"
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
           docker build \
-            -t ${IMAGE_NAME}:${VERSION} \
+            -t ${IMAGE_NAME}:ci \
             -f ./csharp/native/${{ matrix.demodir }}/${{ matrix.role }}/Dockerfile \
             csharp/native/
-      - name: Push Docker image
-        run: docker push ${IMAGE_NAME}:${VERSION}
+          mkdir -p images
+          docker save ${IMAGE_NAME}:ci -o images/${IMAGE_NAME}.tar
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: image-${{ env.IMAGE_NAME }}
+          path: images/${{ env.IMAGE_NAME }}.tar
+          retention-days: 1
 
   buildCppImages:
     runs-on: ubuntu-latest
     needs:
-      - versionning
       - setupDemoNames
-    env:
-      VERSION: ${{ needs.versionning.outputs.version }}
     strategy:
       fail-fast: true
       matrix:
@@ -225,41 +201,43 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - name: Login to Docker Hub
-        run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
-
       - name: Build Docker image
         run: |
           source cpp/versions.env
-          IMAGE_NAME="dockerhubaneo/armonik_demo_cpp_$(echo '${{ matrix.demodir }}' | tr '[:upper:]' '[:lower:]')_${{ matrix.role }}"
+          IMAGE_NAME="armonik_demo_cpp_$(echo '${{ matrix.demodir }}' | tr '[:upper:]' '[:lower:]')_${{ matrix.role }}"
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
           DEMO_DIR="${{ matrix.demodir }}"
           DEMO_DIR="${DEMO_DIR/HelloWorldSDK_C/HelloWorldC}"
           DISTRO="${{ matrix.distro }}"
           if [ -n "${DISTRO}" ]; then
             DOCKERFILE="Dockerfile.${DISTRO}"
-            IMAGE_TAG="${VERSION}-${DISTRO}"
+            IMAGE_TAG="ci-${DISTRO}"
           else
             DOCKERFILE="Dockerfile"
-            IMAGE_TAG="${VERSION}"
+            IMAGE_TAG="ci"
           fi
-          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+          ARCHIVE="${IMAGE_NAME}${DISTRO:+-${DISTRO}}"
+          echo "ARCHIVE=${ARCHIVE}" >> $GITHUB_ENV
           docker build \
             -t ${IMAGE_NAME}:${IMAGE_TAG} \
             -f ./cpp/${DEMO_DIR}/${{ matrix.role }}/${DOCKERFILE} \
             --build-arg="API_VERSION=${API_VERSION}" \
             --build-arg="SDK_VERSION=${SDK_VERSION}" \
             cpp/${DEMO_DIR}/${{ matrix.role }}/
-      - name: Push Docker image
-        run: docker push ${IMAGE_NAME}:${IMAGE_TAG}
+          mkdir -p images
+          docker save ${IMAGE_NAME}:${IMAGE_TAG} -o images/${ARCHIVE}.tar
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: image-${{ env.ARCHIVE }}
+          path: images/${{ env.ARCHIVE }}.tar
+          retention-days: 1
 
   buildJavaImages:
     runs-on: ubuntu-latest
     needs:
-      - versionning
       - setupDemoNames
-    env:
-      VERSION: ${{ needs.versionning.outputs.version }}
     strategy:
       fail-fast: true
       matrix:
@@ -273,24 +251,26 @@ jobs:
           java-version: '17'
           cache: 'maven'
           cache-dependency-path: 'java/${{ matrix.demodir }}/pom.xml'
-      - name: Login to Docker Hub
-        run: echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_LOGIN }} --password-stdin
 
       - name: Build Docker image
         run: |
           demodir="${{ matrix.demodir }}" && stripped=${demodir#*/}
-          IMAGE_NAME="dockerhubaneo/armonik_demo_java_${stripped}"
+          IMAGE_NAME="armonik_demo_java_${stripped}"
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
-          cd java/${{ matrix.demodir }}
-          ./mvnw package -Djib.to.image=${IMAGE_NAME}:${VERSION}
+          (cd java/${{ matrix.demodir }} && ./mvnw package -Djib.to.image=${IMAGE_NAME}:ci)
+          mkdir -p images
+          docker save ${IMAGE_NAME}:ci -o images/${IMAGE_NAME}.tar
 
-      - name: Push Docker image
-        run: docker push ${IMAGE_NAME}:${VERSION}
+      - name: Upload Docker image
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: image-${{ env.IMAGE_NAME }}
+          path: images/${{ env.IMAGE_NAME }}.tar
+          retention-days: 1
 
   CSharpSamples:
     runs-on: ubuntu-latest
     needs:
-      - versionning
       - buildCSharpImages
       - setupDemoNames
     env:
@@ -328,9 +308,26 @@ jobs:
             echo WORKER_IMAGE=dockerhubaneo/armonik-dynamic-dotnet-worker >> $GITHUB_ENV
             echo WORKER_VERSION=$CSHARP_DYNAMIC_WORKER_VERSION >> $GITHUB_ENV
           else
-            echo WORKER_IMAGE=dockerhubaneo/armonik_demo_${{ matrix.demo }}_worker >> $GITHUB_ENV
-            echo WORKER_VERSION=${{ needs.versionning.outputs.version }} >> $GITHUB_ENV
+            echo WORKER_IMAGE=armonik_demo_${{ matrix.demo }}_worker >> $GITHUB_ENV
+            echo WORKER_VERSION=ci >> $GITHUB_ENV
           fi
+
+      - name: Download sample images
+        if: ${{ env.SDK_DIR == '' }}
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: image-armonik_demo_${{ matrix.demo }}_*
+          path: images
+          merge-multiple: true
+
+      - name: Load sample images
+        if: ${{ env.SDK_DIR == '' }}
+        run: |
+          # k3s does not use the docker image store: images are loaded in both
+          for archive in images/*.tar; do
+            docker load -i "${archive}"
+            sudo k3s ctr images import "${archive}"
+          done
 
       - name: Deploy
         id: deploy
@@ -364,11 +361,10 @@ jobs:
         timeout-minutes: 10
         run: |
           export Grpc__Endpoint=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
-          docker run --rm dockerhubaneo/armonik_demo_${{ matrix.demo }}_client:${{ needs.versionning.outputs.version }} --endpoint $Grpc__Endpoint --partition ${{ matrix.demo }}
+          docker run --rm armonik_demo_${{ matrix.demo }}_client:ci --endpoint $Grpc__Endpoint --partition ${{ matrix.demo }}
 
   testInfraWorker:
     needs:
-      - versionning
       - buildProjects
     strategy:
       matrix:
@@ -451,7 +447,6 @@ jobs:
   CppSamples:
     runs-on: ubuntu-latest
     needs:
-      - versionning
       - buildCppImages
       - setupDemoNames
     strategy:
@@ -492,6 +487,21 @@ jobs:
             repository: aneoconsulting/ArmoniK
             path: infra
 
+      - name: Download sample images
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: ${{ format('image-armonik_demo_cpp_{0}_*{1}', matrix.demo, matrix.distro && format('-{0}', matrix.distro) || '') }}
+          path: images
+          merge-multiple: true
+
+      - name: Load sample images
+        run: |
+          # k3s does not use the docker image store: images are loaded in both
+          for archive in images/*.tar; do
+            docker load -i "${archive}"
+            sudo k3s ctr images import "${archive}"
+          done
+
       - name: Prepare SDK sample
         if: ${{ !contains(matrix.demo, 'api') && matrix.demo != 'staticworker' }}
         run: |
@@ -512,8 +522,8 @@ jobs:
               ;;
           esac
           DISTRO="${{ matrix.distro }}"
-          WORKER_TAG="${{ needs.versionning.outputs.version }}${DISTRO:+-${DISTRO}}"
-          docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_worker:${WORKER_TAG}
+          WORKER_TAG="ci${DISTRO:+-${DISTRO}}"
+          docker create --name so_exporter armonik_demo_cpp_${{ matrix.demo }}_worker:${WORKER_TAG}
           docker cp so_exporter:app/${SO_FILE} ${DEST}
           docker rm so_exporter
           grep '^SDK_VERSION=' cpp/versions.env >> $GITHUB_ENV
@@ -527,8 +537,8 @@ jobs:
           type: localhost
           override-compute: true
           # helloworldapi and staticworker run their own worker image; the other demos run the SDK's DynamicWorker
-          override-worker-version: ${{ (contains(matrix.demo, 'api') || matrix.demo == 'staticworker') && (matrix.distro && format('{0}-{1}', needs.versionning.outputs.version, matrix.distro) || needs.versionning.outputs.version) || format('{0}-ubuntu', env.SDK_VERSION) }}
-          override-worker-image: ${{ (contains(matrix.demo, 'api') || matrix.demo == 'staticworker') && format('dockerhubaneo/armonik_demo_cpp_{0}_worker', matrix.demo) || 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' }}
+          override-worker-version: ${{ (contains(matrix.demo, 'api') || matrix.demo == 'staticworker') && (matrix.distro && format('ci-{0}', matrix.distro) || 'ci') || format('{0}-ubuntu', env.SDK_VERSION) }}
+          override-worker-image: ${{ (contains(matrix.demo, 'api') || matrix.demo == 'staticworker') && format('armonik_demo_cpp_{0}_worker', matrix.demo) || 'dockerhubaneo/armonik-sdk-cpp-dynamicworker' }}
           override-worker-partition: ${{ matrix.demo }}
           log-suffix: ${{ matrix.distro && format('{0}-{1}', matrix.demo, matrix.distro) || matrix.demo }}
 
@@ -537,25 +547,24 @@ jobs:
         run: |
           export Grpc__Endpoint=$(jq -r .armonik.control_plane_url "${{ steps.deploy.outputs.generated-folder }}/armonik-output.json")
           DISTRO="${{ matrix.distro }}"
-          CLIENT_TAG="${{ needs.versionning.outputs.version }}${DISTRO:+-${DISTRO}}"
+          CLIENT_TAG="ci${DISTRO:+-${DISTRO}}"
           if [ "${{ matrix.demo }}" = "chainedarithmetic" ]; then
             docker run --rm \
               -v /tmp/so-libs:/so-libs \
               -e GrpcClient__Endpoint="${Grpc__Endpoint}" \
               -e PartitionId="${{ matrix.demo }}" \
               -e Worker__LibraryPath="/so-libs/${SO_FILE}" \
-              dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${CLIENT_TAG}
+              armonik_demo_cpp_${{ matrix.demo }}_client:${CLIENT_TAG}
           else
             docker run --rm \
               -e GrpcClient__Endpoint="${Grpc__Endpoint}" \
               -e PartitionId="${{ matrix.demo }}" \
-              dockerhubaneo/armonik_demo_cpp_${{ matrix.demo }}_client:${CLIENT_TAG}
+              armonik_demo_cpp_${{ matrix.demo }}_client:${CLIENT_TAG}
           fi
 
   JavaSamples:
     runs-on: ubuntu-latest
     needs:
-      - versionning
       - buildJavaImages
       - setupDemoNames
     env:
@@ -597,10 +606,26 @@ jobs:
             echo WORKER_IMAGE=dockerhubaneo/armonik-dynamic-java-worker >> $GITHUB_ENV
             echo WORKER_VERSION=$JAVA_DYNAMIC_WORKER_VERSION >> $GITHUB_ENV
           else
-            echo WORKER_IMAGE=dockerhubaneo/armonik_demo_java_$worker >> $GITHUB_ENV
-            echo WORKER_VERSION=${{ needs.versionning.outputs.version }} >> $GITHUB_ENV
+            echo WORKER_IMAGE=armonik_demo_java_$worker >> $GITHUB_ENV
+            echo WORKER_VERSION=ci >> $GITHUB_ENV
           fi
           echo PARTITION_NAME=$(echo '${{ matrix.demo }}' | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
+
+      - name: Download sample images
+        if: ${{ env.WORKER_LIBRARY == '' }}
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: image-${{ env.WORKER_IMAGE }}
+          path: images
+
+      - name: Load sample images
+        if: ${{ env.WORKER_LIBRARY == '' }}
+        run: |
+          # k3s does not use the docker image store: images are loaded in both
+          for archive in images/*.tar; do
+            docker load -i "${archive}"
+            sudo k3s ctr images import "${archive}"
+          done
           
       - name: Deploy
         id: deploy
@@ -640,7 +665,6 @@ jobs:
   CppInterop:
     runs-on: ubuntu-latest
     needs:
-      - versionning
       - buildCppImages
       - setupDemoNames
     strategy:
@@ -666,12 +690,19 @@ jobs:
             repository: aneoconsulting/ArmoniK
             path: infra
 
+      - name: Download sample images
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: image-armonik_demo_cpp_chainedarithmetic_worker
+          path: images
+
       - name: Prepare SDK sample
         run: |
           SO_FILE="libArmoniK.Samples.Cpp.ChainedArithmetic.Worker.so"
           DEST=/tmp/so-libs
           mkdir -p ${DEST}
-          docker create --name so_exporter dockerhubaneo/armonik_demo_cpp_chainedarithmetic_worker:${{ needs.versionning.outputs.version }}
+          docker load -i images/armonik_demo_cpp_chainedarithmetic_worker.tar
+          docker create --name so_exporter armonik_demo_cpp_chainedarithmetic_worker:ci
           docker cp so_exporter:app/${SO_FILE} ${DEST}
           docker rm so_exporter
           grep '^SDK_VERSION=' cpp/versions.env >> $GITHUB_ENV
@@ -721,7 +752,6 @@ jobs:
             --LibraryPath /tmp/so-libs/${SO_FILE} \
             --Partition $PARTITION_NAME
 
-  # The QuantLib images are built and tested here only: they are not pushed to Docker Hub
   QuantLibSamples:
     runs-on: ubuntu-latest
     steps:
