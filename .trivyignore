@@ -1,0 +1,5 @@
+# Vulnerabilities accepted for the published sample images, read by .github/actions/scan-image.
+# One ID per line, each preceded by a comment with the reason and a review date. Example:
+#
+# Not reachable: the affected parser is never used by the samples. Review by 2026-12-31.
+# CVE-2026-00000

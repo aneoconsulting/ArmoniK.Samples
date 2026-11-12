@@ -58,6 +58,11 @@ jobs:
 
   buildImages:
     runs-on: ubuntu-latest
+    # Image jobs: scan results upload, keyless signing (OIDC token)
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
     needs:
       - versionning
     env:
@@ -109,7 +114,29 @@ jobs:
     - name: platforms
       run: echo ${{ steps.buildx.outputs.platforms }}
 
+    - name: Image name
+      id: name
+      run: echo "name=$(basename '${{ matrix.img }}')" >> $GITHUB_OUTPUT
+
+    # The amd64 image is scanned before anything is pushed; the arm64 image has the same packages
+    - name: Build for scan
+      uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
+      with:
+        file: ${{ matrix.path }}
+        context: ./csharp/native
+        platforms: linux/amd64
+        load: true
+        tags: ${{ steps.name.outputs.name }}:scan
+
+    - name: Scan
+      uses: ./.github/actions/scan-image
+      with:
+        image: ${{ steps.name.outputs.name }}:scan
+        name: ${{ steps.name.outputs.name }}
+        enforce: true
+
     - name: Build and push
+      id: push
       uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
       with:
         file: ${{ matrix.path }}
@@ -118,12 +145,25 @@ jobs:
           linux/arm64
           linux/amd64
         push: true
+        sbom: true
+        provenance: mode=max
         tags: |
             ${{ matrix.img }}:${{ needs.versionning.outputs.release }}
             ${{ matrix.img }}:latest
 
+    - name: Sign
+      uses: ./.github/actions/sign-image
+      with:
+        image: ${{ matrix.img }}
+        digest: ${{ steps.push.outputs.digest }}
+
   buildJavaImages:
     runs-on: ubuntu-latest
+    # Image jobs: scan results upload, keyless signing (OIDC token)
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
     needs:
       - versionning
     env:
@@ -154,16 +194,46 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_LOGIN }}
         password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+    # The amd64 image is scanned before anything is pushed; the arm64 image has the same packages
+    - name: Build for scan
+      working-directory: java/workers/${{ matrix.worker }}
+      run: |
+        ./mvnw -B compile jar:jar jib:buildTar \
+          -Djib.to.image=armonik_demo_java_${{ matrix.worker }}:scan \
+          -Djib.from.platforms=linux/amd64
+
+    - name: Scan
+      uses: ./.github/actions/scan-image
+      with:
+        image: java/workers/${{ matrix.worker }}/target/jib-image.tar
+        name: armonik_demo_java_${{ matrix.worker }}
+        enforce: true
+
     - name: Build and push
+      id: push
       working-directory: java/workers/${{ matrix.worker }}
       run: |
         ./mvnw -B compile jar:jar jib:build \
           -Djib.to.image=dockerhubaneo/armonik_demo_java_${{ matrix.worker }}:${RELEASE} \
           -Djib.to.tags=latest \
           -Djib.from.platforms=linux/amd64,linux/arm64
+        echo "digest=$(cat target/jib-image.digest)" >> $GITHUB_OUTPUT
+
+    # Jib images are not built by BuildKit: the SBOM is generated with Syft and attached with cosign
+    - name: Sign
+      uses: ./.github/actions/sign-image
+      with:
+        image: dockerhubaneo/armonik_demo_java_${{ matrix.worker }}
+        digest: ${{ steps.push.outputs.digest }}
+        sbom: true
 
   buildCppImages:
     runs-on: ubuntu-latest
+    # Image jobs: scan results upload, keyless signing (OIDC token)
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
     needs:
       - versionning
     env:
@@ -214,6 +284,8 @@ jobs:
         IMAGE="dockerhubaneo/armonik_demo_cpp_$(echo '${{ matrix.demo.dir }}' | tr '[:upper:]' '[:lower:]')_${{ matrix.role }}"
         DISTRO="${{ matrix.demo.distro }}"
         echo "dockerfile=Dockerfile${DISTRO:+.${DISTRO}}" >> $GITHUB_OUTPUT
+        echo "image=${IMAGE}" >> $GITHUB_OUTPUT
+        echo "name=$(basename "${IMAGE}")${DISTRO:+-${DISTRO}}" >> $GITHUB_OUTPUT
         {
           echo "tags<<EOF"
           echo "${IMAGE}:${RELEASE}${DISTRO:+-${DISTRO}}"
@@ -221,7 +293,25 @@ jobs:
           echo "EOF"
         } >> $GITHUB_OUTPUT
 
+    - name: Build for scan
+      uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
+      with:
+        context: ./cpp/${{ matrix.demo.dir }}/${{ matrix.role }}
+        file: ./cpp/${{ matrix.demo.dir }}/${{ matrix.role }}/${{ steps.params.outputs.dockerfile }}
+        platforms: linux/amd64
+        build-args: ${{ steps.params.outputs.build-args }}
+        load: true
+        tags: ${{ steps.params.outputs.name }}:scan
+
+    - name: Scan
+      uses: ./.github/actions/scan-image
+      with:
+        image: ${{ steps.params.outputs.name }}:scan
+        name: ${{ steps.params.outputs.name }}
+        enforce: true
+
     - name: Build and push
+      id: push
       uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
       with:
         context: ./cpp/${{ matrix.demo.dir }}/${{ matrix.role }}
@@ -229,7 +319,15 @@ jobs:
         platforms: linux/amd64
         build-args: ${{ steps.params.outputs.build-args }}
         push: true
+        sbom: true
+        provenance: mode=max
         tags: ${{ steps.params.outputs.tags }}
+
+    - name: Sign
+      uses: ./.github/actions/sign-image
+      with:
+        image: ${{ steps.params.outputs.image }}
+        digest: ${{ steps.push.outputs.digest }}
 
   buildProjects:
     runs-on: ubuntu-latest
