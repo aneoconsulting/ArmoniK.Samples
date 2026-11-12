@@ -33,7 +33,12 @@ else
 fi
 echo
 
-if [ "${enforce}" = "true" ] && [ "${count}" -gt 0 ]; then
-  echo "::error title=Trivy ${name}::${count} fixable ${severities} vulnerabilities, see the job summary" >&2
-  exit 1
+if [ "${count}" -gt 0 ]; then
+  ids=$(jq -r '[.[].id] | unique | join(", ")' <<< "${blocking}")
+  if [ "${enforce}" = "true" ]; then
+    echo "::error title=Trivy ${name}::${count} fixable ${severities} vulnerabilities: ${ids}" >&2
+    exit 1
+  fi
+  # Report only: an annotation makes the findings visible on the checks of the commit
+  echo "::warning title=Trivy ${name}::${count} fixable ${severities} vulnerabilities: ${ids}" >&2
 fi
