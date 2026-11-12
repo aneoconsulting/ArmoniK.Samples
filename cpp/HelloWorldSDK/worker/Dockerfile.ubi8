@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8 AS builder
+FROM registry.access.redhat.com/ubi8/ubi:8.10@sha256:44f19e308462e9152cb26d641fc0ce5bf6cbdab3cd101367aed67573eb2cf20e AS builder
 
 RUN dnf install -y --nodocs \
     https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
@@ -18,21 +18,38 @@ RUN git clone --depth 1 https://github.com/nlohmann/json.git -b v3.11.3 /tmp/nlo
     cmake --build /tmp/nlohmann-json/build --target install && \
     rm -rf /tmp/nlohmann-json
 
-ARG GRPC_VERSION=1.62.2
-ARG GRPC_BUILD=${GRPC_VERSION}.0
+# aneo's gRPC packages for EL8, checked against the SHA-256 from cpp/versions.env.
+# The runtime package is kept in /pkgs/runtime for the runner stage.
+ARG GRPC_RPM_VERSION
+ARG GRPC_RPM_SHA256
+ARG GRPC_DEVEL_RPM_SHA256
+WORKDIR /pkgs
+RUN GRPC_RPM="${GRPC_RPM_VERSION%.*}-1.el8.x86_64.rpm" && \
+    wget -q "https://github.com/aneoconsulting/grpc-rpm/releases/download/${GRPC_RPM_VERSION}/grpc-${GRPC_RPM}" \
+        "https://github.com/aneoconsulting/grpc-rpm/releases/download/${GRPC_RPM_VERSION}/grpc-devel-${GRPC_RPM}" && \
+    printf '%s  %s\n' \
+        "${GRPC_RPM_SHA256}" "grpc-${GRPC_RPM}" \
+        "${GRPC_DEVEL_RPM_SHA256}" "grpc-devel-${GRPC_RPM}" | sha256sum -c - && \
+    dnf install -y "grpc-${GRPC_RPM}" "grpc-devel-${GRPC_RPM}" && \
+    mkdir -p runtime && mv "grpc-${GRPC_RPM}" runtime/ && rm "grpc-devel-${GRPC_RPM}"
 
-RUN wget "https://github.com/aneoconsulting/grpc-rpm/releases/download/${GRPC_BUILD}/grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" && \
-    wget "https://github.com/aneoconsulting/grpc-rpm/releases/download/${GRPC_BUILD}/grpc-devel-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" && \
-    dnf install -y "grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" "grpc-devel-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" && \
-    rm "grpc-${GRPC_BUILD%.*}-1.el8.x86_64.rpm" "grpc-devel-${GRPC_BUILD%.*}-1.el8.x86_64.rpm"
-
+# ArmoniK.Api packages, checked against the SHA-256 from cpp/versions.env
 ARG API_VERSION
-RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-devel-${API_VERSION}-Linux.rpm" && \
+ARG LIBARMONIK_RPM_SHA256
+ARG LIBARMONIK_DEVEL_RPM_SHA256
+RUN wget -q "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" \
+        "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-devel-${API_VERSION}-Linux.rpm" && \
+    printf '%s  %s\n' \
+        "${LIBARMONIK_RPM_SHA256}" "libarmonik-${API_VERSION}-Linux.rpm" \
+        "${LIBARMONIK_DEVEL_RPM_SHA256}" "libarmonik-devel-${API_VERSION}-Linux.rpm" | sha256sum -c - && \
     dnf install -y libarmonik-${API_VERSION}-Linux.rpm libarmonik-devel-${API_VERSION}-Linux.rpm && \
-    rm libarmonik-${API_VERSION}-Linux.rpm libarmonik-devel-${API_VERSION}-Linux.rpm
+    mv libarmonik-${API_VERSION}-Linux.rpm runtime/ && rm libarmonik-devel-${API_VERSION}-Linux.rpm
 
+# ArmoniK.Extensions.Cpp package, checked against the SHA-256 from cpp/versions.env
 ARG SDK_VERSION
-RUN wget "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/download/${SDK_VERSION}/armoniksdk-${SDK_VERSION}.rpm" && \
+ARG ARMONIKSDK_RPM_SHA256
+RUN wget -q "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/download/${SDK_VERSION}/armoniksdk-${SDK_VERSION}.rpm" && \
+    printf '%s  %s\n' "${ARMONIKSDK_RPM_SHA256}" "armoniksdk-${SDK_VERSION}.rpm" | sha256sum -c - && \
     dnf install -y armoniksdk-${SDK_VERSION}.rpm && \
     rm armoniksdk-${SDK_VERSION}.rpm
 
@@ -42,7 +59,10 @@ COPY HelloService.h ./
 COPY ServiceDispatch.cpp ./
 RUN mkdir -p build && cd build && cmake .. && make
 
-FROM registry.access.redhat.com/ubi8 AS runner
+# Carries the worker library only: it is copied out of the image, never run as a service.
+# It keeps a shell and the root default so that the library can be copied out with
+# `docker run --entrypoint sh <image> -c "cp /app/<lib>.so /host/"`.
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10@sha256:b3314c5f8d009ee6df04ead732bca6d3eaf011750185e348f55fce2678fb30d0 AS runner
 
 WORKDIR /app
 COPY --from=builder /app/build/libArmoniK.Samples.Cpp.Hello.SDK.Worker.so ./
