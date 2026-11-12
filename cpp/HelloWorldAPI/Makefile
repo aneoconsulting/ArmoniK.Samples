@@ -2,6 +2,8 @@
 WORKING_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 WORKER_IMAGE_TAG?="armonik-cpp-hello-worker:0.1.0-api"
 CLIENT_IMAGE_TAG?="armonik-cpp-hello-client:0.1.0-api"
+# Every variable of versions.env (versions and package checksums) as a build argument
+VERSIONS_ARGS:= $(shell grep -E '^[A-Z0-9_]+=' $(WORKING_DIR)/../versions.env | sed 's/^/--build-arg=/')
 API_VERSION?=$(shell . $(WORKING_DIR)/../versions.env && echo $$API_VERSION)
 
 .PHONY: help
@@ -16,6 +18,7 @@ all: build_worker build_client
 .PHONY: build_client
 build_client: ## Builds docker image for client (RHEL 8)
 	@docker build -t ${CLIENT_IMAGE_TAG}  \
+		${VERSIONS_ARGS} \
 		--build-arg="API_VERSION=${API_VERSION}" \
 		-f "${WORKING_DIR}/client/Dockerfile.ubi8" \
 		${WORKING_DIR}/client
@@ -23,6 +26,7 @@ build_client: ## Builds docker image for client (RHEL 8)
 .PHONY: build_worker
 build_worker: ## Builds docker image for worker (RHEL 8)
 	@docker build -t ${WORKER_IMAGE_TAG} \
+		${VERSIONS_ARGS} \
 		--build-arg="API_VERSION=${API_VERSION}" \
 		-f "${WORKING_DIR}/worker/Dockerfile.ubi8" \
 		${WORKING_DIR}/worker
@@ -30,6 +34,7 @@ build_worker: ## Builds docker image for worker (RHEL 8)
 .PHONY: build_client_debian
 build_client_debian: ## Builds docker image for client (Debian 12)
 	@docker build -t ${CLIENT_IMAGE_TAG}-debian \
+		${VERSIONS_ARGS} \
 		--build-arg="API_VERSION=${API_VERSION}" \
 		-f "${WORKING_DIR}/client/Dockerfile.debian" \
 		${WORKING_DIR}/client
@@ -37,6 +42,7 @@ build_client_debian: ## Builds docker image for client (Debian 12)
 .PHONY: build_worker_debian
 build_worker_debian: ## Builds docker image for worker (Debian 12)
 	@docker build -t ${WORKER_IMAGE_TAG}-debian \
+		${VERSIONS_ARGS} \
 		--build-arg="API_VERSION=${API_VERSION}" \
 		-f "${WORKING_DIR}/worker/Dockerfile.debian" \
 		${WORKING_DIR}/worker
