@@ -14,7 +14,46 @@
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!--
+      Overrides of transitive dependency versions, for security fixes. Same overrides as
+      ArmoniK.Extensions.Java (#50, #53), not yet in a released armonik-worker: remove them
+      when armonik-worker is bumped past 0.2.1.
+    -->
+    <grpc.version>1.76.0</grpc.version>
+    <guava.version>33.8.0-android</guava.version>
+    <jackson.version>2.18.11</jackson.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!--
+        - gRPC is pulled at 1.74 by armonik-worker (CVE-2025-55163); the BOM keeps all
+          io.grpc artifacts on one version.
+        - Guava is pulled by gRPC (CVE-2026-102554).
+        - Jackson is pulled by logstash-logback-encoder (several CVEs fixed in 2.18.11).
+      -->
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-bom</artifactId>
+        <version>${grpc.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -120,7 +159,8 @@
         </executions>
         <configuration>
           <from>
-            <image>gcr.io/distroless/java17-debian12</image>
+            <!-- Same base as the ArmoniK.Extensions.Java worker; the debian12 variant no longer gets package updates -->
+            <image>gcr.io/distroless/java17-debian13:latest@sha256:7963c2ea13a73d61eb769a2b91201b5bbded3569de78441e701cb943bbc2676c</image>
           </from>
           <to>
             <image>hello-world-worker</image>
