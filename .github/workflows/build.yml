@@ -80,6 +80,57 @@ jobs:
       run: |
         dotnet build AllSamples.sln
 
+  buildCppWindowsClient:
+    name: Build C++ StaticWorker client (Windows MSVC)
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+    - name: Checkout
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      with:
+        ref: ${{ github.ref }}
+
+    - name: Read SDK version
+      id: sdk
+      shell: pwsh
+      run: |
+        $ref = (Select-String -Path cpp/versions.env -Pattern '^SDK_VERSION=(\S+)').Matches[0].Groups[1].Value
+        "ref=$ref" >> $env:GITHUB_OUTPUT
+
+    - name: Checkout ArmoniK.Extensions.Cpp
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      with:
+        repository: aneoconsulting/ArmoniK.Extensions.Cpp
+        ref: ${{ steps.sdk.outputs.ref }}
+        path: sdk
+
+    # Prebuilt MSVC binaries of gRPC and its dependencies from conda-forge
+    - name: Install dependencies
+      id: deps
+      uses: mamba-org/setup-micromamba@f457c30a868e4760d3a6fcea5f25dc655b8edf39 # v3.2.1
+      with:
+        environment-file: sdk/tools/windows/environment.yml
+        init-shell: none
+        cache-downloads: true
+
+    # Same script as documented in cpp/StaticWorker/README.md, with the checkout and environment above
+    - name: Build
+      shell: pwsh
+      run: >
+        ./cpp/StaticWorker/windows-client/build.ps1
+        -SdkSource "${{ github.workspace }}\sdk"
+        -DepsPrefix "${{ steps.deps.outputs.environment-path }}"
+        -WorkDir "${{ runner.temp }}\akb"
+
+    - name: Check output
+      shell: pwsh
+      run: |
+        $dist = 'cpp/StaticWorker/windows-client/dist'
+        foreach ($f in 'ArmoniK.Samples.Cpp.StaticWorker.Client.exe', 'appsettings.json') {
+          if (-not (Test-Path "$dist/$f")) { throw "$f missing from $dist" }
+        }
+        Get-ChildItem $dist | Format-Table Name, Length
+
   setupDemoNames:
     runs-on: ubuntu-latest
     outputs:
