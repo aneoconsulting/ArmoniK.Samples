@@ -129,10 +129,6 @@ jobs:
   # Sample images are not pushed: they are saved as workflow artifacts and imported into k3s by the test jobs
   buildCSharpImages:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      # Upload of the image scan results to code scanning
-      security-events: write
     needs:
       - buildProjects
       - setupDemoNames
@@ -155,7 +151,7 @@ jobs:
           mkdir -p images
           docker save ${IMAGE_NAME}:ci -o images/${IMAGE_NAME}.tar
 
-      # Report only: findings are listed in the job summary and in code scanning, the release workflow blocks on them
+      # Report only: findings are summarized by the trivyReport job, the release workflow blocks on them
       - name: Scan Docker image
         uses: ./.github/actions/scan-image
         with:
@@ -171,10 +167,6 @@ jobs:
 
   buildCppImages:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      # Upload of the image scan results to code scanning
-      security-events: write
     needs:
       - setupDemoNames
     strategy:
@@ -241,7 +233,7 @@ jobs:
           mkdir -p images
           docker save ${IMAGE_NAME}:${IMAGE_TAG} -o images/${ARCHIVE}.tar
 
-      # Report only: findings are listed in the job summary and in code scanning, the release workflow blocks on them
+      # Report only: findings are summarized by the trivyReport job, the release workflow blocks on them
       - name: Scan Docker image
         uses: ./.github/actions/scan-image
         with:
@@ -257,10 +249,6 @@ jobs:
 
   buildJavaImages:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      # Upload of the image scan results to code scanning
-      security-events: write
     needs:
       - setupDemoNames
     strategy:
@@ -286,7 +274,7 @@ jobs:
           mkdir -p images
           docker save ${IMAGE_NAME}:ci -o images/${IMAGE_NAME}.tar
 
-      # Report only: findings are listed in the job summary and in code scanning, the release workflow blocks on them
+      # Report only: findings are summarized by the trivyReport job, the release workflow blocks on them
       - name: Scan Docker image
         uses: ./.github/actions/scan-image
         with:
@@ -299,6 +287,46 @@ jobs:
           name: image-${{ env.IMAGE_NAME }}
           path: images/${{ env.IMAGE_NAME }}.tar
           retention-days: 1
+
+  # Summary of every image scan, CSV of every vulnerability and one code scanning upload
+  trivyReport:
+    runs-on: ubuntu-latest
+    if: ${{ !cancelled() }}
+    needs:
+      - buildCSharpImages
+      - buildCppImages
+      - buildJavaImages
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Download scan reports
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: trivy-*
+          path: trivy/reports
+          merge-multiple: true
+
+      - name: Set up Trivy
+        uses: ./.github/actions/setup-trivy
+
+      - name: Report
+        run: python3 .github/scripts/trivy-report.py trivy/reports "$GITHUB_STEP_SUMMARY" trivy/out
+
+      - name: Upload CSV
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: trivy-reports
+          path: trivy/out/vulnerabilities.csv
+
+      - name: Upload to code scanning
+        uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        with:
+          sarif_file: trivy/out/images.sarif
+          category: trivy-images
 
   CSharpSamples:
     runs-on: ubuntu-latest

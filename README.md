@@ -17,6 +17,8 @@ Documentation can be found at each sample dedicated subdirectory, for an overvie
 
 The release workflow publishes the sample images to Docker Hub under `dockerhubaneo/armonik_demo_*`. Before pushing, it scans each image with [Trivy](https://trivy.dev) and stops the release on a fixable `HIGH` or `CRITICAL` vulnerability. Accepted findings are listed, with their reason, in [`.trivyignore`](.trivyignore).
 
+Every CI and release run summarizes the scan of all images in the summary of its `trivyReport` job, lists every vulnerability in the `vulnerabilities.csv` file of its `trivy-reports` artifact, and sends the critical and high ones to code scanning.
+
 Each published image is signed with [cosign](https://docs.sigstore.dev/cosign/) keyless signing and carries an SPDX SBOM. Images built with Docker also carry a SLSA build provenance.
 
 Verify the signature of an image:
