@@ -53,7 +53,9 @@ FROM debian:12-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961
 # The exact runtime package: apt reads a bare 'libgrpc++' as the regex 'libgrpc+',
 # which also installs libgrpc-dev, libgrpc++-dev and their toolchain dependencies.
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
+    ca-certificates \
     libgrpc++1.51 \
+    tzdata \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /lib/libArmoniK*.so* /lib/
@@ -62,17 +64,18 @@ WORKDIR /app
 COPY --from=builder /app/build/ArmoniK.Samples.Cpp.ChainedArithmetic.Client ./
 COPY appsettings.json ./
 
-# Copy each shared library the binaries load into /rootfs, under the name they load it by, except the
-# libraries that the distroless base provides (glibc, libgcc, libstdc++, libgomp, OpenSSL, zlib, zstd).
-# Fails on a missing library.
+# Copy each shared library the binaries load into /rootfs, under the name they load it by, except glibc,
+# libgcc, libstdc++ and libgomp: the distroless base has the same Debian 12 builds. Fails on a missing library.
 # The dpkg record of the package owning each library goes to /var/lib/dpkg/status.d, as distroless does
-# for its own packages, so that vulnerability scanners still see these libraries.
+# for its own packages, so that vulnerability scanners see these libraries. The base's own records of the
+# packages copied here (OpenSSL, zlib, zstd) are replaced, the base being behind Debian 12's updates, and so
+# are its CA certificates and time zones, with their records.
 RUN set -e; bins="/app/ArmoniK.Samples.Cpp.ChainedArithmetic.Client"; \
     if ldd $bins | grep "not found"; then exit 1; fi; \
     mkdir -p /rootfs; \
     ldd $bins | awk '$2 == "=>" && $3 ~ /^\// {print $1, $3}' | sort -u | while read -r name path; do \
       case "$name" in \
-        ld-linux*|libc.so.*|libm.so.*|libdl.so.*|libpthread.so.*|librt.so.*|libresolv.so.*|libgcc_s.so.*|libstdc++.so.*|libgomp.so.*|libssl.so.*|libcrypto.so.*|libz.so.*|libzstd.so.*) continue ;; \
+        ld-linux*|libc.so.*|libm.so.*|libdl.so.*|libpthread.so.*|librt.so.*|libresolv.so.*|libgcc_s.so.*|libstdc++.so.*|libgomp.so.*) continue ;; \
       esac; \
       dir=$(dirname "$(readlink -f "$path")"); \
       mkdir -p "/rootfs$dir"; \
@@ -82,10 +85,14 @@ RUN set -e; bins="/app/ArmoniK.Samples.Cpp.ChainedArithmetic.Client"; \
         mkdir -p /rootfs/var/lib/dpkg/status.d; \
         dpkg -s "$pkg" > "/rootfs/var/lib/dpkg/status.d/$pkg"; \
       fi; \
-    done
+    done; \
+    for pkg in ca-certificates tzdata; do dpkg -s "$pkg" > "/rootfs/var/lib/dpkg/status.d/$pkg"; done; \
+    mkdir -p /rootfs/etc/ssl /rootfs/usr/share; \
+    cp -a /etc/ssl/certs /rootfs/etc/ssl/; \
+    cp -a /usr/share/ca-certificates /usr/share/zoneinfo /rootfs/usr/share/
 
 # Distroless: no shell, no package manager, non-root by default (UID 65532)
-FROM gcr.io/distroless/cc-debian13:nonroot@sha256:cb87acc574abe719b6e5c547384defa2f7b1f24af9605d3f618cf852495d8be2 AS runner
+FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS runner
 
 COPY --from=runtime /rootfs/ /
 COPY --from=runtime /app /app
