@@ -66,7 +66,8 @@ WORKDIR /app
 COPY --from=builder /app/build/ArmoniK.Samples.Cpp.StaticWorker.Worker ./
 
 # Copy each shared library the binaries load into /rootfs, under the name they load it by, except the
-# glibc, libgcc, libstdc++ and OpenSSL libraries that the distroless base provides. Fails on a missing library.
+# libraries that the distroless base provides (glibc, libgcc, libstdc++, libgomp, OpenSSL, zlib, zstd).
+# Fails on a missing library.
 # The dpkg record of the package owning each library goes to /var/lib/dpkg/status.d, as distroless does
 # for its own packages, so that vulnerability scanners still see these libraries.
 RUN set -e; bins="/app/ArmoniK.Samples.Cpp.StaticWorker.Worker"; \
@@ -74,7 +75,7 @@ RUN set -e; bins="/app/ArmoniK.Samples.Cpp.StaticWorker.Worker"; \
     mkdir -p /rootfs; \
     ldd $bins | awk '$2 == "=>" && $3 ~ /^\// {print $1, $3}' | sort -u | while read -r name path; do \
       case "$name" in \
-        ld-linux*|libc.so.*|libm.so.*|libdl.so.*|libpthread.so.*|librt.so.*|libresolv.so.*|libgcc_s.so.*|libstdc++.so.*|libssl.so.*|libcrypto.so.*) continue ;; \
+        ld-linux*|libc.so.*|libm.so.*|libdl.so.*|libpthread.so.*|librt.so.*|libresolv.so.*|libgcc_s.so.*|libstdc++.so.*|libgomp.so.*|libssl.so.*|libcrypto.so.*|libz.so.*|libzstd.so.*) continue ;; \
       esac; \
       dir=$(dirname "$(readlink -f "$path")"); \
       mkdir -p "/rootfs$dir"; \
