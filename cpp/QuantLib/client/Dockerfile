@@ -37,8 +37,10 @@ RUN mkdir -p build && cd build && cmake .. && make -j
 
 FROM debian:12 AS runner
 
+# The exact runtime package: apt reads a bare 'libgrpc++' as the regex 'libgrpc+',
+# which also installs libgrpc-dev, libgrpc++-dev and their toolchain dependencies.
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
-    libgrpc++ \
+    libgrpc++1.51 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /lib/libArmoniK*.so* /lib/
