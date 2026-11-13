@@ -80,6 +80,16 @@
   "customManagers": [
     {
       "customType": "regex",
+      "description": "Tool versions passed to actions, annotated with a '# renovate:' comment",
+      "managerFilePatterns": [
+        "/^\\.github/(actions|workflows)/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+[\\w-]+: (?<currentValue>\\S+)"
+      ]
+    },
+    {
+      "customType": "regex",
       "description": "Jib base images pinned by digest in Maven poms",
       "managerFilePatterns": [
         "/(^|/)pom\\.xml$/"
