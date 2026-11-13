@@ -314,7 +314,7 @@ jobs:
 
       - name: Download sample images
         if: ${{ env.SDK_DIR == '' }}
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           pattern: image-armonik_demo_${{ matrix.demo }}_*
           path: images
@@ -488,7 +488,7 @@ jobs:
             path: infra
 
       - name: Download sample images
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           pattern: ${{ format('image-armonik_demo_cpp_{0}_*{1}', matrix.demo, matrix.distro && format('-{0}', matrix.distro) || '') }}
           path: images
@@ -613,7 +613,7 @@ jobs:
 
       - name: Download sample images
         if: ${{ env.WORKER_LIBRARY == '' }}
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: image-${{ env.WORKER_IMAGE }}
           path: images
@@ -691,7 +691,7 @@ jobs:
             path: infra
 
       - name: Download sample images
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: image-armonik_demo_cpp_chainedarithmetic_worker
           path: images
