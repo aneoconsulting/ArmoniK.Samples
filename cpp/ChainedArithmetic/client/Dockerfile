@@ -47,7 +47,8 @@ RUN wget -q "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/d
 WORKDIR /app
 RUN mkdir -p build && cd build && cmake .. && make -j
 
-FROM debian:12-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc AS runner
+# Runtime packages, from which only the shared libraries the binaries load go to the final image
+FROM debian:12-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc AS runtime
 
 # The exact runtime package: apt reads a bare 'libgrpc++' as the regex 'libgrpc+',
 # which also installs libgrpc-dev, libgrpc++-dev and their toolchain dependencies.
@@ -61,6 +62,24 @@ WORKDIR /app
 COPY --from=builder /app/build/ArmoniK.Samples.Cpp.ChainedArithmetic.Client ./
 COPY appsettings.json ./
 
-# Non-root by default
-USER 65534:65534
+# Copy each shared library the binaries load into /rootfs, under the name they load it by, except the
+# glibc, libgcc and libstdc++ libraries that the distroless base provides. Fails on a missing library.
+RUN set -e; bins="/app/ArmoniK.Samples.Cpp.ChainedArithmetic.Client"; \
+    if ldd $bins | grep "not found"; then exit 1; fi; \
+    mkdir -p /rootfs; \
+    ldd $bins | awk '$2 == "=>" && $3 ~ /^\// {print $1, $3}' | sort -u | while read -r name path; do \
+      case "$name" in \
+        ld-linux*|libc.so.*|libm.so.*|libdl.so.*|libpthread.so.*|librt.so.*|libresolv.so.*|libgcc_s.so.*|libstdc++.so.*) continue ;; \
+      esac; \
+      dir=$(dirname "$(readlink -f "$path")"); \
+      mkdir -p "/rootfs$dir"; \
+      cp -L "$path" "/rootfs$dir/$name"; \
+    done
+
+# Distroless: no shell, no package manager, non-root by default (UID 65532)
+FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS runner
+
+COPY --from=runtime /rootfs/ /
+COPY --from=runtime /app /app
+WORKDIR /app
 ENTRYPOINT ["./ArmoniK.Samples.Cpp.ChainedArithmetic.Client"]
