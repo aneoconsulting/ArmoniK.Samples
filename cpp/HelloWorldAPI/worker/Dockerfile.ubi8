@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8 AS builder
+FROM registry.access.redhat.com/ubi8/ubi:8.10@sha256:44f19e308462e9152cb26d641fc0ce5bf6cbdab3cd101367aed67573eb2cf20e AS builder
 
 ARG PARALLEL_JOBS=4
 
@@ -18,54 +18,55 @@ RUN yum --disableplugin=subscription-manager update -y && \
     openssl-devel && \
     yum --disableplugin=subscription-manager clean all
 
-WORKDIR /tmp
+# aneo's gRPC packages for EL8, checked against the SHA-256 from cpp/versions.env.
+# The runtime package is kept in /pkgs/runtime for the runner stage.
+ARG GRPC_RPM_VERSION
+ARG GRPC_RPM_SHA256
+ARG GRPC_DEVEL_RPM_SHA256
+WORKDIR /pkgs
+RUN GRPC_RPM="${GRPC_RPM_VERSION%.*}-1.el8.x86_64.rpm" && \
+    wget -q "https://github.com/aneoconsulting/grpc-rpm/releases/download/${GRPC_RPM_VERSION}/grpc-${GRPC_RPM}" \
+        "https://github.com/aneoconsulting/grpc-rpm/releases/download/${GRPC_RPM_VERSION}/grpc-devel-${GRPC_RPM}" && \
+    printf '%s  %s\n' \
+        "${GRPC_RPM_SHA256}" "grpc-${GRPC_RPM}" \
+        "${GRPC_DEVEL_RPM_SHA256}" "grpc-devel-${GRPC_RPM}" | sha256sum -c - && \
+    dnf install -y "grpc-${GRPC_RPM}" "grpc-devel-${GRPC_RPM}" && \
+    mkdir -p runtime && mv "grpc-${GRPC_RPM}" runtime/ && rm "grpc-devel-${GRPC_RPM}"
 
-# Fetch aneo's grpc rpm packages
-RUN wget https://github.com/aneoconsulting/grpc-rpm/releases/download/1.62.2.0/grpc-1.62.2-1.el8.x86_64.rpm && \
-    rpm -ivh grpc-1.62.2-1.el8.x86_64.rpm
-
-RUN wget https://github.com/aneoconsulting/grpc-rpm/releases/download/1.62.2.0/grpc-devel-1.62.2-1.el8.x86_64.rpm && \
-    rpm -ivh grpc-devel-1.62.2-1.el8.x86_64.rpm
-
-RUN rm -rf *.rpm
+# ArmoniK.Api packages, checked against the SHA-256 from cpp/versions.env
+ARG API_VERSION
+ARG LIBARMONIK_RPM_SHA256
+ARG LIBARMONIK_DEVEL_RPM_SHA256
+RUN wget -q "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" \
+        "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-devel-${API_VERSION}-Linux.rpm" && \
+    printf '%s  %s\n' \
+        "${LIBARMONIK_RPM_SHA256}" "libarmonik-${API_VERSION}-Linux.rpm" \
+        "${LIBARMONIK_DEVEL_RPM_SHA256}" "libarmonik-devel-${API_VERSION}-Linux.rpm" | sha256sum -c - && \
+    dnf install -y libarmonik-${API_VERSION}-Linux.rpm libarmonik-devel-${API_VERSION}-Linux.rpm && \
+    mv libarmonik-${API_VERSION}-Linux.rpm runtime/ && rm libarmonik-devel-${API_VERSION}-Linux.rpm
 
 RUN mkdir -p /worker/install/
-
-ARG API_VERSION
-RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-devel-${API_VERSION}-Linux.rpm" && \
-    rpm -ivh libarmonik-${API_VERSION}-Linux.rpm libarmonik-devel-${API_VERSION}-Linux.rpm && \
-    rm libarmonik-${API_VERSION}-Linux.rpm libarmonik-devel-${API_VERSION}-Linux.rpm
 
 COPY ./src/ /worker/src/
 COPY ./CMakeLists.txt /worker/
 
+WORKDIR /tmp
 RUN cmake -DCMAKE_INSTALL_PREFIX="/worker/install" /worker/
 RUN make -j ${PARALLEL_JOBS} install
 
-FROM registry.access.redhat.com/ubi8 AS runner
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10@sha256:b3314c5f8d009ee6df04ead732bca6d3eaf011750185e348f55fce2678fb30d0 AS runner
 
-RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+# Runtime only: re2 comes from EPEL, gRPC and libarmonik from the packages checked in the builder stage
+COPY --from=builder /pkgs/runtime/ /tmp/pkgs/
+RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
+    microdnf update -y && \
+    microdnf install -y re2 zlib openssl-libs && \
+    rpm -ivh /tmp/pkgs/*.rpm && \
+    microdnf clean all && rm -rf /tmp/pkgs
 
-RUN yum --disableplugin=subscription-manager update -y && \
-    yum --disableplugin=subscription-manager install -y \
-    re2 \
-    zlib \
-    wget \
-    openssl && \
-    yum --disableplugin=subscription-manager clean all
+COPY --from=builder /worker/install /worker/install
 
-WORKDIR /tmp
-RUN wget https://github.com/aneoconsulting/grpc-rpm/releases/download/1.62.2.0/grpc-1.62.2-1.el8.x86_64.rpm && \
-    rpm -ivh grpc-1.62.2-1.el8.x86_64.rpm && rm grpc-1.62.2-1.el8.x86_64.rpm
-
-ARG API_VERSION
-RUN wget "https://github.com/aneoconsulting/ArmoniK.Api/releases/download/${API_VERSION}/libarmonik-${API_VERSION}-Linux.rpm" && \
-    yum --disableplugin=subscription-manager install -y libarmonik-${API_VERSION}-Linux.rpm && \
-    rm libarmonik-${API_VERSION}-Linux.rpm
-
-COPY --from=builder /worker /worker
-
-RUN export LD_LIBRARY_PATH="/worker/install/lib:$LD_LIBRARY_PATH"
-RUN export PATH="/worker/install/bin:$PATH"
+# Non-root by default. In an ArmoniK deployment the compute-plane pod sets the user itself.
+USER 65534:65534
 
 ENTRYPOINT ["/worker/install/bin/armonik_cpp_hello"]
