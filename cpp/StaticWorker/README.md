@@ -131,6 +131,77 @@ Expected output:
 [Info]  Task processing complete.
 ```
 
+### Windows client
+
+The client also runs natively on Windows and sends its tasks to the same Linux `cppstatic` worker. It is the code of [`client`](client), built with MSVC by [`windows-client/build.ps1`](windows-client/build.ps1). Only the client is built: ArmoniK workers run on Linux.
+
+The script:
+
+1. Fetches the ArmoniK.Extensions.Cpp sources at `SDK_VERSION` from [`cpp/versions.env`](../versions.env). The SDK releases no Windows binaries, its Windows build starts at 0.5.9.
+2. Gets gRPC, protobuf, abseil, nlohmann_json and zlib, built with MSVC. See [Dependencies](#dependencies) below.
+3. Builds ArmoniK.Api at `API_VERSION` and the SDK with the SDK's `tools\windows\build.ps1`.
+4. Builds the client and copies it to `dist`.
+
+The CI job `buildCppWindowsClient` runs this script on `windows-latest`, with the default conda dependencies, to check that the client builds. It doesn't run the client.
+
+Requirements:
+
+- Visual Studio 2022 with the "Desktop development with C++" workload
+- CMake 3.22 or later, and git
+- [micromamba](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html), only for the default dependencies
+
+Build from a "Developer PowerShell for VS 2022":
+
+```powershell
+cd cpp\StaticWorker\windows-client
+.\build.ps1
+```
+
+The first run takes a while: it creates the conda environment, then builds ArmoniK.Api and the SDK. Later runs reuse them. The result is a `dist` folder with the executable, `appsettings.json` and the DLLs it needs, which can be copied to another Windows machine.
+
+The build fails on long paths. If the repository is deep in your tree, use a short build directory: `.\build.ps1 -WorkDir C:\akbuild`.
+
+#### Dependencies
+
+The script takes the dependencies from one of three sources:
+
+| Source | Option | Notes |
+|---|---|---|
+| New conda environment | none (default) | Created with micromamba in `<WorkDir>\env` from the SDK's `tools\windows\environment.yml`. Prebuilt by conda-forge. Tested in CI. |
+| Existing conda environment | `-DepsPrefix <env root>` | Must contain the packages of `environment.yml`. micromamba isn't needed. |
+| Any CMake prefix (vcpkg, source builds) | `-DepsCMakePrefix <prefix>` | The prefix holding the dependencies' CMake config files. Add `-VcpkgRoot <vcpkg checkout>` for vcpkg. micromamba isn't needed. |
+
+With vcpkg, for example:
+
+```powershell
+C:\vcpkg\vcpkg.exe install grpc protobuf abseil nlohmann-json zlib --triplet x64-windows
+.\build.ps1 -DepsCMakePrefix C:\vcpkg\installed\x64-windows -VcpkgRoot C:\vcpkg
+```
+
+With the `x64-windows` triplet, the dependencies are DLLs, which the script copies from `<prefix>\bin` to `dist`. With `x64-windows-static-md`, they are linked into the executable and `dist` has no DLL. Building gRPC with vcpkg takes about an hour. Both cases, and how to install a static build, are described in the [SDK installation guide](https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/blob/main/.docs/content/guide/1.installation.md#how-to-build-for-windows-client-only).
+
+Only the conda-forge versions pinned in `environment.yml` are tested. Other versions should work if they are recent enough for ArmoniK.Api (gRPC 1.50 or later). Build them in `Release` (`/MD`): a `Debug` build (`/MDd`) breaks the link.
+
+To build without the script, follow the SDK installation guide to install ArmoniK.Api and the SDK in a prefix, then configure [`client`](client) with both prefixes:
+
+```powershell
+cmake -S ..\client -B build\client "-DCMAKE_PREFIX_PATH=C:\armonik;<dependency prefix>"
+cmake --build build\client --config Release
+```
+
+With vcpkg, add the toolchain options printed at the end of the SDK's `build.ps1`.
+
+Run the client from `dist`, since it reads `.\appsettings.json` from the current directory:
+
+```powershell
+cd dist
+$env:GrpcClient__Endpoint = "http://xxx.xxx.xxx:5001"
+$env:PartitionId = "cppstatic"
+.\ArmoniK.Samples.Cpp.StaticWorker.Client.exe
+```
+
+The output is the same as on Linux. The control plane must be reachable from the Windows machine. With ArmoniK deployed in WSL2, `localhost` forwarding may not cover the control plane port: use the WSL2 IP address (`wsl hostname -I`) or the node IP instead.
+
 ## Notes
 
 - Replace `http://xxx.xxx.xxx:5001` with the correct endpoint for your control plane.
