@@ -221,8 +221,7 @@ jobs:
           docker build \
             -t ${IMAGE_NAME}:${IMAGE_TAG} \
             -f ./cpp/${DEMO_DIR}/${{ matrix.role }}/${DOCKERFILE} \
-            --build-arg="API_VERSION=${API_VERSION}" \
-            --build-arg="SDK_VERSION=${SDK_VERSION}" \
+            $(grep -E '^[A-Z0-9_]+=' cpp/versions.env | sed 's/^/--build-arg=/') \
             cpp/${DEMO_DIR}/${{ matrix.role }}/
           mkdir -p images
           docker save ${IMAGE_NAME}:${IMAGE_TAG} -o images/${ARCHIVE}.tar

@@ -135,4 +135,4 @@ Expected output:
 
 - Replace `http://xxx.xxx.xxx:5001` with the correct endpoint for your control plane.
 - In the service, an `ArmoniKSdkException` fails the task, and any other exception makes ArmoniK retry it.
-- The package versions are defined in [`cpp/versions.env`](../versions.env) and the image tags in the `Makefile`. All can be overridden with environment variables (`CLIENT_IMAGE_TAG`, `WORKER_IMAGE_TAG`, `API_VERSION`, `SDK_VERSION`).
+- The package versions and their SHA-256 checksums are defined in [`cpp/versions.env`](../versions.env), and the image tags in the `Makefile`. The image tags can be overridden with environment variables (`CLIENT_IMAGE_TAG`, `WORKER_IMAGE_TAG`). To use other package versions, edit `cpp/versions.env` and run [`cpp/update-checksums.sh`](../update-checksums.sh): the image builds check every downloaded package against these checksums.

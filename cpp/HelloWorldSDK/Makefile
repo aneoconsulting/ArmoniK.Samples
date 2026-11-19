@@ -3,6 +3,8 @@ WORKING_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 .ONESHELL:
 CLIENT_IMAGE_TAG?= armonik-samples-cpp-hello-client:0.0.0-sdk
 WORKER_IMAGE_TAG?= armonik-samples-cpp-hello-worker:0.0.0-sdk
+# Every variable of versions.env (versions and package checksums) as a build argument
+VERSIONS_ARGS:= $(shell grep -E '^[A-Z0-9_]+=' $(WORKING_DIR)/../versions.env | sed 's/^/--build-arg=/')
 API_VERSION?= $(shell . $(WORKING_DIR)/../versions.env && echo $$API_VERSION)
 SDK_VERSION?= $(shell . $(WORKING_DIR)/../versions.env && echo $$SDK_VERSION)
 
@@ -19,6 +21,7 @@ all: build_worker_debian build_client_debian build_worker_ubi8 build_client_ubi8
 build_client_debian: ## Build the client Docker image (Debian 12)
 	@docker build -t ${CLIENT_IMAGE_TAG}-debian \
 		-f "${WORKING_DIR}/client/Dockerfile.debian" \
+		${VERSIONS_ARGS} \
 		--build-arg="API_VERSION=${API_VERSION}" \
 		--build-arg="SDK_VERSION=${SDK_VERSION}" \
 		${WORKING_DIR}/client
@@ -27,6 +30,7 @@ build_client_debian: ## Build the client Docker image (Debian 12)
 build_worker_debian: ## Build the worker Docker image (Debian 12)
 	@docker build -t ${WORKER_IMAGE_TAG}-debian \
 		-f "${WORKING_DIR}/worker/Dockerfile.debian" \
+		${VERSIONS_ARGS} \
 		--build-arg="API_VERSION=${API_VERSION}" \
 		--build-arg="SDK_VERSION=${SDK_VERSION}" \
 		${WORKING_DIR}/worker
@@ -35,6 +39,7 @@ build_worker_debian: ## Build the worker Docker image (Debian 12)
 build_client_ubi8: ## Build the client Docker image (RHEL 8)
 	@docker build -t ${CLIENT_IMAGE_TAG}-ubi8 \
 		-f "${WORKING_DIR}/client/Dockerfile.ubi8" \
+		${VERSIONS_ARGS} \
 		--build-arg="API_VERSION=${API_VERSION}" \
 		--build-arg="SDK_VERSION=${SDK_VERSION}" \
 		${WORKING_DIR}/client
@@ -43,6 +48,7 @@ build_client_ubi8: ## Build the client Docker image (RHEL 8)
 build_worker_ubi8: ## Build the worker Docker image (RHEL 8)
 	@docker build -t ${WORKER_IMAGE_TAG}-ubi8 \
 		-f "${WORKING_DIR}/worker/Dockerfile.ubi8" \
+		${VERSIONS_ARGS} \
 		--build-arg="API_VERSION=${API_VERSION}" \
 		--build-arg="SDK_VERSION=${SDK_VERSION}" \
 		${WORKING_DIR}/worker
