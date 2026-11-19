@@ -87,6 +87,17 @@
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+[\\w-]+: (?<currentValue>\\S+)"
       ]
+    },
+    {
+      "customType": "regex",
+      "description": "Jib base images pinned by digest in Maven poms",
+      "managerFilePatterns": [
+        "/(^|/)pom\\.xml$/"
+      ],
+      "matchStrings": [
+        "<image>(?<depName>[^:<@\\s]+):(?<currentValue>[^@<\\s]+)@(?<currentDigest>sha256:[a-f0-9]{64})</image>"
+      ],
+      "datasourceTemplate": "docker"
     }
   ]
 }
