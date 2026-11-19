@@ -1,0 +1,24 @@
+name: Set up Trivy
+description: Install Trivy and restore its vulnerability database, downloaded at most once a day for all the jobs.
+
+runs:
+  using: composite
+  steps:
+    - name: Install Trivy
+      uses: aquasecurity/setup-trivy@81e514348e19b6112ce2a7e3ecbafe19c1e1f567 # v0.3.1
+      with:
+        # renovate: datasource=github-releases depName=aquasecurity/trivy
+        version: v0.76.2
+        cache: true
+
+    - name: Get date
+      id: date
+      shell: bash
+      run: echo "date=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Trivy database
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.cache/trivy
+        key: trivy-db-${{ steps.date.outputs.date }}
+        restore-keys: trivy-db-
