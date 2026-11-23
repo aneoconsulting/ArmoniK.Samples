@@ -629,7 +629,7 @@ jobs:
       - setupDemoNames
     env:
       # Dynamic worker image of ArmoniK.Extensions.Java for library demos; must match the SDK version of the libraries
-      JAVA_DYNAMIC_WORKER_VERSION: 0.2.0
+      JAVA_DYNAMIC_WORKER_VERSION: 0.2.3
     strategy:
       fail-fast: false
       matrix:
