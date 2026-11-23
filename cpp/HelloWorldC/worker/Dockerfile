@@ -1,4 +1,4 @@
-FROM debian:12@sha256:268fb24c39bca92d326dd83ea3abebe4a3f7751c804ffef23bb6d857dd343ff8 AS builder
+FROM debian:12 AS builder
 
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install --no-install-recommends -y \
     ca-certificates \
@@ -48,7 +48,7 @@ RUN mkdir -p build && cd build && cmake .. && make
 # Carries the worker library only: it is copied out of the image, never run as a service.
 # It keeps a shell and the root default so that the documented
 # `docker run --entrypoint sh <image> -c "cp /app/<lib>.so /host/"` keeps working.
-FROM debian:12-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc AS runner
+FROM debian:12-slim AS runner
 
 WORKDIR /app
 COPY --from=builder /app/build/libArmoniK.Samples.C.Hello.Worker.so ./

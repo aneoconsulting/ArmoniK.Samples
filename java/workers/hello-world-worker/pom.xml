@@ -161,7 +161,7 @@
         <configuration>
           <from>
             <!-- Same base as the ArmoniK.Extensions.Java worker; the debian12 variant no longer gets package updates -->
-            <image>gcr.io/distroless/java17-debian13:latest@sha256:7963c2ea13a73d61eb769a2b91201b5bbded3569de78441e701cb943bbc2676c</image>
+            <image>gcr.io/distroless/java17-debian13</image>
           </from>
           <to>
             <image>hello-world-worker</image>
