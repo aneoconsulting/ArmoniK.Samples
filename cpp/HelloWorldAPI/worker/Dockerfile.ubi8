@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi:8.10@sha256:44f19e308462e9152cb26d641fc0ce5bf6cbdab3cd101367aed67573eb2cf20e AS builder
+FROM registry.access.redhat.com/ubi8/ubi:8.10 AS builder
 
 ARG PARALLEL_JOBS=4
 
@@ -54,7 +54,7 @@ WORKDIR /tmp
 RUN cmake -DCMAKE_INSTALL_PREFIX="/worker/install" /worker/
 RUN make -j ${PARALLEL_JOBS} install
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10@sha256:b3314c5f8d009ee6df04ead732bca6d3eaf011750185e348f55fce2678fb30d0 AS runner
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10 AS runner
 
 # Runtime only: re2 comes from EPEL, gRPC and libarmonik from the packages checked in the builder stage
 COPY --from=builder /pkgs/runtime/ /tmp/pkgs/
