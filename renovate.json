@@ -4,8 +4,7 @@
     "config:base",
     "group:allNonMajor",
     ":semanticCommitTypeAll(chore)",
-    "helpers:pinGitHubActionDigests",
-    "docker:pinDigests"
+    "helpers:pinGitHubActionDigests"
   ],
   "semanticCommits": "enabled",
   "rangeStrategy": "bump",
