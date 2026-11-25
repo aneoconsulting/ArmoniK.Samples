@@ -3,6 +3,8 @@ WORKING_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 .ONESHELL:
 CLIENT_IMAGE_TAG?= armonik-samples-cpp-chained-arithmetic-client:0.0.0-sdk
 WORKER_IMAGE_TAG?= armonik-samples-cpp-chained-arithmetic-worker:0.0.0-sdk
+# Every variable of versions.env (versions and package checksums) as a build argument
+VERSIONS_ARGS:= $(shell grep -E '^[A-Z0-9_]+=' $(WORKING_DIR)/../versions.env | sed 's/^/--build-arg=/')
 API_VERSION?= $(shell . $(WORKING_DIR)/../versions.env && echo $$API_VERSION)
 SDK_VERSION?= $(shell . $(WORKING_DIR)/../versions.env && echo $$SDK_VERSION)
 
@@ -19,6 +21,7 @@ all: build_worker build_client
 build_client: ## Build the client Docker image
 	@docker build -t ${CLIENT_IMAGE_TAG}  \
 		-f "${WORKING_DIR}/client/Dockerfile" \
+		${VERSIONS_ARGS} \
 		--build-arg="API_VERSION=${API_VERSION}" \
 		--build-arg="SDK_VERSION=${SDK_VERSION}" \
 		${WORKING_DIR}/client
@@ -27,6 +30,7 @@ build_client: ## Build the client Docker image
 build_worker: ## Build the worker Docker image
 	@docker build -t ${WORKER_IMAGE_TAG} \
 		-f "${WORKING_DIR}/worker/Dockerfile" \
+		${VERSIONS_ARGS} \
 		--build-arg="API_VERSION=${API_VERSION}" \
 		--build-arg="SDK_VERSION=${SDK_VERSION}" \
 		${WORKING_DIR}/worker

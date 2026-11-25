@@ -1,7 +1,7 @@
 name: Release
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
@@ -205,9 +205,12 @@ jobs:
     - name: Compute build parameters
       id: params
       run: |
-        source cpp/versions.env
-        echo "api-version=${API_VERSION}" >> $GITHUB_OUTPUT
-        echo "sdk-version=${SDK_VERSION}" >> $GITHUB_OUTPUT
+        # Every variable of versions.env (versions and package checksums) as a build argument
+        {
+          echo "build-args<<EOF"
+          grep -E '^[A-Z0-9_]+=' cpp/versions.env
+          echo "EOF"
+        } >> $GITHUB_OUTPUT
         IMAGE="dockerhubaneo/armonik_demo_cpp_$(echo '${{ matrix.demo.dir }}' | tr '[:upper:]' '[:lower:]')_${{ matrix.role }}"
         DISTRO="${{ matrix.demo.distro }}"
         echo "dockerfile=Dockerfile${DISTRO:+.${DISTRO}}" >> $GITHUB_OUTPUT
@@ -224,9 +227,7 @@ jobs:
         context: ./cpp/${{ matrix.demo.dir }}/${{ matrix.role }}
         file: ./cpp/${{ matrix.demo.dir }}/${{ matrix.role }}/${{ steps.params.outputs.dockerfile }}
         platforms: linux/amd64
-        build-args: |
-          API_VERSION=${{ steps.params.outputs.api-version }}
-          SDK_VERSION=${{ steps.params.outputs.sdk-version }}
+        build-args: ${{ steps.params.outputs.build-args }}
         push: true
         tags: ${{ steps.params.outputs.tags }}
 

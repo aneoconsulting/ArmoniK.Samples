@@ -1,6 +1,5 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/runtime:10.0 AS base
+# Azure Linux distroless image: no shell, no package manager, non-root by default (UID 1654).
+FROM mcr.microsoft.com/dotnet/runtime:10.0-azurelinux3.0-distroless-extra AS base
 WORKDIR /app
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
@@ -18,4 +17,3 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ArmoniK.Samples.SubTasking.Client.dll"]
-
