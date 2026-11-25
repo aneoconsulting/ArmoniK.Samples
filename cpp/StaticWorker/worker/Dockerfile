@@ -1,4 +1,4 @@
-FROM debian:12 AS builder
+FROM debian:13 AS builder
 
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install --no-install-recommends -y \
     ca-certificates \
@@ -49,7 +49,7 @@ RUN wget -q "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/d
 WORKDIR /app
 RUN mkdir -p build && cd build && cmake .. && make -j
 
-FROM debian:12-slim AS runner
+FROM debian:13-slim AS runner
 
 # Runtime only: the libarmonik package checked in the builder stage pulls the gRPC and protobuf runtime libraries
 COPY --from=builder /pkgs/runtime/ /tmp/pkgs/

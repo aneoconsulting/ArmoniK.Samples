@@ -1,5 +1,5 @@
 # Build the multiply library
-FROM debian:12 AS builder
+FROM debian:13 AS builder
 
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install --no-install-recommends -y \
     devscripts \
@@ -55,7 +55,7 @@ RUN mkdir -p build && cd build && cmake .. && make -j
 # Carries the worker library only: it is copied out of the image, never run as a service.
 # It keeps a shell and the root default so that the documented
 # `docker run --entrypoint sh <image> -c "cp /app/<lib>.so /host/"` keeps working.
-FROM debian:12-slim AS runner
+FROM debian:13-slim AS runner
 
 WORKDIR /app
 COPY --from=builder /app/build/libArmoniK.Samples.Cpp.ChainedArithmetic.Worker.so ./
