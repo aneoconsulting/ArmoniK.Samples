@@ -1,0 +1,50 @@
+name: Sign image
+description: >
+  Sign a pushed image by digest with cosign, keyless (GitHub OIDC). Optionally
+  generate an SPDX SBOM with Syft and attach it as a signed attestation, for
+  images not built by BuildKit (Jib). Requires the `id-token: write` permission
+  and a registry login.
+
+inputs:
+  image:
+    description: Image repository, without tag (e.g. dockerhubaneo/armonik_demo_helloworld_worker)
+    required: true
+  digest:
+    description: Digest of the pushed image or image index (sha256:...)
+    required: true
+  sbom:
+    description: Generate an SBOM and attach it as a cosign attestation
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Install cosign
+      uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532 # v4.1.3
+      with:
+        # renovate: datasource=github-releases depName=sigstore/cosign
+        cosign-release: v3.1.4
+
+    - name: Generate SBOM
+      if: inputs.sbom == 'true'
+      uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+      with:
+        image: ${{ inputs.image }}@${{ inputs.digest }}
+        format: spdx-json
+        output-file: ${{ runner.temp }}/sbom.spdx.json
+        upload-artifact: false
+        upload-release-assets: false
+
+    - name: Attest SBOM
+      if: inputs.sbom == 'true'
+      shell: bash
+      env:
+        REF: ${{ inputs.image }}@${{ inputs.digest }}
+      run: cosign attest --yes --type spdxjson --predicate "${RUNNER_TEMP}/sbom.spdx.json" "${REF}"
+
+    - name: Sign
+      shell: bash
+      env:
+        REF: ${{ inputs.image }}@${{ inputs.digest }}
+      run: cosign sign --yes "${REF}"
