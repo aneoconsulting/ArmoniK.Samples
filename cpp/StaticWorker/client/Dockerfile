@@ -1,4 +1,4 @@
-FROM debian:12 AS builder
+FROM debian:13 AS builder
 
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install --no-install-recommends -y \
     devscripts \
@@ -47,7 +47,7 @@ RUN wget -q "https://github.com/aneoconsulting/ArmoniK.Extensions.Cpp/releases/d
 WORKDIR /app
 RUN mkdir -p build && cd build && cmake .. && make -j
 
-FROM debian:12-slim AS runner
+FROM debian:13-slim AS runner
 
 # The exact runtime package: apt reads a bare 'libgrpc++' as the regex 'libgrpc+',
 # which also installs libgrpc-dev, libgrpc++-dev and their toolchain dependencies.
