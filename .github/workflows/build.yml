@@ -258,7 +258,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Setup Java and Maven
-        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
         with:
           distribution: temurin
           java-version: '17'
@@ -374,7 +374,7 @@ jobs:
 
       - name: Download sample images
         if: ${{ env.SDK_DIR == '' }}
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           pattern: image-armonik_demo_${{ matrix.demo }}_*
           path: images
@@ -548,7 +548,7 @@ jobs:
             path: infra
 
       - name: Download sample images
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           pattern: ${{ format('image-armonik_demo_cpp_{0}_*{1}', matrix.demo, matrix.distro && format('-{0}', matrix.distro) || '') }}
           path: images
@@ -673,7 +673,7 @@ jobs:
 
       - name: Download sample images
         if: ${{ env.WORKER_LIBRARY == '' }}
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: image-${{ env.WORKER_IMAGE }}
           path: images
@@ -701,7 +701,7 @@ jobs:
           log-suffix: ${{ matrix.demo }}
 
       - name: Setup Java and Maven
-        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
         with:
           distribution: temurin
           java-version: '17'
@@ -751,7 +751,7 @@ jobs:
             path: infra
 
       - name: Download sample images
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: image-armonik_demo_cpp_chainedarithmetic_worker
           path: images
@@ -783,7 +783,7 @@ jobs:
 
       - name: Setup Java and Maven
         if: ${{ matrix.demo == 'javaClientCppWorker' }}
-        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
         with:
           distribution: temurin
           java-version: '17'

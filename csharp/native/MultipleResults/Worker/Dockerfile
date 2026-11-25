@@ -1,7 +1,7 @@
-# Chiseled image: no shell, no package manager, non-root by default (UID 1654).
+# Azure Linux distroless image: no shell, no package manager, non-root by default (UID 1654).
 # In an ArmoniK deployment the compute-plane pod sets the user (UID 5000 by default)
 # and mounts /cache/shared and /cache/internal as emptyDir volumes.
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled-extra AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-azurelinux3.0-distroless-extra AS base
 WORKDIR /app
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
